@@ -1,0 +1,56 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+/output
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+dev-server.log
+spawn-test.txt
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# local windows caches
+.appdata/
+.localappdata/
+.npm-cache/
+.playwright-cli/
+LocalLow/
+
+# vercel
+.vercel
+.vercel-cli
+.vercel-xdg
+.vercel-login.log
+.vercel-login.ps1
+.vercel-last-url.txt
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
