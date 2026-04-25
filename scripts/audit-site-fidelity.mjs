@@ -129,6 +129,7 @@ expectText("docs/quality/agent-quality-system.md", [
   "vague quality goals were not translated into deterministic acceptance checks",
   "Do not treat route `200` as visual parity.",
 ]);
+expectText("2-preview-deploy.cmd", ["SITE_AUDIT_URL=%DEPLOY_URL%", "scripts\\extract-vercel-url.mjs"]);
 expectText("3-validation-check.cmd", ["npm.cmd run screenshot:site"]);
 expectText(".github/workflows/site-quality.yml", [
   "npm run test:site",

@@ -25,7 +25,7 @@ The deeper root cause is process design: AI agents can produce plausible results
 - `npm run screenshot:site` captures local built-site screenshots into `output/screenshots` so manual inspection is not accidentally performed against a protected login page.
 - GitHub Actions `Site Quality` runs the same local quality gates on `main` pushes and pull requests without deploying to production.
 - `npm run lint`, `npm run typecheck`, `npm run build`, and `npm audit --audit-level=moderate` remain mandatory after code changes.
-- Preview deployments must be tested with `vercel curl` when deployment protection blocks normal HTTP requests.
+- Preview deployments are intentionally open for ordinary browser review while noindex/robots search-blocking remains active. If deployment protection is re-enabled, test protected previews with `vercel curl`.
 - Production alias changes, search indexing, real trading/payment/admin/security changes, and destructive data operations still require explicit user approval.
 
 ## Required Flow For Visual Or Source-Parity Work
@@ -41,5 +41,5 @@ The deeper root cause is process design: AI agents can produce plausible results
 - Do not rely on "looks okay" without an explicit oracle.
 - Do not treat route `200` as visual parity.
 - Do not add broad instructions when a script or test can enforce the behavior.
-- Do not weaken preview protection or production safeguards to reduce friction.
+- Do not weaken search-blocking, production safeguards, credential rules, or trading/payment/admin safeguards to reduce friction.
 - Do not keep stale helper scripts whose names imply a safer behavior than they actually perform.

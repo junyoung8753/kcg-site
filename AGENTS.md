@@ -6,7 +6,7 @@
 - Use Korean UI/copy by default. Preserve exact business facts unless the user provides updated source documents.
 - Treat prices, trading language, legal business information, admin authentication, and production deployment as high-risk. Do not invent official prices, business registration numbers, compliance claims, or live trading/payment behavior.
 - Keep the company posted price table separate from automatic market-reference data. External APIs must not overwrite company prices.
-- Keep preview/search-blocking behavior unless the user explicitly approves public launch/search indexing.
+- Keep preview-mode and search-blocking behavior unless the user explicitly approves public launch/search indexing. Vercel SSO Deployment Protection may stay disabled for ordinary browser review, but noindex/robots blocking must remain until public launch approval.
 - Never commit `.env*`, `.vercel`, Supabase service role keys, admin passwords, cookies, tokens, or local Vercel settings.
 - For Vercel setup on a new machine, run `vercel link --yes --project kcg-confirm-preview`, then `vercel pull --yes`.
 - Before claiming completion after code changes, run:

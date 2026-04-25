@@ -34,9 +34,21 @@ echo.
 del /q "%LAST_URL_FILE%" 2>nul
 
 node .vercel-cli\node_modules\vercel\dist\index.js ^
+  link ^
   --scope %TEAM_SCOPE% ^
   --yes ^
-  --name %PROJECT_NAME% ^
+  --project %PROJECT_NAME%
+
+if errorlevel 1 (
+  echo Failed to link Vercel project.
+  pause
+  exit /b 1
+)
+
+node .vercel-cli\node_modules\vercel\dist\index.js ^
+  --scope %TEAM_SCOPE% ^
+  --yes ^
+  --format json ^
   --build-env KCG_FORCE_NOINDEX=1 ^
   --build-env NEXT_PUBLIC_SITE_URL=%SITE_URL% ^
   --build-env ADMIN_PASSWORD=0000 ^
@@ -53,7 +65,24 @@ if errorlevel 1 (
   exit /b 1
 )
 
-set /p DEPLOY_URL=<"%LAST_URL_FILE%"
+for /f "delims=" %%i in ('node scripts\extract-vercel-url.mjs "%LAST_URL_FILE%"') do set "DEPLOY_URL=%%i"
+
+if not defined DEPLOY_URL (
+  echo Could not read preview deployment URL.
+  pause
+  exit /b 1
+)
+
+echo.
+echo Verifying preview deployment with ordinary browser access...
+set "SITE_AUDIT_URL=%DEPLOY_URL%"
+call npm.cmd run audit:site
+set "SITE_AUDIT_URL="
+if errorlevel 1 (
+  echo Preview verification failed.
+  pause
+  exit /b 1
+)
 
 echo.
 echo Preview URL:
