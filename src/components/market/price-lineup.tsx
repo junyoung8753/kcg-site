@@ -128,7 +128,7 @@ const lineupStyles = {
     closeButton: "border-white/10 bg-white/6 text-white/72 hover:bg-white/12 hover:text-white",
     columnHeader: "text-white",
     rowsWrap: "",
-    row: "grid grid-cols-[0.78fr_0.92fr_0.92fr] items-start gap-2 py-[1rem] last:border-b-0 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:gap-4 sm:py-[1.08rem]",
+    row: "grid grid-cols-2 items-start gap-x-4 gap-y-3 border-b border-white/10 py-[1.08rem] last:border-b-0 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:gap-4 sm:border-b-0 sm:py-[1.08rem]",
     rowTitle: "text-white",
     rowSubtitle: "text-white/52",
     priceText: "text-white",
@@ -152,7 +152,7 @@ const lineupStyles = {
       "border-[#d1a200] bg-[#f7cf32] text-[#241a00] hover:bg-[#efc213] hover:text-[#241a00]",
     columnHeader: "border-y border-[#d1a300] bg-[#f7c500] text-[#332600]",
     rowsWrap: "space-y-3",
-    row: "grid grid-cols-[0.78fr_0.92fr_0.92fr] items-start gap-2 rounded-[1.1rem] border border-[#d7a900] bg-[#f7c500] px-3 py-[1rem] shadow-[0_8px_18px_rgba(176,124,0,0.1)] sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:gap-4 sm:px-5 sm:py-[1.02rem]",
+    row: "grid grid-cols-2 items-start gap-x-4 gap-y-3 rounded-[1.1rem] border border-[#d7a900] bg-[#f7c500] px-3 py-[1rem] shadow-[0_8px_18px_rgba(176,124,0,0.1)] sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:gap-4 sm:px-5 sm:py-[1.02rem]",
     rowTitle: "text-[#241a00]",
     rowSubtitle: "text-[#694f00]",
     priceText: "text-[#241a00]",
@@ -325,14 +325,24 @@ export function PriceLineup({
                 )}
               >
                 <div className="grid grid-cols-[1fr_auto_auto] items-center gap-2 px-4 pb-4 pt-5 sm:gap-3 sm:px-8 sm:pb-5 sm:pt-6">
-                  <h1
-                    className={cn(
-                      "text-[1.18rem] font-semibold tracking-[-0.04em] sm:text-[1.96rem] sm:tracking-[-0.06em]",
-                      style.titleText,
-                    )}
-                  >
-                    {lineupTitle}
-                  </h1>
+                  <div className="min-w-0">
+                    <h1
+                      className={cn(
+                        "text-[1.35rem] font-semibold leading-tight tracking-[-0.04em] sm:text-[1.96rem] sm:tracking-[-0.06em]",
+                        style.titleText,
+                      )}
+                    >
+                      {lineupTitle}
+                    </h1>
+                    <p
+                      className={cn(
+                        "mt-3 text-[0.62rem] font-semibold uppercase leading-4 tracking-[0.24em] sm:hidden",
+                        lineupVariant === "version2" ? "text-[#7a5d00]" : "text-white/42",
+                      )}
+                    >
+                      {siteConfig.englishName}
+                    </p>
+                  </div>
                   <p className={cn("text-right text-[0.72rem] sm:text-[0.95rem]", style.dateText)}>
                     {announcedDateLabel}
                   </p>
@@ -351,11 +361,11 @@ export function PriceLineup({
 
                 <div
                   className={cn(
-                    "grid grid-cols-[0.78fr_0.92fr_0.92fr] px-4 py-2 text-center text-[0.66rem] font-semibold leading-4 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:px-8 sm:py-3 sm:text-[0.98rem]",
+                    "grid grid-cols-2 px-4 py-2 text-center text-[0.78rem] font-semibold leading-4 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:px-8 sm:py-3 sm:text-[0.98rem]",
                     style.columnHeader,
                   )}
                 >
-                  <div />
+                  <div className="hidden sm:block" />
                   <p>내가 살 때 (VAT포함)</p>
                   <p>내가 팔 때 (현장기준)</p>
                 </div>
@@ -367,7 +377,7 @@ export function PriceLineup({
 
                     return (
                       <div key={row.title} className={style.row}>
-                        <div>
+                        <div className="col-span-2 sm:col-span-1">
                           <p className={cn("text-[1.02rem] font-semibold tracking-[-0.04em] sm:text-[1.66rem]", style.rowTitle)}>
                             {row.title}
                           </p>
@@ -393,6 +403,17 @@ export function PriceLineup({
                     );
                   })}
                 </div>
+                <p
+                  className={cn(
+                    "border-t px-4 pb-5 pt-4 text-xs leading-6 sm:hidden",
+                    lineupVariant === "version2"
+                      ? "border-[#d1a300] text-[#5f4700]"
+                      : "border-white/10 text-white/62",
+                  )}
+                >
+                  시세는 고시 시각 기준이며 실제 거래 금액은 순도, 중량, 제품 상태 확인 후 현장에서 최종
+                  안내됩니다.
+                </p>
               </div>
             </div>
 

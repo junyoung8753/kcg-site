@@ -34,9 +34,9 @@ export const mockProducts: Product[] = [
   {
     id: "product-3",
     category: "jewelry",
-    name: "주얼리 및 예물 정리 상담",
+    name: "고금·주얼리 정리 상담",
     slug: "jewelry-and-bridal-consulting",
-    shortDescription: "예물, 주얼리, 파손 제품, 부속 포함 제품 상담",
+    shortDescription: "예물, 고금, 파손 제품, 18K·14K 귀금속 상담",
     description:
       "제품 상태, 부속 여부, 브랜드 여부, 순도 확인 항목에 따라 매입 기준이 달라질 수 있어 현장 확인 후 상담을 진행합니다.",
     imageUrl: null,

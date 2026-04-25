@@ -10,9 +10,9 @@ const utilityLinks = [
 ];
 
 const shortcutLinks = [
-  { href: "/prices", label: "오늘 시세" },
-  { href: "/services", label: "매입 상담" },
-  { href: "/services", label: "골드바 문의" },
+  { href: "/prices", label: "시세조회" },
+  { href: "/services", label: "고금매입 상담" },
+  { href: "/services", label: "골드바·실버바" },
   { href: "/announcements", label: "운영 공지" },
 ];
 
@@ -63,11 +63,12 @@ export function SiteHeader() {
             />
           </span>
           <span className="min-w-0 sm:hidden">
-            <span className="block truncate text-[10px] font-semibold uppercase tracking-[0.2em] text-[#af8400]">
+            <span className="block max-w-[7.8rem] text-[10px] font-semibold uppercase leading-[1.25] tracking-[0.2em] text-[#af8400]">
               KOREA CENTER GOLD
             </span>
-            <span className="block truncate text-[1.2rem] font-semibold tracking-[-0.045em] text-[#15191b]">
-              {siteConfig.brandName}
+            <span className="block max-w-[8.8rem] text-[1.08rem] font-semibold leading-[1.12] tracking-[-0.045em] text-[#15191b]">
+              <span className="block">(주)한국센터</span>
+              <span className="block">금거래소</span>
             </span>
           </span>
         </Link>
@@ -97,17 +98,20 @@ export function SiteHeader() {
           </Link>
         </div>
 
+        <a
+          href={`tel:${siteConfig.contact.phone}`}
+          className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-[#ffcc00] px-4 text-sm font-bold text-[#171717] shadow-[0_8px_22px_rgba(255,204,0,0.22)] lg:hidden"
+        >
+          전화
+        </a>
+
         <details className="relative shrink-0 lg:hidden">
           <summary
-            className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-[#d8e1df] bg-white text-[#15191b] shadow-[0_8px_22px_rgba(18,24,24,0.08)]"
+            className="flex h-11 cursor-pointer list-none items-center justify-center rounded-full border border-[#d8e1df] bg-white px-4 text-sm font-bold text-[#15191b] shadow-[0_8px_22px_rgba(18,24,24,0.08)]"
             aria-label="사이트 메뉴 열기"
           >
             <span className="sr-only">사이트 메뉴</span>
-            <span className="grid gap-1.5" aria-hidden="true">
-              <span className="block h-0.5 w-4 rounded-full bg-[#15191b]" />
-              <span className="block h-0.5 w-4 rounded-full bg-[#15191b]" />
-              <span className="block h-0.5 w-4 rounded-full bg-[#15191b]" />
-            </span>
+            <span aria-hidden="true">메뉴</span>
           </summary>
           <div className="absolute right-0 mt-3 w-[19rem] overflow-hidden border border-[#d8e1df] bg-white shadow-[0_22px_48px_rgba(18,24,24,0.14)]">
             <div className="border-b border-[#edf2f0] bg-[#f7fbfa] px-5 py-4">

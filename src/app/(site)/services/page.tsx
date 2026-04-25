@@ -7,7 +7,7 @@ import { serviceCategories, serviceExamples, serviceGuides, siteConfig } from "@
 export const metadata: Metadata = {
   title: "상품·서비스",
   description:
-    "골드바, 실버바, 주얼리, 귀금속 매입 상담 등 한국센터금거래소의 취급 범위와 상담 가능 품목을 안내합니다.",
+    "골드바, 실버바, 고금·주얼리, 귀금속 매입 상담 등 한국센터금거래소의 취급 범위와 상담 가능 품목을 안내합니다.",
 };
 
 export default async function ServicesPage() {
@@ -19,7 +19,7 @@ export default async function ServicesPage() {
       <PageIntro
         eyebrow="상품·서비스"
         title="취급 품목과 상담 범위 안내"
-        description="골드바·실버바 문의, 귀금속 매입, 주얼리 정리 상담은 품목과 수량에 따라 안내 방식이 달라질 수 있어 방문 전 기준을 먼저 정리했습니다."
+        description="골드바·실버바 문의, 귀금속 매입, 고금·주얼리 정리 상담은 품목과 수량에 따라 안내 방식이 달라질 수 있어 방문 전 기준을 먼저 정리했습니다."
         asideLabel="상담 기준"
         asideTitle="품목·수량에 따라 상담 가능 여부 먼저 안내"
         asideBody={
@@ -129,7 +129,7 @@ export default async function ServicesPage() {
             투자용 골드바와 실버바는 중량, 브랜드, 수량에 따라 안내 가능한 범위가 달라질 수 있습니다.
           </p>
           <p className="text-sm leading-8 text-[var(--color-muted)]">
-            주얼리와 예물 정리 상담은 순도, 부속, 파손 상태 확인 후 상담 기준을 안내합니다.
+            고금·예물·주얼리 정리 상담은 순도, 부속, 파손 상태 확인 후 상담 기준을 안내합니다.
           </p>
           <p className="text-sm leading-8 text-[var(--color-muted)]">
             매입 상담은 제품 상태, 순도, 중량 확인 후 최종 금액을 확정하는 현장 상담 흐름을 유지합니다.

@@ -156,7 +156,7 @@ export const consultationScenarios = [
 export const serviceGuides = [
   {
     title: "매입 가능 품목",
-    description: "순금, 18K, 14K, 백금, 은 제품과 일부 귀금속 기념품의 매입 상담을 진행합니다.",
+    description: "순금, 18K, 14K, 백금, 은 제품과 고금·예물·주얼리 정리 상담을 진행합니다.",
   },
   {
     title: "상담 가능 항목",
@@ -171,7 +171,7 @@ export const serviceGuides = [
 export const serviceExamples = {
   gold_bar: ["1돈·5돈·10돈 단위 문의", "보유 골드바 매입 상담", "대량·법인 보유분 상담"],
   silver_bar: ["실버바 중량별 문의", "기업 증정용 실버 제품", "기념 실버·은메달 상담"],
-  jewelry: ["예물·주얼리 정리 상담", "파손 제품 및 부속 확인", "브랜드 제품 매입 기준 문의"],
+  jewelry: ["고금·예물 정리 상담", "파손 제품 및 부속 확인", "18K·14K 매입 기준 문의"],
   purchase_guide: ["신분증 지참", "보증서·영수증 지참 시 상담 원활", "현장 계근·순도 확인 후 정산"],
   coming_soon: ["기업 기념품 제작 문의", "순금 메달·배지 상담", "단체 증정용 품목 협의"],
 } as const;
@@ -219,8 +219,8 @@ export const serviceCategories = [
   },
   {
     key: "jewelry",
-    title: "주얼리",
-    description: "예물, 기념품, 맞춤 제작 문의 상담",
+    title: "고금·주얼리",
+    description: "예물, 고금, 파손 제품, 18K·14K 귀금속 상담",
   },
   {
     key: "purchase_guide",
