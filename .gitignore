@@ -35,6 +35,7 @@ spawn-test.txt
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # local windows caches
 .appdata/

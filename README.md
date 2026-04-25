@@ -66,8 +66,8 @@
 NEXT_PUBLIC_SITE_URL=https://your-domain.co.kr
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-ADMIN_PASSWORD=your-secure-password
-ADMIN_SESSION_SECRET=your-long-random-secret
+ADMIN_PASSWORD=
+ADMIN_SESSION_SECRET=
 
 # 시장 데이터
 MARKET_DATA_PROVIDER=auto
@@ -118,6 +118,29 @@ cmd /c npm.cmd run start
 - 사업자등록번호
 - 강한 관리자 비밀번호
 - 실제 도메인 연결
+
+## Cloud 작업 재개
+
+이 repo가 Codex Cloud / 새 PC 작업 기준입니다.
+
+```bash
+git clone https://github.com/junyoung8753/kcg-site.git
+cd kcg-site
+npm ci
+vercel link --yes --project kcg-confirm-preview
+vercel pull --yes
+npm run lint
+npm run typecheck
+npm run build
+npm audit --audit-level=moderate
+```
+
+주의:
+
+- `.env*`, `.vercel`, 관리자 비밀번호, Supabase service role key는 git에 올리지 않습니다.
+- production alias 변경 전에는 먼저 preview 배포로 확인합니다.
+- 검색 차단 상태를 해제하거나 실제 도메인을 연결하려면 사업자등록번호, 관리자 비밀번호, 법적 안내 문구를 먼저 확정해야 합니다.
+- 프로젝트 작업 규칙은 `AGENTS.md`를 우선 확인합니다.
 
 ## 검증
 
