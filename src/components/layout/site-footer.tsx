@@ -6,8 +6,8 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-[#dfe7e5] bg-white">
       <div className="section-shell grid gap-10 py-12 lg:grid-cols-[1.05fr_0.55fr_0.8fr_0.9fr]">
-        <div>
-          <div className="relative h-[4.2rem] w-[26rem] max-w-full">
+        <div className="min-w-0">
+          <div className="relative h-[4.2rem] w-full max-w-[26rem]">
             <Image
               src={siteConfig.brandAssets.lockupPath}
               alt={siteConfig.brandAssets.lockupAlt}
@@ -23,7 +23,7 @@ export function SiteFooter() {
           <p className="mt-5 text-sm leading-7 text-[#8a9292]">{siteConfig.company.transactionNotice}</p>
         </div>
 
-        <div>
+        <div className="min-w-0">
           <h3 className="text-sm font-semibold tracking-[0.18em] text-[#15191b]">사이트 메뉴</h3>
           <div className="mt-4 grid gap-3 text-sm font-medium text-[#687171]">
             {siteNavigation.map((item) => (
@@ -34,7 +34,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="space-y-3 text-sm leading-7 text-[#687171]">
+        <div className="min-w-0 space-y-3 text-sm leading-7 text-[#687171]">
           <h3 className="text-sm font-semibold tracking-[0.18em] text-[#15191b]">상담 안내</h3>
           <p className="text-xl font-bold text-[#15191b]">{siteConfig.contact.phone}</p>
           <p>{siteConfig.contact.address}</p>
@@ -60,7 +60,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="space-y-2 text-sm leading-7 text-[#687171]">
+        <div className="min-w-0 space-y-2 text-sm leading-7 text-[#687171]">
           <h3 className="text-sm font-semibold tracking-[0.18em] text-[#15191b]">
             {siteConfig.company.isLegalInfoConfirmed ? "사업자 정보" : "브랜드 및 운영 정보"}
           </h3>

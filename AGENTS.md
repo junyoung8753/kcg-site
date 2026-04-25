@@ -14,7 +14,9 @@
   - `npm run typecheck`
   - `npm run audit:site`
   - `npm run build`
+  - `npm run test:site`
   - `npm audit --audit-level=moderate`
-- For visual or route changes, also verify at least `/`, `/prices`, `/announcements`, `/services`, `/about`, `/admin/login`, and `/api/health` with browser screenshots or equivalent route checks.
-- For source-site restoration or visual parity work, explicitly verify campaign assets, mobile header CTA/menu, mobile bottom CTA, service wording, and mobile price-table readability. Use `npm run audit:site` plus at least one mobile screenshot of `/`.
+- For visual or route changes, also verify at least `/`, `/prices`, `/announcements`, `/services`, `/about`, `/admin/login`, and `/api/health` with browser screenshots or equivalent route checks. `npm run test:site` covers the default local browser path after `npm run build`.
+- For source-site restoration or visual parity work, explicitly verify campaign assets, mobile header CTA/menu, mobile bottom CTA, service wording, and mobile price-table readability. Use `npm run audit:site`, `npm run test:site`, `npm run screenshot:site`, and at least one manually inspected mobile screenshot of `/`.
+- When a user points out a miss, update the smallest relevant executable guardrail first, then fix similar cases. Keep `docs/quality/agent-quality-system.md` aligned with meaningful process changes.
 - If a deployment is needed, prefer a preview deployment first. Use production deployment or alias changes only when the user clearly asks for the live URL to change.

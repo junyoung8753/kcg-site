@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
-    "audit:site": "node scripts/audit-site-fidelity.mjs"
+    "audit:site": "node scripts/audit-site-fidelity.mjs",
+    "test:site": "playwright test",
+    "screenshot:site": "node scripts/capture-site-screenshots.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
@@ -20,6 +22,7 @@
     "postcss": "8.5.10"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

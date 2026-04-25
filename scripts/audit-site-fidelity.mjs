@@ -43,6 +43,17 @@ function expectText(relativePath, patterns) {
   }
 }
 
+function expectNoText(relativePath, patterns) {
+  const text = readText(relativePath);
+  for (const pattern of patterns) {
+    if (text.includes(pattern)) {
+      record(failures, "forbidden text", `${relativePath} -> ${pattern}`);
+    } else {
+      record(passes, "forbidden text absent", `${relativePath} -> ${pattern}`);
+    }
+  }
+}
+
 async function expectUrl(pathname, patterns = []) {
   const url = new URL(pathname, siteUrl);
   const response = await fetch(url);
@@ -108,6 +119,19 @@ expectText("src/lib/site-config.ts", [
 ]);
 
 expectText("src/mock/products.ts", ["고금·주얼리 정리 상담", "18K·14K 귀금속 상담"]);
+
+expectText("AGENTS.md", ["npm run test:site", "docs/quality/agent-quality-system.md"]);
+expectText("package.json", [
+  '"test:site": "playwright test"',
+  '"screenshot:site": "node scripts/capture-site-screenshots.mjs"',
+]);
+expectText("docs/quality/agent-quality-system.md", [
+  "vague quality goals were not translated into deterministic acceptance checks",
+  "Do not treat route `200` as visual parity.",
+]);
+expectText("3-validation-check.cmd", ["npm.cmd run screenshot:site"]);
+expectNoText("2-preview-deploy.cmd", ["--prod"]);
+expectNoText("3-validation-check.cmd", ["playwright-cli open %SITE_URL%"]);
 
 if (siteUrl) {
   await expectUrl("/", [
