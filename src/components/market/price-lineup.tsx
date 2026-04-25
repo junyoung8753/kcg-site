@@ -95,7 +95,7 @@ const lineupStyles = {
     closeButton: "border-white/10 bg-white/6 text-white/72 hover:bg-white/12 hover:text-white",
     columnHeader: "text-white",
     rowsWrap: "",
-    row: "grid grid-cols-[0.98fr_0.94fr_0.94fr] items-start gap-4 py-[1.08rem] last:border-b-0",
+    row: "grid grid-cols-[0.78fr_0.92fr_0.92fr] items-start gap-2 py-[1rem] last:border-b-0 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:gap-4 sm:py-[1.08rem]",
     rowTitle: "text-white",
     rowSubtitle: "text-white/52",
     priceText: "text-white",
@@ -119,7 +119,7 @@ const lineupStyles = {
       "border-[#d1a200] bg-[#f7cf32] text-[#241a00] hover:bg-[#efc213] hover:text-[#241a00]",
     columnHeader: "border-y border-[#d1a300] bg-[#f7c500] text-[#332600]",
     rowsWrap: "space-y-3",
-    row: "grid grid-cols-[0.98fr_0.94fr_0.94fr] items-start gap-4 rounded-[1.1rem] border border-[#d7a900] bg-[#f7c500] px-5 py-[1.02rem] shadow-[0_8px_18px_rgba(176,124,0,0.1)]",
+    row: "grid grid-cols-[0.78fr_0.92fr_0.92fr] items-start gap-2 rounded-[1.1rem] border border-[#d7a900] bg-[#f7c500] px-3 py-[1rem] shadow-[0_8px_18px_rgba(176,124,0,0.1)] sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:gap-4 sm:px-5 sm:py-[1.02rem]",
     rowTitle: "text-[#241a00]",
     rowSubtitle: "text-[#694f00]",
     priceText: "text-[#241a00]",
@@ -172,23 +172,23 @@ function PriceCell({
   if (text) {
     return (
       <div className="pt-1.5">
-        <p className={cn("text-[1.55rem] font-semibold tracking-[-0.04em]", style.priceText)}>{text}</p>
+        <p className={cn("text-[1.02rem] font-semibold tracking-[-0.04em] sm:text-[1.55rem]", style.priceText)}>{text}</p>
       </div>
     );
   }
 
   if (!price) {
-    return <p className={cn("text-xl font-semibold", style.emptyText)}>문의</p>;
+    return <p className={cn("text-base font-semibold sm:text-xl", style.emptyText)}>문의</p>;
   }
 
   const change = formatChangeLine(history ?? null, variant);
 
   return (
     <div>
-      <p className={cn("text-[1.72rem] font-semibold tracking-[-0.05em]", style.priceText)}>
+      <p className={cn("text-[1.08rem] font-semibold tracking-[-0.05em] sm:text-[1.72rem]", style.priceText)}>
         {formatCurrencyKRW(price.value).replace("₩", "")}원
       </p>
-      <p className={cn("mt-1 text-[0.9rem]", style.metaText)}>
+      <p className={cn("mt-1 text-[0.68rem] leading-4 sm:text-[0.9rem]", style.metaText)}>
         {change ? (
           <>
             {change.percent} <span className={change.tone}>{change.amount}</span>
@@ -197,7 +197,7 @@ function PriceCell({
           getPriceTradeGuide(price.category)
         )}
       </p>
-      {note ? <p className={cn("mt-1 text-[0.9rem]", style.noteText)}>{note}</p> : null}
+      {note ? <p className={cn("mt-1 text-[0.68rem] leading-4 sm:text-[0.9rem]", style.noteText)}>{note}</p> : null}
     </div>
   );
 }
@@ -238,7 +238,7 @@ export function PriceLineup({
                 type="button"
                 onClick={() => setIsLineupOpen(true)}
                 className={cn(
-                  "absolute left-6 top-6 z-20 inline-flex h-11 items-center gap-2 rounded-full border px-4 text-sm font-medium transition md:left-8 md:top-8",
+                  "absolute left-5 top-5 z-20 inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium transition md:left-8 md:top-8 md:h-11",
                   style.openButton,
                 )}
               >
@@ -249,7 +249,7 @@ export function PriceLineup({
 
             <div
               className={cn(
-                "relative z-10 overflow-x-auto transition-[opacity,transform] duration-300 lg:absolute lg:bottom-0 lg:left-0 lg:top-0",
+                "relative z-10 overflow-hidden transition-[opacity,transform] duration-300 lg:absolute lg:bottom-0 lg:left-0 lg:top-0",
                 style.panelShell,
                 isLineupOpen
                   ? `opacity-100 ${style.panelWidthClass} lg:translate-x-0`
@@ -264,19 +264,19 @@ export function PriceLineup({
                 className={cn(
                   "relative",
                   style.panelFrame,
-                  isLineupOpen ? "min-w-[36.4rem]" : "min-w-0 overflow-hidden",
+                  isLineupOpen ? "min-w-0 sm:min-w-[36.4rem] lg:min-w-full" : "min-w-0 overflow-hidden",
                 )}
               >
-                <div className="grid grid-cols-[1fr_auto_auto] items-center gap-3 px-6 pb-5 pt-6 sm:px-8">
+                <div className="grid grid-cols-[1fr_auto_auto] items-center gap-2 px-4 pb-4 pt-5 sm:gap-3 sm:px-8 sm:pb-5 sm:pt-6">
                   <h1
                     className={cn(
-                      "text-[1.82rem] font-semibold tracking-[-0.06em] sm:text-[1.96rem]",
+                      "text-[1.18rem] font-semibold tracking-[-0.04em] sm:text-[1.96rem] sm:tracking-[-0.06em]",
                       style.titleText,
                     )}
                   >
                     {lineupTitle}
                   </h1>
-                  <p className={cn("text-right text-[0.95rem]", style.dateText)}>
+                  <p className={cn("text-right text-[0.72rem] sm:text-[0.95rem]", style.dateText)}>
                     {announcedDateLabel}
                   </p>
                   <button
@@ -294,7 +294,7 @@ export function PriceLineup({
 
                 <div
                   className={cn(
-                    "grid grid-cols-[0.98fr_0.94fr_0.94fr] px-6 py-3 text-center text-[0.98rem] font-semibold sm:px-8",
+                    "grid grid-cols-[0.78fr_0.92fr_0.92fr] px-4 py-2 text-center text-[0.66rem] font-semibold leading-4 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:px-8 sm:py-3 sm:text-[0.98rem]",
                     style.columnHeader,
                   )}
                 >
@@ -303,7 +303,7 @@ export function PriceLineup({
                   <p>내가 팔 때 (현장기준)</p>
                 </div>
 
-                <div className={cn("px-6 pb-7 pt-1.5 sm:px-8", style.rowsWrap)}>
+                <div className={cn("px-4 pb-5 pt-1.5 sm:px-8 sm:pb-7", style.rowsWrap)}>
                   {rows.map((row) => {
                     const sell = row.sellCategory ? priceByCategory.get(row.sellCategory) : undefined;
                     const buy = row.buyCategory ? priceByCategory.get(row.buyCategory) : undefined;
@@ -311,10 +311,10 @@ export function PriceLineup({
                     return (
                       <div key={row.title} className={style.row}>
                         <div>
-                          <p className={cn("text-[1.66rem] font-semibold tracking-[-0.04em]", style.rowTitle)}>
+                          <p className={cn("text-[1.02rem] font-semibold tracking-[-0.04em] sm:text-[1.66rem]", style.rowTitle)}>
                             {row.title}
                           </p>
-                          <p className={cn("mt-0.5 text-[0.92rem] font-medium", style.rowSubtitle)}>
+                          <p className={cn("mt-0.5 text-[0.64rem] font-medium leading-4 sm:text-[0.92rem]", style.rowSubtitle)}>
                             {row.subtitle}
                           </p>
                         </div>

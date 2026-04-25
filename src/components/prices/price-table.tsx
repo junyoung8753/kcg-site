@@ -10,7 +10,32 @@ interface PriceTableProps {
 export function PriceTable({ prices, compact = false }: PriceTableProps) {
   return (
     <div className="thin-panel overflow-hidden rounded-[2rem]">
-      <div className="overflow-x-auto">
+      <div className="md:hidden">
+        {prices.map((price) => (
+          <article key={price.id} className="border-b border-[var(--color-line)] bg-white/72 px-5 py-5 last:border-b-0">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-base font-semibold tracking-[-0.03em] text-[var(--color-ink)]">
+                  {getPriceReferenceLabel(price.category)}
+                </p>
+                <span className="mt-2 inline-flex rounded-full border border-[var(--color-line-strong)] px-3 py-1 text-[11px] font-semibold tracking-[0.08em] text-[var(--color-muted)]">
+                  {getPriceTradeGuide(price.category)}
+                </span>
+              </div>
+              <p className="shrink-0 text-right text-xl font-semibold tracking-[-0.05em] text-[var(--color-ink)]">
+                {formatCurrencyKRW(price.value)}
+              </p>
+            </div>
+            <div className="mt-4 grid gap-2 text-sm leading-6 text-[var(--color-muted)]">
+              <p>단위: {price.unit}</p>
+              <p>기준 시각: {formatDateTimeKorean(price.announcedAt)}</p>
+              {!compact ? <p>{price.note || "상담 후 안내"}</p> : null}
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="hidden overflow-x-auto md:block">
         <table className="min-w-full border-collapse">
           <thead>
             <tr className="border-b border-[var(--color-line)] bg-[rgba(255,255,255,0.7)] text-left text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">

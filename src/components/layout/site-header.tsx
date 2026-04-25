@@ -40,9 +40,9 @@ export function SiteHeader() {
         </div>
       </div>
 
-      <div className="section-shell flex min-h-[5.85rem] items-center justify-between gap-6 py-4 xl:gap-8">
-        <Link href="/" className="flex min-w-0 items-center gap-4 xl:max-w-[28rem]">
-          <span className="relative h-[3.4rem] w-[3.4rem] shrink-0 sm:hidden">
+      <div className="section-shell flex min-h-[5.85rem] items-center justify-between gap-4 py-4 xl:gap-8">
+        <Link href="/" className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4 xl:max-w-[28rem]">
+          <span className="relative h-[2.9rem] w-[2.9rem] shrink-0 sm:hidden">
             <Image
               src={siteConfig.brandAssets.symbolPath}
               alt={siteConfig.brandAssets.symbolAlt}
@@ -63,10 +63,10 @@ export function SiteHeader() {
             />
           </span>
           <span className="min-w-0 sm:hidden">
-            <span className="block text-[11px] font-semibold uppercase tracking-[0.24em] text-[#af8400]">
-              {siteConfig.englishName}
+            <span className="block truncate text-[10px] font-semibold uppercase tracking-[0.2em] text-[#af8400]">
+              KOREA CENTER GOLD
             </span>
-            <span className="block truncate text-[1.48rem] font-semibold tracking-[-0.055em] text-[#15191b]">
+            <span className="block truncate text-[1.2rem] font-semibold tracking-[-0.045em] text-[#15191b]">
               {siteConfig.brandName}
             </span>
           </span>
@@ -97,11 +97,19 @@ export function SiteHeader() {
           </Link>
         </div>
 
-        <details className="relative lg:hidden">
-          <summary className="flex cursor-pointer list-none items-center gap-2 rounded-full border border-[#d8e1df] px-4 py-2 text-sm font-semibold text-[#15191b]">
-            메뉴
+        <details className="relative shrink-0 lg:hidden">
+          <summary
+            className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-[#d8e1df] bg-white text-[#15191b] shadow-[0_8px_22px_rgba(18,24,24,0.08)]"
+            aria-label="사이트 메뉴 열기"
+          >
+            <span className="sr-only">사이트 메뉴</span>
+            <span className="grid gap-1.5" aria-hidden="true">
+              <span className="block h-0.5 w-4 rounded-full bg-[#15191b]" />
+              <span className="block h-0.5 w-4 rounded-full bg-[#15191b]" />
+              <span className="block h-0.5 w-4 rounded-full bg-[#15191b]" />
+            </span>
           </summary>
-          <div className="absolute right-0 mt-3 w-72 overflow-hidden rounded-2xl border border-[#d8e1df] bg-white shadow-[0_22px_48px_rgba(18,24,24,0.14)]">
+          <div className="absolute right-0 mt-3 w-[19rem] overflow-hidden border border-[#d8e1df] bg-white shadow-[0_22px_48px_rgba(18,24,24,0.14)]">
             <div className="border-b border-[#edf2f0] bg-[#f7fbfa] px-5 py-4">
               <div className="relative h-[3rem] w-[12.5rem]">
                 <Image

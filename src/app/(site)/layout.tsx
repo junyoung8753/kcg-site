@@ -1,13 +1,15 @@
 import type { ReactNode } from "react";
+import { MobileContactBar } from "@/components/layout/mobile-contact-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 
 export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col pb-[calc(4.75rem+env(safe-area-inset-bottom))] lg:pb-0">
       <SiteHeader />
       <main className="flex-1">{children}</main>
       <SiteFooter />
+      <MobileContactBar />
     </div>
   );
 }
