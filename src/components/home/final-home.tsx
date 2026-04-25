@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PurchaseGuide } from "@/components/home/purchase-guide";
 import { MarketDashboard } from "@/components/market/market-dashboard";
 import { PriceLineup, type PriceLineupVariant } from "@/components/market/price-lineup";
 import { TradeStandardPanel } from "@/components/trade/trade-standard-panel";
@@ -50,11 +51,14 @@ export async function FinalHome({
         lineupTitle={lineupTitle}
         announcedLabel={announcedAt ? formatDateTimeKorean(announcedAt) : "당일 고시 준비중"}
         announcedDateLabel={announcedAt ? formatDateDot(announcedAt) : "고시 준비중"}
+        krwRate={marketData.krwRate}
       />
 
       <MarketDashboard data={marketData} />
 
       <TradeStandardPanel className="pt-2" />
+
+      <PurchaseGuide />
 
       <section className="border-y border-[#dfe7e5] bg-white">
         <div className="section-shell grid gap-0 py-0 xl:grid-cols-[0.94fr_0.62fr_0.62fr]">

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatCurrencyKRW } from "@/lib/format";
 import { getPriceTradeGuide } from "@/lib/price-presenter";
-import { homeDeskNotes, siteConfig } from "@/lib/site-config";
+import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 import type { PriceCategory, PriceHistoryEntry, PriceRecord } from "@/types/price";
 
@@ -77,6 +77,39 @@ const rows: LineupRow[] = [
     buyNote: "(자사실버바기준)",
   },
 ];
+
+const campaignSlides = [
+  {
+    image: "/campaign/kcg-hero-gold-bars.jpg",
+    alt: "골드바와 순금 거래 상담 배너",
+    kicker: "당일 고시 시세",
+    title: "순금·18K·14K 매입 기준을 방문 전 확인하실 수 있습니다.",
+    body: "고시 시각 이후에도 시세는 변동될 수 있습니다. 방문 전 전화로 상담 가능 시간과 준비 사항을 확인해 주세요.",
+    href: "/prices",
+    action: "전체 시세 보기",
+    note: "종로 골든타워 303호 · 방문 상담 안내",
+  },
+  {
+    image: "/campaign/kcg-hero-metal-bars.jpg",
+    alt: "백금 실버바 골드바 상담 배너",
+    kicker: "골드바·실버바 상담",
+    title: "보유하신 골드바와 실버바의 중량·수량 기준으로 안내합니다.",
+    body: "개인 보유분, 법인 보유분, 선물용 제품 문의까지 품목 정보를 알려주시면 상담 기준을 먼저 정리해 드립니다.",
+    href: "/services",
+    action: "취급 품목 보기",
+    note: "Gold bar · Silver bar · Platinum",
+  },
+  {
+    image: "/campaign/kcg-hero-consulting.jpg",
+    alt: "종로 방문 상담 안내 배너",
+    kicker: "종로 방문 상담",
+    title: "시세 확인부터 현장 확인, 정산 안내까지 한 흐름으로 진행합니다.",
+    body: "전화 문의 시 당일 상담 가능 시간, 건물 진입 동선, 준비 서류를 먼저 안내해 드립니다.",
+    href: "/about",
+    action: "거래 절차 보기",
+    note: "순도 확인 · 중량 확인 · 정산 안내",
+  },
+] as const;
 
 const lineupStyles = {
   version1: {
@@ -209,6 +242,7 @@ export function PriceLineup({
   lineupTitle = "한국센터금거래소 시세표",
   announcedLabel = "당일 고시 준비중",
   announcedDateLabel = "고시 준비중",
+  krwRate,
 }: {
   prices: PriceRecord[];
   history: PriceHistoryEntry[];
@@ -216,12 +250,35 @@ export function PriceLineup({
   lineupTitle?: string;
   announcedLabel?: string;
   announcedDateLabel?: string;
+  krwRate?: number;
 }) {
   const [isLineupOpen, setIsLineupOpen] = useState(true);
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const [isSlidePaused, setIsSlidePaused] = useState(false);
   const priceByCategory = new Map(prices.map((price) => [price.category, price]));
   const style = lineupStyles[lineupVariant];
   const wrapperHeightClass = lineupVariant === "version2" ? "min-h-[44rem]" : "min-h-[42.5rem]";
   const contentHeightClass = lineupVariant === "version2" ? "min-h-[44rem]" : "min-h-[42.5rem]";
+  const activeSlide = campaignSlides[activeSlideIndex];
+  const krwRateLabel = krwRate
+    ? `${new Intl.NumberFormat("ko-KR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(krwRate)}원`
+    : "자동 참고";
+
+  useEffect(() => {
+    if (isSlidePaused) return;
+    const timer = window.setInterval(() => {
+      setActiveSlideIndex((index) => (index + 1) % campaignSlides.length);
+    }, 5600);
+
+    return () => window.clearInterval(timer);
+  }, [isSlidePaused]);
+
+  const moveSlide = (offset: number) => {
+    setActiveSlideIndex((index) => (index + offset + campaignSlides.length) % campaignSlides.length);
+  };
 
   return (
     <section className="border-b border-[#dde7e4] bg-[#f1faf8]">
@@ -340,104 +397,127 @@ export function PriceLineup({
             </div>
 
             <div
-              className={`relative z-0 flex flex-col justify-between px-6 py-8 transition-[margin] duration-300 sm:px-10 sm:py-10 lg:px-14 lg:py-12 ${
+              className={`relative z-0 overflow-hidden transition-[margin] duration-300 ${
                 isLineupOpen ? style.contentShiftClass : "lg:ml-0"
               } ${contentHeightClass}`}
             >
-              <div className="max-w-[44rem]">
-                <div className="relative h-10 w-[14rem] max-w-full sm:h-12 sm:w-[18rem]">
+              {campaignSlides.map((slide, index) => (
+                <div
+                  key={slide.image}
+                  className={`absolute inset-0 transition-opacity duration-700 ${
+                    index === activeSlideIndex ? "opacity-100" : "opacity-0"
+                  }`}
+                  aria-hidden={index !== activeSlideIndex}
+                >
                   <Image
-                    src={siteConfig.brandAssets.lockupPath}
-                    alt={siteConfig.brandAssets.lockupAlt}
+                    src={slide.image}
+                    alt={slide.alt}
                     fill
-                    className="object-contain object-left"
-                    sizes="(max-width: 640px) 224px, 288px"
-                    priority
+                    priority={index === 0}
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 64vw"
                   />
                 </div>
-                <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.26em] text-[#9b7700]">
-                  종로 귀금속 시세 · 매입 안내
-                </p>
-                <h2 className="mt-4 text-[1.9rem] font-semibold leading-[1.22] tracking-[-0.055em] text-[#1a1e20] sm:text-[2.2rem]">
-                  오늘 고시 시세와 방문 상담 기준 안내
-                </h2>
-                <p className="mt-4 max-w-2xl text-[15px] leading-7 text-[#5f6868]">
-                  순금, 18K, 14K, 백금, 은 시세는 당일 고시 시각 기준으로 안내되며,
-                  실제 거래 금액은 현장 확인 후 최종 안내합니다. 대표번호로 문의하시면
-                  상담 가능 시간과 준비 사항을 먼저 확인하실 수 있습니다.
-                </p>
-              </div>
+              ))}
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.9),rgba(255,255,255,0.52)_36%,rgba(255,255,255,0.1)_100%),linear-gradient(180deg,rgba(255,255,255,0.16),rgba(245,228,154,0.38))]" />
 
-              <div className="mt-7 grid gap-px overflow-hidden border border-[#dbe4e1] bg-[#dbe4e1] sm:grid-cols-2">
-                {homeDeskNotes.map((item) => (
-                  <div key={item.title} className="bg-white/86 px-5 py-5">
-                    <p className="text-[11px] font-semibold tracking-[0.22em] text-[#9b7700]">{item.label}</p>
-                    <p className="mt-2 text-base font-semibold tracking-[-0.03em] text-[#15191b]">
-                      {item.title}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[#66706f]">{item.body}</p>
-                  </div>
-                ))}
-              </div>
+              <button
+                type="button"
+                onClick={() => moveSlide(-1)}
+                className="absolute left-5 top-1/2 z-20 hidden h-16 w-12 -translate-y-1/2 items-center justify-center rounded-md bg-white/72 text-3xl font-light text-[#171717] shadow-[0_12px_30px_rgba(0,0,0,0.12)] backdrop-blur transition hover:bg-white lg:inline-flex"
+                aria-label="이전 슬라이드"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                onClick={() => moveSlide(1)}
+                className="absolute right-5 top-1/2 z-20 hidden h-16 w-12 -translate-y-1/2 items-center justify-center rounded-md bg-white/72 text-3xl font-light text-[#171717] shadow-[0_12px_30px_rgba(0,0,0,0.12)] backdrop-blur transition hover:bg-white lg:inline-flex"
+                aria-label="다음 슬라이드"
+              >
+                ›
+              </button>
 
-              <div className="mt-auto grid gap-4 pt-6 xl:grid-cols-[1.02fr_0.98fr] xl:items-end">
-                <div className="border border-black/10 bg-white/88 p-5 shadow-[0_18px_44px_rgba(31,47,43,0.1)]">
-                  <div className="mb-3 flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-[11px] font-semibold tracking-[0.22em] text-[#9b7700]">매장 확인</p>
-                      <p className="mt-1 text-base font-semibold text-[#15191b]">실매장 및 간판 기준</p>
-                    </div>
-                    <p className="text-right text-xs leading-5 text-[#6d7575]">종로 골든타워 303호</p>
-                  </div>
-                  <div className="relative aspect-[21/6] overflow-hidden border border-[#e2e7e5] bg-white">
-                    <Image
-                      src="/brand/signboard-clean.jpg"
-                      alt="한국센터금거래소 간판"
-                      fill
-                      className="object-contain"
-                      sizes="(max-width: 1024px) 100vw, 32vw"
-                    />
-                  </div>
-                </div>
-
-                <div className="border border-[#d9e4e1] bg-white/88 p-5 shadow-[0_18px_44px_rgba(31,47,43,0.1)]">
-                  <p className="text-[11px] font-semibold tracking-[0.22em] text-[#9b7700]">방문 상담 안내</p>
-                  <div className="mt-3 grid gap-4 border-y border-[#e2e7e5] py-4 text-sm leading-7 text-[#5f6868]">
-                    <div>
-                      <p className="font-semibold text-[#15191b]">당일 고시 시각</p>
-                      <p>{announcedLabel}</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-[#15191b]">상담 가능 시간</p>
-                      <p>{siteConfig.contact.businessHours}</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-[#15191b]">방문 위치</p>
-                      <p>{siteConfig.contact.address}</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-[#15191b]">거래 기준 안내</p>
-                      <p>{siteConfig.company.transactionNotice}</p>
-                    </div>
-                  </div>
-                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <div className="relative z-10 flex min-h-[inherit] flex-col justify-end px-6 py-8 sm:px-10 sm:py-10 lg:px-14 lg:py-12">
+                <div className="max-w-[38rem] lg:ml-auto">
+                  <p className="text-xs font-semibold tracking-[0.28em] text-[#9b7700]">{activeSlide.kicker}</p>
+                  <h2 className="mt-5 text-[2.05rem] font-semibold leading-[1.08] tracking-[-0.07em] text-[#101315] sm:text-[3.15rem]">
+                    {activeSlide.title}
+                  </h2>
+                  <p className="mt-5 text-base leading-8 text-[#4f5656] sm:text-lg">{activeSlide.body}</p>
+                  <div className="mt-7 flex flex-wrap gap-3">
                     <Link
-                      href="/prices"
-                      className="inline-flex h-12 items-center justify-center rounded-full bg-[#ffcc00] px-6 text-sm font-semibold text-[#171717] transition hover:bg-[#f2bf00]"
+                      href={activeSlide.href}
+                      className="inline-flex h-12 items-center justify-center rounded-lg bg-[#ffcc00] px-7 text-sm font-bold text-[#171717] shadow-[0_14px_30px_rgba(255,204,0,0.25)] transition hover:bg-[#f2bf00]"
                     >
-                      전체 시세 보기
+                      {activeSlide.action}
                     </Link>
                     <a
                       href={`tel:${siteConfig.contact.phone}`}
-                      className="inline-flex h-12 items-center justify-center rounded-full border border-[#d7e0dd] bg-white/84 px-6 text-sm font-semibold text-[#171717] transition hover:bg-white"
+                      className="inline-flex h-12 items-center justify-center rounded-lg bg-white/82 px-7 text-sm font-bold text-[#171717] shadow-[0_10px_26px_rgba(0,0,0,0.08)] backdrop-blur transition hover:bg-white"
                     >
                       전화 문의 {siteConfig.contact.phone}
                     </a>
                   </div>
+                  <p className="mt-6 text-sm font-medium tracking-[0.28em] text-[#716547]">{activeSlide.note}</p>
+                </div>
+
+                <div className="mt-9 flex flex-wrap items-center gap-4 lg:justify-end">
+                  <div className="flex items-center gap-2">
+                    {campaignSlides.map((slide, index) => (
+                      <button
+                        key={slide.image}
+                        type="button"
+                        onClick={() => setActiveSlideIndex(index)}
+                        className={`h-2 rounded-full transition-all ${
+                          index === activeSlideIndex ? "w-11 bg-[#ffcc00]" : "w-3 bg-white/80 hover:bg-white"
+                        }`}
+                        aria-label={`${index + 1}번째 슬라이드 보기`}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsSlidePaused((value) => !value)}
+                    className="inline-flex h-9 items-center justify-center rounded-sm bg-white/72 px-4 text-xs font-semibold text-[#171717] shadow-[0_10px_24px_rgba(0,0,0,0.08)] backdrop-blur transition hover:bg-white"
+                  >
+                    {isSlidePaused ? "재생" : "정지"}
+                  </button>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="mx-auto grid max-w-[1500px] border-x border-[#dfe7e5] bg-white sm:grid-cols-2 xl:grid-cols-4">
+        <div className="border-b border-r border-[#dfe7e5] px-6 py-6 xl:border-b-0">
+          <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">회사 고시 기준</p>
+          <p className="mt-3 text-base font-bold tracking-[-0.03em] text-[#15191b]">{announcedLabel}</p>
+          <p className="mt-3 text-sm leading-6 text-[#687171]">
+            실제 거래 상담은 회사 고시 시세를 우선 기준으로 안내합니다.
+          </p>
+        </div>
+        <div className="border-b border-r border-[#dfe7e5] px-6 py-6 xl:border-b-0">
+          <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">자동 참고 시세</p>
+          <p className="mt-3 text-base font-bold tracking-[-0.03em] text-[#15191b]">무료 실시간 참고</p>
+          <p className="mt-3 text-sm leading-6 text-[#687171]">
+            Gold API 기준으로 시장 흐름을 보조 표시합니다.
+          </p>
+        </div>
+        <div className="border-b border-r border-[#dfe7e5] px-6 py-6 sm:border-b-0">
+          <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">USD/KRW 환율</p>
+          <p className="mt-3 text-base font-bold tracking-[-0.03em] text-[#15191b]">{krwRateLabel}</p>
+          <p className="mt-3 text-sm leading-6 text-[#687171]">
+            국내 환산 참고 시세 계산에 함께 사용합니다.
+          </p>
+        </div>
+        <div className="px-6 py-6">
+          <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">방문 상담</p>
+          <p className="mt-3 text-base font-bold tracking-[-0.03em] text-[#15191b]">{siteConfig.contact.phone}</p>
+          <p className="mt-3 text-sm leading-6 text-[#687171]">
+            종로 골든타워 303호 방문 전 전화 문의를 권장드립니다.
+          </p>
         </div>
       </div>
     </section>

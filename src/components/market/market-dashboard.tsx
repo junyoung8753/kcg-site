@@ -15,6 +15,14 @@ function formatUsd(value: number) {
   }).format(value);
 }
 
+function formatExchangeRate(value: number) {
+  if (!value) return "-";
+  return new Intl.NumberFormat("ko-KR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
 function formatSignedPercent(value: number) {
   const prefix = value > 0 ? "▲" : value < 0 ? "▼" : "■";
   return `${prefix} ${Math.abs(value).toFixed(2)}%`;
@@ -393,6 +401,70 @@ function InternationalSection({
   );
 }
 
+function ConversionReference({ data }: { data: MarketDashboardData }) {
+  const rows = data.spots.map((spot) => ({
+    spot,
+    domestic: data.domesticPrices.find((item) => item.metal === spot.metal),
+  }));
+
+  return (
+    <div className="grid gap-5">
+      <div className="rounded-[1.5rem] border border-[#e3e9e7] bg-[#fbfdfc] px-5 py-5">
+        <p className="text-xs font-semibold tracking-[0.18em] text-[#7a8382]">환율 참고</p>
+        <h3 className="mt-2 text-xl font-semibold tracking-[-0.04em] text-[#15191b]">USD/KRW 환율</h3>
+        <p className="mt-3 text-[2rem] font-bold tracking-[-0.05em] text-[#15191b]">
+          {formatExchangeRate(data.krwRate)}
+        </p>
+        <p className="mt-2 text-sm leading-6 text-[#687171]">
+          국내 환산 참고 시세는 국제 금속 현재가와 원달러 환율을 함께 반영합니다.
+        </p>
+        <p className="mt-2 text-xs leading-6 text-[#8b9292]">{formatDateTimeKorean(data.updatedAt)} 기준</p>
+      </div>
+
+      <div className="overflow-hidden border border-[#dfe6e4] bg-white">
+        <div className="border-b border-[#e4ebe9] px-5 py-4">
+          <p className="text-sm font-semibold text-[#9a8a00]">자동 환산표</p>
+          <h3 className="mt-1 text-[1.5rem] font-semibold tracking-[-0.05em] text-[#15191b]">
+            국제 현재가와 국내 환산 참고값
+          </h3>
+          <p className="mt-1 text-xs font-medium text-[#7d8585]">USD/T.oz → KRW/g → KRW/3.75g</p>
+        </div>
+        <div className="overflow-x-auto">
+          <div className="grid min-w-[40rem] grid-cols-[1fr_0.82fr_0.82fr_0.82fr_0.82fr] bg-[#f7fbfa] px-5 py-3 text-xs font-bold tracking-[0.14em] text-[#697171]">
+            <p>금속</p>
+            <p className="text-right">국제 현재가</p>
+            <p className="text-right">환율</p>
+            <p className="text-right">원/g</p>
+            <p className="text-right">원/3.75g</p>
+          </div>
+          {rows.map(({ spot, domestic }) => (
+            <div
+              key={spot.metal}
+              className="grid min-w-[40rem] grid-cols-[1fr_0.82fr_0.82fr_0.82fr_0.82fr] items-center border-t border-[#e4ebe9] px-5 py-4 text-sm"
+            >
+              <div>
+                <p className="font-bold tracking-[-0.03em] text-[#15191b]">{spot.label.replace("국제 ", "")}</p>
+                <p className="mt-1 text-xs font-medium text-[#7d8585]">{spot.symbol}</p>
+              </div>
+              <p className="text-right font-semibold text-[#15191b]">{formatUsd(spot.price)}</p>
+              <p className="text-right text-[#687171]">{formatExchangeRate(data.krwRate)}</p>
+              <p className="text-right font-semibold text-[#15191b]">
+                {domestic ? formatCurrencyKRW(domestic.krwPerGram) : "-"}
+              </p>
+              <p className="text-right font-semibold text-[#15191b]">
+                {domestic ? formatCurrencyKRW(domestic.krwPerDon) : "-"}
+              </p>
+            </div>
+          ))}
+        </div>
+        <p className="border-t border-[#e4ebe9] px-5 py-4 text-xs leading-6 text-[#8b9292]">
+          이 표는 자동 참고값입니다. 회사 고시 시세와 실제 거래 금액은 품목 상태, 순도, 중량 확인 후 별도로 확정됩니다.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function MarketDashboard({ data }: { data: MarketDashboardData }) {
   const goldDomestic = data.domesticPrices.find((item) => item.metal === "gold");
   const silverDomestic = data.domesticPrices.find((item) => item.metal === "silver");
@@ -446,6 +518,7 @@ export function MarketDashboard({ data }: { data: MarketDashboardData }) {
           </div>
 
           <ProviderMeta data={data} />
+          <ConversionReference data={data} />
         </div>
       </section>
 

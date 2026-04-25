@@ -508,6 +508,7 @@ async function getMetalsDevDashboard(
   return {
     spots: spotResults,
     domesticPrices,
+    krwRate,
     benchmarks: buildBenchmarks(domesticPrices, "metals-dev"),
     marketBriefs: buildMarketBriefs(
       spotResults,
@@ -577,6 +578,7 @@ async function getGoldApiDashboard(headlines: {
     })),
   );
 
+  const krwRate = Number(responses[0]?.krwPrice.exchangeRate || 0);
   const updatedAt = responses[0]?.usdPrice.updatedAt || new Date().toISOString();
   const freshness = buildFreshnessMeta(updatedAt);
   const sourceMeta = buildSourceMeta("gold-api");
@@ -584,6 +586,7 @@ async function getGoldApiDashboard(headlines: {
   return {
     spots,
     domesticPrices,
+    krwRate,
     benchmarks: buildBenchmarks(domesticPrices, "gold-api"),
     marketBriefs: buildMarketBriefs(
       spots,

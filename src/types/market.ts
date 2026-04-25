@@ -66,6 +66,7 @@ export interface MarketHeadlineItem {
 export interface MarketDashboardData {
   spots: MarketSpot[];
   domesticPrices: DomesticMarketPrice[];
+  krwRate: number;
   benchmarks: TradingBenchmark[];
   marketBriefs: MarketBriefItem[];
   externalHeadlines: MarketHeadlineItem[];

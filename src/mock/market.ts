@@ -8,6 +8,7 @@ import type {
 } from "@/types/market";
 
 const updatedAt = "2026-04-22T10:45:00+09:00";
+const krwRate = 1477.65;
 
 const labels: Record<MarketMetal, { label: string; symbol: string }> = {
   gold: { label: "국제 금시세", symbol: "Gold" },
@@ -147,6 +148,7 @@ export const mockMarketData: MarketDashboardData = {
   isStale: false,
   staleMinutes: 0,
   headlineSource: "seed",
+  krwRate,
   spots: mockSpots,
   domesticPrices: mockDomesticPrices,
   benchmarks: [

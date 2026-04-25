@@ -57,6 +57,7 @@ export default async function PricesPage() {
         lineupTitle="한국센터금거래소 시세표"
         announcedLabel={announcedAt ? formatDateTimeKorean(announcedAt) : "당일 고시 준비중"}
         announcedDateLabel={announcedAt ? formatDateDot(announcedAt) : "고시 준비중"}
+        krwRate={marketData.krwRate}
       />
 
       <section className="section-shell py-14">
