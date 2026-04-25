@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MarketDashboard } from "@/components/market/market-dashboard";
 import { PriceLineup, type PriceLineupVariant } from "@/components/market/price-lineup";
+import { TradeStandardPanel } from "@/components/trade/trade-standard-panel";
 import { getRepository } from "@/lib/data";
 import { formatDateDot, formatDateTimeKorean } from "@/lib/format";
 import { getMarketDashboardData } from "@/lib/market-data";
@@ -52,6 +53,8 @@ export async function FinalHome({
       />
 
       <MarketDashboard data={marketData} />
+
+      <TradeStandardPanel className="pt-2" />
 
       <section className="border-y border-[#dfe7e5] bg-white">
         <div className="section-shell grid gap-0 py-0 xl:grid-cols-[0.94fr_0.62fr_0.62fr]">

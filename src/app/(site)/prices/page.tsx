@@ -5,6 +5,7 @@ import { MarketDashboard } from "@/components/market/market-dashboard";
 import { PriceLineup } from "@/components/market/price-lineup";
 import { PriceHistoryList } from "@/components/prices/price-history-list";
 import { PriceTable } from "@/components/prices/price-table";
+import { TradeStandardPanel } from "@/components/trade/trade-standard-panel";
 import { getRepository } from "@/lib/data";
 import { formatDateDot, formatDateTimeKorean } from "@/lib/format";
 import { getMarketDashboardData } from "@/lib/market-data";
@@ -74,6 +75,12 @@ export default async function PricesPage() {
       </section>
 
       <MarketDashboard data={marketData} />
+
+      <TradeStandardPanel
+        className="pt-0"
+        heading="시세표를 보기 전에 구분해야 할 것"
+        description="회사 고시 시세, 자동 참고 시세, KRX 금현물 시장, 현장 최종 금액은 서로 다른 기준입니다. 같은 금값처럼 보이더라도 거래 방식과 수수료, 세금, 실물 확인 범위가 다르므로 먼저 구분해 안내합니다."
+      />
 
       <section className="section-shell pb-16">
         <PriceHistoryList history={history} />

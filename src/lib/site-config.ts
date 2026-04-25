@@ -90,6 +90,69 @@ export const visitChecklist = [
   "골드바·실버바 수급 문의는 중량과 수량을 미리 알려주시면 빠르게 안내해 드립니다.",
 ] as const;
 
+export const tradeStandardPrinciples = [
+  {
+    title: "살 때와 팔 때 기준 분리",
+    description:
+      "회사 고시 시세는 매입·판매 기준을 분리해 안내하고, 자동 참고 시세와 실제 거래 기준을 혼동하지 않도록 표시합니다.",
+  },
+  {
+    title: "고시 시각과 데이터 성격 표시",
+    description:
+      "시세는 기준 시각과 함께 확인해야 의미가 있으므로 회사 고시 시각, 자동 참고 시세, 현장 확정 기준을 함께 안내합니다.",
+  },
+  {
+    title: "현장 검수 후 최종 확정",
+    description:
+      "순도, 중량, 부속, 보증서, 파손 상태를 확인한 뒤 최종 금액을 안내하며 화면의 가격만으로 확정 거래를 약속하지 않습니다.",
+  },
+  {
+    title: "방문 전 상담 동선 확보",
+    description:
+      "고중량, 법인 보유분, 상속 정리, 골드바·실버바 수급은 방문 전 대표번호로 품목과 수량을 먼저 확인하도록 유도합니다.",
+  },
+] as const;
+
+export const krxSafetyNotes = [
+  "KRX금시장은 증권사 금현물 계좌를 통한 장내 거래이며, 민간 금거래소의 현장 매입·판매 상담과 구분됩니다.",
+  "한국센터금거래소 화면의 자동 참고 시세는 시장 흐름 확인용이며 회사 고시 시세나 현장 확정 금액을 대체하지 않습니다.",
+  "선입금, 원격 고수익 약속, 리딩방 형태의 거래 안내는 본 사이트의 방문 상담 흐름과 무관합니다.",
+] as const;
+
+export const externalReferenceLinks = [
+  {
+    label: "KRX금시장 공식 안내",
+    href: "https://open.krx.co.kr/contents/OPN/01/01050206/OPN01050206.jsp",
+  },
+  {
+    label: "금현물계좌 개설방법",
+    href: "https://open.krx.co.kr/contents/OPN/01/01050207/OPN01050207.jsp",
+  },
+] as const;
+
+export const consultationScenarios = [
+  {
+    title: "팔 금·은 제품이 있을 때",
+    description: "제품 종류, 예상 중량, 보증서·감정서 보유 여부를 알려주시면 매입 상담 준비가 빨라집니다.",
+    checklist: ["신분증", "보증서·영수증", "분리 가능한 부속"],
+  },
+  {
+    title: "골드바·실버바를 문의할 때",
+    description: "희망 중량, 수량, 방문 가능 시간을 먼저 알려주시면 수급 가능 여부를 확인해 안내합니다.",
+    checklist: ["희망 중량", "수량", "방문 예정일"],
+  },
+  {
+    title: "법인·상속 정리 상담",
+    description: "품목이 많거나 고중량이면 현장 대기 시간을 줄이기 위해 사전 문의 후 방문을 권장합니다.",
+    checklist: ["품목 목록", "예상 수량", "상담 목적"],
+  },
+  {
+    title: "시세만 먼저 확인할 때",
+    description: "회사 고시 시세와 자동 참고 시세를 구분해서 보고, 실제 거래 전에는 기준 시각을 다시 확인합니다.",
+    checklist: ["고시 시각", "살 때·팔 때 구분", "현장 확정 여부"],
+  },
+] as const;
+
 export const serviceGuides = [
   {
     title: "매입 가능 품목",

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageIntro } from "@/components/layout/page-intro";
+import { ConsultationPlanner } from "@/components/trade/consultation-planner";
 import { getRepository } from "@/lib/data";
 import { serviceCategories, serviceExamples, serviceGuides, siteConfig } from "@/lib/site-config";
 
@@ -99,6 +100,8 @@ export default async function ServicesPage() {
           })}
         </div>
       </section>
+
+      <ConsultationPlanner className="pt-0" />
 
       <section className="bg-[#fffbe8] py-14 sm:py-18">
         <div className="section-shell grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
