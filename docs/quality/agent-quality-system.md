@@ -23,6 +23,7 @@ The deeper root cause is process design: AI agents can produce plausible results
 - `npm run audit:site` checks source files, campaign assets, CTA labels, business wording, and optional rendered-route content.
 - `npm run test:site` opens the built site in Chromium and verifies mobile/desktop conversion UI, campaign image loading, service wording, route content, and horizontal overflow.
 - `npm run screenshot:site` captures local built-site screenshots into `output/screenshots` so manual inspection is not accidentally performed against a protected login page.
+- GitHub Actions `Site Quality` runs the same local quality gates on `main` pushes and pull requests without deploying to production.
 - `npm run lint`, `npm run typecheck`, `npm run build`, and `npm audit --audit-level=moderate` remain mandatory after code changes.
 - Preview deployments must be tested with `vercel curl` when deployment protection blocks normal HTTP requests.
 - Production alias changes, search indexing, real trading/payment/admin/security changes, and destructive data operations still require explicit user approval.

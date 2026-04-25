@@ -180,6 +180,7 @@ cmd /c npm.cmd audit --audit-level=moderate
 - 렌더링된 페이지까지 함께 확인하려면 로컬 서버 실행 후 PowerShell에서 `$env:SITE_AUDIT_URL="http://localhost:3000"; npm run audit:site`를 실행합니다.
 - `npm run test:site`는 빌드된 사이트를 Chromium에서 열고 모바일/데스크톱 CTA, 캠페인 이미지 로딩, 핵심 라우트, 가로 overflow를 확인합니다. 먼저 `npm run build`를 실행해야 합니다.
 - `npm run screenshot:site`는 로컬 빌드 서버를 띄워 `output/screenshots`에 모바일/데스크톱 핵심 화면을 저장합니다.
+- GitHub Actions `Site Quality`는 `main` push와 pull request에서 lint, typecheck, site audit, build, browser tests, screenshots, npm audit를 실행합니다.
 - Vercel preview는 Deployment Protection으로 일반 브라우저 요청이 로그인 화면을 볼 수 있으므로, preview 응답 검증은 `vercel curl` 또는 인증된 브라우저 세션으로 확인합니다.
 - 시각 변경 후에는 `output/screenshots/home-mobile.png`와 데스크톱 주요 라우트 스크린샷을 함께 확인합니다.
 - 반복 누락의 원인과 재발 방지 기준은 `docs/quality/agent-quality-system.md`에 정리되어 있습니다.

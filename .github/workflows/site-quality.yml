@@ -1,0 +1,57 @@
+name: Site Quality
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Site fidelity audit
+        run: npm run audit:site
+
+      - name: Build
+        run: npm run build
+
+      - name: Browser fidelity tests
+        run: npm run test:site
+
+      - name: Capture review screenshots
+        run: npm run screenshot:site
+
+      - name: Security audit
+        run: npm audit --audit-level=moderate
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-screenshots
+          path: output/screenshots
+          if-no-files-found: ignore

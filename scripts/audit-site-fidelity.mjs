@@ -130,6 +130,11 @@ expectText("docs/quality/agent-quality-system.md", [
   "Do not treat route `200` as visual parity.",
 ]);
 expectText("3-validation-check.cmd", ["npm.cmd run screenshot:site"]);
+expectText(".github/workflows/site-quality.yml", [
+  "npm run test:site",
+  "npm run screenshot:site",
+  "npm audit --audit-level=moderate",
+]);
 expectNoText("2-preview-deploy.cmd", ["--prod"]);
 expectNoText("3-validation-check.cmd", ["playwright-cli open %SITE_URL%"]);
 
