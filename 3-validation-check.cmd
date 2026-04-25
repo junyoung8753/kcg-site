@@ -10,7 +10,9 @@ echo ========================================
 echo KCG validation check
 echo - lint
 echo - typecheck
+echo - site fidelity audit
 echo - production build
+echo - npm audit
 echo - browser screenshots
 echo ========================================
 echo.
@@ -21,7 +23,13 @@ if errorlevel 1 goto fail
 call npm.cmd run typecheck
 if errorlevel 1 goto fail
 
+call npm.cmd run audit:site
+if errorlevel 1 goto fail
+
 call npm.cmd run build
+if errorlevel 1 goto fail
+
+call npm.cmd audit --audit-level=moderate
 if errorlevel 1 goto fail
 
 echo.

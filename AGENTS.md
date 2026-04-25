@@ -12,7 +12,9 @@
 - Before claiming completion after code changes, run:
   - `npm run lint`
   - `npm run typecheck`
+  - `npm run audit:site`
   - `npm run build`
   - `npm audit --audit-level=moderate`
 - For visual or route changes, also verify at least `/`, `/prices`, `/announcements`, `/services`, `/about`, `/admin/login`, and `/api/health` with browser screenshots or equivalent route checks.
+- For source-site restoration or visual parity work, explicitly verify campaign assets, mobile header CTA/menu, mobile bottom CTA, service wording, and mobile price-table readability. Use `npm run audit:site` plus at least one mobile screenshot of `/`.
 - If a deployment is needed, prefer a preview deployment first. Use production deployment or alias changes only when the user clearly asks for the live URL to change.

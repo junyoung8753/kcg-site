@@ -131,6 +131,7 @@ vercel link --yes --project kcg-confirm-preview
 vercel pull --yes
 npm run lint
 npm run typecheck
+npm run audit:site
 npm run build
 npm audit --audit-level=moderate
 ```
@@ -147,7 +148,9 @@ npm audit --audit-level=moderate
 ```bash
 cmd /c npm.cmd run lint
 cmd /c npm.cmd run typecheck
+cmd /c npm.cmd run audit:site
 cmd /c npm.cmd run build
+cmd /c npm.cmd audit --audit-level=moderate
 ```
 
 헬스 체크:
@@ -166,6 +169,12 @@ cmd /c npm.cmd run build
 - `marketIsStale`
 - `marketStaleMinutes`
 - `headlineSource`
+
+사이트 복원/시각 QA 체크:
+
+- `npm run audit:site`는 캠페인 이미지, 모바일 헤더 CTA, 모바일 하단 CTA, 서비스 문구, 시세표 핵심 문구가 코드에서 빠지지 않았는지 확인합니다.
+- 렌더링된 페이지까지 함께 확인하려면 로컬 서버 실행 후 PowerShell에서 `$env:SITE_AUDIT_URL="http://localhost:3000"; npm run audit:site`를 실행합니다.
+- 시각 변경 후에는 모바일 `/` 스크린샷과 데스크톱 주요 라우트 스크린샷을 함께 확인합니다.
 
 ## 현재 상태 메모
 

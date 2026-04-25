@@ -35,7 +35,6 @@ del /q "%LAST_URL_FILE%" 2>nul
 
 node .vercel-cli\node_modules\vercel\dist\index.js ^
   --scope %TEAM_SCOPE% ^
-  --prod ^
   --yes ^
   --name %PROJECT_NAME% ^
   --build-env KCG_FORCE_NOINDEX=1 ^
