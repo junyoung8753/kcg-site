@@ -20,11 +20,14 @@ function startServer() {
       ? ["cmd.exe", ["/d", "/s", "/c", `npm.cmd run start -- -p ${port}`]]
       : ["npm", ["run", "start", "--", "-p", port]];
 
-  return spawn(command[0], command[1], {
+  const server = spawn(command[0], command[1], {
     cwd: rootDir,
     env: { ...process.env, PORT: port },
-    stdio: ["ignore", "pipe", "pipe"],
+    detached: process.platform !== "win32",
+    stdio: "ignore",
   });
+  server.unref();
+  return server;
 }
 
 function stopServer(server) {
@@ -33,7 +36,11 @@ function stopServer(server) {
     spawnSync("taskkill", ["/pid", String(server.pid), "/T", "/F"], { stdio: "ignore" });
     return;
   }
-  server.kill("SIGTERM");
+  try {
+    process.kill(-server.pid, "SIGTERM");
+  } catch {
+    server.kill("SIGTERM");
+  }
 }
 
 async function waitForServer(url, timeoutMs = 120_000) {
