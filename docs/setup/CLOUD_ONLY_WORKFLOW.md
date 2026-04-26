@@ -36,7 +36,7 @@ For source-parity work against `https://kcg-confirm-preview.vercel.app`, the age
 
 ```text
 Network: On, limited
-Allowed domains: kcg-confirm-preview.vercel.app, vercel.app, registry.npmjs.org, npmjs.org, npmjs.com, cdn.playwright.dev, playwright.download.prss.microsoft.com
+Allowed domains: kcg-confirm-preview.vercel.app, vercel.app, registry.npmjs.org, npmjs.org, npmjs.com, cdn.playwright.dev, playwright.download.prss.microsoft.com, fonts.googleapis.com, fonts.gstatic.com
 Allowed methods: GET, HEAD, OPTIONS
 ```
 
