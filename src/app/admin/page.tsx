@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getRepository } from "@/lib/data";
+import { getLaunchReadiness } from "@/lib/launch-readiness";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 
 export default async function AdminPage() {
@@ -9,12 +10,14 @@ export default async function AdminPage() {
     repository.getAnnouncements({ includeDrafts: true }),
     repository.getProducts({ includeHidden: true }),
   ]);
+  const launchReadiness = getLaunchReadiness();
 
   const stats = [
     { label: "운영 시세 항목", value: `${prices.length}개` },
     { label: "공지 레코드", value: `${announcements.length}건` },
     { label: "상품 카탈로그", value: `${products.length}건` },
     { label: "저장 방식", value: isSupabaseConfigured() ? "Supabase" : "Demo" },
+    { label: "오픈 점수", value: `${launchReadiness.score}점` },
   ];
 
   return (
@@ -31,7 +34,7 @@ export default async function AdminPage() {
         </p>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         {stats.map((item) => (
           <div
             key={item.label}
@@ -43,7 +46,7 @@ export default async function AdminPage() {
         ))}
       </section>
 
-      <section className="grid gap-5 lg:grid-cols-3">
+      <section className="grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
         {[
           {
             href: "/admin/prices",
@@ -59,6 +62,11 @@ export default async function AdminPage() {
             href: "/admin/products",
             title: "상품 관리",
             body: "상담형 상품 카탈로그의 사진, 가격 문구, 공개 상태를 관리합니다.",
+          },
+          {
+            href: "/admin/launch",
+            title: "오픈 점검",
+            body: "도메인, 법적 표시, 관리자 인증, 검색 노출 차단 항목을 확인합니다.",
           },
         ].map((item) => (
           <Link

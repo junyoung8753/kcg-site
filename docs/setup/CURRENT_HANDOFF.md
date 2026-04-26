@@ -37,12 +37,14 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 - The old source comparison script has been removed from the default workflow because the repo is now the accepted baseline.
 - `/products` is now the public consultation catalog surface. It is intentionally not a checkout/cart mall: price wording, product photos, display order, visibility, and consultation notes can be managed through the product model/admin flow, while public copy keeps phone/visit consultation as the conversion path.
 - Product data now has a shared repo contract across mock data, Supabase schema/seed, public pages, and admin editing. Keep product statuses limited to `active`, `inquiry_required`, and `hidden` unless a real operational need appears.
-- Public business-registration wording must not show fake or placeholder numbers. Until the verified registration document is provided, the site says the registration information will be reflected after confirmation.
+- Public business-registration wording may show the temporary placeholder `000-00-00000` only when it is explicitly labeled as temporary and paired with an "open before replacement" warning. It must never be presented as confirmed official information.
+- `/admin/launch` is the launch-readiness dashboard. It checks legal placeholders, domain, search exposure, admin auth, storage, and launch approval status. Keep this route updated when adding launch-critical behavior.
+- Search exposure must use `canExposeToSearch()` rather than raw production/noindex state, so legal placeholders and non-final domains keep robots/sitemap blocked.
 - Keep search blocking/noindex until public launch approval.
 
 ## Latest Local Verification
 
-2026-04-27 KST after product catalog/admin and launch-readiness updates:
+2026-04-27 KST after temporary legal-info placeholders, launch-readiness dashboard, and search-exposure guardrails:
 
 ```powershell
 npm run lint
@@ -55,7 +57,7 @@ npm run screenshot:site
 npm audit --audit-level=moderate
 ```
 
-All commands passed locally. Rendered route audit passed 221 checks with 0 skipped, Playwright passed 6 tests, and screenshots were saved under `output/screenshots`.
+All commands passed locally. Rendered route audit passed 260 checks with 0 skipped, Playwright passed 6 tests, and screenshots include `about-mobile.png` and `admin-launch-desktop.png` under `output/screenshots`.
 
 ## Codex Cloud Status
 

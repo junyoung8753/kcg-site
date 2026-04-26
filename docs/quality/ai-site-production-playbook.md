@@ -75,7 +75,7 @@ KCG constraints:
 - Korean copy by default.
 - `/` is the single public site home; do not restore option routes unless explicitly requested.
 - Company posted prices are primary; automatic market references are secondary.
-- Do not invent official prices, business registration, legal claims, reviews, partnerships, KRX affiliation, live execution, payment behavior, or admin write behavior.
+- Do not invent official prices, confirmed business registration, legal claims, reviews, partnerships, KRX affiliation, live execution, payment behavior, or admin write behavior. Placeholder legal values may exist only when labeled as temporary and blocked by launch-readiness checks.
 - Do not scrape, republish, or chart third-party data unless the source terms allow it; show source attribution for every API, RSS-style feed, chart, calculator, or external headline block.
 - Keep noindex/robots preview behavior until public launch approval.
 - Do not deploy, promote aliases, or change production settings unless explicitly requested.

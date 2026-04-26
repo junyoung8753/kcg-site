@@ -31,7 +31,7 @@ export const siteConfig = {
     isLegalInfoConfirmed: false,
     legalBusinessName: "(주)한국센터금거래소",
     representative: "홍연호",
-    businessRegistrationNumber: "확인 중",
+    businessRegistrationNumber: "000-00-00000",
     registeredAddress: "서울 종로구 돈화문로6가길 12 골든타워 303호",
     businessType: "귀금속 도소매",
     businessItems: "금제품, 귀금속, 골드바, 실버바, 주얼리 상담",
@@ -40,10 +40,9 @@ export const siteConfig = {
     transactionNotice:
       "실제 거래 금액은 당일 고시 시세, 순도, 중량, 부속 및 실물 상태 확인 결과를 반영해 현장에서 최종 안내합니다.",
     legalNotice:
-      "사업자등록번호는 정식 등록증 확인 후 반영 예정이며, 현재는 대표자명과 운영 정보 중심으로 안내합니다.",
+      "사업자등록번호는 오픈 전 정식 등록증 기준으로 교체해야 하는 임시값입니다. 실제 공개 전에는 launch 점검에서 차단됩니다.",
   } satisfies CompanyProfile,
   adminDemoPassword: "gold-demo-2026",
-  adminPreviewPassword: "0000",
 };
 
 export const homeHighlights = [

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans_KR, Inter } from "next/font/google";
 import "./globals.css";
-import { isSearchIndexingEnabled } from "@/lib/runtime-env";
+import { canExposeToSearch } from "@/lib/public-launch";
 import { siteConfig } from "@/lib/site-config";
 
 const inter = Inter({
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   applicationName: siteConfig.brandName,
-  robots: isSearchIndexingEnabled()
+  robots: canExposeToSearch()
     ? {
         index: true,
         follow: true,

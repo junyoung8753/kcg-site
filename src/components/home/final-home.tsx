@@ -4,6 +4,7 @@ import { MarketDashboard } from "@/components/market/market-dashboard";
 import { PriceLineup } from "@/components/market/price-lineup";
 import { getRepository } from "@/lib/data";
 import { formatDateDot, formatDateTimeKorean } from "@/lib/format";
+import { getBusinessInfoLine } from "@/lib/legal-info";
 import { getMarketDashboardData } from "@/lib/market-data";
 import { getProductStatusLabel } from "@/lib/product-presenter";
 import {
@@ -33,9 +34,7 @@ export async function FinalHome() {
   ]);
 
   const announcedAt = prices[0]?.announcedAt;
-  const businessInfoLine = siteConfig.company.isLegalInfoConfirmed
-    ? `대표 ${siteConfig.company.representative} · 사업자등록번호 ${siteConfig.company.businessRegistrationNumber}`
-    : `대표 ${siteConfig.company.representative} · 사업자 등록정보 확인 후 반영 예정`;
+  const businessInfoLine = getBusinessInfoLine();
 
   return (
     <>

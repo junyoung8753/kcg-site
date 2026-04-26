@@ -1,5 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import {
+  getBusinessRegistrationDisplay,
+  getLegalInfoHeading,
+  getLegalPlaceholderNotice,
+} from "@/lib/legal-info";
 import { siteConfig, siteNavigation } from "@/lib/site-config";
 
 export function SiteFooter() {
@@ -62,13 +67,13 @@ export function SiteFooter() {
 
         <div className="min-w-0 space-y-2 text-sm leading-7 text-[#687171]">
           <h3 className="text-sm font-semibold tracking-[0.18em] text-[#15191b]">
-            {siteConfig.company.isLegalInfoConfirmed ? "사업자 정보" : "브랜드 및 운영 정보"}
+            {getLegalInfoHeading()}
           </h3>
           {siteConfig.company.isLegalInfoConfirmed ? (
             <>
               <p>상호: {siteConfig.company.legalBusinessName || siteConfig.brandName}</p>
               <p>대표: {siteConfig.company.representative}</p>
-              <p>사업자등록번호: {siteConfig.company.businessRegistrationNumber}</p>
+              <p>{getBusinessRegistrationDisplay()}</p>
               <p>사업장 주소: {siteConfig.company.registeredAddress}</p>
               <p>업태: {siteConfig.company.businessType}</p>
               <p>종목: {siteConfig.company.businessItems}</p>
@@ -78,11 +83,13 @@ export function SiteFooter() {
             <>
               <p>브랜드명: {siteConfig.brandName}</p>
               <p>대표: {siteConfig.company.representative}</p>
-              <p>사업자 등록정보: 정식 등록증 확인 후 반영 예정</p>
+              <p>{getBusinessRegistrationDisplay()}</p>
               <p>운영시간: {siteConfig.contact.businessHours}</p>
               <p>업태 / 종목: {siteConfig.company.businessType} / {siteConfig.company.businessItems}</p>
               <p>개인정보관리책임: {siteConfig.company.privacyOfficer}</p>
-              <p className="pt-2 text-[#8a9292]">{siteConfig.company.legalNotice}</p>
+              <p className="pt-2 text-[#8a9292]">
+                {getLegalPlaceholderNotice() || siteConfig.company.legalNotice}
+              </p>
             </>
           )}
         </div>

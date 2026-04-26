@@ -1,16 +1,16 @@
 import { timingSafeEqual } from "node:crypto";
-import { isConfirmPreviewMode, isPreviewDeployment } from "@/lib/runtime-env";
+import { isPreviewDeployment, isProductionDeployment } from "@/lib/runtime-env";
 import { siteConfig } from "@/lib/site-config";
 
-export type AdminPasswordMode = "demo" | "preview-default" | "env";
+export type AdminPasswordMode = "demo" | "missing-env" | "env";
 
 export function getAdminPassword() {
   if (process.env.ADMIN_PASSWORD) {
     return process.env.ADMIN_PASSWORD;
   }
 
-  if (isPreviewDeployment()) {
-    return siteConfig.adminPreviewPassword;
+  if (isPreviewDeployment() || isProductionDeployment()) {
+    return "__KCG_ADMIN_PASSWORD_NOT_CONFIGURED__";
   }
 
   return siteConfig.adminDemoPassword;
@@ -18,18 +18,11 @@ export function getAdminPassword() {
 
 export function getAdminPasswordMode(): AdminPasswordMode {
   if (process.env.ADMIN_PASSWORD) {
-    if (
-      isConfirmPreviewMode() &&
-      process.env.ADMIN_PASSWORD === siteConfig.adminPreviewPassword
-    ) {
-      return "preview-default";
-    }
-
     return "env";
   }
 
-  if (isPreviewDeployment()) {
-    return "preview-default";
+  if (isPreviewDeployment() || isProductionDeployment()) {
+    return "missing-env";
   }
 
   return "demo";

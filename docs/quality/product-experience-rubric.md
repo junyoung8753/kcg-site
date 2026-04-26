@@ -62,7 +62,7 @@ The design should be restrained, dense enough for price scanning, and visibly ti
 1. Company posted price table: Must show the posted date/time, buy/sell distinction, important item names, and caution that final transaction amount is confirmed after on-site checks.
 2. Consultation path: Phone and visit actions should be visible near the price table and repeated after high-intent sections.
 3. Service clarity: Services should explain what KCG can consult on and what information the customer should prepare.
-4. Safety and trust: 가격·거래·법적 사실은 검증 없이 만들지 않는다. Keep business registration details in a pending/verification-safe state until the user provides verified official data.
+4. Safety and trust: 가격·거래·법적 사실은 검증 없이 만들지 않는다. Temporary legal placeholders are allowed only when visibly labeled as temporary and blocked by launch-readiness checks before public search exposure.
 5. Market context hierarchy: Automatic market data, conversion estimates, and news must not override or visually compete with the company posted prices.
 6. Single-site discipline: The public candidate is one site, one home, one set of production copy. Old option pages, temporary comparison hubs, and source-recovery scripts should stay removed unless junyoung explicitly requests a new experiment.
 7. Source and licensing safety: External APIs, RSS-style feeds, charts, calculators, and competitor references must follow `docs/quality/data-source-compliance.md`; show source attribution and never republish unlicensed third-party article bodies, images, charts, or proprietary price tables.
@@ -82,7 +82,7 @@ Do:
 
 Do not:
 
-- Invent official prices, discounts, certifications, reviews, partnerships, KRX affiliation, legal registrations, live execution, payment behavior, or investment outcomes.
+- Invent official prices, discounts, certifications, reviews, partnerships, KRX affiliation, confirmed legal registrations, live execution, payment behavior, or investment outcomes.
 - Let external APIs overwrite company posted prices.
 - Describe automatic market data as the transaction price.
 - Scrape or republish third-party news, images, charts, or price tables without checking terms and attribution.

@@ -183,9 +183,10 @@ test("critical routes respond with expected content", async ({ page }) => {
     { path: "/products/investment-gold-bar-consulting", text: "투자용 골드바 상담" },
     { path: "/announcements", text: "시세 운영 및 방문 안내 공지" },
     { path: "/services", text: "고금·주얼리" },
-    { path: "/about", text: "전화 연결" },
+    { path: "/about", text: "사업자등록번호(임시)" },
     { path: "/admin/login", text: "관리자 로그인" },
-    { path: "/api/health", text: '"ok":true' },
+    { path: "/api/health", text: "launchReadiness" },
+    { path: "/robots.txt", text: "Disallow: /" },
   ];
 
   for (const route of routes) {

@@ -1,19 +1,33 @@
 import { NextResponse } from "next/server";
 import { getAdminPasswordMode } from "@/lib/auth/password";
+import { getLaunchReadiness } from "@/lib/launch-readiness";
 import { getMarketDashboardData } from "@/lib/market-data";
-import { getDeploymentStage, isSearchIndexingEnabled } from "@/lib/runtime-env";
+import { getSearchExposureStatus } from "@/lib/public-launch";
+import { getDeploymentStage } from "@/lib/runtime-env";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 
 export async function GET() {
   const passwordMode = getAdminPasswordMode();
   const marketData = await getMarketDashboardData();
+  const launchReadiness = getLaunchReadiness();
 
   return NextResponse.json({
     ok: true,
     deployment: getDeploymentStage(),
     mode: isSupabaseConfigured() ? "supabase" : "mock",
-    adminAuth: passwordMode === "demo" ? "demo-password" : "env-password",
-    indexing: isSearchIndexingEnabled() ? "enabled" : "disabled",
+    adminAuth:
+      passwordMode === "demo"
+        ? "demo-password"
+        : passwordMode === "missing-env"
+          ? "missing-env-password"
+          : "env-password",
+    indexing: getSearchExposureStatus(),
+    launchReadiness: {
+      status: launchReadiness.status,
+      score: launchReadiness.score,
+      blockers: launchReadiness.blockers,
+      warnings: launchReadiness.warnings,
+    },
     marketProvider: marketData.source,
     marketSourceName: marketData.sourceName,
     marketSourceUrl: marketData.sourceUrl,

@@ -197,6 +197,37 @@ expectText("src/components/layout/site-header.tsx", [
 ]);
 
 expectText("src/components/layout/mobile-contact-bar.tsx", ["전화 상담", "시세", "위치"]);
+expectText("src/lib/legal-info.ts", [
+  "TEMP_BUSINESS_REGISTRATION_NUMBER",
+  "000-00-00000",
+  "오픈 전 교체 필요",
+]);
+expectText("src/lib/public-launch.ts", ["canExposeToSearch", "getPublicLaunchContentBlockers"]);
+expectText("src/lib/launch-readiness.ts", [
+  "사업자·법적 표시",
+  "대표 도메인",
+  "관리자 인증",
+  "운영 데이터 저장소",
+]);
+expectText("src/app/robots.ts", ["canExposeToSearch"]);
+expectText("src/app/sitemap.ts", ["canExposeToSearch"]);
+expectText("src/app/layout.tsx", ["canExposeToSearch"]);
+expectText("src/app/api/health/route.ts", ["launchReadiness", "getSearchExposureStatus"]);
+expectText("src/lib/auth/password.ts", ["missing-env", "__KCG_ADMIN_PASSWORD_NOT_CONFIGURED__"]);
+expectNoText("src/lib/auth/password.ts", ["adminPreviewPassword", "0000"]);
+expectNoText("src/lib/site-config.ts", ["adminPreviewPassword"]);
+expectText("src/app/admin/login/page.tsx", ["missing-env", "ADMIN_PASSWORD"]);
+expectNoText("src/app/admin/login/page.tsx", ["preview-default", "adminPreviewPassword"]);
+expectText("src/app/admin/launch/page.tsx", ["오픈 전 점검판", "임시값은 화면에 보이더라도"]);
+expectText("src/app/admin/layout.tsx", ["/admin/launch", "오픈 점검"]);
+expectText("src/components/layout/site-footer.tsx", [
+  "getBusinessRegistrationDisplay",
+  "getLegalPlaceholderNotice",
+]);
+expectText("src/app/(site)/about/page.tsx", [
+  "getBusinessRegistrationDisplay",
+  "getLegalPlaceholderNotice",
+]);
 
 expectText("src/app/(site)/services/page.tsx", [
   "PurchaseGuide",
@@ -219,6 +250,8 @@ expectText("src/app/(site)/products/[slug]/page.tsx", [
 
 expectText("src/lib/site-config.ts", [
   "/products",
+  "000-00-00000",
+  "임시값",
   "상품 문의",
   "고금·예물 정리 상담",
   "18K·14K 매입 기준 문의",
@@ -360,8 +393,8 @@ if (siteUrl) {
     "시세를 볼 때 먼저 확인할 기준",
     "타사 내부 API·가격표·뉴스 본문은 고객 화면에 직접 사용하지 않습니다.",
   ]);
-  await expectUrl("/about", ["전화 연결", "네이버 지도", "카카오맵"]);
-  await expectUrl("/api/health", ['"ok":true', "marketSourceUrl", "headlineAttribution"]);
+  await expectUrl("/about", ["전화 연결", "네이버 지도", "카카오맵", "사업자등록번호(임시)"]);
+  await expectUrl("/api/health", ['"ok":true', "marketSourceUrl", "headlineAttribution", "launchReadiness"]);
   await expectUrlStatus("/option-1", 404);
   await expectUrlStatus("/option-2", 404);
 } else {

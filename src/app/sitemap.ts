@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next";
-import { isSearchIndexingEnabled } from "@/lib/runtime-env";
+import { canExposeToSearch } from "@/lib/public-launch";
 import { siteConfig } from "@/lib/site-config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  if (!isSearchIndexingEnabled()) {
+  if (!canExposeToSearch()) {
     return [];
   }
 

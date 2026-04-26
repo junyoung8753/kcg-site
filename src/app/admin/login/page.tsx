@@ -60,8 +60,8 @@ export default async function AdminLoginPage({
           <p>브랜드: {siteConfig.brandName}</p>
           {passwordMode === "demo" ? (
             <p>기본 관리자 비밀번호: {siteConfig.adminDemoPassword}</p>
-          ) : passwordMode === "preview-default" ? (
-            <p>컨펌용 프리뷰 비밀번호: {siteConfig.adminPreviewPassword}</p>
+          ) : passwordMode === "missing-env" ? (
+            <p>배포 환경의 `ADMIN_PASSWORD`가 없어 로그인할 수 없습니다.</p>
           ) : (
             <p>환경변수 `ADMIN_PASSWORD` 로 보호 중입니다.</p>
           )}

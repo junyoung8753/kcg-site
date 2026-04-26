@@ -1,6 +1,11 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { PageIntro } from "@/components/layout/page-intro";
+import {
+  getBusinessRegistrationDisplay,
+  getLegalInfoHeading,
+  getLegalPlaceholderNotice,
+} from "@/lib/legal-info";
 import { siteConfig, tradeNotes, tradeProcess, visitChecklist } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -121,14 +126,14 @@ export default function AboutPage() {
           </div>
           <div>
             <p className="text-xs font-semibold tracking-[0.28em] text-[var(--color-gold)]">
-              {siteConfig.company.isLegalInfoConfirmed ? "사업자 정보" : "브랜드 및 운영 정보"}
+              {getLegalInfoHeading()}
             </p>
             <div className="mt-5 space-y-3 text-base leading-8 text-[var(--color-muted)]">
               {siteConfig.company.isLegalInfoConfirmed ? (
                 <>
                   <p>상호: {siteConfig.company.legalBusinessName || siteConfig.brandName}</p>
                   <p>대표: {siteConfig.company.representative}</p>
-                  <p>사업자등록번호: {siteConfig.company.businessRegistrationNumber}</p>
+                  <p>{getBusinessRegistrationDisplay()}</p>
                   <p>사업장 주소: {siteConfig.company.registeredAddress}</p>
                   <p>업태 / 종목: {siteConfig.company.businessType} / {siteConfig.company.businessItems}</p>
                   <p>개인정보관리책임: {siteConfig.company.privacyOfficer}</p>
@@ -137,12 +142,14 @@ export default function AboutPage() {
                 <>
                   <p>브랜드명: {siteConfig.brandName}</p>
                   <p>대표: {siteConfig.company.representative}</p>
-                  <p>사업자 등록정보: 정식 등록증 확인 후 반영 예정</p>
+                  <p>{getBusinessRegistrationDisplay()}</p>
                   <p>방문 상담 위치: {siteConfig.contact.address}</p>
                   <p>운영시간: {siteConfig.contact.businessHours}</p>
                   <p>업태 / 종목: {siteConfig.company.businessType} / {siteConfig.company.businessItems}</p>
                   <p>개인정보관리책임: {siteConfig.company.privacyOfficer}</p>
-                  <p className="pt-2 text-sm leading-7">{siteConfig.company.legalNotice}</p>
+                  <p className="pt-2 text-sm leading-7">
+                    {getLegalPlaceholderNotice() || siteConfig.company.legalNotice}
+                  </p>
                 </>
               )}
             </div>

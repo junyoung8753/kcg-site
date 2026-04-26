@@ -9,6 +9,7 @@ const navigation = [
   { href: "/admin/prices", label: "시세 관리" },
   { href: "/admin/announcements", label: "공지 관리" },
   { href: "/admin/products", label: "상품 관리" },
+  { href: "/admin/launch", label: "오픈 점검" },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -46,8 +47,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <span className="font-semibold text-white">
               {passwordMode === "demo"
                 ? "기본 관리자 비밀번호 사용 중"
-                : passwordMode === "preview-default"
-                  ? "컨펌용 프리뷰 비밀번호 사용 중"
+                : passwordMode === "missing-env"
+                  ? "배포 비밀번호 미설정"
                   : "환경변수 비밀번호 사용 중"}
             </span>
           </div>

@@ -90,6 +90,7 @@ try {
   await capture(page, "/prices", { width: 390, height: 1800 }, "prices-mobile.png", "품목별 회사 고시 시세 상세");
   await capture(page, "/products", { width: 390, height: 1800 }, "products-mobile.png", "골드바·실버바와 귀금속 상담 카탈로그");
   await capture(page, "/services", { width: 390, height: 1800 }, "services-mobile.png", "취급 품목과 상담 범위 안내");
+  await capture(page, "/about", { width: 390, height: 1800 }, "about-mobile.png", "사업자등록번호(임시)");
 
   console.log(`Screenshots saved in ${screenshotDir}`);
 } finally {
