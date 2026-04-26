@@ -44,7 +44,9 @@ Keep network off for tasks that only inspect or edit local repo files. Enable br
 
 ## Model, Speed, And Quality
 
-For Cloud tasks, do not assume the local app's model selector or `config.toml` model setting controls the cloud model. If a cloud model selector is visible, choose the strongest available model for KCG work. If no selector is visible, rely on the current Codex Cloud default and enforce quality through repo context, tests, parity scripts, screenshots, and review.
+For Cloud tasks, do not assume the local app's model selector or `config.toml` model setting controls the cloud model. Current Codex docs say the default model for Cloud tasks cannot be changed by the user. If a cloud model selector is visible, choose the strongest available model for KCG work. If no selector is visible, rely on the current Codex Cloud default and do not claim it is definitely a specific local model or reasoning level unless the Cloud task UI explicitly shows that.
+
+Local Codex settings on junyoung's PC may use `gpt-5.5`, `xhigh` reasoning, and high verbosity, but those are local app/CLI settings. Treat Cloud quality as something enforced through repo context, task instructions, tests, parity scripts, screenshots, and review rather than through a guaranteed model/effort override.
 
 Do not use a fast or quick mode for KCG visual parity, trading/pricing language, admin/auth, deployment, or source restoration tasks unless junyoung explicitly asks for a quick draft. Speed is secondary to correctness.
 
