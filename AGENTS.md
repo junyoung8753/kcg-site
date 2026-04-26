@@ -3,6 +3,8 @@
 - This repository is the working source for `https://kcg-confirm-preview.vercel.app/`.
 - Vercel project: `kcg-confirm-preview`.
 - GitHub repo: `junyoung8753/kcg-site`.
+- Treat short Korean continuation requests such as "kcg사이트 만들던거 이어나갈수있게 준비해", "KCG 사이트 이어가자", "금거래소 사이트 이어가자", or "작업 이어가자" as a request to continue this KCG site from the current handoff. Do not make junyoung paste a long bootstrap prompt.
+- For those short continuation requests, immediately read `docs/setup/CLOUD_ONLY_WORKFLOW.md` and `docs/setup/CURRENT_HANDOFF.md`, then prepare the task using the source-of-truth status below. If the stable URL is the reference, run `npm run build` and `npm run compare:source` before deciding the next code changes.
 - Before continuing KCG work in a new chat, read `docs/setup/CURRENT_HANDOFF.md` for the latest source-of-truth status and next action.
 - Prefer the cloud-only flow in `docs/setup/CLOUD_ONLY_WORKFLOW.md` when the user wants to avoid computer-specific setup.
 - For local, cloud, or cross-computer continuation, follow `docs/setup/continue-anywhere.md` and use `scripts/check-continuation.ps1` for repeatable setup checks.

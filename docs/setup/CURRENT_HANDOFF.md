@@ -55,7 +55,13 @@ Junyoung's preferred workflow is cloud-only when possible. Use `docs/setup/CLOUD
 
 ## New Chat Prompt
 
-When starting a new project chat, the user can paste this:
+When starting a new project chat in this repo, a short prompt is enough:
+
+```text
+kcg사이트 만들던거 이어나갈수있게 준비해
+```
+
+Agents must treat that short prompt as equivalent to this fuller instruction:
 
 ```text
 KCG 사이트 작업 이어가자. 이 repo의 AGENTS.md와 docs/setup/CURRENT_HANDOFF.md를 먼저 읽고, https://kcg-confirm-preview.vercel.app 전체 사이트를 원본 기준으로 현재 main과 compare:source 결과를 확인한 뒤, source parity 복구부터 진행해줘. 안정 URL alias 변경이나 production 배포는 내가 명확히 승인하기 전에는 하지 마.

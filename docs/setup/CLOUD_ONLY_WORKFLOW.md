@@ -73,13 +73,13 @@ The agent may prepare deployment commands, but production deployment, stable URL
    Branch: main
    ```
 
-3. Paste this:
+3. Paste a short continuation request:
 
    ```text
-   KCG 사이트 작업 이어가자. AGENTS.md와 docs/setup/CURRENT_HANDOFF.md를 먼저 읽어라. 현재 기준 원본은 https://kcg-confirm-preview.vercel.app 전체 사이트다. npm run build 후 npm run compare:source로 현재 main과 원본 URL 차이를 확인하고, source parity 복구부터 진행해라. 안정 URL alias 변경이나 production 배포는 사용자 명시 승인 전에는 하지 마라.
+   kcg사이트 만들던거 이어나갈수있게 준비해
    ```
 
-That is the default workflow. No PowerShell is needed for cloud-only work.
+That is the default workflow. The repo `AGENTS.md` expands this short request into the full continuation procedure. No PowerShell is needed for cloud-only work.
 
 If the task needs to compare against the stable URL and cloud internet is off, ask junyoung to enable limited cloud internet for the allowed domains above, then retry. Do not replace the stable URL or use temporary `_vercel_jwt` / `_vercel_jwe` URLs as the source of truth.
 
