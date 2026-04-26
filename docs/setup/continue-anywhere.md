@@ -2,6 +2,8 @@
 
 This repo is the source of truth for the KCG site. Chat threads are useful context, but code continuity across computers must come from GitHub, Vercel, and repeatable setup commands.
 
+For the latest short handoff context, read `docs/setup/CURRENT_HANDOFF.md` first.
+
 ## What Syncs
 
 - Code, docs, tests, public assets, and project rules sync through GitHub: `junyoung8753/kcg-site`.
