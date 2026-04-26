@@ -168,10 +168,10 @@ Cloud environment target:
 
 - Repository: `junyoung8753/kcg-site`
 - Branch: usually `main` for inspection, a feature branch for implementation
-- Runtime: Node.js `24`, matching GitHub Actions and Vercel
-- Setup script: `npm ci`
+- Runtime: Node.js `22` unless Codex Cloud later exposes a higher supported version
+- Setup script: `npm ci` followed by `npx playwright install --with-deps chromium`
 - Maintenance script: `npm ci`
-- Network: off by default; enable limited internet only for tasks that need official docs, source-site inspection, or external API checks
+- Network: on with the Common dependencies preset plus the KCG source-site, Vercel, Google Fonts, npm, and Playwright domains for source-parity work
 - Secrets: configure in Codex Cloud settings, not in chat and not in git
 
 Typical cloud task flow:
@@ -183,6 +183,12 @@ Typical cloud task flow:
 5. If you later use a local computer, run `git pull`; otherwise keep working in Cloud.
 
 The Cloud environment must be checked after product updates because runtime versions, setup scripts, and network controls are per-environment settings.
+
+If `npm run compare:source` or `npm run test:site` fails in Cloud with missing Linux browser libraries such as `libatk-1.0.so.0`, the fix is Cloud dependency setup, not source-code simplification:
+
+```bash
+npx playwright install --with-deps chromium
+```
 
 ## Vercel Flow
 

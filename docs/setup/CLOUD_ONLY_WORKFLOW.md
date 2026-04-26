@@ -27,20 +27,26 @@ Recommended Codex Cloud environment for ordinary KCG work:
 ```text
 Repository: junyoung8753/kcg-site
 Branch: main
-Node.js: 24
-Setup script: npm ci && npx playwright install chromium
+Node.js: 22
+Setup script:
+  npm ci
+  npx playwright install --with-deps chromium
 Maintenance script: npm ci
 ```
 
-For source-parity work against `https://kcg-confirm-preview.vercel.app`, the agent phase needs internet access. Prefer limited access. If the UI offers presets, use **Common dependencies** plus the source-site domains. If entering domains manually, include:
+Node 22 is the current highest runtime visible in junyoung's Codex Cloud environment as of 2026-04-26 KST, and `--with-deps` is required so Playwright can launch Chromium in the Linux cloud container. A bare `npx playwright install chromium` may download the browser but still fail with missing shared libraries such as `libatk-1.0.so.0`.
+
+For source-parity work against `https://kcg-confirm-preview.vercel.app`, the agent phase needs internet access. Use **Common dependencies** plus the source-site domains. If entering domains manually, include:
 
 ```text
 Network: On, limited
 Allowed domains: kcg-confirm-preview.vercel.app, vercel.app, registry.npmjs.org, npmjs.org, npmjs.com, cdn.playwright.dev, playwright.download.prss.microsoft.com, fonts.googleapis.com, fonts.gstatic.com
-Allowed methods: GET, HEAD, OPTIONS
+Allowed methods: All methods
 ```
 
-Keep network off for tasks that only inspect or edit local repo files. Enable broader internet only when the task explicitly needs official docs, competitor/reference-site research, package registry checks, or external service verification. If browser installation, Google Fonts, or npm audit fails because Cloud network is blocked, do not change site design or source-parity code to hide the environment issue.
+All methods is intentional for now because install, audit, Playwright, and package tooling can use more than simple `GET`/`HEAD` checks. If the project later contains real customer data, payment flows, admin secrets, or production write actions, narrow this again before those tasks.
+
+Keep network off only for tasks that strictly inspect or edit local repo files without installs, audits, source-site comparison, official docs, reference-site research, or external service verification. If browser installation, Google Fonts, or npm audit fails because Cloud network is blocked, do not change site design or source-parity code to hide the environment issue.
 
 ## Model, Speed, And Quality
 

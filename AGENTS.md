@@ -8,6 +8,7 @@
 - Before continuing KCG work in a new chat, read `docs/setup/CURRENT_HANDOFF.md` for the latest source-of-truth status and next action.
 - Prefer the cloud-only flow in `docs/setup/CLOUD_ONLY_WORKFLOW.md` when the user wants to avoid computer-specific setup.
 - For local, cloud, or cross-computer continuation, follow `docs/setup/continue-anywhere.md` and use `scripts/check-continuation.ps1` for repeatable setup checks.
+- For Codex Cloud source-parity or Playwright work, ensure the environment setup has run `npx playwright install --with-deps chromium`. A missing Linux library error such as `libatk-1.0.so.0` is an environment/setup issue, not a reason to remove fonts, images, routes, or visual parity logic.
 - Use Korean UI/copy by default. Preserve exact business facts unless the user provides updated source documents.
 - Treat prices, trading language, legal business information, admin authentication, and production deployment as high-risk. Do not invent official prices, business registration numbers, compliance claims, or live trading/payment behavior.
 - Keep the company posted price table separate from automatic market-reference data. External APIs must not overwrite company prices.

@@ -24,6 +24,26 @@ Junyoung's preferred workflow is cloud-only when possible. Use `docs/setup/CLOUD
 - `npm run compare:source` detects the current difference across text, H1, image list, and link list.
 - Do not change the stable Vercel alias or promote a newer preview until either source parity is restored and verified, or the user explicitly accepts current `main` as the improved baseline.
 
+## Codex Cloud Status
+
+- Codex Cloud environment: `junyoung8753/kcg-site`.
+- Current confirmed runtime: Node.js 22 in Cloud. Do not assume Node 24 unless the Cloud UI explicitly exposes it.
+- Agent internet access is on with the Common dependencies preset plus the KCG source-site, Vercel, Google Fonts, npm, and Playwright domains.
+- Setup script is:
+
+  ```bash
+  npm ci
+  npx playwright install --with-deps chromium
+  ```
+
+- Maintenance script is:
+
+  ```bash
+  npm ci
+  ```
+
+- If a future Cloud task fails with missing Playwright Linux libraries such as `libatk-1.0.so.0`, fix the Cloud setup or run `npx playwright install --with-deps chromium`; do not remove fonts, images, routes, or source-parity code to hide the environment problem.
+
 ## Next Recommended Work
 
 1. Restore source parity against `https://kcg-confirm-preview.vercel.app` first, unless the user explicitly chooses current `main` as the new baseline.
@@ -32,6 +52,12 @@ Junyoung's preferred workflow is cloud-only when possible. Use `docs/setup/CLOUD
    ```powershell
    npm run build
    npm run compare:source
+   ```
+
+   In Codex Cloud, if Playwright was not installed by the environment setup, run this once before the comparison:
+
+   ```bash
+   npx playwright install --with-deps chromium
    ```
 
 3. Inspect `output/source-parity/parity-report.json` and screenshots under `output/source-parity`.
