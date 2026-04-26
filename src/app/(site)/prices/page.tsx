@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PurchaseGuide } from "@/components/home/purchase-guide";
 import { PageIntro } from "@/components/layout/page-intro";
 import { MarketDashboard } from "@/components/market/market-dashboard";
 import { PriceLineup } from "@/components/market/price-lineup";
+import { PriceContextGuide } from "@/components/prices/price-context-guide";
 import { PriceHistoryList } from "@/components/prices/price-history-list";
 import { PriceTable } from "@/components/prices/price-table";
-import { TradeStandardPanel } from "@/components/trade/trade-standard-panel";
 import { getRepository } from "@/lib/data";
 import { formatDateDot, formatDateTimeKorean } from "@/lib/format";
 import { getMarketDashboardData } from "@/lib/market-data";
@@ -31,8 +32,8 @@ export default async function PricesPage() {
     <>
       <PageIntro
         eyebrow="시세 안내"
-        title="오늘의 고시 시세와 자동 참고 흐름"
-        description="상단 시세표는 한국센터금거래소가 직접 고시하는 회사 시세입니다. 자동 참고 시세와 국내 환산 참고 시세는 함께 제공되며, 실제 거래 금액은 현장 확인 후 최종 안내합니다."
+        title="오늘의 시세"
+        description="상단 시세표는 한국센터금거래소가 직접 고시하는 회사 시세입니다. 국제 현재가와 국내 환산 참고값은 시장 흐름 확인용으로 함께 제공합니다."
         asideLabel="고시 시각"
         asideTitle={announcedAt ? formatDateTimeKorean(announcedAt) : "당일 고시 준비중"}
         asideBody={
@@ -55,10 +56,13 @@ export default async function PricesPage() {
         prices={prices}
         history={history}
         lineupTitle="한국센터금거래소 시세표"
+        visualMode="signboard"
+        showSummaryCards={false}
         announcedLabel={announcedAt ? formatDateTimeKorean(announcedAt) : "당일 고시 준비중"}
         announcedDateLabel={announcedAt ? formatDateDot(announcedAt) : "고시 준비중"}
-        krwRate={marketData.krwRate}
       />
+
+      <PurchaseGuide />
 
       <section className="section-shell py-14">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -75,13 +79,9 @@ export default async function PricesPage() {
         <PriceTable prices={prices} />
       </section>
 
-      <MarketDashboard data={marketData} />
+      <PriceContextGuide />
 
-      <TradeStandardPanel
-        className="pt-0"
-        heading="시세표를 보기 전에 구분해야 할 것"
-        description="회사 고시 시세, 자동 참고 시세, KRX 금현물 시장, 현장 최종 금액은 서로 다른 기준입니다. 같은 금값처럼 보이더라도 거래 방식과 수수료, 세금, 실물 확인 범위가 다르므로 먼저 구분해 안내합니다."
-      />
+      <MarketDashboard data={marketData} />
 
       <section className="section-shell pb-16">
         <PriceHistoryList history={history} />

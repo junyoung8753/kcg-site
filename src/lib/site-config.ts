@@ -163,8 +163,8 @@ export const serviceGuides = [
     description: "골드바·실버바 수급, 투자용 문의, 상속 정리, 법인 보유 귀금속 상담이 가능합니다.",
   },
   {
-    title: "준비 중 품목",
-    description: "기업 선물, 기념품, 특수 중량 상품은 수급 상황에 따라 순차적으로 확대 안내합니다.",
+    title: "사전 문의 품목",
+    description: "기업 선물, 기념품, 특수 중량 상품은 수급과 제작 일정 확인 후 상담 범위를 안내합니다.",
   },
 ] as const;
 
@@ -173,8 +173,31 @@ export const serviceExamples = {
   silver_bar: ["실버바 중량별 문의", "기업 증정용 실버 제품", "기념 실버·은메달 상담"],
   jewelry: ["고금·예물 정리 상담", "파손 제품 및 부속 확인", "18K·14K 매입 기준 문의"],
   purchase_guide: ["신분증 지참", "보증서·영수증 지참 시 상담 원활", "현장 계근·순도 확인 후 정산"],
-  coming_soon: ["기업 기념품 제작 문의", "순금 메달·배지 상담", "단체 증정용 품목 협의"],
+  custom_order: ["기업 기념품 제작 문의", "순금 메달·배지 상담", "단체 증정용 품목 협의"],
 } as const;
+
+export const serviceFaqs = [
+  {
+    question: "고금매입은 시세표의 어느 금액을 보면 되나요?",
+    answer:
+      "고객이 팔 때 기준을 먼저 참고하시면 됩니다. 실제 상담 금액은 순도, 중량, 부속, 제품 상태를 현장에서 확인한 뒤 최종 안내합니다.",
+  },
+  {
+    question: "18K·14K 반지나 목걸이도 매입 상담이 가능한가요?",
+    answer:
+      "상담 가능합니다. 18K·14K 제품은 큐빅, 스톤, 잠금 장식, 파손 및 납땜 상태에 따라 현장 확인 항목이 달라질 수 있습니다.",
+  },
+  {
+    question: "방문 전에 꼭 준비해야 할 것이 있나요?",
+    answer:
+      "실물 매입 상담 시 신분증을 지참해 주세요. 보증서, 영수증, 감정서가 있으면 함께 가져오시는 것을 권장드립니다.",
+  },
+  {
+    question: "전화로 금액을 확정받을 수 있나요?",
+    answer:
+      "전화로는 상담 가능 여부, 준비 사항, 방문 동선을 먼저 안내합니다. 최종 금액은 실물의 순도와 중량을 현장에서 확인한 뒤 안내합니다.",
+  },
+] as const;
 
 export const tradeProcess = [
   {
@@ -201,8 +224,9 @@ export const tradeNotes = [
 export const siteNavigation = [
   { href: "/", label: "홈" },
   { href: "/prices", label: "시세" },
+  { href: "/products", label: "상품 문의" },
   { href: "/announcements", label: "공지사항" },
-  { href: "/services", label: "상품·서비스" },
+  { href: "/services", label: "상담 안내" },
   { href: "/about", label: "거래 안내" },
 ];
 
@@ -228,7 +252,7 @@ export const serviceCategories = [
     description: "현장 감정, 계근, 정산 절차를 단계별로 설명",
   },
   {
-    key: "coming_soon",
+    key: "custom_order",
     title: "추가 품목 상담",
     description: "기념품, 기업 선물, 특수 중량 상품 상담",
   },

@@ -8,7 +8,7 @@ const navigation = [
   { href: "/admin", label: "개요" },
   { href: "/admin/prices", label: "시세 관리" },
   { href: "/admin/announcements", label: "공지 관리" },
-  { href: "/admin/products", label: "상품 구조" },
+  { href: "/admin/products", label: "상품 관리" },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {

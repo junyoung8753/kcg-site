@@ -47,9 +47,14 @@ create table if not exists products (
   short_description text not null,
   description text not null,
   image_url text,
-  status text not null default 'coming_soon' check (status in ('active', 'coming_soon', 'hidden')),
+  specs text[] not null default '{}',
+  status text not null default 'inquiry_required' check (status in ('active', 'inquiry_required', 'hidden')),
+  display_order integer not null default 100,
+  is_featured boolean not null default false,
   price_visible boolean not null default false,
+  price_label text not null default '전화 문의',
   price_note text,
+  public_note text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -58,3 +63,4 @@ create index if not exists idx_prices_display_order on prices(display_order);
 create index if not exists idx_price_history_changed_at on price_history(changed_at desc);
 create index if not exists idx_announcements_published_at on announcements(published_at desc);
 create index if not exists idx_products_category on products(category);
+create index if not exists idx_products_display_order on products(display_order);

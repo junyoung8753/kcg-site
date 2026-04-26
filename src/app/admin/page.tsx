@@ -13,7 +13,7 @@ export default async function AdminPage() {
   const stats = [
     { label: "운영 시세 항목", value: `${prices.length}개` },
     { label: "공지 레코드", value: `${announcements.length}건` },
-    { label: "상품 구조 항목", value: `${products.length}건` },
+    { label: "상품 카탈로그", value: `${products.length}건` },
     { label: "저장 방식", value: isSupabaseConfigured() ? "Supabase" : "Demo" },
   ];
 
@@ -57,8 +57,8 @@ export default async function AdminPage() {
           },
           {
             href: "/admin/products",
-            title: "상품 구조",
-            body: "향후 상품 등록 기능이 붙을 자리와 데이터 구조를 확인합니다.",
+            title: "상품 관리",
+            body: "상담형 상품 카탈로그의 사진, 가격 문구, 공개 상태를 관리합니다.",
           },
         ].map((item) => (
           <Link

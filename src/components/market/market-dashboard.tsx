@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { formatCurrencyKRW, formatDateTimeKorean } from "@/lib/format";
+import { formatDateTimeKorean, formatWon } from "@/lib/format";
 import type {
   DomesticMarketPrice,
   MarketBriefItem,
@@ -39,6 +39,16 @@ function getToneClass(value: number) {
   return "text-[#6d7373]";
 }
 
+function formatSpotUpdatedAt(value: string) {
+  return new Intl.DateTimeFormat("ko-KR", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Asia/Seoul",
+  }).format(new Date(value));
+}
+
 function StatusBadge({ data }: { data: MarketDashboardData }) {
   const className =
     data.sourceTier === "free" && !data.isStale
@@ -60,12 +70,21 @@ function StatusBadge({ data }: { data: MarketDashboardData }) {
 }
 
 function ProviderMeta({ data }: { data: MarketDashboardData }) {
+  const sourceIsExternal = /^https?:\/\//.test(data.sourceUrl);
+
   return (
     <div className="grid gap-4 rounded-[1.5rem] border border-[#e5ebe8] bg-[#fbfdfc] p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-xs font-semibold tracking-[0.22em] text-[#9a8a00]">데이터 상태</p>
-          <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#15191b]">{data.sourceName}</p>
+          <a
+            href={data.sourceUrl}
+            target={sourceIsExternal ? "_blank" : undefined}
+            rel={sourceIsExternal ? "noreferrer" : undefined}
+            className="mt-2 inline-flex text-lg font-semibold tracking-[-0.03em] text-[#15191b] underline decoration-[#c9b241] decoration-2 underline-offset-4"
+          >
+            {data.sourceName}
+          </a>
         </div>
         <StatusBadge data={data} />
       </div>
@@ -84,6 +103,20 @@ function ProviderMeta({ data }: { data: MarketDashboardData }) {
                 : "fallback 참고"}
           </p>
         </div>
+      </div>
+      <div className="rounded-[1.25rem] border border-[#e3e9e6] bg-white px-4 py-4">
+        <p className="text-xs font-semibold tracking-[0.18em] text-[#7a8382]">출처 및 이용 안내</p>
+        <p className="mt-2 text-sm leading-6 text-[#1c2022]">{data.sourceAttribution}</p>
+        {data.sourceTermsUrl ? (
+          <a
+            href={data.sourceTermsUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-2 inline-flex text-xs font-semibold text-[#6f6200] underline underline-offset-4"
+          >
+            공급자 약관 확인
+          </a>
+        ) : null}
       </div>
       <p className="text-sm leading-7 text-[#687171]">{data.referenceNote}</p>
       {data.upgradeReadyProvider ? (
@@ -112,7 +145,24 @@ function SpotTable({
   if (!showBidAsk && !showChange) {
     return (
       <div>
-        <div className="grid grid-cols-[1.12fr_0.88fr_0.92fr] bg-[#f7fbfa] px-6 py-3 text-xs font-bold tracking-[0.16em] text-[#697171]">
+        <div className="md:hidden">
+          {spots.map((spot) => (
+            <article key={spot.metal} className="border-t border-[#e4ebe9] px-5 py-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-base font-bold tracking-[-0.04em] text-[#15191b]">{spot.label}</p>
+                  <p className="mt-1 text-xs font-medium text-[#7d8585]">{spot.symbol} · USD/T.oz 기준</p>
+                </div>
+                <p className="shrink-0 text-right text-xl font-bold tabular-nums text-[#15191b]">{formatUsd(spot.price)}</p>
+              </div>
+              <div className="mt-4 flex items-center justify-between gap-3 rounded-[1rem] border border-[#e3e9e7] bg-[#fbfdfc] px-4 py-3 text-xs font-medium text-[#687171]">
+                <span>업데이트</span>
+                <span>{formatSpotUpdatedAt(spot.updatedAt)}</span>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div className="hidden grid-cols-[1.12fr_0.88fr_0.92fr] bg-[#f7fbfa] px-6 py-3 text-xs font-bold tracking-[0.16em] text-[#697171] md:grid">
           <p>종목</p>
           <p className="text-right">실시간가</p>
           <p className="text-right">업데이트</p>
@@ -120,21 +170,15 @@ function SpotTable({
         {spots.map((spot) => (
           <div
             key={spot.metal}
-            className="grid grid-cols-[1.12fr_0.88fr_0.92fr] items-center border-t border-[#e4ebe9] px-6 py-5"
+            className="hidden grid-cols-[1.12fr_0.88fr_0.92fr] items-center border-t border-[#e4ebe9] px-6 py-5 md:grid"
           >
             <div>
               <p className="text-lg font-bold tracking-[-0.04em] text-[#15191b]">{spot.label}</p>
-              <p className="mt-1 text-sm font-medium text-[#7d8585]">{spot.symbol} · USD / T.oz</p>
+              <p className="mt-1 text-sm font-medium text-[#7d8585]">{spot.symbol} · USD/T.oz 기준</p>
             </div>
             <p className="text-right text-lg font-bold text-[#15191b]">{formatUsd(spot.price)}</p>
             <p className="text-right text-sm leading-6 text-[#687171]">
-              {new Intl.DateTimeFormat("ko-KR", {
-                month: "2-digit",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-                timeZone: "Asia/Seoul",
-              }).format(new Date(spot.updatedAt))}
+              {formatSpotUpdatedAt(spot.updatedAt)}
             </p>
           </div>
         ))}
@@ -144,7 +188,34 @@ function SpotTable({
 
   return (
     <div>
-      <div className="grid grid-cols-[1.08fr_0.8fr_0.8fr_0.72fr] bg-[#f7fbfa] px-6 py-3 text-xs font-bold tracking-[0.16em] text-[#697171]">
+      <div className="md:hidden">
+        {spots.map((spot) => (
+          <article key={spot.metal} className="border-t border-[#e4ebe9] px-5 py-5">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-base font-bold tracking-[-0.04em] text-[#15191b]">{spot.label}</p>
+                <p className="mt-1 text-xs font-medium text-[#7d8585]">{spot.symbol} · USD/T.oz 기준</p>
+              </div>
+              <p className="shrink-0 text-right text-xl font-bold tabular-nums text-[#15191b]">{formatUsd(spot.price)}</p>
+            </div>
+            <div className="mt-4 grid grid-cols-3 gap-px overflow-hidden rounded-[1rem] border border-[#e3e9e7] bg-[#e3e9e7] text-xs">
+              <div className="bg-[#fbfdfc] px-3 py-3">
+                <p className="font-semibold text-[#7a8382]">Bid</p>
+                <p className="mt-1 font-bold text-[#15191b]">{formatUsd(spot.bid)}</p>
+              </div>
+              <div className="bg-[#fbfdfc] px-3 py-3">
+                <p className="font-semibold text-[#7a8382]">Ask</p>
+                <p className="mt-1 font-bold text-[#15191b]">{formatUsd(spot.ask)}</p>
+              </div>
+              <div className="bg-[#fbfdfc] px-3 py-3">
+                <p className="font-semibold text-[#7a8382]">전일</p>
+                <p className={`mt-1 font-bold ${getToneClass(spot.changePercent)}`}>{formatSignedPercent(spot.changePercent)}</p>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div className="hidden grid-cols-[1.08fr_0.8fr_0.8fr_0.72fr] bg-[#f7fbfa] px-6 py-3 text-xs font-bold tracking-[0.16em] text-[#697171] md:grid">
         <p>종목</p>
         <p className="text-right">Bid</p>
         <p className="text-right">Ask</p>
@@ -153,11 +224,11 @@ function SpotTable({
       {spots.map((spot) => (
         <div
           key={spot.metal}
-          className="grid grid-cols-[1.08fr_0.8fr_0.8fr_0.72fr] items-center border-t border-[#e4ebe9] px-6 py-5"
+          className="hidden grid-cols-[1.08fr_0.8fr_0.8fr_0.72fr] items-center border-t border-[#e4ebe9] px-6 py-5 md:grid"
         >
           <div>
             <p className="text-lg font-bold tracking-[-0.04em] text-[#15191b]">{spot.label}</p>
-            <p className="mt-1 text-sm font-medium text-[#7d8585]">{spot.symbol} · USD / T.oz</p>
+            <p className="mt-1 text-sm font-medium text-[#7d8585]">{spot.symbol} · USD/T.oz 기준</p>
           </div>
           <p className="text-right text-lg font-bold text-[#15191b]">{formatUsd(spot.bid)}</p>
           <p className="text-right text-lg font-bold text-[#15191b]">{formatUsd(spot.ask)}</p>
@@ -185,7 +256,7 @@ function SummaryBlock({
   return (
     <div className="border border-[#e1e8e5] bg-[#fbfdfc] px-5 py-5">
       <p className="text-sm font-semibold text-[#727a7a]">{label}</p>
-      <p className="mt-3 text-[1.8rem] font-semibold tracking-[-0.05em] text-[#15191b]">{value}</p>
+      <p className="mt-3 break-keep text-[1.55rem] font-semibold tracking-[-0.05em] text-[#15191b] sm:text-[1.8rem]">{value}</p>
       <p className="mt-2 text-sm leading-6 text-[#6b7373]">{detail}</p>
     </div>
   );
@@ -229,16 +300,33 @@ function HeadlineColumn({
   title,
   items,
   sourceLabel,
+  sourceUrl,
+  sourceDetail,
 }: {
   title: string;
   items: MarketHeadlineItem[];
   sourceLabel: string;
+  sourceUrl?: string;
+  sourceDetail: string;
 }) {
+  const sourceIsExternal = sourceUrl ? /^https?:\/\//.test(sourceUrl) : false;
+
   return (
     <div className="border border-[#dfe6e4] bg-white">
       <div className="flex items-center justify-between border-b border-[#e4ebe9] px-6 py-4">
         <div>
-          <p className="text-sm font-semibold text-[#9a8a00]">{sourceLabel}</p>
+          {sourceUrl ? (
+            <a
+              href={sourceUrl}
+              target={sourceIsExternal ? "_blank" : undefined}
+              rel={sourceIsExternal ? "noreferrer" : undefined}
+              className="text-sm font-semibold text-[#9a8a00] underline underline-offset-4"
+            >
+              {sourceLabel}
+            </a>
+          ) : (
+            <p className="text-sm font-semibold text-[#9a8a00]">{sourceLabel}</p>
+          )}
           <h3 className="mt-1 text-[1.5rem] font-semibold tracking-[-0.05em] text-[#15191b]">{title}</h3>
         </div>
         <span className="text-xs font-medium text-[#7d8685]">외부 기사 링크</span>
@@ -264,6 +352,7 @@ function HeadlineColumn({
           );
         })}
       </div>
+      <p className="border-t border-[#e4ebe9] px-6 py-4 text-xs leading-6 text-[#7d8685]">{sourceDetail}</p>
     </div>
   );
 }
@@ -305,9 +394,9 @@ function DomesticSection({
   const changeDetail = (price?: DomesticMarketPrice) => {
     if (!price) return "데이터 준비 중";
     if (!data.capabilities.change) {
-      return `1g ${formatCurrencyKRW(price.krwPerGram)} · 실시간 현재가 기준`;
+      return `1g ${formatWon(price.krwPerGram)} · 실시간 현재가 기준`;
     }
-    return `1g ${formatCurrencyKRW(price.krwPerGram)} · ${formatSignedPercent(price.changePercent)}`;
+    return `1g ${formatWon(price.krwPerGram)} · ${formatSignedPercent(price.changePercent)}`;
   };
 
   return (
@@ -315,8 +404,8 @@ function DomesticSection({
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 className="text-[2rem] font-semibold tracking-[-0.06em] text-[#15191b]">
-            국내 환산 참고 시세
-            <span className="ml-2 text-sm font-medium tracking-normal text-[#6d7373]">(KRW/3.75g)</span>
+            3.75g 기준 자동 환산가
+            <span className="ml-2 text-sm font-medium tracking-normal text-[#6d7373]">(KRW 기준)</span>
           </h2>
         </div>
         <Link href="/prices" className="text-sm font-semibold text-[#697171]">
@@ -324,11 +413,11 @@ function DomesticSection({
         </Link>
       </div>
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        <SummaryBlock label="순금 1돈 환산 참고가" value={formatCurrencyKRW(goldDomestic?.krwPerDon ?? 0)} detail={changeDetail(goldDomestic)} />
-        <SummaryBlock label="은 1돈 환산 참고가" value={formatCurrencyKRW(silverDomestic?.krwPerDon ?? 0)} detail={changeDetail(silverDomestic)} />
+        <SummaryBlock label="순금 3.75g 환산 참고가" value={formatWon(goldDomestic?.krwPerDon ?? 0)} detail={changeDetail(goldDomestic)} />
+        <SummaryBlock label="은 3.75g 환산 참고가" value={formatWon(silverDomestic?.krwPerDon ?? 0)} detail={changeDetail(silverDomestic)} />
         <SummaryBlock
-          label="백금 1돈 환산 참고가"
-          value={formatCurrencyKRW(platinumDomestic?.krwPerDon ?? 0)}
+          label="백금 3.75g 환산 참고가"
+          value={formatWon(platinumDomestic?.krwPerDon ?? 0)}
           detail={changeDetail(platinumDomestic)}
         />
       </div>
@@ -365,8 +454,8 @@ function InternationalSection({
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 className="text-[2rem] font-semibold tracking-[-0.06em] text-[#15191b]">
-            실시간 참고 시세
-            <span className="ml-2 text-sm font-medium tracking-normal text-[#6d7373]">(USD/T.oz)</span>
+            실시간 국제 참고 시세
+            <span className="ml-2 text-sm font-medium tracking-normal text-[#6d7373]">(USD/T.oz 기준)</span>
           </h2>
         </div>
         <Link href="/prices" className="text-sm font-semibold text-[#697171]">
@@ -374,10 +463,10 @@ function InternationalSection({
         </Link>
       </div>
       <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <SummaryBlock label="Gold Spot" value={formatUsd(goldSpot?.price ?? 0)} detail={detail(goldSpot)} />
-        <SummaryBlock label="Silver Spot" value={formatUsd(silverSpot?.price ?? 0)} detail={detail(silverSpot)} />
-        <SummaryBlock label="Platinum Spot" value={formatUsd(platinumSpot?.price ?? 0)} detail={detail(platinumSpot)} />
-        <SummaryBlock label="Palladium Spot" value={formatUsd(palladiumSpot?.price ?? 0)} detail={detail(palladiumSpot)} />
+        <SummaryBlock label="국제 금시세" value={formatUsd(goldSpot?.price ?? 0)} detail={detail(goldSpot)} />
+        <SummaryBlock label="국제 은시세" value={formatUsd(silverSpot?.price ?? 0)} detail={detail(silverSpot)} />
+        <SummaryBlock label="국제 백금시세" value={formatUsd(platinumSpot?.price ?? 0)} detail={detail(platinumSpot)} />
+        <SummaryBlock label="국제 팔라듐시세" value={formatUsd(palladiumSpot?.price ?? 0)} detail={detail(palladiumSpot)} />
       </div>
       <div className="mt-5 grid gap-4 rounded-[1.5rem] border border-[#e3e9e7] bg-[#fbfdfc] p-5 md:grid-cols-3">
         <div>
@@ -427,10 +516,34 @@ function ConversionReference({ data }: { data: MarketDashboardData }) {
           <h3 className="mt-1 text-[1.5rem] font-semibold tracking-[-0.05em] text-[#15191b]">
             국제 현재가와 국내 환산 참고값
           </h3>
-          <p className="mt-1 text-xs font-medium text-[#7d8585]">USD/T.oz → KRW/g → KRW/3.75g</p>
+          <p className="mt-1 text-xs font-medium text-[#7d8585]">USD/T.oz 기준 현재가를 원화와 3.75g 기준으로 환산</p>
         </div>
-        <div className="overflow-x-auto">
-          <div className="grid min-w-[40rem] grid-cols-[1fr_0.82fr_0.82fr_0.82fr_0.82fr] bg-[#f7fbfa] px-5 py-3 text-xs font-bold tracking-[0.14em] text-[#697171]">
+        <div className="md:hidden">
+          {rows.map(({ spot, domestic }) => (
+            <article key={spot.metal} className="border-t border-[#e4ebe9] px-5 py-5">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="font-bold tracking-[-0.03em] text-[#15191b]">{spot.label.replace("국제 ", "")}</p>
+                  <p className="mt-1 text-xs font-medium text-[#7d8585]">{spot.symbol} · USD/T.oz 기준</p>
+                </div>
+                <p className="shrink-0 text-right text-base font-semibold tabular-nums text-[#15191b]">{formatUsd(spot.price)}</p>
+              </div>
+              <dl className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-[1rem] border border-[#e3e9e7] bg-[#e3e9e7] text-sm">
+                <div className="bg-[#fbfdfc] px-4 py-3">
+                  <dt className="text-xs font-semibold text-[#7d8585]">1g 환산</dt>
+                  <dd className="mt-1 font-bold text-[#15191b]">{domestic ? formatWon(domestic.krwPerGram) : "-"}</dd>
+                </div>
+                <div className="bg-[#fbfdfc] px-4 py-3">
+                  <dt className="text-xs font-semibold text-[#7d8585]">3.75g 환산</dt>
+                  <dd className="mt-1 font-bold text-[#15191b]">{domestic ? formatWon(domestic.krwPerDon) : "-"}</dd>
+                </div>
+              </dl>
+              <p className="mt-3 text-xs leading-5 text-[#7d8585]">환율 {formatExchangeRate(data.krwRate)} 기준 자동 참고값</p>
+            </article>
+          ))}
+        </div>
+        <div className="hidden md:block">
+          <div className="grid grid-cols-[1fr_0.82fr_0.82fr_0.82fr_0.82fr] bg-[#f7fbfa] px-5 py-3 text-xs font-bold tracking-[0.14em] text-[#697171]">
             <p>금속</p>
             <p className="text-right">국제 현재가</p>
             <p className="text-right">환율</p>
@@ -440,7 +553,7 @@ function ConversionReference({ data }: { data: MarketDashboardData }) {
           {rows.map(({ spot, domestic }) => (
             <div
               key={spot.metal}
-              className="grid min-w-[40rem] grid-cols-[1fr_0.82fr_0.82fr_0.82fr_0.82fr] items-center border-t border-[#e4ebe9] px-5 py-4 text-sm"
+              className="grid grid-cols-[1fr_0.82fr_0.82fr_0.82fr_0.82fr] items-center border-t border-[#e4ebe9] px-5 py-4 text-sm"
             >
               <div>
                 <p className="font-bold tracking-[-0.03em] text-[#15191b]">{spot.label.replace("국제 ", "")}</p>
@@ -449,10 +562,10 @@ function ConversionReference({ data }: { data: MarketDashboardData }) {
               <p className="text-right font-semibold text-[#15191b]">{formatUsd(spot.price)}</p>
               <p className="text-right text-[#687171]">{formatExchangeRate(data.krwRate)}</p>
               <p className="text-right font-semibold text-[#15191b]">
-                {domestic ? formatCurrencyKRW(domestic.krwPerGram) : "-"}
+                {domestic ? formatWon(domestic.krwPerGram) : "-"}
               </p>
               <p className="text-right font-semibold text-[#15191b]">
-                {domestic ? formatCurrencyKRW(domestic.krwPerDon) : "-"}
+                {domestic ? formatWon(domestic.krwPerDon) : "-"}
               </p>
             </div>
           ))}
@@ -475,20 +588,19 @@ export function MarketDashboard({ data }: { data: MarketDashboardData }) {
   const palladiumSpot = data.spots.find((item) => item.metal === "palladium");
   const domesticHeadlines = data.externalHeadlines.filter((item) => item.category === "domestic");
   const globalHeadlines = data.externalHeadlines.filter((item) => item.category === "global");
-  const headlineSourceLabel = data.headlineSource === "seed" ? "운영형 fallback" : "Google News RSS";
 
   return (
     <div className="section-shell py-14 sm:py-16">
-      <section className="grid gap-8 xl:grid-cols-[1.08fr_0.92fr]">
+      <section className="grid items-start gap-8 xl:grid-cols-[1.08fr_0.92fr]">
         <div className="overflow-hidden border border-[#dfe6e4] bg-white shadow-[0_18px_50px_rgba(31,47,43,0.06)]">
           <div className="flex flex-wrap items-end justify-between gap-5 border-b border-[#e4ebe9] px-6 py-6">
             <div>
-              <p className="text-sm font-semibold tracking-[0.18em] text-[#9a8a00]">실시간 참고 시세</p>
-              <h2 className="mt-2 text-[2rem] font-semibold tracking-[-0.06em] text-[#15191b]">실시간 참고 시세</h2>
+              <p className="text-sm font-semibold tracking-[0.18em] text-[#9a8a00]">국제 현재가</p>
+              <h2 className="mt-2 text-[2rem] font-semibold tracking-[-0.06em] text-[#15191b]">실시간 국제 참고 시세</h2>
             </div>
             <div className="text-right text-sm leading-6 text-[#687171]">
               <p>{formatDateTimeKorean(data.updatedAt)} 기준</p>
-              <p>USD / T.oz · {data.displayModeLabel}</p>
+              <p>USD/T.oz 기준 · {data.displayModeLabel}</p>
             </div>
           </div>
           <SpotTable spots={data.spots} showBidAsk={data.capabilities.bidAsk} showChange={data.capabilities.change} />
@@ -508,9 +620,9 @@ export function MarketDashboard({ data }: { data: MarketDashboardData }) {
               {data.benchmarks.map((item, index) => (
                 <div key={item.label} className={index > 0 ? "border-t border-[#e2d8a7] pt-5" : ""}>
                   <p className="text-sm font-semibold text-[#6c5d00]">{item.label}</p>
-                  <p className="mt-2 text-[2rem] font-bold tracking-[-0.06em] text-[#15191b]">{formatCurrencyKRW(item.value)}</p>
+                  <p className="mt-2 text-[1.85rem] font-bold tracking-[-0.06em] text-[#15191b] sm:text-[2rem]">{formatWon(item.value)}</p>
                   <p className="mt-1 text-sm leading-6 text-[#6f6a54]">
-                    {item.unit} · {item.note}
+                    {item.unit} 기준 · {item.note}
                   </p>
                 </div>
               ))}
@@ -540,8 +652,20 @@ export function MarketDashboard({ data }: { data: MarketDashboardData }) {
 
       <section className="mt-10 grid gap-8 xl:grid-cols-3">
         <BriefingColumn items={data.marketBriefs} />
-        <HeadlineColumn title="국내 헤드라인" items={domesticHeadlines} sourceLabel={headlineSourceLabel} />
-        <HeadlineColumn title="국제 헤드라인" items={globalHeadlines} sourceLabel={headlineSourceLabel} />
+        <HeadlineColumn
+          title="국내 헤드라인"
+          items={domesticHeadlines}
+          sourceLabel={data.headlineSourceName}
+          sourceUrl={data.headlineSourceUrl}
+          sourceDetail={data.headlineAttribution}
+        />
+        <HeadlineColumn
+          title="국제 헤드라인"
+          items={globalHeadlines}
+          sourceLabel={data.headlineSourceName}
+          sourceUrl={data.headlineSourceUrl}
+          sourceDetail={data.headlineAttribution}
+        />
       </section>
     </div>
   );

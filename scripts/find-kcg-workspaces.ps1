@@ -134,4 +134,4 @@ $results |
   Format-Table -AutoSize Path, PackageName, VercelProject, GitBranch, GitCommit, GitStatus, LastWriteTime, GitRemote
 
 Write-Host ""
-Write-Host "Use the newest candidate with the expected Vercel/GitHub remote as the company-PC source to compare or push."
+Write-Host "Use the newest candidate with the expected Vercel/GitHub remote as the local workspace to inspect, verify, or push."

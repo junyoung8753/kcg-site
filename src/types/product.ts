@@ -3,9 +3,9 @@ export type ProductCategory =
   | "silver_bar"
   | "jewelry"
   | "purchase_guide"
-  | "coming_soon";
+  | "custom_order";
 
-export type ProductStatus = "active" | "coming_soon" | "hidden";
+export type ProductStatus = "active" | "inquiry_required" | "hidden";
 
 export interface Product {
   id: string;
@@ -15,9 +15,32 @@ export interface Product {
   shortDescription: string;
   description: string;
   imageUrl: string | null;
+  specs: string[];
   status: ProductStatus;
+  displayOrder: number;
+  isFeatured: boolean;
   priceVisible: boolean;
+  priceLabel: string;
   priceNote: string | null;
+  publicNote: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ProductUpsertInput {
+  id?: string;
+  category: ProductCategory;
+  name: string;
+  slug: string;
+  shortDescription: string;
+  description: string;
+  imageUrl: string | null;
+  specs: string[];
+  status: ProductStatus;
+  displayOrder: number;
+  isFeatured: boolean;
+  priceVisible: boolean;
+  priceLabel: string;
+  priceNote: string | null;
+  publicNote: string | null;
 }

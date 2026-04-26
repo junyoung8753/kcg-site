@@ -4,6 +4,7 @@ import { mockProducts } from "@/mock/products";
 import type { AnnouncementUpsertInput } from "@/types/announcement";
 import type { RepositoryMutationResult } from "@/types/admin";
 import type { UpdatePriceInput } from "@/types/price";
+import type { ProductUpsertInput } from "@/types/product";
 import type { SiteRepository } from "./repository";
 
 const demoResult: RepositoryMutationResult = {
@@ -47,9 +48,9 @@ export class MockRepository implements SiteRepository {
 
   async getProducts(options?: { includeHidden?: boolean }) {
     const includeHidden = options?.includeHidden ?? false;
-    return mockProducts.filter((item) =>
-      includeHidden ? true : item.status !== "hidden",
-    );
+    return mockProducts
+      .filter((item) => (includeHidden ? true : item.status !== "hidden"))
+      .sort((a, b) => a.displayOrder - b.displayOrder);
   }
 
   async updatePrices(input: UpdatePriceInput[]) {
@@ -64,6 +65,11 @@ export class MockRepository implements SiteRepository {
 
   async deleteAnnouncement(id: string) {
     void id;
+    return demoResult;
+  }
+
+  async upsertProduct(input: ProductUpsertInput) {
+    void input;
     return demoResult;
   }
 }

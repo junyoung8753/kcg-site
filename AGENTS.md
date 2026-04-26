@@ -4,14 +4,15 @@
 - Vercel project: `kcg-confirm-preview`.
 - GitHub repo: `junyoung8753/kcg-site`.
 - Treat short Korean continuation requests such as "kcg사이트 만들던거 이어나갈수있게 준비해", "KCG 사이트 이어가자", "금거래소 사이트 이어가자", or "작업 이어가자" as a request to continue this KCG site from the current handoff. Do not make junyoung paste a long bootstrap prompt.
-- For those short continuation requests, immediately read `docs/setup/CLOUD_ONLY_WORKFLOW.md` and `docs/setup/CURRENT_HANDOFF.md`, then prepare the task using the source-of-truth status below. If the stable URL is the reference, run `npm run build` and `npm run compare:source` before deciding the next code changes.
+- For those short continuation requests, immediately read `docs/setup/CLOUD_ONLY_WORKFLOW.md` and `docs/setup/CURRENT_HANDOFF.md`, then prepare the task using the source-of-truth status below. Treat the current repository as the single production candidate unless the user explicitly asks to recover an older source.
 - Before continuing KCG work in a new chat, read `docs/setup/CURRENT_HANDOFF.md` for the latest source-of-truth status and next action.
 - Prefer the cloud-only flow in `docs/setup/CLOUD_ONLY_WORKFLOW.md` when the user wants to avoid computer-specific setup.
 - For local, cloud, or cross-computer continuation, follow `docs/setup/continue-anywhere.md` and use `scripts/check-continuation.ps1` for repeatable setup checks.
-- For Codex Cloud source-parity or Playwright work, ensure the environment setup has run `npx playwright install --with-deps chromium`. A missing Linux library error such as `libatk-1.0.so.0` is an environment/setup issue, not a reason to remove fonts, images, routes, or visual parity logic.
+- For Codex Cloud Playwright work, ensure the environment setup has run `npx playwright install --with-deps chromium`. A missing Linux library error such as `libatk-1.0.so.0` is an environment/setup issue, not a reason to remove fonts, images, routes, or visual QA logic.
 - Use Korean UI/copy by default. Preserve exact business facts unless the user provides updated source documents.
 - Treat prices, trading language, legal business information, admin authentication, and production deployment as high-risk. Do not invent official prices, business registration numbers, compliance claims, or live trading/payment behavior.
 - Keep the company posted price table separate from automatic market-reference data. External APIs must not overwrite company prices.
+- Keep `/` as the single public site entry. Do not restore old option routes such as `/option-1` or `/option-2` unless the user explicitly asks for a new comparison workflow.
 - Keep preview-mode and search-blocking behavior unless the user explicitly approves public launch/search indexing. Vercel SSO Deployment Protection may stay disabled for ordinary browser review, but noindex/robots blocking must remain until public launch approval.
 - Never commit `.env*`, `.vercel`, Supabase service role keys, admin passwords, cookies, tokens, or local Vercel settings.
 - For Vercel setup on a new machine, run `vercel link --yes --project kcg-confirm-preview`, then `vercel pull --yes`.
@@ -23,7 +24,7 @@
   - `npm run test:site`
   - `npm audit --audit-level=moderate`
 - For visual or route changes, also verify at least `/`, `/prices`, `/announcements`, `/services`, `/about`, `/admin/login`, and `/api/health` with browser screenshots or equivalent route checks. `npm run test:site` covers the default local browser path after `npm run build`.
-- For source-site restoration or visual parity work, explicitly verify campaign assets, mobile header CTA/menu, mobile bottom CTA, service wording, and mobile price-table readability. Use `npm run audit:site`, `npm run test:site`, `npm run screenshot:site`, and at least one manually inspected mobile screenshot of `/`.
-- Do not make visual/source-parity code changes just to bypass a Cloud environment restriction. If Google Fonts, Playwright browser downloads, npm audit endpoints, or external fetches are blocked, report the environment/network issue and fix the Cloud setup or run the verification locally instead of removing design assets, fonts, images, or routes.
+- For visual route work, explicitly verify campaign assets, mobile header CTA/menu, mobile bottom CTA, service wording, and mobile price-table readability. Use `npm run audit:site`, `npm run test:site`, `npm run screenshot:site`, and at least one manually inspected mobile screenshot of `/`.
+- Do not make visual QA code changes just to bypass a Cloud environment restriction. If Google Fonts, Playwright browser downloads, npm audit endpoints, or external fetches are blocked, report the environment/network issue and fix the Cloud setup or run the verification locally instead of removing design assets, fonts, images, or routes.
 - When a user points out a miss, update the smallest relevant executable guardrail first, then fix similar cases. Keep `docs/quality/agent-quality-system.md` aligned with meaningful process changes.
 - If a deployment is needed, prefer a preview deployment first. Use production deployment or alias changes only when the user clearly asks for the live URL to change.

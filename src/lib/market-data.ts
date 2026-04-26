@@ -113,12 +113,19 @@ function buildDisplayModeLabel(provider: MarketProvider, isStale: boolean) {
 
 function buildSourceMeta(provider: MarketProvider): {
   sourceName: string;
+  sourceUrl: string;
+  sourceTermsUrl?: string;
+  sourceAttribution: string;
   sourceTier: MarketSourceTier;
   upgradeReadyProvider?: UpgradeReadyProvider;
 } {
   if (provider === "metals-dev") {
     return {
       sourceName: "Metals.dev",
+      sourceUrl: "https://www.metals.dev/docs",
+      sourceTermsUrl: "https://metals.dev/terms",
+      sourceAttribution:
+        "출처: Metals.Dev. 자동 참고 시세이며 회사 고시 시세와 실제 거래 금액은 별도입니다.",
       sourceTier: "premium",
       upgradeReadyProvider: "premium-fx",
     };
@@ -127,6 +134,10 @@ function buildSourceMeta(provider: MarketProvider): {
   if (provider === "gold-api") {
     return {
       sourceName: "Gold API",
+      sourceUrl: "https://gold-api.com/docs",
+      sourceTermsUrl: "https://gold-api.com/terms",
+      sourceAttribution:
+        "출처: Gold API. 무료 현재가 기반 자동 참고 시세이며 회사 고시 시세와 실제 거래 금액은 별도입니다.",
       sourceTier: "free",
       upgradeReadyProvider: "metals-dev",
     };
@@ -134,8 +145,32 @@ function buildSourceMeta(provider: MarketProvider): {
 
   return {
     sourceName: "운영형 fallback",
+    sourceUrl: "/prices",
+    sourceAttribution:
+      "출처: KCG 운영형 fallback. 외부 데이터 요청 실패 시 최근 확인된 참고 예시로만 표시됩니다.",
     sourceTier: "fallback",
     upgradeReadyProvider: "metals-dev",
+  };
+}
+
+function buildHeadlineSourceMeta(source: "google-news-rss" | "seed"): {
+  headlineSourceName: string;
+  headlineSourceUrl?: string;
+  headlineAttribution: string;
+} {
+  if (source === "google-news-rss") {
+    return {
+      headlineSourceName: "Google News RSS",
+      headlineSourceUrl: "https://news.google.com",
+      headlineAttribution:
+        "기사 제목·출처·날짜만 링크로 제공하며, 본문·이미지는 재게시하지 않습니다.",
+    };
+  }
+
+  return {
+    headlineSourceName: "운영형 fallback",
+    headlineAttribution:
+      "fallback 헤드라인은 운영 확인용이며, 외부 기사 본문·이미지는 재게시하지 않습니다.",
   };
 }
 
@@ -234,7 +269,7 @@ function buildBenchmarks(
 
   return [
     {
-      label: "순금 1돈 자동 환산 참고가",
+      label: "순금 3.75g 자동 환산 참고가",
       unit: "3.75g",
       value: gold.krwPerDon,
       note: noteByProvider,
@@ -403,7 +438,7 @@ function buildMarketBriefs(
     {
       id: "market-brief-1",
       title: "오늘의 고시 시세와 자동 참고 시세를 함께 확인하실 수 있습니다.",
-      summary: `국제 금 시세는 ${goldSpot.price.toFixed(2)} USD/T.oz 기준이며, 순금 1돈 참고가는 ${goldDomestic.krwPerDon.toLocaleString(
+      summary: `국제 금 시세는 ${goldSpot.price.toFixed(2)} USD/T.oz 기준이며, 순금 3.75g 참고가는 ${goldDomestic.krwPerDon.toLocaleString(
         "ko-KR",
       )}원으로 계산됩니다.`,
       publishedAt: updatedAt,
@@ -432,14 +467,21 @@ function buildFallbackDashboard(headlines: {
 }): MarketDashboardData {
   const freshness = buildFreshnessMeta(mockMarketData.updatedAt);
   const sourceMeta = buildSourceMeta("mock");
+  const headlineMeta = buildHeadlineSourceMeta(headlines.source);
   return {
     ...mockMarketData,
     externalHeadlines: headlines.items,
     headlineSource: headlines.source,
     sourceName: sourceMeta.sourceName,
+    sourceUrl: sourceMeta.sourceUrl,
+    sourceTermsUrl: sourceMeta.sourceTermsUrl,
+    sourceAttribution: sourceMeta.sourceAttribution,
     sourceTier: sourceMeta.sourceTier,
     displayModeLabel: buildDisplayModeLabel("mock", freshness.isStale),
     upgradeReadyProvider: sourceMeta.upgradeReadyProvider,
+    headlineSourceName: headlineMeta.headlineSourceName,
+    headlineSourceUrl: headlineMeta.headlineSourceUrl,
+    headlineAttribution: headlineMeta.headlineAttribution,
     isStale: freshness.isStale,
     staleMinutes: freshness.staleMinutes,
     marketBriefs: buildMarketBriefs(
@@ -504,6 +546,7 @@ async function getMetalsDevDashboard(
   const updatedAt = spotResults[0]?.updatedAt || new Date().toISOString();
   const freshness = buildFreshnessMeta(updatedAt);
   const sourceMeta = buildSourceMeta("metals-dev");
+  const headlineMeta = buildHeadlineSourceMeta(headlines.source);
 
   return {
     spots: spotResults,
@@ -521,6 +564,9 @@ async function getMetalsDevDashboard(
     updatedAt,
     source: "metals-dev",
     sourceName: sourceMeta.sourceName,
+    sourceUrl: sourceMeta.sourceUrl,
+    sourceTermsUrl: sourceMeta.sourceTermsUrl,
+    sourceAttribution: sourceMeta.sourceAttribution,
     sourceTier: sourceMeta.sourceTier,
     status: "live",
     providerLabel: "Metals.dev 자동 연동",
@@ -532,6 +578,9 @@ async function getMetalsDevDashboard(
     isStale: freshness.isStale,
     staleMinutes: freshness.staleMinutes,
     headlineSource: headlines.source,
+    headlineSourceName: headlineMeta.headlineSourceName,
+    headlineSourceUrl: headlineMeta.headlineSourceUrl,
+    headlineAttribution: headlineMeta.headlineAttribution,
   };
 }
 
@@ -582,6 +631,7 @@ async function getGoldApiDashboard(headlines: {
   const updatedAt = responses[0]?.usdPrice.updatedAt || new Date().toISOString();
   const freshness = buildFreshnessMeta(updatedAt);
   const sourceMeta = buildSourceMeta("gold-api");
+  const headlineMeta = buildHeadlineSourceMeta(headlines.source);
 
   return {
     spots,
@@ -599,6 +649,9 @@ async function getGoldApiDashboard(headlines: {
     updatedAt,
     source: "gold-api",
     sourceName: sourceMeta.sourceName,
+    sourceUrl: sourceMeta.sourceUrl,
+    sourceTermsUrl: sourceMeta.sourceTermsUrl,
+    sourceAttribution: sourceMeta.sourceAttribution,
     sourceTier: sourceMeta.sourceTier,
     status: "live",
     providerLabel: "Gold API 무료 실시간",
@@ -610,6 +663,9 @@ async function getGoldApiDashboard(headlines: {
     isStale: freshness.isStale,
     staleMinutes: freshness.staleMinutes,
     headlineSource: headlines.source,
+    headlineSourceName: headlineMeta.headlineSourceName,
+    headlineSourceUrl: headlineMeta.headlineSourceUrl,
+    headlineAttribution: headlineMeta.headlineAttribution,
   };
 }
 

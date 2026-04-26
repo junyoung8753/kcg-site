@@ -1,7 +1,7 @@
 import type { Announcement, AnnouncementUpsertInput } from "@/types/announcement";
 import type { RepositoryMutationResult } from "@/types/admin";
 import type { PriceHistoryEntry, PriceRecord, UpdatePriceInput } from "@/types/price";
-import type { Product } from "@/types/product";
+import type { Product, ProductUpsertInput } from "@/types/product";
 
 export interface SiteRepository {
   getPrices(options?: { visibleOnly?: boolean }): Promise<PriceRecord[]>;
@@ -17,4 +17,5 @@ export interface SiteRepository {
     input: AnnouncementUpsertInput,
   ): Promise<RepositoryMutationResult>;
   deleteAnnouncement(id: string): Promise<RepositoryMutationResult>;
+  upsertProduct(input: ProductUpsertInput): Promise<RepositoryMutationResult>;
 }

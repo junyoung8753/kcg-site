@@ -132,6 +132,9 @@ export const mockMarketData: MarketDashboardData = {
   updatedAt,
   source: "mock",
   sourceName: "운영형 fallback",
+  sourceUrl: "/prices",
+  sourceAttribution:
+    "출처: KCG 운영형 fallback. 외부 데이터 요청 실패 시 최근 확인된 참고 예시로만 표시됩니다.",
   sourceTier: "fallback",
   status: "fallback",
   providerLabel: "운영형 fallback 데이터",
@@ -148,12 +151,15 @@ export const mockMarketData: MarketDashboardData = {
   isStale: false,
   staleMinutes: 0,
   headlineSource: "seed",
+  headlineSourceName: "운영형 fallback",
+  headlineAttribution:
+    "fallback 헤드라인은 운영 확인용이며, 외부 기사 본문·이미지는 재게시하지 않습니다.",
   krwRate,
   spots: mockSpots,
   domesticPrices: mockDomesticPrices,
   benchmarks: [
     {
-      label: "순금 1돈 자동 환산 참고가",
+      label: "순금 3.75g 자동 환산 참고가",
       unit: "3.75g",
       value: 987000,
       note: "국제 금 시세와 환율을 반영한 참고 기준",

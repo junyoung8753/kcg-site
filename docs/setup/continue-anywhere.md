@@ -41,10 +41,10 @@ Do not store or share URLs containing `_vercel_jwt` or `_vercel_jwe` query param
 
 Current handoff rule:
 
-- Treat `https://kcg-confirm-preview.vercel.app/` as the source reference for the company-facing site.
-- The user clarified on 2026-04-26 that separate company-PC local recovery is not required because the company-PC work was automatically reflected to the stable URL.
-- Do not promote a newer preview to the stable URL just because it is newer. Promote only after `main` has been intentionally accepted as the review baseline or after source parity against the stable URL has been restored and verified.
-- To measure parity, run `npm run build` and then `npm run compare:source`. The report is written under `output/source-parity`, which is intentionally not committed.
+- Treat the current repo as the single production candidate.
+- The user clarified on 2026-04-27 that the old company-side source is already preserved elsewhere, so this repo should no longer keep temporary option routes or source-recovery comparison flows.
+- Do not promote a newer preview to the stable URL just because it is newer. Promote only after `main` has been intentionally accepted as the review baseline and the required checks have passed.
+- `/option-1` and `/option-2` are removed intentionally and should return `404`.
 
 ## First Setup On A New Computer
 
@@ -97,16 +97,11 @@ Use `-PullVercel` only after Vercel CLI login has been completed on that compute
 
 By default, `scripts/check-continuation.ps1` uses the computer's normal CLI login/keyring state. Use `-UseProjectLocalCliState` only for temporary sandboxes where you intentionally want tool login/cache files isolated under the project folder.
 
-## Source URL Recovery
+## Historical Source Recovery Only
 
-If the old Codex thread is missing, use the stable deployed site as the observable source reference:
+Historical recovery is no longer the normal KCG workflow. If junyoung explicitly asks to recover an older deployed source, first confirm the exact reference URL and scope, then add a temporary one-off comparison script or external tool for that task. Do not restore old option routes or permanent compare scripts by default.
 
-```powershell
-npm run build
-npm run compare:source
-```
-
-This compares the local build against `https://kcg-confirm-preview.vercel.app/` across the critical routes and records screenshots plus `output/source-parity/parity-report.json`. A non-zero exit means the local repo is not yet source-identical. Decide whether to restore parity first or intentionally accept the local repo as the improved baseline before changing the stable Vercel alias.
+The default verification source is the current repo plus rendered local/browser evidence.
 
 ## Daily Local Flow
 
@@ -125,7 +120,6 @@ npm run lint
 npm run typecheck
 npm run audit:site
 npm run build
-npm run compare:source
 npm run test:site
 git status
 git add .
@@ -171,7 +165,7 @@ Cloud environment target:
 - Runtime: Node.js `22` unless Codex Cloud later exposes a higher supported version
 - Setup script: `npm ci` followed by `npx playwright install --with-deps chromium`
 - Maintenance script: `npm ci`
-- Network: on with the Common dependencies preset plus the KCG source-site, Vercel, Google Fonts, npm, and Playwright domains for source-parity work
+- Network: on with the Common dependencies preset plus the KCG review URL, Vercel, Google Fonts, npm, Playwright, and official/reference domains needed for the task
 - Secrets: configure in Codex Cloud settings, not in chat and not in git
 
 Typical cloud task flow:
@@ -184,7 +178,7 @@ Typical cloud task flow:
 
 The Cloud environment must be checked after product updates because runtime versions, setup scripts, and network controls are per-environment settings.
 
-If `npm run compare:source` or `npm run test:site` fails in Cloud with missing Linux browser libraries such as `libatk-1.0.so.0`, the fix is Cloud dependency setup, not source-code simplification:
+If `npm run test:site` or screenshot verification fails in Cloud with missing Linux browser libraries such as `libatk-1.0.so.0`, the fix is Cloud dependency setup, not source-code simplification:
 
 ```bash
 npx playwright install --with-deps chromium

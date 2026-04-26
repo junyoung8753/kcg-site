@@ -7,7 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     return [];
   }
 
-  const routes = ["", "/prices", "/announcements", "/services", "/about"];
+  const routes = ["", "/prices", "/products", "/announcements", "/services", "/about"];
 
   return routes.map((route) => ({
     url: `${siteConfig.siteUrl}${route}`,

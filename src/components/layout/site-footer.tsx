@@ -78,7 +78,7 @@ export function SiteFooter() {
             <>
               <p>브랜드명: {siteConfig.brandName}</p>
               <p>대표: {siteConfig.company.representative}</p>
-              <p>사업자등록번호: {siteConfig.company.businessRegistrationNumber}</p>
+              <p>사업자 등록정보: 정식 등록증 확인 후 반영 예정</p>
               <p>운영시간: {siteConfig.contact.businessHours}</p>
               <p>업태 / 종목: {siteConfig.company.businessType} / {siteConfig.company.businessItems}</p>
               <p>개인정보관리책임: {siteConfig.company.privacyOfficer}</p>

@@ -1,7 +1,6 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { PageIntro } from "@/components/layout/page-intro";
-import { TradeStandardPanel } from "@/components/trade/trade-standard-panel";
 import { siteConfig, tradeNotes, tradeProcess, visitChecklist } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -110,12 +109,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <TradeStandardPanel
-        className="pt-0"
-        heading="현장 상담에서 끝까지 지키는 기준"
-        description="방문 거래는 화면 시세만으로 확정하지 않고, 실물 확인과 고객 동의 후 최종 안내하는 흐름이 중요합니다. KRX 금현물 거래와 민간 금거래소 현장 상담도 명확히 구분합니다."
-      />
-
       <section className="section-shell pb-24">
         <div className="grid gap-8 border-t border-[var(--color-line)] pt-8 lg:grid-cols-[1fr_1fr]">
           <div>
@@ -144,7 +137,7 @@ export default function AboutPage() {
                 <>
                   <p>브랜드명: {siteConfig.brandName}</p>
                   <p>대표: {siteConfig.company.representative}</p>
-                  <p>사업자등록번호: {siteConfig.company.businessRegistrationNumber}</p>
+                  <p>사업자 등록정보: 정식 등록증 확인 후 반영 예정</p>
                   <p>방문 상담 위치: {siteConfig.contact.address}</p>
                   <p>운영시간: {siteConfig.contact.businessHours}</p>
                   <p>업태 / 종목: {siteConfig.company.businessType} / {siteConfig.company.businessItems}</p>

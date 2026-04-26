@@ -88,6 +88,7 @@ try {
   await capture(page, "/", { width: 390, height: 1800 }, "home-mobile.png", "한국센터금거래소 시세표");
   await capture(page, "/", { width: 1440, height: 1800 }, "home-desktop.png", "한국센터금거래소 시세표");
   await capture(page, "/prices", { width: 390, height: 1800 }, "prices-mobile.png", "품목별 회사 고시 시세 상세");
+  await capture(page, "/products", { width: 390, height: 1800 }, "products-mobile.png", "골드바·실버바와 귀금속 상담 카탈로그");
   await capture(page, "/services", { width: 390, height: 1800 }, "services-mobile.png", "취급 품목과 상담 범위 안내");
 
   console.log(`Screenshots saved in ${screenshotDir}`);

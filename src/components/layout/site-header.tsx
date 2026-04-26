@@ -3,16 +3,13 @@ import Link from "next/link";
 import { siteConfig, siteNavigation } from "@/lib/site-config";
 
 const utilityLinks = [
-  { href: "/about", label: "회사소개" },
-  { href: "/about", label: "거래안내" },
-  { href: "/announcements", label: "공지사항" },
   { href: "/about", label: "오시는 길" },
 ];
 
 const shortcutLinks = [
   { href: "/prices", label: "시세조회" },
   { href: "/services", label: "고금매입 상담" },
-  { href: "/services", label: "골드바·실버바" },
+  { href: "/products", label: "골드바·실버바" },
   { href: "/announcements", label: "운영 공지" },
 ];
 
@@ -110,7 +107,6 @@ export function SiteHeader() {
             className="flex h-11 cursor-pointer list-none items-center justify-center rounded-full border border-[#d8e1df] bg-white px-4 text-sm font-bold text-[#15191b] shadow-[0_8px_22px_rgba(18,24,24,0.08)]"
             aria-label="사이트 메뉴 열기"
           >
-            <span className="sr-only">사이트 메뉴</span>
             <span aria-hidden="true">메뉴</span>
           </summary>
           <div className="absolute right-0 mt-3 w-[19rem] overflow-hidden border border-[#d8e1df] bg-white shadow-[0_22px_48px_rgba(18,24,24,0.14)]">

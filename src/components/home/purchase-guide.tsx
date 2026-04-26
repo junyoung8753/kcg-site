@@ -19,7 +19,17 @@ const purchaseRows = [
   },
 ];
 
-export function PurchaseGuide() {
+const extendedPurchaseRows = [
+  {
+    item: "백금·은 제품",
+    standard: "백금·은 매입 시세 및 제품 상태 기준",
+    check: "순도 표기, 산화·오염 상태, 실중량 확인",
+  },
+];
+
+export function PurchaseGuide({ showExtendedRows = false }: { showExtendedRows?: boolean }) {
+  const rows = showExtendedRows ? [...purchaseRows, ...extendedPurchaseRows] : purchaseRows;
+
   return (
     <section className="border-y border-[#dfe7e5] bg-[#fbfdfc]">
       <div className="section-shell py-12 sm:py-14">
@@ -55,7 +65,7 @@ export function PurchaseGuide() {
               <p>고객이 팔 때</p>
               <p>현장 확인</p>
             </div>
-            {purchaseRows.map((row) => (
+            {rows.map((row) => (
               <div
                 key={row.item}
                 className="grid gap-4 border-t border-[#e4ebe9] px-5 py-5 text-sm leading-6 text-[#687171] sm:grid-cols-[0.92fr_0.9fr_1.18fr]"

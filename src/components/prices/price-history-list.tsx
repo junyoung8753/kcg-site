@@ -1,4 +1,4 @@
-import { formatCurrencyKRW, formatDateTimeKorean } from "@/lib/format";
+import { formatDateTimeKorean, formatWon } from "@/lib/format";
 import type { PriceHistoryEntry } from "@/types/price";
 
 interface PriceHistoryListProps {
@@ -29,9 +29,9 @@ export function PriceHistoryList({ history }: PriceHistoryListProps) {
               </div>
               <div className="text-left sm:text-right">
                 <p className="text-sm text-[var(--color-muted)]">
-                  {formatCurrencyKRW(entry.previousValue)} →{" "}
+                  {formatWon(entry.previousValue)} →{" "}
                   <span className="font-semibold text-[var(--color-ink)]">
-                    {formatCurrencyKRW(entry.newValue)}
+                    {formatWon(entry.newValue)}
                   </span>
                 </p>
                 <p

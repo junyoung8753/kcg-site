@@ -1,8 +1,16 @@
-# 한국센터금거래소 MVP
+# 한국센터금거래소 사이트
 
-서울 종로구 돈화문로6가길 12 골든타워 303호에 위치한 `(주)한국센터금거래소`의 공개 준비용 사이트입니다.
+서울 종로구 돈화문로6가길 12 골든타워 303호에 위치한 `(주)한국센터금거래소`의 단일 공개 후보 사이트입니다. 현재 사이트의 기준 표면은 `/` 하나이며, 과거 비교용 라우트는 유지하지 않습니다.
 
-현재 공개 후보는 `/`이고, `/option-1`, `/option-2`는 내부 비교 보관용 경로로 유지합니다.
+## 제품 방향
+
+KCG 사이트는 쇼핑몰보다 `시세 확인 + 전화 상담 + 방문 준비`에 집중합니다.
+
+- 첫 화면은 회사 고시 시세표, 기준 시각, 내가 살 때/팔 때 구분을 가장 먼저 보여줍니다.
+- 자동 국제 시세와 뉴스 헤드라인은 시장 흐름을 보는 보조 정보입니다.
+- 실제 거래 금액은 순도, 중량, 부속, 보증서, 실물 상태 확인 후 현장에서 최종 안내합니다.
+- KRX 금시장, 유사 투자/리딩방, 원격 선입금 거래와 혼동되지 않도록 민간 현장 상담 사이트로 안내합니다.
+- 사업자등록번호와 법적 고지는 확인 문서가 들어오기 전까지 확정 표현을 쓰지 않습니다.
 
 ## 기술 스택
 
@@ -12,51 +20,43 @@
 - Supabase(Postgres) 우선 구조
 - Vercel 배포 기준
 
-## 현재 동작 구조
-
-### 1. 회사 시세표
-- 메인 상단 시세표는 **관리자 수기 입력** 기준입니다.
-- 실제 거래가는 이 회사 시세표와 현장 확인 결과를 기준으로 안내합니다.
-
-### 2. 실시간 참고 시세
-- `METALS_DEV_API_KEY`가 있으면 **Metals.dev**로 자동 연동됩니다.
-- 키가 없으면 **Gold API 무료 실시간 현재가**를 사용합니다.
-- Gold API 무료 모드에서는 `실시간 참고 시세`로만 표시되며, `bid/ask`, `전일 대비`, `히스토리 차트`는 제공되지 않습니다.
-- 두 공급자 모두 실패하면 운영형 fallback 데이터로 내려갑니다.
-- 회사 거래 기준은 항상 상단 `회사 고시 시세표`가 우선이며, 자동 데이터는 참고용입니다.
-
-### 3. 뉴스
-- 시장 뉴스는 **Google News RSS** 기반 외부 헤드라인을 사용합니다.
-- RSS 실패 시 운영형 seed 뉴스로 자연스럽게 fallback 됩니다.
-
-### 4. 관리자
-- `/admin`에서 시세와 공지사항을 관리할 수 있습니다.
-- Supabase 미연결 상태에서는 mock/preview 모드로 동작합니다.
-- Supabase 연결 시 공개 데이터와 관리자 저장이 실제 DB 기준으로 동작합니다.
-- 시세 저장 시 `기준 시각 오래됨`, `변동폭 과다`, `매입/판매 간격 과다` 경고를 확인할 수 있습니다.
-
 ## 주요 라우트
 
-- `/` 메인
-- `/prices` 오늘의 고시 시세 / 실시간 참고 시세 / 국내 환산 참고 시세
+- `/` 메인 시세/상담 데스크
+- `/prices` 오늘의 고시 시세, 실시간 참고 시세, 국내 환산 참고 시세
 - `/announcements` 공지사항 목록
 - `/announcements/[slug]` 공지 상세
-- `/services` 취급 품목 / 상담 범위
-- `/about` 방문 전 준비 / 위치 / 운영 안내
+- `/services` 취급 품목과 상담 범위
+- `/about` 위치, 방문 준비, 운영 안내
 - `/admin/login` 관리자 로그인
+
+## 데이터 구조
+
+### 회사 고시 시세
+
+- 메인 상단 시세표는 관리자 수기 입력 기준입니다.
+- 외부 API가 회사 고시 시세를 자동으로 덮어쓰지 않습니다.
+- 실제 상담은 회사 고시 시세와 현장 확인 결과를 기준으로 안내합니다.
+
+### 자동 참고 시세
+
+- `METALS_DEV_API_KEY`가 있으면 Metals.Dev로 자동 연동됩니다.
+- 키가 없으면 Gold API 무료 현재가를 사용합니다.
+- 두 공급자 모두 실패하면 체크된 운영 seed 데이터로 내려갑니다.
+- 모든 자동 데이터는 출처와 참고용 안내를 함께 표시합니다.
+
+### 뉴스 헤드라인
+
+- Google News RSS-style URL은 제목, 출처, 날짜, 외부 링크만 표시합니다.
+- 기사 본문, 기사 이미지, 출판사 요약은 재게시하지 않습니다.
+- 운영 기준은 `docs/quality/data-source-compliance.md`를 따릅니다.
 
 ## 브랜딩 자산
 
-현재 실제 브랜드 자산을 기준으로 아래 파일이 연결되어 있습니다.
-
-- `public/brand/kcg-logo.png` : KCG 심볼
-- `public/brand/kcg-lockup.png` : 로고 + 상호 조합
-- `src/app/icon.png` : 사이트 아이콘
-
-## 운영 편의 링크
-
-- 거래안내와 footer에는 `네이버 지도`, `카카오맵`, `전화 연결` 링크가 포함되어 있습니다.
-- 사업자등록번호는 아직 확인 중 상태로 두고, 대표자명과 운영 정보 중심으로 먼저 안내합니다.
+- `public/brand/kcg-logo.png`: KCG 심볼
+- `public/brand/kcg-lockup.png`: 로고 + 상호 조합
+- `public/campaign/*.jpg`: 시세/상담/방문 안내용 캠페인 이미지
+- `src/app/icon.png`: 사이트 아이콘
 
 ## 환경 변수
 
@@ -69,20 +69,22 @@ SUPABASE_SERVICE_ROLE_KEY=
 ADMIN_PASSWORD=
 ADMIN_SESSION_SECRET=
 
-# 시장 데이터
 MARKET_DATA_PROVIDER=auto
 METALS_DEV_API_KEY=
 MARKET_DATA_REVALIDATE_SECONDS=60
+KCG_FORCE_NOINDEX=1
 ```
 
-### `MARKET_DATA_PROVIDER`
+`MARKET_DATA_PROVIDER` 값:
 
-- `auto` : Metals.dev 키가 있으면 Metals.dev, 없으면 Gold API 무료, 실패 시 fallback
-- `metals-dev` : Metals.dev 우선, 실패하면 Gold API 무료, 그 다음 fallback
-- `gold-api` : Gold API 무료 우선, 실패하면 fallback
-- `mock` : 운영형 fallback 데이터만 사용
+- `auto`: Metals.Dev 키가 있으면 Metals.Dev, 없으면 Gold API, 실패 시 seed 데이터
+- `metals-dev`: Metals.Dev 우선, 실패하면 Gold API, 그 다음 seed 데이터
+- `gold-api`: Gold API 우선, 실패하면 seed 데이터
+- `mock`: seed 데이터만 사용
 
-## 실행 방법
+`KCG_FORCE_NOINDEX=1`은 공개 launch 승인 전 검색 색인을 막기 위한 설정입니다. 실제 공개 도메인과 검색 허용은 사업자등록번호, 관리자 비밀번호, 법적 안내 문구, 운영 데이터가 확정된 뒤 승인받고 변경합니다.
+
+## 로컬 실행
 
 가장 쉬운 방법은 `바로실행.cmd`를 실행하는 것입니다.
 
@@ -100,35 +102,49 @@ cmd /c npm.cmd run start
 - `http://127.0.0.1:3000/prices`
 - `http://127.0.0.1:3000/admin/login`
 
-## 관리자 계정
+## 관리자
 
 - 로컬 기본 관리자 비밀번호: `gold-demo-2026`
-- preview 배포 비밀번호: `0000`
+- 배포 환경에서는 `ADMIN_PASSWORD`와 `ADMIN_SESSION_SECRET`을 Vercel 환경 변수로 설정합니다.
+- Supabase 미연결 상태에서는 seed 데이터 기반으로 읽기/관리 화면이 동작합니다.
+- Supabase 연결 시 공개 데이터와 관리자 저장이 실제 DB 기준으로 동작합니다.
 
-## Preview 배포
+## 검증
 
-현재 preview는 일반 브라우저에서 열 수 있지만 검색 차단 상태입니다.
+코드 변경 후 기본 검증:
 
-- 전체 페이지 `noindex, nofollow`
-- `robots.txt` 전체 차단
-- `/admin` 검색 제외 유지
-- Vercel SSO Deployment Protection은 ordinary browser review를 위해 꺼져 있습니다.
+```bash
+cmd /c npm.cmd run lint
+cmd /c npm.cmd run typecheck
+cmd /c npm.cmd run audit:site
+cmd /c npm.cmd run build
+cmd /c npm.cmd run test:site
+cmd /c npm.cmd audit --audit-level=moderate
+```
 
-최종 공개 전에는 아래 항목을 실제 값으로 교체해야 합니다.
+시각 변경 후 추가 검증:
 
-- 사업자등록번호
-- 강한 관리자 비밀번호
-- 실제 도메인 연결
+```bash
+cmd /c npm.cmd run screenshot:site
+```
+
+렌더링된 로컬 서버까지 함께 확인하려면:
+
+```powershell
+$env:SITE_AUDIT_URL="http://127.0.0.1:3000"; npm run audit:site
+```
+
+헬스 체크:
+
+- `/api/health`
+
+`/api/health`에는 데이터 공급자, 출처 URL, 약관 URL, stale 여부, headline 출처 정보가 포함됩니다.
 
 ## Cloud 작업 재개
 
-이 repo가 Codex Cloud / 새 PC 작업 기준입니다.
-자세한 흐름은 `docs/setup/continue-anywhere.md`를 기준으로 봅니다.
-헷갈리지 않게 클라우드 한 곳에서만 작업하려면 `docs/setup/CLOUD_ONLY_WORKFLOW.md`를 우선 봅니다. 이 경우 새 컴퓨터에서 PowerShell bootstrap은 필수가 아닙니다.
+이 repo가 Codex Cloud / 새 PC 작업 기준입니다. 자세한 흐름은 `docs/setup/continue-anywhere.md`와 `docs/setup/CLOUD_ONLY_WORKFLOW.md`를 기준으로 봅니다.
 
-새 PC 또는 새 로컬 checkout에서는 먼저 아래 점검 스크립트를 실행합니다.
-
-가장 쉬운 한 줄 실행:
+새 PC 또는 새 local checkout에서:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "iwr -UseBasicParsing https://raw.githubusercontent.com/junyoung8753/kcg-site/main/scripts/Start-KcgContinuation.ps1 -OutFile $env:TEMP\Start-KcgContinuation.ps1; & $env:TEMP\Start-KcgContinuation.ps1"
@@ -140,75 +156,15 @@ repo 폴더 안에서는:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\check-continuation.ps1 -Install -PullVercel
 ```
 
-```bash
-git clone https://github.com/junyoung8753/kcg-site.git
-cd kcg-site
-npm ci
-vercel link --yes --project kcg-confirm-preview
-vercel pull --yes
-npm run lint
-npm run typecheck
-npm run audit:site
-npm run build
-npm run compare:source
-npm run test:site
-npm run screenshot:site
-npm audit --audit-level=moderate
-```
-
 주의:
 
 - `.env*`, `.vercel`, 관리자 비밀번호, Supabase service role key는 git에 올리지 않습니다.
-- production alias 변경 전에는 먼저 preview 배포로 확인합니다.
-- 검색 차단 상태를 해제하거나 실제 도메인을 연결하려면 사업자등록번호, 관리자 비밀번호, 법적 안내 문구를 먼저 확정해야 합니다.
+- production 배포, stable alias 변경, 검색 색인 허용은 명확한 승인 후 진행합니다.
 - 프로젝트 작업 규칙은 `AGENTS.md`를 우선 확인합니다.
-
-## 검증
-
-```bash
-cmd /c npm.cmd run lint
-cmd /c npm.cmd run typecheck
-cmd /c npm.cmd run audit:site
-cmd /c npm.cmd run build
-cmd /c npm.cmd run compare:source
-cmd /c npm.cmd run test:site
-cmd /c npm.cmd run screenshot:site
-cmd /c npm.cmd audit --audit-level=moderate
-```
-
-헬스 체크:
-
-- `/api/health`
-
-현재 `/api/health`에는 아래 상태가 포함됩니다.
-
-- `marketProvider`
-- `marketSourceName`
-- `marketSourceTier`
-- `marketStatus`
-- `marketDisplayMode`
-- `marketUpgradeReadyProvider`
-- `marketUpdatedAt`
-- `marketIsStale`
-- `marketStaleMinutes`
-- `headlineSource`
-
-사이트 복원/시각 QA 체크:
-
-- `npm run audit:site`는 캠페인 이미지, 모바일 헤더 CTA, 모바일 하단 CTA, 서비스 문구, 시세표 핵심 문구가 코드에서 빠지지 않았는지 확인합니다.
-- `npm run compare:source`는 빌드된 로컬 사이트를 `https://kcg-confirm-preview.vercel.app/`와 비교해 텍스트, H1, 이미지, 링크 차이를 `output/source-parity`에 기록합니다. 현재 안정 URL을 원본으로 복구할지, 로컬 개선본을 새 기준으로 삼을지 결정할 때 사용합니다.
-- 렌더링된 페이지까지 함께 확인하려면 로컬 서버 실행 후 PowerShell에서 `$env:SITE_AUDIT_URL="http://localhost:3000"; npm run audit:site`를 실행합니다.
-- `npm run test:site`는 빌드된 사이트를 Chromium에서 열고 모바일/데스크톱 CTA, 캠페인 이미지 로딩, 핵심 라우트, 가로 overflow를 확인합니다. 먼저 `npm run build`를 실행해야 합니다.
-- `npm run screenshot:site`는 로컬 빌드 서버를 띄워 `output/screenshots`에 모바일/데스크톱 핵심 화면을 저장합니다.
-- GitHub Actions `Site Quality`는 `main` push와 pull request에서 lint, typecheck, site audit, build, browser tests, screenshots, npm audit를 실행합니다.
-- Vercel preview는 현재 일반 브라우저 요청으로 검증할 수 있습니다. 나중에 Deployment Protection을 다시 켜면 preview 응답 검증은 `vercel curl` 또는 인증된 브라우저 세션으로 확인합니다.
-- 시각 변경 후에는 `output/screenshots/home-mobile.png`와 데스크톱 주요 라우트 스크린샷을 함께 확인합니다.
-- 반복 누락의 원인과 재발 방지 기준은 `docs/quality/agent-quality-system.md`에 정리되어 있습니다.
 
 ## 현재 상태 메모
 
 - 대표자명은 `홍연호`, 운영시간은 `평일 09:00 - 18:30` 기준으로 반영했습니다.
-- 사업자등록번호는 확인 전까지 placeholder 상태로 유지합니다.
-- 법적 정보는 확정 문서가 들어오기 전까지 운영 안내 중심 문구로 유지합니다.
-- 회사 시세표를 외부 API가 자동으로 덮어쓰지 않도록 분리 설계되어 있습니다.
-- Metals.dev 키가 나중에 추가되면 별도 코드 수정 없이 더 풍부한 실시간 참고 시세로 자동 승격됩니다.
+- 사업자등록번호는 확인 전까지 `확인 중` 상태로 유지합니다.
+- 회사 시세표와 자동 참고 시세는 분리되어 있습니다.
+- Metals.Dev 키가 추가되면 별도 코드 수정 없이 더 풍부한 실시간 참고 시세로 승격됩니다.

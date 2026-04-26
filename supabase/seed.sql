@@ -63,13 +63,18 @@ insert into products (
   short_description,
   description,
   image_url,
+  specs,
   status,
+  display_order,
+  is_featured,
   price_visible,
-  price_note
+  price_label,
+  price_note,
+  public_note
 )
 values
-  ('gold_bar', '투자용 골드바 상담', 'investment-gold-bar-consulting', '중량별 실물 골드바 상담 및 수급 안내', '실시간 재고와 공급 가능 수량은 상담 후 안내합니다. 대량 매입 또는 보관 상담이 필요한 고객을 위한 기본 구조입니다.', null, 'coming_soon', false, '시세와 수급 상황에 따라 상담 후 확정됩니다.'),
-  ('purchase_guide', '귀금속 매입 안내', 'purchase-guide', '현장 감정, 계근, 정산 절차 안내', '개인 고객과 사업자 모두를 위한 매입 절차 안내 구조입니다. 상품이 적어도 서비스 페이지가 비어 보이지 않도록 핵심 역할을 합니다.', null, 'active', false, '매입 금액은 당일 고시 시세와 감정 결과로 최종 확정됩니다.')
+  ('gold_bar', '투자용 골드바 상담', 'investment-gold-bar-consulting', '중량별 실물 골드바 상담 및 수급 안내', '실시간 재고와 공급 가능 수량은 상담 후 안내합니다. 대량 매입 또는 보관 상담이 필요한 고객을 위한 기본 구조입니다.', null, array['1돈·5돈·10돈 문의', '브랜드·포장 상태 확인', '대량·법인 수량 사전 문의'], 'active', 10, true, false, '고시 시세 기준 문의', '시세와 수급 상황에 따라 상담 후 확정됩니다.', '온라인 결제 없이 대표번호 상담 후 수급 가능 여부를 안내합니다.'),
+  ('purchase_guide', '귀금속 매입 안내', 'purchase-guide', '현장 감정, 계근, 정산 절차 안내', '개인 고객과 사업자 모두를 위한 매입 절차 안내 구조입니다. 상품이 적어도 서비스 페이지가 비어 보이지 않도록 핵심 역할을 합니다.', null, array['신분증 지참', '보증서·영수증 지참 권장', '현장 계근·순도 확인'], 'active', 40, false, false, '당일 고시 시세 기준', '매입 금액은 당일 고시 시세와 감정 결과로 최종 확정됩니다.', '최종 금액은 실물 확인 후 현장에서 안내합니다.')
 on conflict (slug) do update
 set
   category = excluded.category,
@@ -77,7 +82,12 @@ set
   short_description = excluded.short_description,
   description = excluded.description,
   image_url = excluded.image_url,
+  specs = excluded.specs,
   status = excluded.status,
+  display_order = excluded.display_order,
+  is_featured = excluded.is_featured,
   price_visible = excluded.price_visible,
+  price_label = excluded.price_label,
   price_note = excluded.price_note,
+  public_note = excluded.public_note,
   updated_at = now();

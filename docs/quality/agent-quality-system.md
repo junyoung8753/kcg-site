@@ -9,8 +9,10 @@ The missed campaign slider and mobile CTA defects were not caused by a build pro
 - Route checks proved that pages returned `200`, but not that the right business-critical UI was present.
 - Screenshots existed, but the verification step did not define what must be present in them.
 - Desktop checks happened before mobile checks, even though the defects were mostly mobile-specific.
-- Source-site restoration work did not have a manifest of required assets, labels, and conversion controls.
+- Visual restoration and launch-candidate cleanup work did not have a manifest of required assets, labels, and conversion controls.
 - A helper named `2-preview-deploy.cmd` previously contained `--prod`, which created a naming/behavior mismatch.
+- Codex Cloud readiness checks were treated like normal implementation work even though a no-diff Cloud task can be hard to inspect from the local CLI and Playwright browser failures may be caused by missing Linux system libraries rather than site code.
+- Competitor benchmarking was treated too much like a home-screen visual comparison, which missed subpage structure, forms, price wording, scripts, and network/API behavior.
 
 ## Root Cause
 
@@ -20,26 +22,41 @@ The deeper root cause is process design: AI agents can produce plausible results
 
 ## Controls
 
-- `npm run audit:site` checks source files, campaign assets, CTA labels, business wording, and optional rendered-route content.
-- `npm run test:site` opens the built site in Chromium and verifies mobile/desktop conversion UI, campaign image loading, service wording, route content, and horizontal overflow.
+- `npm run audit:site` checks source files, campaign assets, CTA labels, business wording, single-site discipline, and optional rendered-route content.
+- `npm run test:site` opens the built site in Chromium and verifies mobile/desktop conversion UI, campaign image loading, service wording, route content, horizontal overflow, and visible element protrusion beyond the mobile viewport.
 - `npm run screenshot:site` captures local built-site screenshots into `output/screenshots` so manual inspection is not accidentally performed against a protected login page.
+- `docs/quality/product-experience-rubric.md` records the KCG-specific product intent, design direction, UX priorities, and high-risk content rules that should guide future UI decisions.
+- `docs/quality/ai-site-production-playbook.md` records how to prompt and run AI site-building work for KCG: context pack first, product surface and user moment second, KCG constraints always, then acceptance criteria, browser evidence, scoring, and durable guardrails.
 - GitHub Actions `Site Quality` runs the same local quality gates on `main` pushes and pull requests without deploying to production.
 - `npm run lint`, `npm run typecheck`, `npm run build`, and `npm audit --audit-level=moderate` remain mandatory after code changes.
 - Preview deployments are intentionally open for ordinary browser review while noindex/robots search-blocking remains active. If deployment protection is re-enabled, test protected previews with `vercel curl`.
 - Production alias changes, search indexing, real trading/payment/admin/security changes, and destructive data operations still require explicit user approval.
+- Codex Cloud diagnostics must be timeboxed. If a Cloud task returns no inspectable diff or fails because of browser/system dependencies, switch to local verification or CI, then record the exact Cloud setup issue instead of changing app UI, fonts, assets, or route logic to bypass the environment.
+- Temporary Cloud diagnostic files such as `zz-*-delete-me.md` are evidence only. Do not apply, merge, or treat them as product changes.
+- Benchmark-driven work must inspect more than the first screen. The minimum useful pass records site map, price labels, product/service/detail pages, branch/contact/FAQ/policy pages, forms, script/network/API sources, and explicit KCG use/do-not-use decisions.
 
-## Required Flow For Visual Or Source-Parity Work
+## Required Flow For Visual Or Launch-Candidate Work
 
 1. Capture the target outcome as a checklist: assets, text, routes, CTAs, responsive states, and protected behaviors.
-2. Update or add deterministic checks before claiming completion.
-3. Run static checks, build, browser checks, and route checks.
-4. Run `npm run screenshot:site` and inspect at least one mobile screenshot and one desktop screenshot when the UI changes.
-5. If a miss is found, add the smallest durable guardrail that would have caught it.
+2. Load the KCG AI site production playbook so the prompt shape includes product surface, context of use, KCG constraints, acceptance criteria, and browser evidence.
+3. Update or add deterministic checks before claiming completion.
+4. Run static checks, build, browser checks, and route checks.
+5. Run `npm run screenshot:site` and inspect at least one mobile screenshot and one desktop screenshot when the UI changes.
+6. If a miss is found, add the smallest durable guardrail that would have caught it.
+
+## Required Flow For Competitor Benchmark Work
+
+1. Crawl or manually inspect representative subpages, not just the home page.
+2. Record route categories, headings, forms, tables, and network/API/chart/feed calls.
+3. Separate patterns worth adapting from content/data/assets that must not be copied.
+4. Update `docs/research/*` and `docs/quality/data-source-compliance.md` when the finding changes KCG decisions.
+5. Add a rendered UI check or source audit check for the KCG improvement that came from the benchmark.
 
 ## What Not To Do
 
 - Do not rely on "looks okay" without an explicit oracle.
-- Do not treat route `200` as visual parity.
+- Do not treat route `200` as visual completeness.
+- Do not treat document-level overflow checks as enough; a nested wide table can still look broken on mobile.
 - Do not add broad instructions when a script or test can enforce the behavior.
 - Do not weaken search-blocking, production safeguards, credential rules, or trading/payment/admin safeguards to reduce friction.
 - Do not keep stale helper scripts whose names imply a safer behavior than they actually perform.

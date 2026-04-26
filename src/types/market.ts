@@ -73,6 +73,9 @@ export interface MarketDashboardData {
   updatedAt: string;
   source: MarketProvider;
   sourceName: string;
+  sourceUrl: string;
+  sourceTermsUrl?: string;
+  sourceAttribution: string;
   sourceTier: MarketSourceTier;
   status: MarketStatus;
   providerLabel: string;
@@ -83,4 +86,7 @@ export interface MarketDashboardData {
   isStale: boolean;
   staleMinutes: number;
   headlineSource: "google-news-rss" | "seed";
+  headlineSourceName: string;
+  headlineSourceUrl?: string;
+  headlineAttribution: string;
 }

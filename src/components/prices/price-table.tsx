@@ -1,4 +1,4 @@
-import { formatCurrencyKRW, formatDateTimeKorean } from "@/lib/format";
+import { formatDateTimeKorean, formatWon } from "@/lib/format";
 import { getPriceReferenceLabel, getPriceTradeGuide } from "@/lib/price-presenter";
 import type { PriceRecord } from "@/types/price";
 
@@ -8,6 +8,10 @@ interface PriceTableProps {
 }
 
 export function PriceTable({ prices, compact = false }: PriceTableProps) {
+  const units = Array.from(new Set(prices.map((price) => price.unit))).filter(Boolean);
+  const hasOneUnit = units.length === 1;
+  const postedPriceLabel = hasOneUnit ? `고시가 / ${units[0]} 기준` : "고시가 / 품목별 기준";
+
   return (
     <div className="thin-panel overflow-hidden rounded-[2rem]">
       <div className="md:hidden">
@@ -22,12 +26,16 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
                   {getPriceTradeGuide(price.category)}
                 </span>
               </div>
-              <p className="shrink-0 text-right text-xl font-semibold tracking-[-0.05em] text-[var(--color-ink)]">
-                {formatCurrencyKRW(price.value)}
-              </p>
+              <div className="shrink-0 text-right">
+                <p className="text-[11px] font-semibold tracking-[0.08em] text-[var(--color-muted)]">
+                  고시가 / {price.unit} 기준
+                </p>
+                <p className="mt-1 text-xl font-semibold tracking-[-0.05em] text-[var(--color-ink)]">
+                  {formatWon(price.value)}
+                </p>
+              </div>
             </div>
             <div className="mt-4 grid gap-2 text-sm leading-6 text-[var(--color-muted)]">
-              <p>단위: {price.unit}</p>
               <p>기준 시각: {formatDateTimeKorean(price.announcedAt)}</p>
               {!compact ? <p>{price.note || "상담 후 안내"}</p> : null}
             </div>
@@ -41,8 +49,7 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
             <tr className="border-b border-[var(--color-line)] bg-[rgba(255,255,255,0.7)] text-left text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">
               <th className="px-5 py-4">종류</th>
               <th className="px-5 py-4">거래 기준</th>
-              <th className="px-5 py-4">고시가</th>
-              {!compact && <th className="px-5 py-4">단위</th>}
+              <th className="px-5 py-4">{postedPriceLabel}</th>
               <th className="px-5 py-4">기준 시각</th>
               {!compact && <th className="px-5 py-4">안내</th>}
             </tr>
@@ -66,13 +73,11 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
                   </span>
                 </td>
                 <td className="px-5 py-5 align-top text-lg font-semibold text-[var(--color-ink)]">
-                  {formatCurrencyKRW(price.value)}
+                  <p>{formatWon(price.value)}</p>
+                  {!hasOneUnit ? (
+                    <p className="mt-1 text-xs font-medium text-[var(--color-muted)]">{price.unit} 기준</p>
+                  ) : null}
                 </td>
-                {!compact && (
-                  <td className="px-5 py-5 align-top text-sm text-[var(--color-muted)]">
-                    {price.unit}
-                  </td>
-                )}
                 <td className="px-5 py-5 align-top text-sm text-[var(--color-muted)]">
                   {formatDateTimeKorean(price.announcedAt)}
                 </td>

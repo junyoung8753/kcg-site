@@ -1,4 +1,4 @@
-import { formatCurrencyKRW } from "@/lib/format";
+import { formatWon } from "@/lib/format";
 import { getPriceLineLabel } from "@/lib/price-presenter";
 import { getPriceTrends, getTrendSummary } from "@/lib/price-trends";
 import { cn } from "@/lib/utils";
@@ -105,7 +105,7 @@ export function PriceTrendGrid({
                       : "text-2xl text-[var(--color-ink)]",
                   )}
                 >
-                  {formatCurrencyKRW(price.value)}
+                  {formatWon(price.value)}
                 </p>
               </div>
               <div className="text-right">
@@ -133,8 +133,8 @@ export function PriceTrendGrid({
             </div>
 
             <div className={cn("mt-3 flex items-center justify-between text-xs", textMuted)}>
-              <span>저점 {formatCurrencyKRW(summary.min)}</span>
-              <span>고점 {formatCurrencyKRW(summary.max)}</span>
+              <span>저점 {formatWon(summary.min)}</span>
+              <span>고점 {formatWon(summary.max)}</span>
             </div>
           </div>
         );

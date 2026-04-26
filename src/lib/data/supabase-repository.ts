@@ -5,7 +5,7 @@ import type {
 } from "@/types/announcement";
 import type { RepositoryMutationResult } from "@/types/admin";
 import type { PriceHistoryEntry, PriceRecord, UpdatePriceInput } from "@/types/price";
-import type { Product } from "@/types/product";
+import type { Product, ProductUpsertInput } from "@/types/product";
 import type { SiteRepository } from "./repository";
 
 type SupabasePriceRow = {
@@ -55,9 +55,14 @@ type SupabaseProductRow = {
   short_description: string;
   description: string;
   image_url: string | null;
+  specs: string[] | null;
   status: Product["status"];
+  display_order: number | null;
+  is_featured: boolean | null;
   price_visible: boolean;
+  price_label: string | null;
   price_note: string | null;
+  public_note: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -116,9 +121,14 @@ function mapProduct(row: SupabaseProductRow): Product {
     shortDescription: row.short_description,
     description: row.description,
     imageUrl: row.image_url,
+    specs: row.specs ?? [],
     status: row.status,
+    displayOrder: row.display_order ?? 0,
+    isFeatured: row.is_featured ?? false,
     priceVisible: row.price_visible,
+    priceLabel: row.price_label ?? "전화 문의",
     priceNote: row.price_note,
+    publicNote: row.public_note,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -199,7 +209,7 @@ export class SupabaseRepository implements SiteRepository {
 
   async getProducts(options?: { includeHidden?: boolean }) {
     const client = getSupabaseAdminClient();
-    let query = client.from("products").select("*").order("created_at", { ascending: false });
+    let query = client.from("products").select("*").order("display_order", { ascending: true });
 
     if (!options?.includeHidden) {
       query = query.neq("status", "hidden");
@@ -329,6 +339,50 @@ export class SupabaseRepository implements SiteRepository {
     return {
       success: true,
       message: "공지사항이 삭제되었습니다.",
+      mode: "supabase",
+    } satisfies RepositoryMutationResult;
+  }
+
+  async upsertProduct(input: ProductUpsertInput) {
+    const client = getSupabaseAdminClient();
+    const payload = {
+      category: input.category,
+      name: input.name,
+      slug: input.slug,
+      short_description: input.shortDescription,
+      description: input.description,
+      image_url: input.imageUrl,
+      specs: input.specs,
+      status: input.status,
+      display_order: input.displayOrder,
+      is_featured: input.isFeatured,
+      price_visible: input.priceVisible,
+      price_label: input.priceLabel,
+      price_note: input.priceNote,
+      public_note: input.publicNote,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (input.id) {
+      const { error } = await client.from("products").update(payload).eq("id", input.id);
+
+      if (error) {
+        throw error;
+      }
+    } else {
+      const { error } = await client.from("products").insert({
+        ...payload,
+        created_at: new Date().toISOString(),
+      });
+
+      if (error) {
+        throw error;
+      }
+    }
+
+    return {
+      success: true,
+      message: "상품 정보가 저장되었습니다.",
       mode: "supabase",
     } satisfies RepositoryMutationResult;
   }

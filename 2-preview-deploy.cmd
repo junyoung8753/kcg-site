@@ -8,6 +8,20 @@ set "PROJECT_NAME=kcg-confirm-preview"
 set "LAST_URL_FILE=%cd%\.vercel-last-url.txt"
 set "SITE_URL=https://kcg-confirm-preview.vercel.app"
 
+if not defined KCG_PREVIEW_ADMIN_PASSWORD (
+  echo KCG_PREVIEW_ADMIN_PASSWORD is not set.
+  echo Set it in this terminal before running this preview deploy script.
+  pause
+  exit /b 1
+)
+
+if not defined KCG_PREVIEW_ADMIN_SESSION_SECRET (
+  echo KCG_PREVIEW_ADMIN_SESSION_SECRET is not set.
+  echo Set it in this terminal before running this preview deploy script.
+  pause
+  exit /b 1
+)
+
 if not exist ".vercel-cli\node_modules\vercel\dist\index.js" (
   echo Installing local Vercel CLI...
   call npm.cmd install --prefix .vercel-cli --ignore-scripts --no-package-lock vercel@latest
@@ -51,12 +65,12 @@ node .vercel-cli\node_modules\vercel\dist\index.js ^
   --format json ^
   --build-env KCG_FORCE_NOINDEX=1 ^
   --build-env NEXT_PUBLIC_SITE_URL=%SITE_URL% ^
-  --build-env ADMIN_PASSWORD=0000 ^
-  --build-env ADMIN_SESSION_SECRET=kcg-confirm-preview-session-2026-04-20-seoul ^
+  --build-env ADMIN_PASSWORD=%KCG_PREVIEW_ADMIN_PASSWORD% ^
+  --build-env ADMIN_SESSION_SECRET=%KCG_PREVIEW_ADMIN_SESSION_SECRET% ^
   --env KCG_FORCE_NOINDEX=1 ^
   --env NEXT_PUBLIC_SITE_URL=%SITE_URL% ^
-  --env ADMIN_PASSWORD=0000 ^
-  --env ADMIN_SESSION_SECRET=kcg-confirm-preview-session-2026-04-20-seoul ^
+  --env ADMIN_PASSWORD=%KCG_PREVIEW_ADMIN_PASSWORD% ^
+  --env ADMIN_SESSION_SECRET=%KCG_PREVIEW_ADMIN_SESSION_SECRET% ^
   > "%LAST_URL_FILE%"
 
 if errorlevel 1 (
@@ -88,10 +102,10 @@ echo.
 echo Preview URL:
 echo %DEPLOY_URL%
 echo.
-echo Main compare hub : %DEPLOY_URL%
-echo Option 1         : %DEPLOY_URL%/option-1
-echo Option 2         : %DEPLOY_URL%/option-2
-echo Admin login      : %DEPLOY_URL%/admin/login
-echo Admin password   : 0000
+echo Site URL        : %DEPLOY_URL%
+echo Prices          : %DEPLOY_URL%/prices
+echo Services        : %DEPLOY_URL%/services
+echo Admin login     : %DEPLOY_URL%/admin/login
+echo Admin password  : use the KCG_PREVIEW_ADMIN_PASSWORD value from this terminal
 echo.
 pause
