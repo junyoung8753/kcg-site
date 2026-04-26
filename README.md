@@ -141,6 +141,7 @@ npm run lint
 npm run typecheck
 npm run audit:site
 npm run build
+npm run compare:source
 npm run test:site
 npm run screenshot:site
 npm audit --audit-level=moderate
@@ -160,6 +161,7 @@ cmd /c npm.cmd run lint
 cmd /c npm.cmd run typecheck
 cmd /c npm.cmd run audit:site
 cmd /c npm.cmd run build
+cmd /c npm.cmd run compare:source
 cmd /c npm.cmd run test:site
 cmd /c npm.cmd run screenshot:site
 cmd /c npm.cmd audit --audit-level=moderate
@@ -185,6 +187,7 @@ cmd /c npm.cmd audit --audit-level=moderate
 사이트 복원/시각 QA 체크:
 
 - `npm run audit:site`는 캠페인 이미지, 모바일 헤더 CTA, 모바일 하단 CTA, 서비스 문구, 시세표 핵심 문구가 코드에서 빠지지 않았는지 확인합니다.
+- `npm run compare:source`는 빌드된 로컬 사이트를 `https://kcg-confirm-preview.vercel.app/`와 비교해 텍스트, H1, 이미지, 링크 차이를 `output/source-parity`에 기록합니다. 현재 안정 URL을 원본으로 복구할지, 로컬 개선본을 새 기준으로 삼을지 결정할 때 사용합니다.
 - 렌더링된 페이지까지 함께 확인하려면 로컬 서버 실행 후 PowerShell에서 `$env:SITE_AUDIT_URL="http://localhost:3000"; npm run audit:site`를 실행합니다.
 - `npm run test:site`는 빌드된 사이트를 Chromium에서 열고 모바일/데스크톱 CTA, 캠페인 이미지 로딩, 핵심 라우트, 가로 overflow를 확인합니다. 먼저 `npm run build`를 실행해야 합니다.
 - `npm run screenshot:site`는 로컬 빌드 서버를 띄워 `output/screenshots`에 모바일/데스크톱 핵심 화면을 저장합니다.

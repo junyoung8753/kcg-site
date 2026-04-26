@@ -9,6 +9,7 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "audit:site": "node scripts/audit-site-fidelity.mjs",
+    "compare:source": "node scripts/compare-source-url.mjs",
     "test:site": "playwright test",
     "screenshot:site": "node scripts/capture-site-screenshots.mjs"
   },

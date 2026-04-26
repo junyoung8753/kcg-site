@@ -38,8 +38,10 @@ Do not store or share URLs containing `_vercel_jwt` or `_vercel_jwe` query param
 
 Current handoff rule:
 
-- Treat `https://kcg-confirm-preview.vercel.app/` as the preserved company-facing reference until the original company-PC local workspace has been scanned and compared.
-- Do not promote a newer preview to the stable URL just because it is newer. Promote only after the user accepts the current GitHub `main` as the review baseline, or after company-PC recovery confirms no important differences remain.
+- Treat `https://kcg-confirm-preview.vercel.app/` as the source reference for the company-facing site.
+- The user clarified on 2026-04-26 that separate company-PC local recovery is not required because the company-PC work was automatically reflected to the stable URL.
+- Do not promote a newer preview to the stable URL just because it is newer. Promote only after `main` has been intentionally accepted as the review baseline or after source parity against the stable URL has been restored and verified.
+- To measure parity, run `npm run build` and then `npm run compare:source`. The report is written under `output/source-parity`, which is intentionally not committed.
 
 ## First Setup On A New Computer
 
@@ -75,37 +77,16 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\check-continua
 
 Use `-PullVercel` only after Vercel CLI login has been completed on that computer. The command links this folder to `kcg-confirm-preview` and pulls project settings/env values through the official Vercel CLI without committing them.
 
-## Recover The Original Company-PC Work
+## Source URL Recovery
 
-If the original Codex thread was local-only on another computer, the thread itself may not appear here. The work is recoverable only if the original files still exist on that computer or were pushed to GitHub.
-
-On the company computer, use this repo as the baseline and scan for older/local KCG copies:
+If the old Codex thread is missing, use the stable deployed site as the observable source reference:
 
 ```powershell
-git clone https://github.com/junyoung8753/kcg-site.git
-cd kcg-site
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\find-kcg-workspaces.ps1
+npm run build
+npm run compare:source
 ```
 
-For any candidate folder that looks newer than this repo, check:
-
-```powershell
-cd "C:\path\to\candidate"
-git status
-git remote -v
-git log --oneline -5
-```
-
-If the candidate has useful unpushed work, push it to a branch instead of overwriting `main`:
-
-```powershell
-git switch -c company-pc-recovery
-git add .
-git commit -m "Recover company PC KCG work"
-git push -u origin company-pc-recovery
-```
-
-Then review and merge from GitHub or ask Codex to compare `company-pc-recovery` against `main`.
+This compares the local build against `https://kcg-confirm-preview.vercel.app/` across the critical routes and records screenshots plus `output/source-parity/parity-report.json`. A non-zero exit means the local repo is not yet source-identical. Decide whether to restore parity first or intentionally accept the local repo as the improved baseline before changing the stable Vercel alias.
 
 ## Daily Local Flow
 
@@ -124,6 +105,7 @@ npm run lint
 npm run typecheck
 npm run audit:site
 npm run build
+npm run compare:source
 npm run test:site
 git status
 git add .
