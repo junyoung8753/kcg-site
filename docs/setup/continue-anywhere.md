@@ -16,6 +16,26 @@ This repo is the source of truth for the KCG site. Chat threads are useful conte
 - Codex chat history is not the reliable project state. Important decisions should be committed as docs, TODOs, issues, or PR descriptions.
 - OAuth sessions for Codex, GitHub, Vercel, Google, Figma, and Notion may need one-time login per computer.
 
+## Why Vercel URLs Look Complicated
+
+Vercel creates a unique deployment URL every time the site is deployed, for example:
+
+```text
+https://kcg-confirm-preview-<random-id>-junyoung8753-2361s-projects.vercel.app
+```
+
+Those URLs are normal deployment snapshots. They are useful for comparing a specific build, but they are not the main working source.
+
+The stable review URL is:
+
+```text
+https://kcg-confirm-preview.vercel.app/
+```
+
+That stable URL is an alias. If the alias points to an older production deployment while newer preview deployments exist, the site can look "split" even though the code is not split. Before important visual review, inspect the alias and the latest preview deployment and make sure they point to the intended version.
+
+Do not store or share URLs containing `_vercel_jwt` or `_vercel_jwe` query parameters. They are temporary deployment-protection session URLs, not durable project links.
+
 ## First Setup On A New Computer
 
 Install or verify these tools:
@@ -49,6 +69,38 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\check-continua
 ```
 
 Use `-PullVercel` only after Vercel CLI login has been completed on that computer. The command links this folder to `kcg-confirm-preview` and pulls project settings/env values through the official Vercel CLI without committing them.
+
+## Recover The Original Company-PC Work
+
+If the original Codex thread was local-only on another computer, the thread itself may not appear here. The work is recoverable only if the original files still exist on that computer or were pushed to GitHub.
+
+On the company computer, use this repo as the baseline and scan for older/local KCG copies:
+
+```powershell
+git clone https://github.com/junyoung8753/kcg-site.git
+cd kcg-site
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\find-kcg-workspaces.ps1
+```
+
+For any candidate folder that looks newer than this repo, check:
+
+```powershell
+cd "C:\path\to\candidate"
+git status
+git remote -v
+git log --oneline -5
+```
+
+If the candidate has useful unpushed work, push it to a branch instead of overwriting `main`:
+
+```powershell
+git switch -c company-pc-recovery
+git add .
+git commit -m "Recover company PC KCG work"
+git push -u origin company-pc-recovery
+```
+
+Then review and merge from GitHub or ask Codex to compare `company-pc-recovery` against `main`.
 
 ## Daily Local Flow
 
@@ -144,6 +196,18 @@ vercel --scope junyoung8753-2361s-projects
 
 Production deployment or alias changes require explicit approval. Keep noindex/search blocking until public launch approval.
 
+To see what the stable URL currently points to:
+
+```powershell
+vercel inspect https://kcg-confirm-preview.vercel.app --scope junyoung8753-2361s-projects
+```
+
+To list recent preview/production snapshots:
+
+```powershell
+vercel ls kcg-confirm-preview --scope junyoung8753-2361s-projects
+```
+
 ## GitHub Flow
 
 Use GitHub as the shared source of truth:
@@ -163,4 +227,3 @@ Current repo visibility is public. If the site work should be private, change vi
 - Need another physical computer: clone GitHub repo, log in once to GitHub/Vercel/Codex, then run the continuation script.
 - Need to show the site to someone: use Vercel preview URL, not GitHub.
 - Need to preserve work before switching machines: commit and push.
-
