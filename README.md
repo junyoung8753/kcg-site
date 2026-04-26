@@ -123,6 +123,13 @@ cmd /c npm.cmd run start
 ## Cloud 작업 재개
 
 이 repo가 Codex Cloud / 새 PC 작업 기준입니다.
+자세한 흐름은 `docs/setup/continue-anywhere.md`를 기준으로 봅니다.
+
+새 PC 또는 새 로컬 checkout에서는 먼저 아래 점검 스크립트를 실행합니다.
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\check-continuation.ps1 -Install -PullVercel
+```
 
 ```bash
 git clone https://github.com/junyoung8753/kcg-site.git

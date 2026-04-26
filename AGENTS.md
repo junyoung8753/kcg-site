@@ -3,6 +3,7 @@
 - This repository is the working source for `https://kcg-confirm-preview.vercel.app/`.
 - Vercel project: `kcg-confirm-preview`.
 - GitHub repo: `junyoung8753/kcg-site`.
+- For local, cloud, or cross-computer continuation, follow `docs/setup/continue-anywhere.md` and use `scripts/check-continuation.ps1` for repeatable setup checks.
 - Use Korean UI/copy by default. Preserve exact business facts unless the user provides updated source documents.
 - Treat prices, trading language, legal business information, admin authentication, and production deployment as high-risk. Do not invent official prices, business registration numbers, compliance claims, or live trading/payment behavior.
 - Keep the company posted price table separate from automatic market-reference data. External APIs must not overwrite company prices.
