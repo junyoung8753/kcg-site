@@ -23,5 +23,6 @@
   - `npm audit --audit-level=moderate`
 - For visual or route changes, also verify at least `/`, `/prices`, `/announcements`, `/services`, `/about`, `/admin/login`, and `/api/health` with browser screenshots or equivalent route checks. `npm run test:site` covers the default local browser path after `npm run build`.
 - For source-site restoration or visual parity work, explicitly verify campaign assets, mobile header CTA/menu, mobile bottom CTA, service wording, and mobile price-table readability. Use `npm run audit:site`, `npm run test:site`, `npm run screenshot:site`, and at least one manually inspected mobile screenshot of `/`.
+- Do not make visual/source-parity code changes just to bypass a Cloud environment restriction. If Google Fonts, Playwright browser downloads, npm audit endpoints, or external fetches are blocked, report the environment/network issue and fix the Cloud setup or run the verification locally instead of removing design assets, fonts, images, or routes.
 - When a user points out a miss, update the smallest relevant executable guardrail first, then fix similar cases. Keep `docs/quality/agent-quality-system.md` aligned with meaningful process changes.
 - If a deployment is needed, prefer a preview deployment first. Use production deployment or alias changes only when the user clearly asks for the live URL to change.

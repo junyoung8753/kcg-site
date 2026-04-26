@@ -32,15 +32,15 @@ Setup script: npm ci && npx playwright install chromium
 Maintenance script: npm ci
 ```
 
-For source-parity work against `https://kcg-confirm-preview.vercel.app`, the agent phase needs internet access. Prefer limited access:
+For source-parity work against `https://kcg-confirm-preview.vercel.app`, the agent phase needs internet access. Prefer limited access. If the UI offers presets, use **Common dependencies** plus the source-site domains. If entering domains manually, include:
 
 ```text
 Network: On, limited
-Allowed domains: kcg-confirm-preview.vercel.app, vercel.app
+Allowed domains: kcg-confirm-preview.vercel.app, vercel.app, registry.npmjs.org, npmjs.org, npmjs.com, cdn.playwright.dev, playwright.download.prss.microsoft.com
 Allowed methods: GET, HEAD, OPTIONS
 ```
 
-Keep network off for tasks that only inspect or edit local repo files. Enable broader internet only when the task explicitly needs official docs, competitor/reference-site research, package registry checks, or external service verification.
+Keep network off for tasks that only inspect or edit local repo files. Enable broader internet only when the task explicitly needs official docs, competitor/reference-site research, package registry checks, or external service verification. If browser installation, Google Fonts, or npm audit fails because Cloud network is blocked, do not change site design or source-parity code to hide the environment issue.
 
 ## Model, Speed, And Quality
 
