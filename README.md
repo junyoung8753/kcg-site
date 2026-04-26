@@ -124,6 +124,7 @@ cmd /c npm.cmd run start
 
 이 repo가 Codex Cloud / 새 PC 작업 기준입니다.
 자세한 흐름은 `docs/setup/continue-anywhere.md`를 기준으로 봅니다.
+헷갈리지 않게 클라우드 한 곳에서만 작업하려면 `docs/setup/CLOUD_ONLY_WORKFLOW.md`를 우선 봅니다. 이 경우 새 컴퓨터에서 PowerShell bootstrap은 필수가 아닙니다.
 
 새 PC 또는 새 로컬 checkout에서는 먼저 아래 점검 스크립트를 실행합니다.
 

@@ -4,6 +4,8 @@ Last updated: 2026-04-26 KST.
 
 This file is the short, durable context for a new Codex chat, another PC, or Codex Cloud. Read it before continuing KCG site work.
 
+Junyoung's preferred workflow is cloud-only when possible. Use `docs/setup/CLOUD_ONLY_WORKFLOW.md` before suggesting local PC setup.
+
 ## Current Source Of Truth
 
 - GitHub repo: `junyoung8753/kcg-site`
@@ -59,9 +61,22 @@ When starting a new project chat, the user can paste this:
 KCG 사이트 작업 이어가자. 이 repo의 AGENTS.md와 docs/setup/CURRENT_HANDOFF.md를 먼저 읽고, https://kcg-confirm-preview.vercel.app 전체 사이트를 원본 기준으로 현재 main과 compare:source 결과를 확인한 뒤, source parity 복구부터 진행해줘. 안정 URL alias 변경이나 production 배포는 내가 명확히 승인하기 전에는 하지 마.
 ```
 
+## Cloud-Only Start
+
+For the least confusing workflow, use Codex Cloud attached to:
+
+```text
+Repository: junyoung8753/kcg-site
+Branch: main
+```
+
+Then paste the New Chat Prompt above. No PowerShell is needed unless the user wants this repo cloned locally on that computer.
+
 ## New Computer Setup
 
-On a new computer:
+Only do this if the user wants local files on that computer. It is not required for cloud-only work.
+
+On a new local computer:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "iwr -UseBasicParsing https://raw.githubusercontent.com/junyoung8753/kcg-site/main/scripts/Start-KcgContinuation.ps1 -OutFile $env:TEMP\Start-KcgContinuation.ps1; & $env:TEMP\Start-KcgContinuation.ps1"

@@ -3,6 +3,7 @@
 This repo is the source of truth for the KCG site. Chat threads are useful context, but code continuity across computers must come from GitHub, Vercel, and repeatable setup commands.
 
 For the latest short handoff context, read `docs/setup/CURRENT_HANDOFF.md` first.
+For the simplest "one cloud place only" workflow, read `docs/setup/CLOUD_ONLY_WORKFLOW.md`.
 
 ## What Syncs
 
@@ -46,6 +47,8 @@ Current handoff rule:
 - To measure parity, run `npm run build` and then `npm run compare:source`. The report is written under `output/source-parity`, which is intentionally not committed.
 
 ## First Setup On A New Computer
+
+If you want cloud-only work, skip this section. A new computer only needs the same Codex account signed in, then start a Codex Cloud task on `junyoung8753/kcg-site` and follow `docs/setup/CLOUD_ONLY_WORKFLOW.md`.
 
 Install or verify these tools:
 
@@ -159,7 +162,7 @@ Codex local environment settings are stored in a project `.codex` folder when ge
 
 ## Codex Cloud Flow
 
-Use Codex Cloud when you want work to continue without relying on this computer being on.
+Use Codex Cloud when you want work to continue without relying on this computer being on. This is the preferred low-confusion workflow for junyoung.
 
 Cloud environment target:
 
@@ -173,11 +176,11 @@ Cloud environment target:
 
 Typical cloud task flow:
 
-1. Push the latest local work to GitHub.
-2. Start a Codex Cloud task against `junyoung8753/kcg-site`.
+1. Start a Codex Cloud task against `junyoung8753/kcg-site` on branch `main` or a feature branch.
+2. Paste the prompt from `docs/setup/CLOUD_ONLY_WORKFLOW.md` or `docs/setup/CURRENT_HANDOFF.md`.
 3. Review the diff, CI result, screenshots, or PR before merging.
 4. Merge or apply the cloud result.
-5. On any local computer, run `git pull`.
+5. If you later use a local computer, run `git pull`; otherwise keep working in Cloud.
 
 The Cloud environment must be checked after product updates because runtime versions, setup scripts, and network controls are per-environment settings.
 
