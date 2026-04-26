@@ -127,6 +127,14 @@ cmd /c npm.cmd run start
 
 새 PC 또는 새 로컬 checkout에서는 먼저 아래 점검 스크립트를 실행합니다.
 
+가장 쉬운 한 줄 실행:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "iwr -UseBasicParsing https://raw.githubusercontent.com/junyoung8753/kcg-site/main/scripts/Start-KcgContinuation.ps1 -OutFile $env:TEMP\Start-KcgContinuation.ps1; & $env:TEMP\Start-KcgContinuation.ps1"
+```
+
+repo 폴더 안에서는:
+
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\check-continuation.ps1 -Install -PullVercel
 ```

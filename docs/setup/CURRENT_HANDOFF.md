@@ -64,12 +64,10 @@ KCG 사이트 작업 이어가자. 이 repo의 AGENTS.md와 docs/setup/CURRENT_H
 On a new computer:
 
 ```powershell
-git clone https://github.com/junyoung8753/kcg-site.git
-cd kcg-site
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\check-continuation.ps1 -Install -PullVercel
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "iwr -UseBasicParsing https://raw.githubusercontent.com/junyoung8753/kcg-site/main/scripts/Start-KcgContinuation.ps1 -OutFile $env:TEMP\Start-KcgContinuation.ps1; & $env:TEMP\Start-KcgContinuation.ps1"
 ```
 
-If Vercel or GitHub login is missing, complete the official browser/OAuth login once on that computer, then rerun the script.
+This finds or creates `Documents\Codex\projects\kcg-site`, pulls the latest `main`, installs dependencies, and pulls Vercel project settings when the Vercel CLI is already logged in with the computer's normal CLI/keyring state. If Vercel or GitHub login is missing, complete the official browser/OAuth login once on that computer, then rerun the script.
 
 ## Do Not Lose
 

@@ -2,6 +2,7 @@ param(
   [switch]$Install,
   [switch]$PullVercel,
   [switch]$RunChecks,
+  [switch]$UseProjectLocalCliState,
   [string]$VercelProject = "kcg-confirm-preview",
   [string]$VercelScope = "junyoung8753-2361s-projects"
 )
@@ -13,14 +14,21 @@ Set-Location $ProjectRoot
 
 $env:NO_UPDATE_NOTIFIER = "1"
 $env:npm_config_cache = Join-Path $ProjectRoot ".npm-cache"
-$env:APPDATA = Join-Path $ProjectRoot ".appdata"
-$env:LOCALAPPDATA = Join-Path $ProjectRoot ".localappdata"
-$env:XDG_CACHE_HOME = Join-Path $ProjectRoot ".vercel-xdg\cache"
-$env:XDG_CONFIG_HOME = Join-Path $ProjectRoot ".vercel-xdg\config"
-$env:XDG_DATA_HOME = Join-Path $ProjectRoot ".vercel-xdg\data"
 
-foreach ($dir in @($env:npm_config_cache, $env:APPDATA, $env:LOCALAPPDATA, $env:XDG_CACHE_HOME, $env:XDG_CONFIG_HOME, $env:XDG_DATA_HOME)) {
+foreach ($dir in @($env:npm_config_cache)) {
   New-Item -ItemType Directory -Force -Path $dir | Out-Null
+}
+
+if ($UseProjectLocalCliState) {
+  $env:APPDATA = Join-Path $ProjectRoot ".appdata"
+  $env:LOCALAPPDATA = Join-Path $ProjectRoot ".localappdata"
+  $env:XDG_CACHE_HOME = Join-Path $ProjectRoot ".vercel-xdg\cache"
+  $env:XDG_CONFIG_HOME = Join-Path $ProjectRoot ".vercel-xdg\config"
+  $env:XDG_DATA_HOME = Join-Path $ProjectRoot ".vercel-xdg\data"
+
+  foreach ($dir in @($env:APPDATA, $env:LOCALAPPDATA, $env:XDG_CACHE_HOME, $env:XDG_CONFIG_HOME, $env:XDG_DATA_HOME)) {
+    New-Item -ItemType Directory -Force -Path $dir | Out-Null
+  }
 }
 
 function Test-CommandAvailable {

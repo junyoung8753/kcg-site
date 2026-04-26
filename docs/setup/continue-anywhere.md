@@ -58,7 +58,20 @@ vercel --version
 codex --version
 ```
 
-Clone and enter the project:
+Easiest one-command setup:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "iwr -UseBasicParsing https://raw.githubusercontent.com/junyoung8753/kcg-site/main/scripts/Start-KcgContinuation.ps1 -OutFile $env:TEMP\Start-KcgContinuation.ps1; & $env:TEMP\Start-KcgContinuation.ps1"
+```
+
+This handles the normal cases:
+
+- If the repo already exists at `Documents\Codex\projects\kcg-site`, it pulls the latest `main`.
+- If it does not exist, it clones `junyoung8753/kcg-site`.
+- If `vercel` is installed and logged in, it links/pulls the Vercel project using the computer's normal Vercel CLI login state.
+- If a required tool or login is missing, it tells you exactly what to install or log into.
+
+Manual clone flow:
 
 ```powershell
 git clone https://github.com/junyoung8753/kcg-site.git
@@ -78,6 +91,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\check-continua
 ```
 
 Use `-PullVercel` only after Vercel CLI login has been completed on that computer. The command links this folder to `kcg-confirm-preview` and pulls project settings/env values through the official Vercel CLI without committing them.
+
+By default, `scripts/check-continuation.ps1` uses the computer's normal CLI login/keyring state. Use `-UseProjectLocalCliState` only for temporary sandboxes where you intentionally want tool login/cache files isolated under the project folder.
 
 ## Source URL Recovery
 
