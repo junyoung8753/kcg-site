@@ -36,6 +36,11 @@ That stable URL is an alias. If the alias points to an older production deployme
 
 Do not store or share URLs containing `_vercel_jwt` or `_vercel_jwe` query parameters. They are temporary deployment-protection session URLs, not durable project links.
 
+Current handoff rule:
+
+- Treat `https://kcg-confirm-preview.vercel.app/` as the preserved company-facing reference until the original company-PC local workspace has been scanned and compared.
+- Do not promote a newer preview to the stable URL just because it is newer. Promote only after the user accepts the current GitHub `main` as the review baseline, or after company-PC recovery confirms no important differences remain.
+
 ## First Setup On A New Computer
 
 Install or verify these tools:
