@@ -9,9 +9,10 @@ Junyoung's preferred workflow is cloud-only when possible. Use `docs/setup/CLOUD
 ## Current Source Of Truth
 
 - GitHub repo: `junyoung8753/kcg-site`
-- Main working branch: `main`
+- Current local working branch: `codex/kcg-launch-readiness-catalog-20260427`
+- Base branch: `main`
 - Vercel project: `kcg-confirm-preview`
-- Current repo state is the single production candidate.
+- The latest launch-readiness work is on `codex/kcg-launch-readiness-catalog-20260427`. Do not continue on `main` until this branch is reviewed and intentionally merged.
 - Stable review domain: `https://kcg-confirm-preview.vercel.app`
 - The historical source site exists in the company Codex environment. Do not treat the stable review URL as an older source to restore unless junyoung explicitly asks.
 
@@ -35,6 +36,7 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 - `docs/research/gold-exchange-deep-audit-2026-04-27.md` records the deeper competitor benchmark pass across home, subpages, price wording, forms, tables, and network/API/chart behavior. Do not treat a home-screen-only review as sufficient for benchmark-driven work.
 - `/option-1` and `/option-2` have been removed from the app. The audit and Playwright tests now expect those routes to return 404.
 - The old source comparison script has been removed from the default workflow because the repo is now the accepted baseline.
+- The home campaign slider must remain a full-bleed visual surface. The company price table must not shrink or cover the slider into a right-side half-width banner; the current home implementation places the price table below the full-width campaign visual.
 - `/products` is now the public consultation catalog surface. It is intentionally not a checkout/cart mall: price wording, product photos, display order, visibility, and consultation notes can be managed through the product model/admin flow, while public copy keeps phone/visit consultation as the conversion path.
 - Product data now has a shared repo contract across mock data, Supabase schema/seed, public pages, and admin editing. Keep product statuses limited to `active`, `inquiry_required`, and `hidden` unless a real operational need appears.
 - Public business-registration wording may show the temporary placeholder `000-00-00000` only when it is explicitly labeled as temporary and paired with an "open before replacement" warning. It must never be presented as confirmed official information.
@@ -44,7 +46,7 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 
 ## Latest Local Verification
 
-2026-04-27 KST after temporary legal-info placeholders, launch-readiness dashboard, and search-exposure guardrails:
+2026-04-27 KST after full-width home campaign banner restoration, temporary legal-info placeholders, launch-readiness dashboard, and search-exposure guardrails:
 
 ```powershell
 npm run lint
@@ -57,7 +59,7 @@ npm run screenshot:site
 npm audit --audit-level=moderate
 ```
 
-All commands passed locally. Rendered route audit passed 260 checks with 0 skipped, Playwright passed 6 tests, and screenshots include `about-mobile.png` and `admin-launch-desktop.png` under `output/screenshots`.
+All commands passed locally. Rendered route audit passed 268 checks with 0 skipped, Playwright passed 6 tests, and screenshots include `home-desktop.png`, `home-mobile.png`, `about-mobile.png`, and `admin-launch-desktop.png` under `output/screenshots`. The desktop home screenshot confirms the campaign image is full-width with the price table below it, not a right-side half-width banner.
 
 ## Codex Cloud Status
 
@@ -151,7 +153,7 @@ For the least confusing workflow, use Codex Cloud attached to:
 
 ```text
 Repository: junyoung8753/kcg-site
-Branch: main
+Branch: codex/kcg-launch-readiness-catalog-20260427
 ```
 
 Then paste the New Chat Prompt above. No PowerShell is needed unless the user wants this repo cloned locally on that computer.

@@ -13,6 +13,7 @@ The missed campaign slider and mobile CTA defects were not caused by a build pro
 - A helper named `2-preview-deploy.cmd` previously contained `--prod`, which created a naming/behavior mismatch.
 - Codex Cloud readiness checks were treated like normal implementation work even though a no-diff Cloud task can be hard to inspect from the local CLI and Playwright browser failures may be caused by missing Linux system libraries rather than site code.
 - Competitor benchmarking was treated too much like a home-screen visual comparison, which missed subpage structure, forms, price wording, scripts, and network/API behavior.
+- The home campaign slider was allowed to become a right-side half-width surface when the price table panel was open, even though the intended design was a full-bleed exchange-site banner with the price table overlaid or separated without shrinking the image.
 
 ## Root Cause
 
@@ -24,6 +25,7 @@ The deeper root cause is process design: AI agents can produce plausible results
 
 - `npm run audit:site` checks source files, campaign assets, CTA labels, business wording, single-site discipline, and optional rendered-route content.
 - `npm run test:site` opens the built site in Chromium and verifies mobile/desktop conversion UI, campaign image loading, service wording, route content, horizontal overflow, and visible element protrusion beyond the mobile viewport.
+- Desktop home checks must verify that the campaign image spans the viewport width and that the visible price table does not sit over the first campaign visual in a way that makes the banner read as a partial-width column.
 - `npm run screenshot:site` captures local built-site screenshots into `output/screenshots` so manual inspection is not accidentally performed against a protected login page.
 - `docs/quality/product-experience-rubric.md` records the KCG-specific product intent, design direction, UX priorities, and high-risk content rules that should guide future UI decisions.
 - `docs/quality/ai-site-production-playbook.md` records how to prompt and run AI site-building work for KCG: context pack first, product surface and user moment second, KCG constraints always, then acceptance criteria, browser evidence, scoring, and durable guardrails.

@@ -109,6 +109,20 @@ test("desktop home keeps campaign slider and shortcut labels", async ({ page }) 
   await expect(page.getByRole("link", { name: "오늘 시세 보기" })).toBeVisible();
 
   await expectCampaignImagesLoaded(page);
+  const heroImageWidth = await page.getByAltText(campaignAlts[0]).evaluate((node) => {
+    const rect = node.getBoundingClientRect();
+    return Math.round(rect.width);
+  });
+  const viewportWidth = await page.evaluate(() => document.documentElement.clientWidth);
+  expect(heroImageWidth).toBeGreaterThanOrEqual(viewportWidth - 2);
+
+  const campaignBox = await page.getByTestId("home-campaign-visual").boundingBox();
+  const pricePanelBox = await page.getByTestId("home-price-lineup-panel").boundingBox();
+  expect(campaignBox).not.toBeNull();
+  expect(pricePanelBox).not.toBeNull();
+  expect(Math.round(pricePanelBox!.y)).toBeGreaterThanOrEqual(Math.round(campaignBox!.y + campaignBox!.height) - 2);
+  expect(Math.round(pricePanelBox!.width)).toBeGreaterThanOrEqual(viewportWidth - 2);
+
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
 });

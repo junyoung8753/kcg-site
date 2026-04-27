@@ -240,6 +240,23 @@ export function PriceLineup({
   const contentHeightClass = "min-h-[23rem] sm:min-h-[26rem] lg:min-h-[42.5rem]";
   const activeSlide = campaignSlides[activeSlideIndex];
   const zeroChangeSymbol = visualMode === "signboard" ? "-" : "━";
+  const visualShellClass = visualMode === "campaign" ? "w-full kcg-full-bleed-campaign" : "mx-auto max-w-[1500px]";
+  const wrapperLayoutClass = visualMode === "campaign" ? "relative flex flex-col" : "relative flex flex-col lg:block";
+  const panelPositionClass =
+    visualMode === "campaign"
+      ? "order-2 relative z-10 overflow-hidden"
+      : "order-2 relative z-10 overflow-hidden lg:absolute lg:bottom-0 lg:left-0 lg:top-0 lg:order-none";
+  const panelOpenClass =
+    visualMode === "campaign"
+      ? "w-full opacity-100"
+      : `opacity-100 ${style.panelWidthClass} lg:translate-x-0`;
+  const panelFrameWidthClass =
+    visualMode === "campaign"
+      ? "min-w-0"
+      : isLineupOpen
+        ? "min-w-0 sm:min-w-[36.4rem] lg:min-w-full"
+        : "min-w-0 overflow-hidden";
+  const shiftedContentClass = visualMode === "campaign" ? "lg:ml-0" : style.contentShiftClass;
   const krwRateLabel = krwRate
     ? `${new Intl.NumberFormat("ko-KR", {
         minimumFractionDigits: 2,
@@ -267,8 +284,8 @@ export function PriceLineup({
         <div className="absolute inset-0 bg-[linear-gradient(180deg,#f8fcfb_0%,#edf7f4_48%,#fbf1cf_100%)]" />
         <div className="absolute inset-y-0 right-0 hidden w-[58%] bg-[linear-gradient(135deg,rgba(255,255,255,0.46),rgba(232,245,241,0.18)_42%,rgba(255,245,202,0.38))] lg:block" />
 
-        <div className="mx-auto max-w-[1500px]">
-          <div className={cn("relative flex flex-col lg:block", wrapperHeightClass)}>
+        <div className={visualShellClass}>
+          <div className={cn(wrapperLayoutClass, wrapperHeightClass)}>
             {!isLineupOpen ? (
               <button
                 type="button"
@@ -284,11 +301,13 @@ export function PriceLineup({
             ) : null}
 
             <div
+              data-testid="home-price-lineup-panel"
               className={cn(
-                "order-2 relative z-10 overflow-hidden transition-[opacity,transform] duration-300 lg:absolute lg:bottom-0 lg:left-0 lg:top-0 lg:order-none",
+                "transition-[opacity,transform] duration-300",
+                panelPositionClass,
                 style.panelShell,
                 isLineupOpen
-                  ? `opacity-100 ${style.panelWidthClass} lg:translate-x-0`
+                  ? panelOpenClass
                   : "pointer-events-none opacity-0 lg:w-0 lg:-translate-x-8",
               )}
             >
@@ -300,7 +319,7 @@ export function PriceLineup({
                 className={cn(
                   "relative",
                   style.panelFrame,
-                  isLineupOpen ? "min-w-0 sm:min-w-[36.4rem] lg:min-w-full" : "min-w-0 overflow-hidden",
+                  panelFrameWidthClass,
                 )}
               >
                 <div className="grid grid-cols-[1fr_auto_auto] items-center gap-2 px-4 pb-4 pt-5 sm:gap-3 sm:px-8 sm:pb-5 sm:pt-6">
@@ -415,8 +434,9 @@ export function PriceLineup({
 
             {visualMode === "campaign" ? (
               <div
+                data-testid="home-campaign-visual"
                 className={`order-1 relative z-0 overflow-hidden transition-[margin] duration-300 lg:order-none ${
-                  isLineupOpen ? style.contentShiftClass : "lg:ml-0"
+                  isLineupOpen ? shiftedContentClass : "lg:ml-0"
                 } ${contentHeightClass}`}
               >
                 {campaignSlides.map((slide, index) => (
@@ -434,11 +454,11 @@ export function PriceLineup({
                       priority={index === 0}
                       className="object-cover"
                       style={{ objectPosition: slide.objectPosition }}
-                      sizes="(max-width: 1024px) 100vw, 64vw"
+                      sizes="100vw"
                     />
                   </div>
                 ))}
-                <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.96),rgba(255,255,255,0.76)_34%,rgba(255,255,255,0.22)_72%,rgba(18,20,20,0.05)_100%),linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,232,142,0.34))]" />
+                <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.92),rgba(255,255,255,0.64)_30%,rgba(255,255,255,0.78)_55%,rgba(255,255,255,0.55)_78%,rgba(18,20,20,0.05)_100%),linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,232,142,0.34))]" />
                 <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,transparent,rgba(255,255,255,0.42))]" />
 
                 <button
@@ -458,8 +478,12 @@ export function PriceLineup({
                   ›
                 </button>
 
-                <div className="relative z-10 flex min-h-[inherit] flex-col justify-end px-5 py-6 sm:px-9 sm:py-8 lg:px-14 lg:py-12">
-                  <div key={activeSlide.image} className="kcg-hero-copy max-w-[34rem] lg:ml-8 xl:ml-12">
+                <div
+                  className={cn(
+                    "relative z-10 flex min-h-[inherit] flex-col justify-end px-5 py-6 sm:px-9 sm:py-8 lg:px-14 lg:py-12",
+                  )}
+                >
+                  <div key={activeSlide.image} className="kcg-hero-copy max-w-[34rem]">
                     <p className="text-[0.68rem] font-semibold tracking-[0.22em] text-[#9b7700] sm:text-xs">
                       {activeSlide.kicker}
                     </p>
@@ -515,7 +539,7 @@ export function PriceLineup({
             ) : (
               <div
                 className={`relative z-0 flex flex-col justify-between px-6 py-8 transition-[margin] duration-300 sm:px-10 sm:py-10 lg:px-14 lg:py-12 ${
-                  isLineupOpen ? style.contentShiftClass : "lg:ml-0"
+                  isLineupOpen ? shiftedContentClass : "lg:ml-0"
                 } ${contentHeightClass}`}
               >
                 <div className="max-w-[44rem]">

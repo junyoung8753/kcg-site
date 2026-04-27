@@ -138,11 +138,17 @@ expectText("src/components/market/price-lineup.tsx", [
   "siteConfig.englishName",
   "KCG PRICE DESK",
   "오늘 고시 시세와 방문 상담 기준을 한 화면에서 확인합니다.",
+  "kcg-full-bleed-campaign",
+  'data-testid="home-campaign-visual"',
+  'data-testid="home-price-lineup-panel"',
+  'sizes="100vw"',
+  'visualMode === "campaign" ? "relative flex flex-col" : "relative flex flex-col lg:block"',
+  'visualMode === "campaign"',
   "order-1 relative z-0 overflow-hidden",
-  "lg:ml-8 xl:ml-12",
   "24K · 3.75g 기준",
   "시세는 고시 시각 기준이며 실제 거래 금액",
 ]);
+expectNoText("src/components/market/price-lineup.tsx", ["64vw", "lg:ml-8 xl:ml-12", "lg:pl-[40rem]"]);
 expectText("src/app/globals.css", ["kcg-hero-copy-in", ".kcg-hero-copy", ".kcg-hero-heading", "word-break: keep-all"]);
 expectText("src/components/market/market-dashboard.tsx", [
   "실시간 국제 참고 시세",
