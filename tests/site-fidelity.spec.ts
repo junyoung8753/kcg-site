@@ -240,6 +240,23 @@ test("mobile products route exposes a consultation catalog without checkout", as
   await expectNoVisibleElementEscapesViewport(page);
 });
 
+test("desktop products route keeps the quick rail flush to the viewport edge", async ({ page }) => {
+  await page.setViewportSize({ width: 1680, height: 1000 });
+  await page.goto("/products", { waitUntil: "domcontentloaded" });
+
+  const quickRail = page.getByTestId("product-quick-rail");
+  await expect(quickRail).toBeVisible();
+  await expect(quickRail).not.toContainText("TODAY VIEW");
+  await expect(quickRail).not.toContainText("TODAY");
+  await expect(quickRail).not.toContainText("VIEW");
+  await expect(quickRail.getByText("오늘 고시 시세")).toBeVisible();
+  await expect(quickRail.getByText("고금·주얼리 매입")).toBeVisible();
+
+  const box = await quickRail.boundingBox();
+  expect(box).not.toBeNull();
+  expect(Math.abs((box!.x + box!.width) - 1680)).toBeLessThanOrEqual(2);
+});
+
 test("mobile prices puts consultation actions before the company price columns", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 1800 });
   await page.goto("/prices", { waitUntil: "domcontentloaded" });

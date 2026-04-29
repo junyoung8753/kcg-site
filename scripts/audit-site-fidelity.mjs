@@ -481,8 +481,10 @@ expectText("src/components/products/product-catalog.tsx", [
   "등록일순",
   "20개씩보기",
   "현재 고시가 기준",
-  "KCG",
-  "LINKS",
+  "data-testid=\"product-quick-rail\"",
+  "상품/매입 빠른 링크",
+  "fixed right-0",
+  "2xl:block",
   "KC 랩그로운 다이아몬드",
   "getProductImageSrc",
 ]);
@@ -505,6 +507,9 @@ expectNoText("src/components/products/product-catalog.tsx", [
   "구매하기",
   "결제하기",
   "주문하기",
+  "TODAY VIEW",
+  "TODAY",
+  "VIEW",
   "koreagoldx.co.kr",
 ]);
 [

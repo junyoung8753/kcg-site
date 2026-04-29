@@ -19,7 +19,6 @@ import type { Product, ProductCategory } from "@/types/product";
 interface ProductCatalogProps {
   products: Product[];
   prices: PriceRecord[];
-  contactPhone: string;
 }
 
 const sortOptions: Array<{ key: ProductCatalogSort; label: string }> = [
@@ -83,21 +82,37 @@ function getProductImagePositionClass(product: Product) {
   return "object-center";
 }
 
-function ProductPromoCard({ banner, compact = false }: { banner: (typeof promoBanners)[number]; compact?: boolean }) {
+function ProductPromoCard({
+  banner,
+  compact = false,
+  rail = false,
+}: {
+  banner: (typeof promoBanners)[number];
+  compact?: boolean;
+  rail?: boolean;
+}) {
   const content = (
-    <span className={`group relative block overflow-hidden border border-[#252525] bg-[#111] ${compact ? "min-h-28" : "min-h-36"}`}>
+    <span
+      className={`group relative block overflow-hidden bg-[#111] ${
+        compact ? "min-h-28 border border-[#252525]" : rail ? "min-h-[7.15rem] border-b border-white/10" : "min-h-36"
+      }`}
+    >
       <Image
         src={banner.image}
         alt={`${banner.title} 배너 이미지`}
         fill
-        className="object-cover opacity-50 transition duration-500 group-hover:scale-[1.03]"
-        sizes={compact ? "50vw" : "180px"}
+        className={`object-cover transition duration-500 group-hover:scale-[1.03] ${rail ? "opacity-[0.46]" : "opacity-50"}`}
+        sizes={compact ? "50vw" : rail ? "160px" : "180px"}
         unoptimized
       />
-      <span className="absolute inset-0 bg-gradient-to-br from-black/78 via-black/40 to-black/18" />
-      <span className="relative z-10 flex h-full min-h-[inherit] flex-col justify-end p-4">
-        <span className="text-base font-bold tracking-[-0.04em] text-white">{banner.title}</span>
-        <span className="mt-2 text-xs leading-5 text-white/72">{banner.body}</span>
+      <span className="absolute inset-0 bg-gradient-to-br from-black/82 via-black/48 to-black/16" />
+      <span className={`relative z-10 flex h-full min-h-[inherit] flex-col justify-end ${rail ? "p-3" : "p-4"}`}>
+        <span className={`${rail ? "text-sm" : "text-base"} font-bold tracking-[-0.04em] text-white`}>
+          {banner.title}
+        </span>
+        <span className={`${rail ? "mt-1 line-clamp-2 text-[11px] leading-4" : "mt-2 text-xs leading-5"} text-white/72`}>
+          {banner.body}
+        </span>
       </span>
     </span>
   );
@@ -117,7 +132,27 @@ function ProductPromoCard({ banner, compact = false }: { banner: (typeof promoBa
   );
 }
 
-export function ProductCatalog({ products, prices, contactPhone }: ProductCatalogProps) {
+function ProductQuickRail() {
+  return (
+    <aside
+      data-testid="product-quick-rail"
+      aria-label="상품/매입 빠른 링크"
+      className="fixed right-0 top-[8.9rem] z-30 hidden w-[10.25rem] overflow-hidden border-y border-l border-black/20 bg-[#111] shadow-[-14px_18px_32px_rgba(0,0,0,0.16)] 2xl:block"
+    >
+      {promoBanners.map((banner) => (
+        <ProductPromoCard key={banner.title} banner={banner} rail />
+      ))}
+      <a
+        href="#top"
+        className="flex h-12 items-center justify-center bg-[#e6e6e6] text-xs font-black tracking-[0.18em] text-[#555]"
+      >
+        TOP
+      </a>
+    </aside>
+  );
+}
+
+export function ProductCatalog({ products, prices }: ProductCatalogProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -195,7 +230,9 @@ export function ProductCatalog({ products, prices, contactPhone }: ProductCatalo
         ))}
       </div>
 
-      <div className="mt-6 grid gap-8 xl:grid-cols-[minmax(0,1fr)_12.5rem]">
+      <ProductQuickRail />
+
+      <div className="mt-6">
         <div>
           <div className="flex flex-col gap-4 border-y border-[#d8dfdd] py-4 md:flex-row md:items-center md:justify-between">
             <p data-testid="product-count" className="text-sm font-semibold text-[#15191b]">
@@ -282,26 +319,6 @@ export function ProductCatalog({ products, prices, contactPhone }: ProductCatalo
           </div>
         </div>
 
-        <aside className="hidden xl:block">
-          <div className="sticky top-28 space-y-3">
-            <div className="border border-[#e2e6e4] bg-[#f6f8f7] px-4 py-5 text-center">
-              <p className="text-sm font-black tracking-[0.05em] text-[#15191b]">KCG</p>
-              <p className="mt-1 text-sm font-black tracking-[0.05em] text-[#15191b]">LINKS</p>
-            </div>
-            {promoBanners.map((banner) => (
-              <ProductPromoCard key={banner.title} banner={banner} />
-            ))}
-            <a
-              href="#top"
-              className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#d7d7d7] text-xs font-bold text-white"
-            >
-              TOP
-            </a>
-            <a href={`tel:${contactPhone}`} className="block rounded-full bg-[#ffcc00] px-4 py-3 text-center text-sm font-bold text-[#171717]">
-              {contactPhone}
-            </a>
-          </div>
-        </aside>
       </div>
     </section>
   );

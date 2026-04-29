@@ -3,7 +3,6 @@ import Image from "next/image";
 import { Suspense } from "react";
 import { ProductCatalog } from "@/components/products/product-catalog";
 import { getRepository } from "@/lib/data";
-import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "상품/매입",
@@ -62,7 +61,7 @@ export default async function ProductsPage() {
           </section>
         }
       >
-        <ProductCatalog products={products} prices={prices} contactPhone={siteConfig.contact.phone} />
+        <ProductCatalog products={products} prices={prices} />
       </Suspense>
     </>
   );
