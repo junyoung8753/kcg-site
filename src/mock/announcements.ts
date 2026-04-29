@@ -20,7 +20,7 @@ export const mockAnnouncements: Announcement[] = [
   },
   {
     id: "announcement-2",
-    title: "평일 운영시간 및 전화 상담 접수 안내",
+    title: "평일 운영시간 및 문의 접수 안내",
     slug: "weekday-hours-and-phone-consulting-notice",
     summary:
       "거래 전 대표번호로 문의하시면 당일 상담 가능 시간과 준비 사항을 먼저 안내해 드립니다.",

@@ -5,38 +5,7 @@ import { siteConfig, siteNavigation } from "@/lib/site-config";
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-[#dce6e3] bg-white/96 backdrop-blur">
-      <div className="hidden border-b border-[#edf2f0] bg-[#f7fbfa] xl:block">
-        <div className="section-shell flex h-9 items-center justify-between gap-6 text-[0.82rem] font-medium text-[#596261]">
-          <div className="flex items-center gap-4">
-            <Link href="/company" className="transition hover:text-[#141718]">
-              회사소개
-            </Link>
-            <Link href="/about" className="transition hover:text-[#141718]">
-              매장안내
-            </Link>
-            {siteConfig.familyLinks.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                target="_blank"
-                rel="noreferrer"
-                className="transition hover:text-[#8c6700]"
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
-          <div className="flex items-center gap-5">
-            <span>본사 {siteConfig.locations.headOffice.phone}</span>
-            <span>매장 {siteConfig.locations.store.phone}</span>
-            <a href={`mailto:${siteConfig.contact.email}`} className="transition hover:text-[#8c6700]">
-              {siteConfig.contact.email}
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div className="section-shell flex min-h-[4.85rem] items-center justify-between gap-4 py-3 xl:gap-8">
+      <div className="section-shell flex min-h-[4.65rem] items-center justify-between gap-4 py-3 xl:gap-7">
         <Link href="/" className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4 xl:max-w-[27rem]">
           <span className="relative h-[2.7rem] w-[2.7rem] shrink-0 sm:hidden">
             <Image
@@ -77,10 +46,10 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="hidden shrink-0 items-center gap-4 xl:flex">
-          <div className="w-[9rem] text-right text-sm text-[#66706f]">
+        <div className="hidden shrink-0 items-center gap-3 xl:flex">
+          <div className="w-[8.5rem] text-right text-sm text-[#66706f]">
             <p className="text-lg font-bold text-[#15191b]">{siteConfig.contact.phone}</p>
-            <p className="truncate">대표 문의</p>
+            <p className="truncate">대표번호</p>
           </div>
           <Link
             href="/about"

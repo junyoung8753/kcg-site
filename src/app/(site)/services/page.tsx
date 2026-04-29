@@ -1,54 +1,54 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { PurchaseGuide } from "@/components/home/purchase-guide";
-import { getRepository } from "@/lib/data";
-import { getProductPriceLabel, getProductStatusLabel } from "@/lib/product-presenter";
-import { serviceCategories, serviceExamples, serviceFaqs, serviceGuides, siteConfig } from "@/lib/site-config";
+import { serviceFaqs, siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "상품·서비스",
+  title: "서비스",
   description:
-    "골드바, 실버바, 고금·주얼리, 귀금속 매입 상담 등 한국센터금거래소의 취급 범위와 상담 가능 품목을 안내합니다.",
+    "한국센터금거래소의 취급 품목, 당일 고시 기준, 실물 확인과 거래 전 준비 항목을 확인합니다.",
 };
 
-export default async function ServicesPage() {
-  const repository = getRepository();
-  const products = await repository.getProducts();
+const flowSteps = [
+  ["01", "취급 품목", "골드바·실버바·순금제품·고금·주얼리"],
+  ["02", "당일 기준", "회사 고시 시세와 중량·수량 확인"],
+  ["03", "실물 확인", "순도·상태·보증서 확인 후 금액 확정"],
+] as const;
 
+const serviceRows = [
+  ["매입 가능 품목", "순금, 18K·14K, 백금, 은, 예물·주얼리, 고금"],
+  ["판매·수급 품목", "골드바, 실버바, 순금제품, 기념품"],
+  ["대량·법인", "법인 보유분, 기업 기념품, 상속·정리 목적 물량"],
+  ["거래 전 준비", "신분증, 보증서·영수증, 예상 중량, 수량, 제품 상태"],
+] as const;
+
+export default function ServicesPage() {
   return (
     <>
       <section className="bg-[#f7faf8]">
-        <div className="section-shell grid gap-8 py-10 sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
-          <div className="relative min-h-[18rem] overflow-hidden bg-[#eef4f2] sm:min-h-[24rem]">
+        <div className="section-shell grid gap-6 py-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
+          <div className="relative min-h-[13rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:min-h-[17rem] lg:min-h-[18rem]">
             <Image
               src="/services/kcg-service-counter-20260427.jpg"
               alt="골드바와 실버바 상담 카운터"
               fill
               className="object-cover"
-              sizes="(min-width: 1024px) 54vw, 100vw"
+              sizes="(min-width: 1024px) 42vw, 100vw"
               priority
             />
           </div>
-          <div className="max-w-2xl">
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">TRADE CONSULTATION</p>
-            <h2 className="mt-4 text-[1.95rem] font-semibold leading-tight tracking-[-0.06em] text-[#15191b] sm:text-[2.28rem]">
-              취급 품목 확인에서 실물 확인, 금액 확정까지 한 흐름으로 봅니다.
-            </h2>
-            <p className="mt-5 text-base leading-8 text-[#687171]">
-              골드바·실버바 판매 문의와 고금·주얼리 매입 문의를 품목, 중량, 수량, 보증서 기준으로 나누어 확인합니다.
-              최종 금액은 당일 고시 시세와 실물 확인 결과를 함께 반영합니다.
-            </p>
-            <div className="mt-7 grid gap-px overflow-hidden border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-3 lg:grid-cols-1">
-              {[
-                ["01", "취급 품목 확인", "골드바, 실버바, 순금 제품, 고금·주얼리 범위를 먼저 구분합니다."],
-                ["02", "당일 고시 기준 확인", "회사 고시 시세와 자동 참고 시세를 혼동하지 않게 안내합니다."],
-                ["03", "실물 확인 후 금액 확정", "최종 금액과 수급 가능 여부는 실물 확인 뒤 정합니다."],
-              ].map(([number, title, body]) => (
-                <div key={title} className="bg-white px-5 py-5">
-                  <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">{number}</p>
-                  <p className="mt-3 text-base font-semibold tracking-[-0.03em] text-[#15191b]">{title}</p>
-                  <p className="mt-2 text-sm leading-7 text-[#687171]">{body}</p>
+
+          <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-6 lg:py-7">
+            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">SERVICE FLOW</p>
+            <h1 className="mt-3 text-[1.9rem] font-semibold leading-tight tracking-[-0.06em] text-[#15191b] sm:text-[2.35rem]">
+              취급 품목, 당일 기준, 실물 확인 순서로 봅니다.
+            </h1>
+            <div className="mt-6 grid gap-px overflow-hidden border border-[#dfe6e3] bg-[#dfe6e3] sm:grid-cols-3">
+              {flowSteps.map(([number, title, body]) => (
+                <div key={title} className="bg-white px-4 py-4">
+                  <p className="text-xs font-semibold tracking-[0.18em] text-[#9a8a00]">{number}</p>
+                  <p className="mt-2 text-base font-bold tracking-[-0.03em] text-[#15191b]">{title}</p>
+                  <p className="mt-2 text-sm leading-6 text-[#687171]">{body}</p>
                 </div>
               ))}
             </div>
@@ -56,124 +56,72 @@ export default async function ServicesPage() {
         </div>
       </section>
 
-      <section className="section-shell pb-18">
-        <div className="mb-10 grid gap-px overflow-hidden border border-[var(--color-line)] bg-[var(--color-line)] lg:grid-cols-3">
-          {serviceGuides.map((item) => (
-            <div key={item.title} className="bg-[#fbfdfc] px-6 py-6">
-              <p className="text-sm font-semibold tracking-[-0.02em] text-[#15191b]">{item.title}</p>
-              <p className="mt-3 text-sm leading-7 text-[var(--color-muted)]">{item.description}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="border-t border-[var(--color-line)]">
-          {serviceCategories.map((category, index) => {
-            const matched = products.find((product) => product.category === category.key);
-            const examples = serviceExamples[category.key];
-
-            return (
-              <section
-                key={category.key}
-                className="grid gap-5 border-b border-[var(--color-line)] py-7 lg:grid-cols-[5rem_0.72fr_1fr_14rem]"
-              >
-                <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">0{index + 1}</p>
-                <div>
-                  <h2 className="text-[1.9rem] font-semibold tracking-[-0.06em] text-[#15191b]">
-                    {category.title}
-                  </h2>
-                  <p className="mt-3 text-sm text-[var(--color-muted)]">
-                    {matched ? getProductStatusLabel(matched.status) : "사전 문의 필요"}
-                  </p>
-                </div>
-                <div className="text-sm leading-8 text-[var(--color-muted)]">
-                  <p>{matched?.shortDescription || category.description}</p>
-                  <p className="mt-3">
-                    {matched?.description ||
-                      "품목, 중량, 수량, 납기 일정에 따라 상담 후 안내드립니다."}
-                  </p>
-                  <div className="mt-4">
-                    <p className="text-xs font-semibold tracking-[0.18em] text-[#9a8a00]">예시 문의</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {examples.map((item) => (
-                        <span
-                          key={item}
-                          className="rounded-full border border-[#dde4e1] bg-[#fbfdfc] px-3 py-1.5 text-xs leading-5 text-[#586160]"
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="text-sm lg:text-right">
-                  <p className="font-semibold text-[#15191b]">
-                    {matched ? getProductStatusLabel(matched.status) : "사전 문의 필요"}
-                  </p>
-                  <p className="mt-2 leading-7 text-[var(--color-muted)]">
-                    {matched ? getProductPriceLabel(matched) : "전화 문의"}
-                  </p>
-                </div>
-              </section>
-            );
-          })}
-        </div>
-      </section>
-
-      <PurchaseGuide showExtendedRows />
-
-      <section className="section-shell pb-14 sm:pb-18">
-        <div className="divide-y divide-[var(--color-line)] border-y border-[var(--color-line)]">
-          {serviceFaqs.map((item) => (
-            <details key={item.question} className="group py-6 first:pt-0 last:pb-0">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-lg font-semibold tracking-[-0.04em] text-[#15191b] marker:hidden">
-                <span>{item.question}</span>
-                <span className="shrink-0 text-xl font-light text-[#9a8a00] transition group-open:rotate-45">+</span>
-              </summary>
-              <p className="mt-3 text-sm leading-7 text-[var(--color-muted)]">{item.answer}</p>
-            </details>
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-[#fffbe8] py-14 sm:py-18">
-        <div className="section-shell grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
+      <section className="section-shell py-10 sm:py-12">
+        <div className="grid gap-8 lg:grid-cols-[0.36fr_0.64fr]">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">상담 범위</p>
-            <h2 className="mt-4 text-[1.95rem] font-semibold leading-tight tracking-[-0.06em] text-[#15191b] sm:text-[2.2rem]">
-              필요한 품목과 예상 수량을 알려주시면 상담 가능 여부를 먼저 안내해 드립니다.
+            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">거래 기준</p>
+            <h2 className="mt-3 text-[1.9rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+              필요한 항목만 빠르게 확인합니다.
             </h2>
-            <p className="mt-5 max-w-3xl text-base leading-8 text-[#687171]">
-              재고, 중량, 수량, 제작 가능 여부는 시점에 따라 달라질 수 있어 거래 전 대표번호 문의를 권장드립니다.
-            </p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            <a
-              href={`tel:${siteConfig.contact.phone}`}
-              className="rounded-full bg-[#ffcc00] px-6 py-3 text-center text-sm font-semibold text-[#171717] shadow-[0_14px_34px_rgba(255,204,0,0.2)] transition hover:bg-[#f4bd00]"
-            >
-              전화 문의 {siteConfig.contact.phone}
-            </a>
+          <div className="overflow-hidden border border-[#dfe6e4] bg-white">
+            {serviceRows.map(([label, value]) => (
+              <div
+                key={label}
+                className="grid gap-3 border-b border-[#e4ebe9] px-5 py-4 text-sm last:border-b-0 sm:grid-cols-[11rem_1fr]"
+              >
+                <p className="font-bold tracking-[-0.03em] text-[#15191b]">{label}</p>
+                <p className="leading-6 text-[#687171]">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-shell pb-12 sm:pb-14">
+        <div className="grid gap-8 border-y border-[var(--color-line)] py-8 lg:grid-cols-[0.36fr_0.64fr]">
+          <div>
+            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">FAQ</p>
+            <h2 className="mt-3 text-[1.9rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+              자주 묻는 기준
+            </h2>
+          </div>
+          <div className="divide-y divide-[var(--color-line)]">
+            {serviceFaqs.map((item) => (
+              <details key={item.question} className="group py-5 first:pt-0 last:pb-0">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-lg font-semibold tracking-[-0.04em] text-[#15191b] marker:hidden">
+                  <span>{item.question}</span>
+                  <span className="shrink-0 text-xl font-light text-[#9a8a00] transition group-open:rotate-45">+</span>
+                </summary>
+                <p className="mt-3 text-sm leading-7 text-[var(--color-muted)]">{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#fffbe8] py-10 sm:py-12">
+        <div className="section-shell flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">NEXT</p>
+            <h2 className="mt-2 text-[1.8rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+              품목별 상품과 매입 기준은 상품/매입에서 확인하세요.
+            </h2>
+          </div>
+          <div className="flex flex-wrap gap-3">
             <Link
               href="/products"
-              className="rounded-full border border-[#d8dfdc] bg-white px-6 py-3 text-center text-sm font-semibold text-[#171717] transition hover:bg-[#fbfdfc]"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-[#ffcc00] px-5 text-sm font-bold text-[#171717]"
             >
               상품/매입 보기
             </Link>
+            <a
+              href={`tel:${siteConfig.contact.phone}`}
+              className="inline-flex h-11 items-center justify-center rounded-full border border-[#d8dfdc] bg-white px-5 text-sm font-semibold text-[#171717]"
+            >
+              {siteConfig.contact.phone}
+            </a>
           </div>
-        </div>
-      </section>
-
-      <section className="section-shell py-14 sm:py-18">
-        <div className="grid gap-8 border-y border-[var(--color-line)] py-8 lg:grid-cols-3">
-          <p className="text-sm leading-8 text-[var(--color-muted)]">
-            투자용 골드바와 실버바는 중량, 브랜드, 수량에 따라 안내 가능한 범위가 달라질 수 있습니다.
-          </p>
-          <p className="text-sm leading-8 text-[var(--color-muted)]">
-            주얼리와 예물 정리 상담은 순도, 부속, 파손 상태 확인 후 상담 기준을 안내합니다.
-          </p>
-          <p className="text-sm leading-8 text-[var(--color-muted)]">
-            매입 상담은 제품 상태, 순도, 중량 확인 후 최종 금액을 확정하는 현장 상담 흐름을 유지합니다.
-          </p>
         </div>
       </section>
     </>

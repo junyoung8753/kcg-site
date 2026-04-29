@@ -315,7 +315,7 @@ export function PriceLineup({
                       href={`tel:${siteConfig.contact.phone}`}
                       className="inline-flex h-10 items-center justify-center rounded-full bg-[#ffcc00] px-4 text-sm font-semibold text-[#171717]"
                     >
-                      전화 상담
+                      전화
                     </a>
                     <Link
                       href="/about"

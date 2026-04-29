@@ -128,7 +128,7 @@ try {
   await capture(page, "/", { width: 1440, height: 1800 }, "home-desktop.png", "한국센터금거래소 시세표");
   await capture(page, "/prices", { width: 390, height: 1800 }, "prices-mobile.png", "품목별 회사 고시 시세 상세");
   await capture(page, "/products", { width: 390, height: 1800 }, "products-mobile.png", "상품/매입");
-  await capture(page, "/services", { width: 390, height: 1800 }, "services-mobile.png", "취급 품목 확인");
+  await capture(page, "/services", { width: 390, height: 1800 }, "services-mobile.png", "취급 품목, 당일 기준");
   await capture(page, "/company", { width: 390, height: 1800 }, "company-mobile.png", "사업자등록번호");
   await capture(page, "/about", { width: 390, height: 1800 }, "about-mobile.png", "사업자등록번호");
 

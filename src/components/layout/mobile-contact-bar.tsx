@@ -12,7 +12,7 @@ export function MobileContactBar() {
           href={`tel:${siteConfig.contact.phone}`}
           className="inline-flex h-11 items-center justify-center rounded-full bg-[#ffcc00] px-3 text-sm font-bold text-[#171717] shadow-[0_10px_24px_rgba(255,204,0,0.22)]"
         >
-          전화 상담
+          전화
         </a>
         <Link
           href="/prices"

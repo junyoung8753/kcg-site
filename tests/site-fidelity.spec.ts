@@ -74,40 +74,17 @@ async function expectMobileBottomBarDoesNotCover(locator: Locator) {
   expect(overlap).toBe(false);
 }
 
-async function expectMarketSummaryCardsPolished(page: Page) {
-  const issues = await page.locator('[data-testid="market-summary-card"]').evaluateAll((cards) =>
-    cards.flatMap((card) => {
-      const cardRect = card.getBoundingClientRect();
-      return Array.from(
-        card.querySelectorAll<HTMLElement>('[data-testid="market-summary-label"], [data-testid="market-summary-value"]'),
-      )
-        .map((element) => {
-          const rect = element.getBoundingClientRect();
-          const style = window.getComputedStyle(element);
-          const fontSize = Number.parseFloat(style.fontSize) || 16;
-          const lineHeight = Number.parseFloat(style.lineHeight) || fontSize * 1.35;
-          const isLabel = element.getAttribute("data-testid") === "market-summary-label";
-          const escapesCard = rect.left < cardRect.left - 2 || rect.right > cardRect.right + 2;
-          const labelWraps = isLabel && rect.height > lineHeight * 1.55;
-
-          if (!escapesCard && !labelWraps) return null;
-
-          return {
-            text: (element.textContent || "").trim(),
-            escapesCard,
-            labelWraps,
-            rect: {
-              width: Math.round(rect.width),
-              height: Math.round(rect.height),
-              cardWidth: Math.round(cardRect.width),
-            },
-          };
-        })
-        .filter(Boolean);
-    }),
-  );
-
-  expect(issues).toEqual([]);
+async function expectMarketDashboardCompact(page: Page) {
+  const dashboard = page.getByTestId("market-dashboard");
+  await expect(dashboard.getByRole("heading", { name: "국제 현재가" })).toBeVisible();
+  await expect(dashboard.getByText("국내 환산").first()).toBeVisible();
+  await expect(dashboard.getByText("매매기준가").first()).toBeVisible();
+  await expect(dashboard.getByTestId("market-source-line")).toContainText("출처:");
+  await expect(dashboard.getByTestId("market-source-line")).toContainText("USD/KRW");
+  await expect(dashboard).not.toContainText("실시간 국제시세와 국내 환산 참고값");
+  await expect(dashboard).not.toContainText("자동 환산표");
+  await expect(dashboard).not.toContainText("차트 확장성");
+  await expect(dashboard).not.toContainText("무료 모드에서는 현재가 중심");
 }
 
 async function expectCampaignImagesLoaded(page: Page) {
@@ -141,12 +118,13 @@ test("mobile home keeps the production conversion surface", async ({ page }) => 
   await expect(page.getByText("내가 살 때 (VAT포함)")).toBeVisible();
   await expect(page.getByText("내가 팔 때 (현장 기준)")).toBeVisible();
   await expect(page.getByText("시세는 고시 시각 기준이며 실제 거래 금액")).toBeVisible();
-  await expect(page.getByText("출처 및 이용 안내")).toBeVisible();
-  await expect(page.getByText("본문·이미지는 재게시하지 않습니다").first()).toBeVisible();
-  await expect(page.getByText("TradingView 제공").first()).toBeVisible();
+  await expect(page.getByTestId("market-source-line").first()).toBeVisible();
+  await expect(page.getByText("국제 금속 차트 열기").first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "국내 뉴스" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "국제 뉴스" })).toBeVisible();
 
   const mobileContactBar = page.locator("div.fixed.inset-x-0.bottom-0");
-  await expect(mobileContactBar.getByRole("link", { name: "전화 상담", exact: true })).toBeVisible();
+  await expect(mobileContactBar.getByRole("link", { name: "전화", exact: true })).toBeVisible();
   await expect(mobileContactBar.getByRole("link", { name: "시세", exact: true })).toBeVisible();
   await expect(mobileContactBar.getByRole("link", { name: "위치", exact: true })).toBeVisible();
 
@@ -207,21 +185,17 @@ test("services route preserves high-risk business wording", async ({ page }) => 
   await page.setViewportSize({ width: 390, height: 1800 });
   await page.goto("/services", { waitUntil: "domcontentloaded" });
 
-  await expect(
-    page.getByRole("heading", { name: "취급 품목 확인에서 실물 확인, 금액 확정까지 한 흐름으로 봅니다." }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "취급 품목, 당일 기준, 실물 확인 순서로 봅니다." })).toBeVisible();
   await expect(page.getByAltText("골드바와 실버바 상담 카운터")).toBeVisible();
-  await expect(page.getByText("고금·주얼리").first()).toBeVisible();
-  await expect(page.getByText("고금·예물 정리 상담")).toBeVisible();
-  await expect(page.getByText("18K·14K 매입 기준 문의")).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "고객이 팔 때 기준을 먼저 확인하고 상담하실 수 있습니다." }),
-  ).toBeVisible();
-  await expect(page.getByText("백금·은 제품")).toBeVisible();
-  await expect(page.getByText("순금, 18K, 14K, 백금, 은 제품은 같은 금액으로 일괄 처리하지 않습니다.")).toBeVisible();
+  await expect(page.getByText("취급 품목", { exact: true })).toBeVisible();
+  await expect(page.getByText("당일 기준", { exact: true })).toBeVisible();
+  await expect(page.getByText("실물 확인", { exact: true })).toBeVisible();
+  await expect(page.getByText("거래 기준")).toBeVisible();
+  await expect(page.getByText("매입 가능 품목")).toBeVisible();
+  await expect(page.getByText("판매·수급 품목")).toBeVisible();
   await expect(page.getByText("고금매입은 시세표의 어느 금액을 보면 되나요?")).toBeVisible();
   await expect(page.getByText("전화로 금액을 확정받을 수 있나요?")).toBeVisible();
-  await expect(page.getByText("사전 문의 필요").first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "상품/매입 보기" })).toBeVisible();
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
 });
@@ -245,7 +219,6 @@ test("mobile products route exposes a consultation catalog without checkout", as
   await expect(pageSizeSelect).toHaveValue("20");
   await expect(page.getByText("KCG 골드바 3.75g")).toBeVisible();
   await expect(page.getByText("현재 고시가 기준 참고가").first()).toBeVisible();
-  await expect(page.getByText("온라인 결제 화면이 아니라")).toBeVisible();
   await expect(page.locator("main")).not.toContainText("장바구니");
   const productImageSources = await page.locator("main img[alt$='이미지']").evaluateAll((images) =>
     images.map((image) => (image instanceof HTMLImageElement ? image.currentSrc || image.src : "")),
@@ -272,7 +245,7 @@ test("mobile prices puts consultation actions before the company price columns",
   await page.goto("/prices", { waitUntil: "domcontentloaded" });
 
   const mainText = await page.locator("main").innerText();
-  const callIndex = mainText.indexOf("전화 상담");
+  const callIndex = mainText.indexOf("전화");
   const visitIndex = mainText.indexOf("오시는 길");
   const columnIndex = mainText.indexOf("내가 살 때 (VAT포함)");
 
@@ -287,13 +260,12 @@ test("mobile prices puts consultation actions before the company price columns",
   const guideIndex = mainText.indexOf("시세 이용 기준");
   expect(mainTextBeforeGuide).toBeGreaterThanOrEqual(0);
   expect(guideIndex).toBeGreaterThan(mainTextBeforeGuide);
-  await expect(page.getByRole("heading", { name: "시세를 볼 때 먼저 확인할 기준" })).toBeVisible();
-  await expect(page.getByText("고금·주얼리 매입 상담")).toBeVisible();
-  await expect(page.getByText("법인·상속·대량 정리")).toBeVisible();
-  await expect(page.getByText("회사 고시 시세").first()).toBeVisible();
-  await expect(page.getByText("자동 국제 참고 시세")).toBeVisible();
-  await expect(page.getByText("타사 내부 API·가격표·뉴스 본문은 고객 화면에 직접 사용하지 않습니다.")).toBeVisible();
-  expect(mainText.split("USD/KRW 환율").length - 1).toBe(1);
+  await expect(page.getByRole("heading", { name: "품목별로 볼 기준만 확인합니다." })).toBeVisible();
+  await expect(page.getByText("고금·주얼리").first()).toBeVisible();
+  await expect(page.getByText("법인·대량")).toBeVisible();
+  await expect(page.getByText("내가 팔 때").first()).toBeVisible();
+  await expect(page.getByText("신분증, 보증서·영수증, 제품 상태")).toBeVisible();
+  expect(mainText.split("USD/KRW").length - 1).toBeGreaterThanOrEqual(1);
   expect(mainText.split("업데이트").length - 1).toBeLessThanOrEqual(1);
   expect(mainText.split("3.75g 자동 환산").length - 1).toBe(0);
   await expect(page.locator("main")).not.toContainText("단위: 3.75g");
@@ -304,22 +276,12 @@ test("mobile prices puts consultation actions before the company price columns",
   await expectNoVisibleElementEscapesViewport(page);
 });
 
-test("prices market reference cards stay aligned in the two-column desktop layout", async ({ page }) => {
+test("prices market reference stays compact in the two-column desktop layout", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1200 });
   await page.goto("/prices", { waitUntil: "domcontentloaded" });
 
-  await expect(page.getByRole("heading", { name: "국제 시세" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "국내 시세" })).toBeVisible();
-  const summaryLabels = page.locator('[data-testid="market-summary-label"]');
-  await expect(summaryLabels.filter({ hasText: /^국제 팔라듐$/ })).toBeVisible();
-  await expect(summaryLabels.filter({ hasText: /^순금$/ })).toBeVisible();
-  await expect(summaryLabels.filter({ hasText: /^은$/ })).toBeVisible();
-  await expect(summaryLabels.filter({ hasText: /^백금$/ })).toBeVisible();
-  const labelTexts = await summaryLabels.allInnerTexts();
-  expect(labelTexts).not.toContain("국제 팔라듐시세");
-  expect(labelTexts).not.toContain("순금 3.75g 환산 참고가");
-  expect(labelTexts).not.toContain("순금 참고가");
-  await expectMarketSummaryCardsPolished(page);
+  await expectMarketDashboardCompact(page);
+  await expect(page.getByTestId("tradingview-market-widget")).toBeVisible();
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
 });
@@ -331,7 +293,7 @@ test("mobile fixed contact bar does not cover key decision content", async ({ pa
     { path: "/", text: "상품/매입 카테고리" },
     { path: "/prices", text: "품목별 회사 고시 시세 상세" },
     { path: "/products", text: "KCG 골드바 3.75g" },
-    { path: "/services", text: "필요한 품목과 예상 수량을 알려주시면 상담 가능 여부를 먼저 안내해 드립니다." },
+    { path: "/services", text: "품목별 상품과 매입 기준은 상품/매입에서 확인하세요." },
     { path: "/about", text: "사업자등록번호" },
   ];
 
@@ -342,10 +304,25 @@ test("mobile fixed contact bar does not cover key decision content", async ({ pa
   }
 });
 
+test("public routes avoid repeated phone and consultation wording", async ({ page }) => {
+  const thresholds = [
+    { path: "/products", limit: 25 },
+    { path: "/services", limit: 25 },
+    { path: "/about", limit: 25 },
+  ];
+
+  for (const item of thresholds) {
+    await page.goto(item.path, { waitUntil: "domcontentloaded" });
+    const mainText = await page.locator("main").innerText();
+    const count = (mainText.match(/전화|문의|상담/g) || []).length;
+    expect(count, `${item.path} phone/contact wording count`).toBeLessThanOrEqual(item.limit);
+  }
+});
+
 test("critical routes respond with expected content", async ({ page }) => {
   const routes = [
     { path: "/", text: "한국센터금거래소 시세표" },
-    { path: "/prices", text: "시세를 볼 때 먼저 확인할 기준" },
+    { path: "/prices", text: "품목별로 볼 기준만 확인합니다." },
     { path: "/products", text: "상품/매입" },
     { path: "/products/investment-gold-bar-consulting", text: "KCG 골드바 3.75g" },
     { path: "/announcements", text: "시세 운영 및 거래 준비 공지" },

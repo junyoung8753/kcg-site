@@ -77,6 +77,12 @@ function getCategoryFromSlug(slug: string): ProductCategory | null {
   return productCatalogTabs.find((tab) => tab.slug === slug)?.category ?? null;
 }
 
+function getProductImagePositionClass(product: Product) {
+  if (product.category === "pure_gold") return "object-[76%_50%]";
+  if (product.category === "custom_order") return "object-[42%_58%]";
+  return "object-center";
+}
+
 function ProductPromoCard({ banner, compact = false }: { banner: (typeof promoBanners)[number]; compact?: boolean }) {
   const content = (
     <span className={`group relative block overflow-hidden border border-[#252525] bg-[#111] ${compact ? "min-h-28" : "min-h-36"}`}>
@@ -162,22 +168,7 @@ export function ProductCatalog({ products, prices, contactPhone }: ProductCatalo
   }
 
   return (
-    <section className="section-shell py-12">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">상품/매입 카탈로그</p>
-          <h2 className="mt-3 text-[2rem] font-semibold tracking-[-0.06em] text-[#15191b]">
-            품목을 고르고 현재 고시가 기준 참고가를 확인하세요
-          </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-[#687171]">
-            온라인 결제 화면이 아니라, 골드바·실버바·순금 제품과 고금 매입 기준을 확인한 뒤 전화 문의로 이어지는 카탈로그입니다.
-          </p>
-        </div>
-        <a href={`tel:${contactPhone}`} className="text-sm font-semibold text-[#707878]">
-          전화 문의 {contactPhone}
-        </a>
-      </div>
-
+    <section className="section-shell py-8 sm:py-10">
       <div className="grid overflow-hidden border border-[#d8dfdd] bg-white md:grid-cols-3 xl:grid-cols-6">
         {productCatalogTabs.map((tab) => {
           const isActive = tab.slug === selectedCategory;
@@ -204,7 +195,7 @@ export function ProductCatalog({ products, prices, contactPhone }: ProductCatalo
         ))}
       </div>
 
-      <div className="mt-8 grid gap-8 xl:grid-cols-[minmax(0,1fr)_12.5rem]">
+      <div className="mt-6 grid gap-8 xl:grid-cols-[minmax(0,1fr)_12.5rem]">
         <div>
           <div className="flex flex-col gap-4 border-y border-[#d8dfdd] py-4 md:flex-row md:items-center md:justify-between">
             <p data-testid="product-count" className="text-sm font-semibold text-[#15191b]">
@@ -234,7 +225,7 @@ export function ProductCatalog({ products, prices, contactPhone }: ProductCatalo
             </div>
           </div>
 
-          <div className="mt-8 grid gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-7 grid gap-y-9 gap-x-6 sm:grid-cols-2 lg:grid-cols-3">
             {visibleProducts.map((product) => {
               const imageSrc = getProductImageSrc(product);
               const price = getProductPriceDisplay(product, prices);
@@ -247,8 +238,9 @@ export function ProductCatalog({ products, prices, contactPhone }: ProductCatalo
                         src={imageSrc}
                         alt={`${product.name} 이미지`}
                         fill
-                        className="object-cover transition duration-500 group-hover:scale-[1.035]"
+                        className={`object-cover transition duration-500 group-hover:scale-[1.035] ${getProductImagePositionClass(product)}`}
                         sizes="(min-width: 1280px) 300px, (min-width: 768px) 50vw, 100vw"
+                        loading="eager"
                         unoptimized
                       />
                     </div>
@@ -266,7 +258,7 @@ export function ProductCatalog({ products, prices, contactPhone }: ProductCatalo
                       <h3 className="mt-4 text-xl font-semibold tracking-[-0.05em] text-[#15191b]">
                         {product.name}
                       </h3>
-                      <p className="mt-3 min-h-[3.2rem] text-sm leading-7 text-[#687171]">
+                      <p className="mt-3 line-clamp-2 min-h-[3rem] text-sm leading-6 text-[#687171]">
                         {product.shortDescription}
                       </p>
                       <div className="mt-4 border-t border-[#e4ebe9] pt-4">
@@ -276,16 +268,10 @@ export function ProductCatalog({ products, prices, contactPhone }: ProductCatalo
                       </div>
                     </div>
                   </Link>
-                  <div className="mt-5 flex gap-2">
-                    <a
-                      href={`tel:${contactPhone}`}
-                      className="inline-flex h-10 flex-1 items-center justify-center rounded-full bg-[#ffcc00] px-4 text-sm font-bold text-[#171717]"
-                    >
-                      문의하기
-                    </a>
+                  <div className="mt-5">
                     <Link
                       href={`/products/${product.slug}`}
-                      className="inline-flex h-10 flex-1 items-center justify-center rounded-full border border-[#d8dfdd] px-4 text-sm font-semibold text-[#171717]"
+                      className="inline-flex h-10 w-full items-center justify-center rounded-full border border-[#d8dfdd] px-4 text-sm font-semibold text-[#171717] transition hover:bg-[#fff8df]"
                     >
                       상세보기
                     </Link>
@@ -299,8 +285,8 @@ export function ProductCatalog({ products, prices, contactPhone }: ProductCatalo
         <aside className="hidden xl:block">
           <div className="sticky top-28 space-y-3">
             <div className="border border-[#e2e6e4] bg-[#f6f8f7] px-4 py-5 text-center">
-              <p className="text-sm font-black tracking-[0.05em] text-[#15191b]">TODAY</p>
-              <p className="mt-1 text-sm font-black tracking-[0.05em] text-[#15191b]">VIEW</p>
+              <p className="text-sm font-black tracking-[0.05em] text-[#15191b]">KCG</p>
+              <p className="mt-1 text-sm font-black tracking-[0.05em] text-[#15191b]">LINKS</p>
             </div>
             {promoBanners.map((banner) => (
               <ProductPromoCard key={banner.title} banner={banner} />
@@ -310,6 +296,9 @@ export function ProductCatalog({ products, prices, contactPhone }: ProductCatalo
               className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#d7d7d7] text-xs font-bold text-white"
             >
               TOP
+            </a>
+            <a href={`tel:${contactPhone}`} className="block rounded-full bg-[#ffcc00] px-4 py-3 text-center text-sm font-bold text-[#171717]">
+              {contactPhone}
             </a>
           </div>
         </aside>
