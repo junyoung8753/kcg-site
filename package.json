@@ -9,6 +9,8 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "audit:site": "node scripts/audit-site-fidelity.mjs",
+    "check:external": "node scripts/check-external-services.mjs",
+    "tasks:dashboard": "node scripts/render-open-tasks-dashboard.mjs",
     "test:site": "playwright test",
     "screenshot:site": "node scripts/capture-site-screenshots.mjs"
   },

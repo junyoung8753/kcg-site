@@ -1,14 +1,31 @@
 import { upsertProductAction } from "@/actions/product-actions";
 import { getRepository } from "@/lib/data";
-import { getProductCategoryLabel, getProductStatusLabel } from "@/lib/product-presenter";
-import { serviceCategories } from "@/lib/site-config";
-import type { Product, ProductCategory, ProductStatus } from "@/types/product";
+import {
+  getProductCategoryLabel,
+  getProductPriceBasisLabel,
+  getProductStatusLabel,
+  productCatalogTabs,
+} from "@/lib/product-presenter";
+import type { Product, ProductCategory, ProductPriceBasis, ProductStatus } from "@/types/product";
 
 interface AdminProductsPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 const productStatuses: ProductStatus[] = ["active", "inquiry_required", "hidden"];
+const adminCategories = productCatalogTabs.filter((tab) => tab.category);
+const productPriceBases: ProductPriceBasis[] = [
+  "gold_24k_sell",
+  "gold_24k_buy",
+  "gold_18k_buy",
+  "gold_14k_buy",
+  "platinum_sell",
+  "platinum_buy",
+  "silver_sell",
+  "silver_buy",
+  "manual",
+  "inquiry",
+];
 
 function getStatusMessage(status?: string | string[]) {
   if (status === "saved") return "상품 정보가 저장되었습니다.";
@@ -53,6 +70,15 @@ function productForm(product: Product) {
             />
           </label>
           <label className="block text-sm text-white/74">
+            서브카테고리
+            <input
+              name="subcategory"
+              defaultValue={product.subcategory || ""}
+              placeholder="예: 1돈 골드바, 18K 매입"
+              className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
+            />
+          </label>
+          <label className="block text-sm text-white/74">
             상세 설명
             <textarea
               name="description"
@@ -88,9 +114,9 @@ function productForm(product: Product) {
               defaultValue={product.category}
               className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
             >
-              {serviceCategories.map((category) => (
-                <option key={category.key} value={category.key}>
-                  {category.title}
+              {adminCategories.map((category) => (
+                <option key={category.slug} value={category.category || "gold_bar"}>
+                  {category.label}
                 </option>
               ))}
             </select>
@@ -115,6 +141,48 @@ function productForm(product: Product) {
               name="displayOrder"
               type="number"
               defaultValue={product.displayOrder}
+              className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
+            />
+          </label>
+          <label className="block text-sm text-white/74">
+            연동 시세
+            <select
+              name="priceBasis"
+              defaultValue={product.priceBasis}
+              className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
+            >
+              {productPriceBases.map((basis) => (
+                <option key={basis} value={basis}>
+                  {getProductPriceBasisLabel(basis)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm text-white/74">
+            중량(g)
+            <input
+              name="weightGrams"
+              type="number"
+              step="0.01"
+              defaultValue={product.weightGrams ?? ""}
+              className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
+            />
+          </label>
+          <label className="block text-sm text-white/74">
+            임시 공임
+            <input
+              name="makingFee"
+              type="number"
+              defaultValue={product.makingFee ?? ""}
+              className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
+            />
+          </label>
+          <label className="block text-sm text-white/74">
+            수동 가격
+            <input
+              name="manualPrice"
+              type="number"
+              defaultValue={product.manualPrice ?? ""}
               className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
             />
           </label>
@@ -166,16 +234,21 @@ function blankProduct(category: ProductCategory): Product {
   return {
     id: "",
     category,
+    subcategory: null,
     name: `${label} 상담`,
     slug: `${category.replace(/_/g, "-")}-consulting`,
     shortDescription: `${label} 문의 및 상담 안내`,
     description: "중량, 수량, 재고와 고시 시세를 확인한 뒤 상담 기준을 안내합니다.",
     imageUrl: null,
-    specs: ["중량 확인", "수량 확인", "방문 가능 시간"],
+    specs: ["중량 확인", "수량 확인", "상담 가능 시간"],
     status: "inquiry_required",
     displayOrder: 100,
     isFeatured: false,
     priceVisible: false,
+    priceBasis: "inquiry",
+    weightGrams: null,
+    makingFee: null,
+    manualPrice: null,
     priceLabel: "전화 문의",
     priceNote: "상담 후 안내",
     publicNote: "최종 안내는 대표번호 상담 후 진행합니다.",
@@ -189,8 +262,8 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
   const [products, params] = await Promise.all([repository.getProducts({ includeHidden: true }), searchParams]);
   const message = getStatusMessage(params.status);
   const sortedProducts = [...products].sort((a, b) => a.displayOrder - b.displayOrder);
-  const missingCategories = serviceCategories
-    .map((category) => category.key)
+  const missingCategories = adminCategories
+    .map((category) => category.category as ProductCategory)
     .filter((category) => !products.some((product) => product.category === category));
 
   return (
@@ -198,8 +271,8 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
       <section className="rounded-[2.2rem] border border-white/10 bg-white/5 p-8">
         <h2 className="font-display text-4xl">상품 카탈로그 관리</h2>
         <p className="mt-4 max-w-3xl text-sm leading-8 text-white/72">
-          결제 없는 상담형 상품 문의란입니다. 사진, 가격 표시 문구, 공개 상태와 정렬만 관리하고 실제 재고·수급·최종
-          금액은 전화 또는 방문 상담에서 확인합니다.
+          결제 없는 상담형 상품/매입 관리 화면입니다. 순금 제품, 골드바, 고금 매입, 실버바, B2B 대량 상담의 사진, 가격 표시
+          문구, 공개 상태와 정렬만 관리하고 실제 재고·수급·최종 금액은 대표번호 문의와 거래 상담에서 확인합니다.
         </p>
         {message ? (
           <p className="mt-5 rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-white/78">
@@ -209,11 +282,11 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
       </section>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        {serviceCategories.map((category) => {
-          const count = products.filter((product) => product.category === category.key).length;
+        {adminCategories.map((category) => {
+          const count = products.filter((product) => product.category === category.category).length;
           return (
-            <div key={category.key} className="rounded-[1.8rem] border border-white/10 bg-white/5 p-5">
-              <p className="text-sm font-semibold text-white">{category.title}</p>
+            <div key={category.slug} className="rounded-[1.8rem] border border-white/10 bg-white/5 p-5">
+              <p className="text-sm font-semibold text-white">{category.label}</p>
               <p className="mt-2 text-sm text-white/58">연결 상품 {count}건</p>
             </div>
           );

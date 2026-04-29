@@ -76,6 +76,39 @@ function expectNoText(relativePath, patterns) {
   }
 }
 
+function expectTextCount(relativePath, pattern, expectedCount) {
+  const text = readText(relativePath);
+  if (text === null) {
+    record(failures, "missing file", relativePath);
+    return;
+  }
+
+  const actualCount = text.split(pattern).length - 1;
+  if (actualCount !== expectedCount) {
+    record(failures, "text count", `${relativePath} -> ${pattern} occurred ${actualCount}, expected ${expectedCount}`);
+    return;
+  }
+
+  record(passes, "text count", `${relativePath} -> ${pattern} occurred ${actualCount}`);
+}
+
+function expectTextOrder(relativePath, firstPattern, secondPattern) {
+  const text = readText(relativePath);
+  if (text === null) {
+    record(failures, "missing file", relativePath);
+    return;
+  }
+
+  const firstIndex = text.indexOf(firstPattern);
+  const secondIndex = text.indexOf(secondPattern);
+  if (firstIndex === -1 || secondIndex === -1 || firstIndex > secondIndex) {
+    record(failures, "text order", `${relativePath} -> expected ${firstPattern} before ${secondPattern}`);
+    return;
+  }
+
+  record(passes, "text order", `${relativePath} -> ${firstPattern} before ${secondPattern}`);
+}
+
 async function expectUrl(pathname, patterns = []) {
   const url = new URL(pathname, siteUrl);
   const response = await fetch(url);
@@ -86,7 +119,10 @@ async function expectUrl(pathname, patterns = []) {
   }
 
   const contentType = response.headers.get("content-type") || "";
-  const body = contentType.includes("text") || contentType.includes("json") ? await response.text() : "";
+  const body =
+    contentType.includes("text") || contentType.includes("json") || contentType.includes("xml")
+      ? await response.text()
+      : "";
   record(passes, "route", `${url.href} returned ${response.status}`);
 
   for (const pattern of patterns) {
@@ -96,6 +132,28 @@ async function expectUrl(pathname, patterns = []) {
       record(passes, "route text", `${url.href} -> ${pattern}`);
     }
   }
+}
+
+async function expectRedirect(pathname, expectedLocation) {
+  const url = new URL(pathname, siteUrl);
+  const response = await fetch(url, { redirect: "manual" });
+  const actualLocation = response.headers.get("location") || "";
+
+  if (response.status < 300 || response.status >= 400) {
+    record(failures, "route redirect", `${url.href} returned ${response.status}, expected redirect`);
+    return;
+  }
+
+  if (!actualLocation.includes(expectedLocation)) {
+    record(
+      failures,
+      "route redirect",
+      `${url.href} redirected to ${actualLocation || "(missing location)"}, expected ${expectedLocation}`,
+    );
+    return;
+  }
+
+  record(passes, "route redirect", `${url.href} redirected to ${actualLocation}`);
 }
 
 async function expectUrlStatus(pathname, expectedStatus) {
@@ -112,9 +170,20 @@ async function expectUrlStatus(pathname, expectedStatus) {
 }
 
 [
+  "public/campaign/kcg-brand-gold-bars-20260427-v4.png",
+  "public/campaign/kcg-main-desk-photo-20260427-v3.png",
   "public/campaign/kcg-hero-gold-bars.jpg",
   "public/campaign/kcg-hero-metal-bars.jpg",
   "public/campaign/kcg-hero-consulting.jpg",
+  "public/campaign/kcg-consulting-desk-20260427.jpg",
+  "public/campaign/kcg-visit-desk-20260427.jpg",
+  "public/products/kcg-gold-bar-catalog-20260427-v2.jpg",
+  "public/products/kcg-pure-gold-products-20260427-v2.jpg",
+  "public/products/kcg-old-gold-jewelry-20260427-v2.jpg",
+  "public/products/kcg-silver-gift-20260427-v2.jpg",
+  "public/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
+  "public/products/kcg-buying-process-20260427-v2.jpg",
+  "public/services/kcg-service-counter-20260427.jpg",
   "public/brand/kcg-logo.png",
   "public/brand/kcg-lockup.png",
 ].forEach((relativePath) => expectFile(relativePath, { minBytes: 10_000 }));
@@ -122,45 +191,120 @@ async function expectUrlStatus(pathname, expectedStatus) {
 expectFile("docs/quality/product-experience-rubric.md", { minBytes: 3_000 });
 expectFile("docs/quality/ai-site-production-playbook.md", { minBytes: 4_000 });
 expectFile("docs/quality/data-source-compliance.md", { minBytes: 4_000 });
+expectFile("docs/quality/design-review-checklist.md", { minBytes: 3_000 });
+expectFile("docs/setup/OPEN_TASKS.md", { minBytes: 2_000 });
+expectFile("docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md", { minBytes: 4_000 });
+expectFile("docs/brand/campaign-image-prompts.md", { minBytes: 1_000 });
+expectFile("scripts/render-open-tasks-dashboard.mjs", { minBytes: 5_000 });
+expectFile("scripts/check-external-services.mjs", { minBytes: 2_000 });
 expectFile("docs/research/gold-exchange-benchmark-2026-04-25.md", { minBytes: 3_000 });
 expectFile("docs/research/gold-exchange-deep-audit-2026-04-27.md", { minBytes: 6_000 });
 expectMissing("src/app/(site)/option-1/page.tsx");
 expectMissing("src/app/(site)/option-2/page.tsx");
 expectMissing("scripts/compare-source-url.mjs");
+expectMissing("scripts/generate-kcg-main-banner.mjs");
+expectMissing("public/campaign/kcg-main-commerce-banner-20260427-v2.jpg");
+expectMissing("public/campaign/KakaoTalk_20260207_230604937.jpg");
+expectMissing("public/products/KakaoTalk_20260207_230604937.jpg");
+expectMissing("public/services/KakaoTalk_20260207_230604937.jpg");
+
+expectText("package.json", [
+  "\"check:external\": \"node scripts/check-external-services.mjs\"",
+]);
+
+expectText("scripts/check-external-services.mjs", [
+  "https://kcg-confirm-preview.vercel.app",
+  "76.76.21.21",
+  "Disallow: /",
+  "mode=",
+  "--strict-domain",
+]);
 
 expectText("src/components/market/price-lineup.tsx", [
-  "/campaign/kcg-hero-gold-bars.jpg",
+  "/campaign/kcg-brand-gold-bars-20260427-v4.png",
+  "/campaign/kcg-main-desk-photo-20260427-v3.png",
   "/campaign/kcg-hero-metal-bars.jpg",
-  "/campaign/kcg-hero-consulting.jpg",
+  "/campaign/kcg-consulting-desk-20260427.jpg",
+  "한국센터금거래소 골드바 브랜드 캠페인 이미지",
+  "한국센터금거래소 금·은 상담 데스크 이미지",
+  "골드바와 실버바 키비주얼 배너",
   "골드바와 순금 거래 상담 배너",
-  "백금 실버바 골드바 상담 배너",
-  "종로 방문 상담 안내 배너",
   "siteConfig.englishName",
-  "KCG PRICE DESK",
-  "오늘 고시 시세와 방문 상담 기준을 한 화면에서 확인합니다.",
   "kcg-full-bleed-campaign",
   'data-testid="home-campaign-visual"',
   'data-testid="home-price-lineup-panel"',
   'sizes="100vw"',
-  'visualMode === "campaign" ? "relative flex flex-col" : "relative flex flex-col lg:block"',
-  'visualMode === "campaign"',
+  'const wrapperLayoutClass = "relative flex flex-col lg:block"',
+  "lg:absolute lg:bottom-0 lg:left-[clamp(7rem,12vw,17rem)] lg:top-0 lg:order-none",
+  "lg:w-[37vw] 2xl:w-[42rem]",
+  "bg-[rgba(38,39,39,0.96)]",
+  "bg-[rgba(13,13,13,0.98)]",
   "order-1 relative z-0 overflow-hidden",
   "24K · 3.75g 기준",
   "시세는 고시 시각 기준이며 실제 거래 금액",
 ]);
-expectNoText("src/components/market/price-lineup.tsx", ["64vw", "lg:ml-8 xl:ml-12", "lg:pl-[40rem]"]);
-expectText("src/app/globals.css", ["kcg-hero-copy-in", ".kcg-hero-copy", ".kcg-hero-heading", "word-break: keep-all"]);
+expectNoText("src/components/market/price-lineup.tsx", [
+  "/campaign/kcg-main-commerce-banner-20260427-v2.jpg",
+  "KCG 순금 골드바 방문 상담 광고 배너",
+  "방문 상담",
+  "정지",
+  "재생",
+  "시세표 다시 보기",
+  "시세 라인업 닫기",
+  "64vw",
+  "lg:ml-8 xl:ml-12",
+  "lg:pl-[40rem]",
+  "rgba(255,255,255,0.92)",
+  "rgba(255,255,255,0.14)",
+  "activeSlide.kicker",
+  "activeSlide.title",
+  "activeSlide.body",
+]);
+expectText("src/app/globals.css", [
+  "kcg-hero-copy-in",
+  ".kcg-hero-copy",
+  ".kcg-hero-heading",
+  "word-break: keep-all",
+  "scroll-padding-bottom: calc(6.25rem + env(safe-area-inset-bottom))",
+]);
+expectText("src/app/(site)/layout.tsx", ["pb-[calc(6.25rem+env(safe-area-inset-bottom))]"]);
 expectText("src/components/market/market-dashboard.tsx", [
   "실시간 국제 참고 시세",
-  "3.75g 기준 자동 환산가",
+  "실시간 국제시세와 국내 환산 참고값",
+  "국내 시세",
+  "국제 시세",
+  "매매기준가",
+  "TradingViewMarketWidget",
+  "국제 현재가와 국내 환산 참고값",
+  "USD/T.oz 기준 현재가를 원화와 3.75g 기준으로 환산 · USD/KRW 환율 {exchangeRateLabel} · {updatedAtLabel} 기준",
   "md:hidden",
+  "hidden gap-8 xl:grid xl:grid-cols-2",
   "출처 및 이용 안내",
   "공급자 약관 확인",
 ]);
-expectNoText("src/components/market/market-dashboard.tsx", ["min-w-[40rem]", "USD / T.oz"]);
+expectText("src/components/market/trading-view-widget.tsx", [
+  "TRADINGVIEW CHART",
+  "국제 금속 시세 차트",
+  "TradingView 제공",
+  "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js",
+  "data-testid=\"tradingview-market-widget\"",
+  "이 위젯 데이터를 저장하거나",
+]);
+expectNoText("src/components/market/market-dashboard.tsx", [
+  "min-w-[40rem]",
+  "USD / T.oz",
+  'text-right">환율',
+  "text-right\">업데이트",
+  "<span>업데이트</span>",
+  "3.75g 자동 환산",
+  "업데이트 기준",
+  "환율 {formatExchangeRate(data.krwRate)} 기준 자동 참고값",
+]);
 expectText("src/components/prices/price-table.tsx", ["고시가 /", "formatWon"]);
 expectNoText("src/components/prices/price-table.tsx", ["단위: {price.unit}", ">단위<"]);
-expectText("src/app/(site)/prices/page.tsx", ["PriceContextGuide"]);
+expectText("src/app/(site)/prices/page.tsx", ["PriceContextGuide", "시세 이용 기준"]);
+expectNoText("src/app/(site)/prices/page.tsx", ["PageIntro"]);
+expectTextOrder("src/app/(site)/prices/page.tsx", "<PriceLineup", "시세 이용 기준");
 expectText("src/components/prices/price-context-guide.tsx", [
   "시세를 볼 때 먼저 확인할 기준",
   "고금·주얼리 매입 상담",
@@ -171,11 +315,17 @@ expectText("src/components/prices/price-context-guide.tsx", [
 ]);
 expectText("tests/site-fidelity.spec.ts", [
   "expectNoVisibleElementEscapesViewport",
-  "오늘 고시 시세와 방문 상담 기준을 한 화면에서 확인합니다.",
+  "expectMobileBottomBarDoesNotCover",
   "고시가 / 3.75g 기준",
   "시세를 볼 때 먼저 확인할 기준",
+  "USD/KRW 환율",
   "단위: 3.75g",
+  "한국센터금거래소 금·은 상담 데스크 이미지",
+  "한국센터금거래소 골드바 브랜드 캠페인 이미지",
+  "const explicitAdminPassword = process.env.KCG_TEST_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD",
+  'const adminPassword = explicitAdminPassword || (isExternalAuditUrl ? undefined : "0000")',
 ]);
+expectNoText("tests/site-fidelity.spec.ts", ["KCG 순금 골드바 방문 상담 광고 배너", "시세 운영 및 방문 안내 공지"]);
 expectText("src/lib/market-data.ts", [
   "https://gold-api.com/docs",
   "https://gold-api.com/terms",
@@ -192,17 +342,24 @@ expectNoText("src/lib/market-data.ts", [
 ]);
 
 expectText("src/components/layout/site-header.tsx", [
-  "시세조회",
-  "고금매입 상담",
-  "골드바·실버바",
-  "/products",
+  "siteConfig.familyLinks",
+  "siteConfig.locations",
+  "상품/매입",
+  "회사소개",
+  "매장안내",
+  "siteNavigation.map",
   "전화",
   "메뉴",
   "(주)한국센터",
   "금거래소",
 ]);
 
-expectText("src/components/layout/mobile-contact-bar.tsx", ["전화 상담", "시세", "위치"]);
+expectText("src/components/layout/mobile-contact-bar.tsx", [
+  'data-testid="mobile-contact-bar"',
+  "전화 상담",
+  "시세",
+  "위치",
+]);
 expectText("src/lib/legal-info.ts", [
   "TEMP_BUSINESS_REGISTRATION_NUMBER",
   "000-00-00000",
@@ -214,7 +371,9 @@ expectText("src/lib/launch-readiness.ts", [
   "대표 도메인",
   "관리자 인증",
   "운영 데이터 저장소",
+  "Cafe24 DNS",
 ]);
+expectNoText("src/lib/launch-readiness.ts", ["Gabia", "Whois DNS"]);
 expectText("src/app/robots.ts", ["canExposeToSearch"]);
 expectText("src/app/sitemap.ts", ["canExposeToSearch"]);
 expectText("src/app/layout.tsx", ["canExposeToSearch"]);
@@ -222,9 +381,34 @@ expectText("src/app/api/health/route.ts", ["launchReadiness", "getSearchExposure
 expectText("src/lib/auth/password.ts", ["missing-env", "__KCG_ADMIN_PASSWORD_NOT_CONFIGURED__"]);
 expectNoText("src/lib/auth/password.ts", ["adminPreviewPassword", "0000"]);
 expectNoText("src/lib/site-config.ts", ["adminPreviewPassword"]);
+[
+  "src/lib/site-config.ts",
+  "src/components/home/final-home.tsx",
+  "src/components/layout/site-header.tsx",
+  "src/components/market/price-lineup.tsx",
+  "src/components/prices/price-context-guide.tsx",
+  "src/app/(site)/about/page.tsx",
+  "src/app/(site)/announcements/page.tsx",
+  "src/app/(site)/products/page.tsx",
+  "src/app/(site)/services/page.tsx",
+  "src/mock/announcements.ts",
+  "src/mock/products.ts",
+  "supabase/seed.sql",
+].forEach((relativePath) =>
+  expectNoText(relativePath, ["방문 상담", "B2C 방문 상담", "순금·골드바 방문 상담"]),
+);
 expectText("src/app/admin/login/page.tsx", ["missing-env", "ADMIN_PASSWORD"]);
 expectNoText("src/app/admin/login/page.tsx", ["preview-default", "adminPreviewPassword"]);
-expectText("src/app/admin/launch/page.tsx", ["오픈 전 점검판", "임시값은 화면에 보이더라도"]);
+expectText("src/app/admin/launch/page.tsx", [
+  "오픈 전 점검판",
+  "임시값은 화면에 보이더라도",
+  "지금 미리 가능한 준비",
+  "공개 직전 별도 승인 필요",
+  "Cafe24 도메인 연결 절차",
+  "KRX 데이터는 승인·계약 범위 확인 전 production 미사용",
+  "Production 배포 승인",
+  "robots/noindex 해제와 검색 색인 승인",
+]);
 expectText("src/app/admin/layout.tsx", ["/admin/launch", "오픈 점검"]);
 expectText("src/components/layout/site-footer.tsx", [
   "getBusinessRegistrationDisplay",
@@ -232,33 +416,51 @@ expectText("src/components/layout/site-footer.tsx", [
 ]);
 expectText("src/app/(site)/about/page.tsx", [
   "getBusinessRegistrationDisplay",
-  "getLegalPlaceholderNotice",
+  "siteConfig.locations",
+  "/campaign/kcg-visit-desk-20260427.jpg",
+  "거래 전 준비 항목을 확인하면 현장 안내가 빨라집니다.",
+  "성창빌딩 매장",
+  "골든타워 본사",
 ]);
 
 expectText("src/app/(site)/services/page.tsx", [
+  "/services/kcg-service-counter-20260427.jpg",
+  "취급 품목 확인에서 실물 확인, 금액 확정까지 한 흐름으로 봅니다.",
   "PurchaseGuide",
   "serviceFaqs",
   "고금·주얼리",
   "주얼리와 예물 정리 상담",
   "getProductStatusLabel",
-  "상품 문의 보기",
+  "상품/매입 보기",
 ]);
 expectText("src/app/(site)/products/page.tsx", [
-  "골드바·실버바와 귀금속 상담 카탈로그",
-  "상품 가격을 확정 결제하는 쇼핑몰이 아니라",
+  "상품/매입",
+  "골드바·순금 제품과 고금 매입 범위를 먼저 확인합니다.",
+  "중량별 골드바, 실버바, 순금제품, 고금·주얼리 매입 기준",
   "ProductCatalog",
 ]);
 expectText("src/app/(site)/products/[slug]/page.tsx", [
-  "getProductPriceLabel",
+  "getProductPriceDisplay",
   "문의 전 확인하면 상담이 빨라집니다",
   "전화 문의",
+]);
+expectNoText("src/app/(site)/company/page.tsx", [
+  "const businessScopes",
+  "순금·고금 매입 순금",
+  "골드바·실버바 판매 투자용",
+  "B2B 대량 상담 법인",
 ]);
 
 expectText("src/lib/site-config.ts", [
   "/products",
-  "000-00-00000",
-  "임시값",
-  "상품 문의",
+  "505-88-03567",
+  "110111-0950729",
+  "서울시 종로구 봉익동 97-1 성창빌딩 1층 6호",
+  "서울시 종로구 돈화문로6가길 12 골든타워 303호",
+  "familyLinks",
+  "순금·고금 매입",
+  "B2C 전화 문의·B2B",
+  "상품/매입",
   "고금·예물 정리 상담",
   "18K·14K 매입 기준 문의",
   "고금·주얼리",
@@ -268,26 +470,112 @@ expectText("src/lib/site-config.ts", [
 ]);
 expectText("src/components/home/purchase-guide.tsx", ["백금·은 제품"]);
 expectText("src/components/products/product-catalog.tsx", [
-  "상담형 상품 카탈로그",
-  "온라인 결제나 장바구니가 아닌 전화 상담형 카탈로그입니다.",
+  "상품/매입 카탈로그",
+  "상품 <span",
+  "추천순",
+  "낮은가격순",
+  "높은가격순",
+  "등록일순",
+  "20개씩보기",
+  "온라인 결제 화면이 아니라",
+  "현재 고시가 기준",
+  "TODAY",
+  "KC 랩그로운 다이아몬드",
   "getProductImageSrc",
+]);
+expectText("src/lib/product-presenter.ts", [
+  "전체",
+  "골드바",
+  "실버바",
+  "순금제품",
+  "고금·주얼리 매입",
+  "B2B·기업",
+  "productCatalogTabs",
+]);
+expectNoText("src/components/products/product-catalog.tsx", [
+  "사진과 가격 문구",
+  "등록해 운영",
+  "관리자에서",
+  "장바구니",
+  "구매하기",
+  "결제하기",
+  "주문하기",
+  "koreagoldx.co.kr",
+]);
+[
+  "src/app/(site)/products/page.tsx",
+  "src/components/products/product-catalog.tsx",
+  "src/mock/products.ts",
+  "supabase/seed.sql",
+].forEach((relativePath) =>
+  expectNoText(relativePath, ["사진과 가격 문구", "등록해 운영", "관리자에서"]),
+);
+expectText("src/lib/product-presenter.ts", [
+  "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
+  "/products/kcg-silver-gift-20260427-v2.jpg",
+  "/products/kcg-old-gold-jewelry-20260427-v2.jpg",
+  "/products/kcg-buying-process-20260427-v2.jpg",
+  "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
 ]);
 
 expectText("src/mock/products.ts", [
-  "고금·주얼리 정리 상담",
-  "18K·14K 귀금속 상담",
-  "고시 시세 기준 문의",
+  "KCG 골드바 1g",
+  "KCG 골드바 3.75g",
+  "KCG 실버바 1kg",
+  "순금 돌반지 3.75g",
+  "18K 주얼리 매입",
+  "기업 기념품 제작",
+  "현재 고시가 기준 참고가",
   "custom_order",
+  "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
+  "/products/kcg-old-gold-jewelry-20260427-v2.jpg",
+  "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
 ]);
-expectText("src/types/product.ts", ["displayOrder", "priceLabel", "ProductUpsertInput"]);
-expectText("src/actions/product-actions.ts", ["upsertProductAction", "revalidatePath(\"/products\")"]);
-expectText("src/app/admin/products/page.tsx", ["상품 카탈로그 관리", "확정 가격처럼 노출", "upsertProductAction"]);
+expectText("supabase/seed.sql", [
+  "KCG 골드바 1g",
+  "KCG 골드바 3.75g",
+  "KCG 실버바 1kg",
+  "순금 돌반지 3.75g",
+  "18K 주얼리 매입",
+  "귀금속 매입 절차 안내",
+  "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
+  "/products/kcg-silver-gift-20260427-v2.jpg",
+  "/products/kcg-buying-process-20260427-v2.jpg",
+]);
+expectText("src/types/product.ts", ["displayOrder", "priceLabel", "ProductUpsertInput", "ProductPriceBasis", "pure_gold"]);
+expectText("src/actions/product-actions.ts", ["upsertProductAction", "revalidatePath(\"/products\")", "priceBasis", "weightGrams"]);
+expectText("src/app/admin/products/page.tsx", ["상품 카탈로그 관리", "연동 시세", "중량(g)", "임시 공임", "수동 가격", "upsertProductAction"]);
+expectText("supabase/schema.sql", ["price_basis", "weight_grams", "making_fee", "manual_price", "subcategory"]);
 
-expectText("AGENTS.md", ["npm run test:site", "docs/quality/agent-quality-system.md"]);
+expectText("AGENTS.md", [
+  "npm run test:site",
+  "docs/quality/agent-quality-system.md",
+  "BEGIN: FRONTEND_DESIGN_QUALITY_ADDON",
+  "docs/quality/product-experience-rubric.md",
+  "docs/quality/design-review-checklist.md",
+  "docs/quality/ai-site-production-playbook.md",
+  "docs/quality/data-source-compliance.md",
+  "Use actual subagents only when the user explicitly permits delegated agent work",
+]);
+expectTextCount("AGENTS.md", "BEGIN: FRONTEND_DESIGN_QUALITY_ADDON", 1);
+expectTextCount("AGENTS.md", "END: FRONTEND_DESIGN_QUALITY_ADDON", 1);
 expectText("package.json", [
   '"name": "korea-center-gold-exchange-site"',
   '"test:site": "playwright test"',
+  '"tasks:dashboard": "node scripts/render-open-tasks-dashboard.mjs"',
   '"screenshot:site": "node scripts/capture-site-screenshots.mjs"',
+]);
+expectText("playwright.config.ts", ["nextEnv.loadEnvConfig(process.cwd())", "process.env.SITE_AUDIT_URL"]);
+expectText("tests/site-fidelity.spec.ts", ["/admin/launch", "공개 직전 별도 승인 필요"]);
+expectText("scripts/capture-site-screenshots.mjs", [
+  "/admin/launch",
+  "admin-launch-mobile.png",
+  "admin-launch-desktop.png",
+  "KCG_INCLUDE_ADMIN_SCREENSHOTS",
+  "nextEnv.loadEnvConfig(rootDir)",
+  "removeSkippedAdminScreenshots",
+  "if (includeAdminScreenshots)",
+  "process.env.ADMIN_PASSWORD",
 ]);
 expectText("docs/quality/agent-quality-system.md", [
   "vague quality goals were not translated into deterministic acceptance checks",
@@ -299,6 +587,9 @@ expectText("docs/quality/agent-quality-system.md", [
 expectText("docs/quality/data-source-compliance.md", [
   "Gold API",
   "Metals.Dev",
+  "KRX OPEN API",
+  "KRX Use Boundary",
+  "Koscom",
   "Google News RSS-style URLs",
   "Do not add scraping of third-party sites",
   "Competitor API Observation Rule",
@@ -308,11 +599,29 @@ expectText("docs/quality/data-source-compliance.md", [
 ]);
 expectText("docs/quality/product-experience-rubric.md", [
   "회사 고시 시세가 주인공",
-  "전화/방문 상담",
+  "Confirmed operating scope",
+  "B2C",
+  "B2B",
+  "전화 문의/거래 상담",
   "자동 참고 시세는 보조 정보",
   "가격·거래·법적 사실은 검증 없이 만들지 않는다",
   "Benchmark depth",
   "docs/quality/data-source-compliance.md",
+]);
+expectText("docs/quality/design-review-checklist.md", [
+  "KCG Design Review Checklist",
+  "Visual thesis",
+  "Product surface",
+  "Context of use",
+  "Company posted prices are primary",
+  "automatic market references are secondary",
+  "KRX affiliation",
+  "WCAG 2.2",
+  "390px",
+  "1440px",
+  "KCG_INCLUDE_ADMIN_SCREENSHOTS",
+  "codex review --uncommitted",
+  "Score out of 100",
 ]);
 expectText("docs/quality/ai-site-production-playbook.md", [
   "Context Pack",
@@ -331,9 +640,77 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "docs/quality/ai-site-production-playbook.md",
   "docs/quality/data-source-compliance.md",
+  "docs/quality/design-review-checklist.md",
+  "docs/setup/OPEN_TASKS.md",
+  "docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md",
+  "docs/brand/campaign-image-prompts.md",
+  "전체`, `골드바`, `실버바`, `순금제품`, `고금·주얼리 매입`, and `B2B·기업`",
+  "current posted-price reference calculations",
+  "Cafe24 DNS",
   "docs/research/gold-exchange-deep-audit-2026-04-27.md",
   "single production candidate",
   "Do not restore old option routes",
+  "Public Launch Terms",
+  "Repository visibility decision as of 2026-04-27 KST",
+  "Do not perform production deploys beyond an explicitly approved stable review refresh",
+  "Current image source folder",
+  "kcg-main-desk-photo-20260427-v3.png",
+  "kcg-brand-gold-bars-20260427-v4.png",
+  "505-88-03567",
+  "The home carousel now starts with `kcg-brand-gold-bars-20260427-v4.png`",
+  "Stable Review Deploy Boundary",
+]);
+expectNoText("docs/setup/CURRENT_HANDOFF.md", ["Gabia", "Whois DNS"]);
+expectText("docs/setup/OPEN_TASKS.md", [
+  "KCG Open Tasks",
+  "KCG-TODO-001",
+  "KCG-TODO-009",
+  "KCG-TODO-010",
+  "KCG-TODO-011",
+  "KCG-TODO-012",
+  "KCG-TODO-018",
+  "KCG-TODO-020",
+  "KCG-TODO-021",
+  "KCG-TODO-023",
+  "KCG-TODO-024",
+  "KCG-TODO-025",
+  "KCG-TODO-026",
+  "Cafe24 DNS",
+  "DOMAIN_SUPABASE_MARKET_RUNBOOK.md",
+  "campaign-image-prompts.md",
+  "tasks:dashboard",
+  "user-only",
+  "codex",
+  "public launch",
+  "/review",
+  "KCG_INCLUDE_ADMIN_SCREENSHOTS",
+  "codex review --uncommitted",
+  "codex review --base main",
+  "kcgold.co.kr",
+  "Do not record passwords",
+]);
+expectNoText("docs/setup/OPEN_TASKS.md", ["Gabia", "Whois DNS"]);
+expectText("docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md", [
+  "Cafe24 And Vercel Domain Connection",
+  "Vercel project: `kcg-confirm-preview`",
+  "Preserve existing MX/TXT/SPF/DKIM records",
+  "SUPABASE_SERVICE_ROLE_KEY=<server-only secret>",
+  "Gold API free current prices",
+  "KRX boundary",
+  "Run production deploy only when junyoung explicitly approves",
+]);
+expectText("docs/brand/campaign-image-prompts.md", [
+  "Source Folder",
+  "KakaoTalk_20260427_125126082_01.png",
+  "ChatGPT Image 2026년 4월 27일 오후 01_02_09.png",
+  "kcg-main-desk-photo-20260427-v3.png",
+  "Wikimedia Commons",
+  "Do not copy private document photos",
+  "Natural tiny bar engravings",
+  "Home main slide banner",
+  "large white haze",
+  "Old gold and jewelry buying card",
+  "No readable personal documents",
 ]);
 expectText("docs/research/gold-exchange-benchmark-2026-04-25.md", [
   "KCG Direction Chosen",
@@ -358,6 +735,7 @@ expectText(".github/workflows/site-quality.yml", [
   "npm run screenshot:site",
   "npm audit --audit-level=moderate",
 ]);
+expectNoText(".github/workflows/site-quality.yml", ["KCG_INCLUDE_ADMIN_SCREENSHOTS"]);
 expectNoText("2-preview-deploy.cmd", ["--prod"]);
 expectNoText("2-preview-deploy.cmd", ["/option-1", "/option-2", "Main compare hub"]);
 expectNoText("2-preview-deploy.cmd", [
@@ -375,32 +753,54 @@ expectNoText("docs/setup/continue-anywhere.md", ["compare:source", "source parit
 if (siteUrl) {
   await expectUrl("/", [
     "한국센터금거래소 시세표",
-    "오늘 고시 시세와 방문 상담 기준을 한 화면에서 확인합니다.",
     "전화 상담",
     "시세조회",
     "KOREA CENTER GOLD EXCHANGE",
     "시세는 고시 시각 기준이며 실제 거래 금액",
     "출처 및 이용 안내",
     "본문·이미지는 재게시하지 않습니다",
+    "TradingView 제공",
   ]);
-  await expectUrl("/services", ["고금·주얼리", "18K·14K 매입 기준 문의"]);
+  await expectUrl("/services", [
+    "고금·주얼리",
+    "18K·14K 매입 기준 문의",
+    "취급 품목 확인에서 실물 확인, 금액 확정까지 한 흐름으로 봅니다.",
+  ]);
   await expectUrl("/products", [
-    "골드바·실버바와 귀금속 상담 카탈로그",
-    "사진과 가격 문구를 등록해 운영할 상품 문의란",
-    "고시 시세 기준 문의",
+    "상품/매입",
+    "KCG 골드바 3.75g",
+    "현재 고시가 기준",
   ]);
   await expectUrl("/products/investment-gold-bar-consulting", [
-    "투자용 골드바 상담",
+    "KCG 골드바 3.75g",
     "문의 전 확인하면 상담이 빨라집니다",
   ]);
+  await expectUrl("/announcements", ["시세 운영 및 거래 준비 공지"]);
   await expectUrl("/prices", [
     "한국센터금거래소 시세표",
     "품목별 회사 고시 시세 상세",
     "시세를 볼 때 먼저 확인할 기준",
     "타사 내부 API·가격표·뉴스 본문은 고객 화면에 직접 사용하지 않습니다.",
+    "TradingView 제공",
   ]);
-  await expectUrl("/about", ["전화 연결", "네이버 지도", "카카오맵", "사업자등록번호(임시)"]);
+  await expectUrl("/about", [
+    "전화 연결",
+    "네이버 지도",
+    "카카오맵",
+    "거래 전 준비 항목을 확인하면 현장 안내가 빨라집니다.",
+    "사업자등록번호",
+    "성창빌딩 매장",
+  ]);
+  await expectUrl("/company", [
+    "주식회사 한국센터금거래소",
+    "505-88-03567",
+    "패밀리 사이트",
+  ]);
+  await expectUrl("/admin/login", ["관리자 로그인"]);
+  await expectRedirect("/admin/launch", "/admin/login?next=%2Fadmin%2Flaunch");
   await expectUrl("/api/health", ['"ok":true', "marketSourceUrl", "headlineAttribution", "launchReadiness"]);
+  await expectUrl("/robots.txt", ["Disallow: /"]);
+  await expectUrl("/sitemap.xml", ['<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', "</urlset>"]);
   await expectUrlStatus("/option-1", 404);
   await expectUrlStatus("/option-2", 404);
 } else {

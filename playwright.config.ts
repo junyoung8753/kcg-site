@@ -1,4 +1,7 @@
+import * as nextEnv from "@next/env";
 import { defineConfig } from "@playwright/test";
+
+nextEnv.loadEnvConfig(process.cwd());
 
 const externalBaseURL = process.env.SITE_AUDIT_URL;
 const localBaseURL = "http://127.0.0.1:3037";

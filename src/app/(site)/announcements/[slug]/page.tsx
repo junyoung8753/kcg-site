@@ -42,7 +42,7 @@ export default async function AnnouncementDetailPage({
   return (
     <>
       <PageIntro
-        eyebrow="운영 공지"
+        eyebrow="공지"
         title={announcement.title}
         description={announcement.summary}
         asideLabel="공지 정보"
@@ -50,7 +50,7 @@ export default async function AnnouncementDetailPage({
         asideBody={
           <>
             <p>게시일: {formatDateKorean(announcement.publishedAt)}</p>
-            <p>방문 전 필요한 운영 공지는 공지사항 목록 상단에서 우선 확인하실 수 있습니다.</p>
+            <p>거래 전 필요한 공지는 공지사항 목록 상단에서 우선 확인하실 수 있습니다.</p>
           </>
         }
         asideAction={

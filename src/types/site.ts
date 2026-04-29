@@ -1,5 +1,7 @@
 export interface ContactInfo {
   phone: string;
+  storePhone?: string;
+  email?: string;
   kakaoChannel: string;
   address: string;
   businessHours: string;
@@ -19,6 +21,8 @@ export interface CompanyProfile {
   isLegalInfoConfirmed: boolean;
   legalBusinessName?: string;
   representative: string;
+  corporateRegistrationNumber?: string;
+  openedAt?: string;
   businessRegistrationNumber: string;
   registeredAddress?: string;
   businessType: string;
@@ -27,4 +31,20 @@ export interface CompanyProfile {
   locationGuide: string;
   transactionNotice: string;
   legalNotice?: string;
+}
+
+export interface LocationInfo {
+  label: string;
+  title: string;
+  address: string;
+  phone: string;
+  description: string;
+  naverMapUrl: string;
+  kakaoMapUrl: string;
+}
+
+export interface FamilyLink {
+  label: string;
+  href: string;
+  description: string;
 }

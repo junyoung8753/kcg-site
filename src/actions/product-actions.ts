@@ -5,10 +5,29 @@ import { redirect } from "next/navigation";
 import { getRepository } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 import { ensureNumber, ensureString, slugify, toBoolean } from "@/lib/utils";
-import type { ProductCategory, ProductStatus } from "@/types/product";
+import type { ProductCategory, ProductPriceBasis, ProductStatus } from "@/types/product";
 
-const validCategories: ProductCategory[] = ["gold_bar", "silver_bar", "jewelry", "purchase_guide", "custom_order"];
+const validCategories: ProductCategory[] = [
+  "gold_bar",
+  "silver_bar",
+  "pure_gold",
+  "jewelry",
+  "purchase_guide",
+  "custom_order",
+];
 const validStatuses: ProductStatus[] = ["active", "inquiry_required", "hidden"];
+const validPriceBases: ProductPriceBasis[] = [
+  "gold_24k_sell",
+  "gold_24k_buy",
+  "gold_18k_buy",
+  "gold_14k_buy",
+  "platinum_sell",
+  "platinum_buy",
+  "silver_sell",
+  "silver_buy",
+  "manual",
+  "inquiry",
+];
 
 function parseSpecs(value: FormDataEntryValue | null) {
   return ensureString(value)
@@ -24,6 +43,17 @@ function asProductCategory(value: string): ProductCategory {
 
 function asProductStatus(value: string): ProductStatus {
   return validStatuses.includes(value as ProductStatus) ? (value as ProductStatus) : "inquiry_required";
+}
+
+function asPriceBasis(value: string): ProductPriceBasis {
+  return validPriceBases.includes(value as ProductPriceBasis) ? (value as ProductPriceBasis) : "inquiry";
+}
+
+function optionalNumber(value: FormDataEntryValue | null) {
+  const raw = ensureString(value).replace(/,/g, "").trim();
+  if (!raw) return null;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : null;
 }
 
 export async function upsertProductAction(formData: FormData) {
@@ -46,6 +76,7 @@ export async function upsertProductAction(formData: FormData) {
     await repository.upsertProduct({
       id: ensureString(formData.get("id")).trim() || undefined,
       category: asProductCategory(ensureString(formData.get("category"))),
+      subcategory: ensureString(formData.get("subcategory")).trim() || null,
       name,
       slug: slugify(slugInput || name),
       shortDescription,
@@ -56,6 +87,10 @@ export async function upsertProductAction(formData: FormData) {
       displayOrder: ensureNumber(formData.get("displayOrder"), 100),
       isFeatured: toBoolean(formData.get("isFeatured")),
       priceVisible: toBoolean(formData.get("priceVisible")),
+      priceBasis: asPriceBasis(ensureString(formData.get("priceBasis"))),
+      weightGrams: optionalNumber(formData.get("weightGrams")),
+      makingFee: optionalNumber(formData.get("makingFee")),
+      manualPrice: optionalNumber(formData.get("manualPrice")),
       priceLabel,
       priceNote: ensureString(formData.get("priceNote")).trim() || null,
       publicNote: ensureString(formData.get("publicNote")).trim() || null,

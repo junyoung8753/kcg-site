@@ -15,6 +15,7 @@
 /test-results
 /playwright-report
 /blob-report
+.playwright-mcp/
 
 # next.js
 /.next/
@@ -55,6 +56,9 @@ LocalLow/
 .vercel-login.log
 .vercel-login.ps1
 .vercel-last-url.txt
+
+# supabase local cli metadata
+supabase/.temp/
 
 # typescript
 *.tsbuildinfo

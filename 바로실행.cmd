@@ -9,7 +9,7 @@ echo ========================================
 echo KCG local test server
 echo Public site : http://127.0.0.1:%PORT%
 echo Admin login : http://127.0.0.1:%PORT%/admin/login
-echo Demo password : gold-demo-2026
+echo Demo password : 0000
 echo Local preview uses build + start for stability.
 echo Press Ctrl+C in this window to stop.
 echo ========================================

@@ -40,7 +40,7 @@ export function TradeStandardPanel({
               href="/about"
               className="inline-flex h-11 items-center justify-center rounded-full border border-[#d7e0dd] bg-white px-5 text-sm font-semibold text-[#171717] transition hover:bg-[#fbfdfc]"
             >
-              방문 절차 보기
+              거래 절차 보기
             </Link>
           </div>
         </div>

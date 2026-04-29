@@ -8,6 +8,11 @@ type PageIntroProps = {
   asideTitle?: string;
   asideBody?: ReactNode;
   asideAction?: ReactNode;
+  highlights?: {
+    label: string;
+    title: string;
+    body: string;
+  }[];
 };
 
 export function PageIntro({
@@ -18,6 +23,7 @@ export function PageIntro({
   asideTitle,
   asideBody,
   asideAction,
+  highlights = [],
 }: PageIntroProps) {
   return (
     <section className="border-b border-[#dfe7e5] bg-[#f3faf8]">
@@ -28,6 +34,18 @@ export function PageIntro({
             {title}
           </h1>
           <p className="mt-4 max-w-3xl text-[15px] leading-7 text-[#687171]">{description}</p>
+
+          {highlights.length ? (
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+              {highlights.map((item) => (
+                <div key={item.title} className="border border-[#e4ebe8] bg-white/72 px-4 py-4">
+                  <p className="text-[10px] font-semibold tracking-[0.2em] text-[#9a8a00]">{item.label}</p>
+                  <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-[#15191b]">{item.title}</p>
+                  <p className="mt-2 text-xs leading-6 text-[#687171]">{item.body}</p>
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         {asideTitle || asideBody || asideAction ? (

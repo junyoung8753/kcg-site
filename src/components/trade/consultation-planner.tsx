@@ -9,12 +9,12 @@ export function ConsultationPlanner({ className }: ConsultationPlannerProps) {
   return (
     <section className={cn("section-shell py-14 sm:py-16", className)}>
       <div className="mb-8 max-w-3xl">
-        <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">방문 전 60초 체크</p>
+        <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">거래 전 60초 체크</p>
         <h2 className="mt-4 text-[2rem] font-semibold leading-tight tracking-[-0.06em] text-[#15191b] sm:text-[2.3rem]">
           문의 목적에 맞춰 준비하면 상담이 빨라집니다
         </h2>
         <p className="mt-4 text-sm leading-7 text-[#687171]">
-          시세 확인만큼 중요한 것은 거래 목적과 준비물을 분명히 하는 것입니다. 방문 전 아래 항목만 정리해도
+          시세 확인만큼 중요한 것은 거래 목적과 준비물을 분명히 하는 것입니다. 상담 전 아래 항목만 정리해도
           현장 대기와 재확인을 줄일 수 있습니다.
         </p>
       </div>
@@ -35,7 +35,7 @@ export function ConsultationPlanner({ className }: ConsultationPlannerProps) {
 
       <div className="grid gap-5 border-b border-[var(--color-line)] bg-[#fffbe8] px-6 py-6 md:grid-cols-[1fr_auto] md:items-center">
         <p className="text-sm leading-7 text-[#6f6a54]">
-          정확한 안내가 필요한 경우 품목, 중량, 수량, 방문 가능 시간을 대표번호로 먼저 알려주세요.
+          정확한 안내가 필요한 경우 품목, 중량, 수량, 상담 희망 시점을 대표번호로 먼저 알려주세요.
         </p>
         <a
           href={`tel:${siteConfig.contact.phone}`}

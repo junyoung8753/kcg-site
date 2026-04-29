@@ -23,7 +23,6 @@ type LineupRow = {
 type LineupVisualStyle = {
   openButton: string;
   panelShell: string;
-  panelWidthClass: string;
   contentShiftClass: string;
   panelBase: string;
   panelHeaderBar: string;
@@ -31,7 +30,6 @@ type LineupVisualStyle = {
   panelFrame: string;
   titleText: string;
   dateText: string;
-  closeButton: string;
   columnHeader: string;
   rowsWrap: string;
   row: string;
@@ -80,36 +78,23 @@ const rows: LineupRow[] = [
 
 const campaignSlides = [
   {
-    image: "/campaign/kcg-hero-gold-bars.jpg",
-    alt: "골드바와 순금 거래 상담 배너",
-    kicker: "KCG PRICE DESK",
-    title: "오늘 고시 시세와 방문 상담 기준을 한 화면에서 확인합니다.",
-    body: "순금·18K·14K 기준가를 먼저 확인하고, 실제 거래 금액은 현장 확인 후 최종 안내합니다.",
-    href: "/prices",
-    action: "오늘 시세 보기",
-    note: "회사 고시 시세 · 현장 확인 · 대표번호 상담",
+    image: "/campaign/kcg-brand-gold-bars-20260427-v4.png",
+    alt: "한국센터금거래소 골드바 브랜드 캠페인 이미지",
     objectPosition: "68% center",
   },
   {
-    image: "/campaign/kcg-hero-metal-bars.jpg",
-    alt: "백금 실버바 골드바 상담 배너",
-    kicker: "BAR CONSULTATION",
-    title: "골드바·실버바 상담은 중량과 수량부터 정확히 확인합니다.",
-    body: "브랜드, 포장, 보증서, 수량 정보를 알려주시면 방문 전 상담 가능 범위를 먼저 정리해 드립니다.",
-    href: "/services",
-    action: "취급 품목 보기",
-    note: "Gold bar · Silver bar · Platinum",
-    objectPosition: "66% center",
+    image: "/campaign/kcg-main-desk-photo-20260427-v3.png",
+    alt: "한국센터금거래소 금·은 상담 데스크 이미지",
+    objectPosition: "center center",
   },
   {
-    image: "/campaign/kcg-hero-consulting.jpg",
-    alt: "종로 방문 상담 안내 배너",
-    kicker: "VISIT GUIDE",
-    title: "전화 문의 후 방문하면 확인과 정산 안내가 더 빨라집니다.",
-    body: "당일 상담 가능 시간, 건물 진입 동선, 신분증과 보증서 등 준비 사항을 먼저 안내해 드립니다.",
-    href: "/about",
-    action: "거래 절차 보기",
-    note: "순도 확인 · 중량 확인 · 정산 안내",
+    image: "/campaign/kcg-hero-metal-bars.jpg",
+    alt: "골드바와 실버바 키비주얼 배너",
+    objectPosition: "center center",
+  },
+  {
+    image: "/campaign/kcg-consulting-desk-20260427.jpg",
+    alt: "골드바와 순금 거래 상담 배너",
     objectPosition: "56% center",
   },
 ] as const;
@@ -117,20 +102,18 @@ const campaignSlides = [
 const lineupStyle = {
   openButton:
     "border-[#d6e2de] bg-white/88 text-[#171717] shadow-[0_10px_24px_rgba(30,44,41,0.08)] backdrop-blur",
-  panelShell: "text-white backdrop-blur-[6px] lg:shadow-[0_24px_70px_rgba(0,0,0,0.24)]",
-  panelWidthClass: "lg:w-[36rem]",
+  panelShell: "text-white lg:shadow-[0_24px_70px_rgba(0,0,0,0.24)]",
   contentShiftClass: "lg:ml-[36rem]",
-  panelBase: "absolute inset-0 bg-[rgba(53,49,49,0.86)]",
-  panelHeaderBar: "absolute inset-x-0 top-0 h-[5.4rem] bg-[rgba(14,14,14,0.92)]",
+  panelBase: "absolute inset-0 bg-[rgba(38,39,39,0.96)]",
+  panelHeaderBar: "absolute inset-x-0 top-0 h-[4.75rem] bg-[rgba(13,13,13,0.98)]",
   panelTexture:
-    "absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),transparent_22%),radial-gradient(circle_at_0%_88%,rgba(255,165,77,0.08),transparent_20%)]",
+    "absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.03),transparent_18%),radial-gradient(circle_at_0%_90%,rgba(255,188,89,0.045),transparent_18%)]",
   panelFrame: "lg:h-full",
   titleText: "text-white",
   dateText: "text-white/58",
-  closeButton: "border-white/10 bg-white/6 text-white/72 hover:bg-white/12 hover:text-white",
-  columnHeader: "text-white",
+  columnHeader: "border-y border-white/8 bg-[rgba(11,11,11,0.18)] text-white",
   rowsWrap: "",
-  row: "grid grid-cols-2 items-start gap-x-4 gap-y-3 border-b border-white/10 py-[1.08rem] last:border-b-0 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:gap-4 sm:border-b-0 sm:py-[1.08rem]",
+  row: "grid grid-cols-2 items-start gap-x-4 gap-y-2 border-b border-white/10 py-[0.72rem] last:border-b-0 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:gap-4 sm:border-b-0 sm:py-[0.76rem]",
   rowTitle: "text-white",
   rowSubtitle: "text-white/52",
   priceText: "text-white",
@@ -231,31 +214,27 @@ export function PriceLineup({
   announcedDateLabel?: string;
   krwRate?: number;
 }) {
-  const [isLineupOpen, setIsLineupOpen] = useState(true);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [isSlidePaused, setIsSlidePaused] = useState(false);
   const priceByCategory = new Map(prices.map((price) => [price.category, price]));
   const style = lineupStyle;
-  const wrapperHeightClass = "lg:min-h-[42.5rem]";
-  const contentHeightClass = "min-h-[23rem] sm:min-h-[26rem] lg:min-h-[42.5rem]";
-  const activeSlide = campaignSlides[activeSlideIndex];
+  const wrapperHeightClass = "lg:min-h-[36rem]";
+  const contentHeightClass = "min-h-[22rem] sm:min-h-[25rem] lg:min-h-[36rem]";
   const zeroChangeSymbol = visualMode === "signboard" ? "-" : "━";
   const visualShellClass = visualMode === "campaign" ? "w-full kcg-full-bleed-campaign" : "mx-auto max-w-[1500px]";
-  const wrapperLayoutClass = visualMode === "campaign" ? "relative flex flex-col" : "relative flex flex-col lg:block";
+  const wrapperLayoutClass = "relative flex flex-col lg:block";
   const panelPositionClass =
     visualMode === "campaign"
-      ? "order-2 relative z-10 overflow-hidden"
-      : "order-2 relative z-10 overflow-hidden lg:absolute lg:bottom-0 lg:left-0 lg:top-0 lg:order-none";
+      ? "order-2 relative z-20 overflow-hidden lg:absolute lg:bottom-0 lg:left-[clamp(7rem,12vw,17rem)] lg:top-0 lg:order-none"
+      : "order-1 relative z-10 overflow-hidden lg:absolute lg:bottom-0 lg:left-0 lg:top-0 lg:order-none";
   const panelOpenClass =
     visualMode === "campaign"
-      ? "w-full opacity-100"
-      : `opacity-100 ${style.panelWidthClass} lg:translate-x-0`;
+      ? "w-full opacity-100 lg:w-[37vw] 2xl:w-[42rem] lg:translate-x-0"
+      : "opacity-100 lg:w-[34rem] lg:translate-x-0";
   const panelFrameWidthClass =
     visualMode === "campaign"
       ? "min-w-0"
-      : isLineupOpen
-        ? "min-w-0 sm:min-w-[36.4rem] lg:min-w-full"
-        : "min-w-0 overflow-hidden";
+      : "min-w-0 sm:min-w-[34rem] lg:min-w-full";
   const shiftedContentClass = visualMode === "campaign" ? "lg:ml-0" : style.contentShiftClass;
   const krwRateLabel = krwRate
     ? `${new Intl.NumberFormat("ko-KR", {
@@ -286,29 +265,13 @@ export function PriceLineup({
 
         <div className={visualShellClass}>
           <div className={cn(wrapperLayoutClass, wrapperHeightClass)}>
-            {!isLineupOpen ? (
-              <button
-                type="button"
-                onClick={() => setIsLineupOpen(true)}
-                className={cn(
-                  "absolute left-5 top-5 z-20 inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium transition md:left-8 md:top-8 md:h-11",
-                  style.openButton,
-                )}
-              >
-                <span className="text-base leading-none">+</span>
-                시세표 다시 보기
-              </button>
-            ) : null}
-
             <div
               data-testid="home-price-lineup-panel"
               className={cn(
                 "transition-[opacity,transform] duration-300",
                 panelPositionClass,
                 style.panelShell,
-                isLineupOpen
-                  ? panelOpenClass
-                  : "pointer-events-none opacity-0 lg:w-0 lg:-translate-x-8",
+                panelOpenClass,
               )}
             >
               <div className={style.panelBase} />
@@ -322,7 +285,7 @@ export function PriceLineup({
                   panelFrameWidthClass,
                 )}
               >
-                <div className="grid grid-cols-[1fr_auto_auto] items-center gap-2 px-4 pb-4 pt-5 sm:gap-3 sm:px-8 sm:pb-5 sm:pt-6">
+                <div className="grid grid-cols-[1fr_auto] items-center gap-2 px-4 pb-3 pt-5 sm:gap-3 sm:px-8 sm:pb-4 sm:pt-5">
                   <div className="min-w-0">
                     <h1
                       className={cn(
@@ -344,17 +307,6 @@ export function PriceLineup({
                   <p className={cn("text-right text-[0.72rem] sm:text-[0.95rem]", style.dateText)}>
                     {announcedDateLabel}
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => setIsLineupOpen(false)}
-                    className={cn(
-                      "inline-flex h-8 w-8 items-center justify-center rounded-full border text-base font-light transition",
-                      style.closeButton,
-                    )}
-                    aria-label="시세 라인업 닫기"
-                  >
-                    ×
-                  </button>
                 </div>
 
                 {visualMode === "signboard" ? (
@@ -369,7 +321,7 @@ export function PriceLineup({
                       href="/about"
                       className="inline-flex h-10 items-center justify-center rounded-full border border-white/14 bg-white/8 px-4 text-sm font-semibold text-white"
                     >
-                      방문 안내
+                      오시는 길
                     </Link>
                   </div>
                 ) : null}
@@ -385,7 +337,7 @@ export function PriceLineup({
                   <p>{visualMode === "signboard" ? "내가 팔 때 (현장기준)" : "내가 팔 때 (현장 기준)"}</p>
                 </div>
 
-                <div className={cn("px-4 pb-5 pt-1.5 sm:px-8 sm:pb-7", style.rowsWrap)}>
+                <div className={cn("px-4 pb-4 pt-1 sm:px-8 sm:pb-5", style.rowsWrap)}>
                   {rows.map((row) => {
                     const sell = row.sellCategory ? priceByCategory.get(row.sellCategory) : undefined;
                     const buy = row.buyCategory ? priceByCategory.get(row.buyCategory) : undefined;
@@ -435,9 +387,11 @@ export function PriceLineup({
             {visualMode === "campaign" ? (
               <div
                 data-testid="home-campaign-visual"
-                className={`order-1 relative z-0 overflow-hidden transition-[margin] duration-300 lg:order-none ${
-                  isLineupOpen ? shiftedContentClass : "lg:ml-0"
-                } ${contentHeightClass}`}
+                className={`order-1 relative z-0 overflow-hidden transition-[margin] duration-300 lg:order-none ${shiftedContentClass} ${contentHeightClass}`}
+                onMouseEnter={() => setIsSlidePaused(true)}
+                onMouseLeave={() => setIsSlidePaused(false)}
+                onFocus={() => setIsSlidePaused(true)}
+                onBlur={() => setIsSlidePaused(false)}
               >
                 {campaignSlides.map((slide, index) => (
                   <div
@@ -452,14 +406,15 @@ export function PriceLineup({
                       alt={slide.alt}
                       fill
                       priority={index === 0}
+                      unoptimized={slide.image.endsWith(".png")}
                       className="object-cover"
                       style={{ objectPosition: slide.objectPosition }}
                       sizes="100vw"
                     />
                   </div>
                 ))}
-                <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.92),rgba(255,255,255,0.64)_30%,rgba(255,255,255,0.78)_55%,rgba(255,255,255,0.55)_78%,rgba(18,20,20,0.05)_100%),linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,232,142,0.34))]" />
-                <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,transparent,rgba(255,255,255,0.42))]" />
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.03),transparent_34%,rgba(0,0,0,0.02)_100%)]" />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.16))]" />
 
                 <button
                   type="button"
@@ -478,41 +433,8 @@ export function PriceLineup({
                   ›
                 </button>
 
-                <div
-                  className={cn(
-                    "relative z-10 flex min-h-[inherit] flex-col justify-end px-5 py-6 sm:px-9 sm:py-8 lg:px-14 lg:py-12",
-                  )}
-                >
-                  <div key={activeSlide.image} className="kcg-hero-copy max-w-[34rem]">
-                    <p className="text-[0.68rem] font-semibold tracking-[0.22em] text-[#9b7700] sm:text-xs">
-                      {activeSlide.kicker}
-                    </p>
-                    <h2 className="kcg-hero-heading mt-3 text-[1.55rem] font-semibold leading-[1.12] tracking-normal text-[#101315] sm:mt-4 sm:text-[2.18rem] lg:mt-5 lg:text-[2.74rem]">
-                      {activeSlide.title}
-                    </h2>
-                    <p className="mt-3 max-w-[31rem] text-sm leading-6 text-[#4f5656] sm:mt-4 sm:text-base sm:leading-7 lg:text-lg lg:leading-8">
-                      {activeSlide.body}
-                    </p>
-                    <div className="mt-5 flex flex-wrap gap-2.5 sm:mt-7 sm:gap-3">
-                      <Link
-                        href={activeSlide.href}
-                        className="inline-flex h-11 items-center justify-center rounded-lg bg-[#ffcc00] px-5 text-sm font-bold text-[#171717] shadow-[0_14px_30px_rgba(255,204,0,0.25)] transition hover:bg-[#f2bf00] sm:h-12 sm:px-7"
-                      >
-                        {activeSlide.action}
-                      </Link>
-                      <a
-                        href={`tel:${siteConfig.contact.phone}`}
-                        className="inline-flex h-11 items-center justify-center rounded-lg bg-white/86 px-5 text-sm font-bold text-[#171717] shadow-[0_10px_26px_rgba(0,0,0,0.08)] backdrop-blur transition hover:bg-white sm:h-12 sm:px-7"
-                      >
-                        전화 문의 {siteConfig.contact.phone}
-                      </a>
-                    </div>
-                    <p className="mt-4 max-w-[31rem] text-[0.68rem] font-semibold leading-5 tracking-[0.14em] text-[#716547] sm:mt-6 sm:text-sm sm:tracking-[0.2em]">
-                      {activeSlide.note}
-                    </p>
-                  </div>
-
-                  <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-8 lg:justify-end">
+                <div className="absolute inset-x-0 bottom-0 z-10 flex justify-end px-5 py-5 sm:px-8 lg:px-10">
+                  <div className="flex flex-wrap items-center gap-3">
                     <div className="flex items-center gap-2">
                       {campaignSlides.map((slide, index) => (
                         <button
@@ -526,20 +448,13 @@ export function PriceLineup({
                         />
                       ))}
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setIsSlidePaused((value) => !value)}
-                      className="inline-flex h-9 items-center justify-center rounded-sm bg-white/72 px-4 text-xs font-semibold text-[#171717] shadow-[0_10px_24px_rgba(0,0,0,0.08)] backdrop-blur transition hover:bg-white"
-                    >
-                      {isSlidePaused ? "재생" : "정지"}
-                    </button>
                   </div>
                 </div>
               </div>
             ) : (
               <div
-                className={`relative z-0 flex flex-col justify-between px-6 py-8 transition-[margin] duration-300 sm:px-10 sm:py-10 lg:px-14 lg:py-12 ${
-                  isLineupOpen ? shiftedContentClass : "lg:ml-0"
+                className={`relative z-0 order-2 flex flex-col justify-between px-6 py-8 transition-[margin] duration-300 sm:px-10 sm:py-10 lg:order-none lg:px-14 lg:py-12 ${
+                  shiftedContentClass
                 } ${contentHeightClass}`}
               >
                 <div className="max-w-[44rem]">
@@ -557,7 +472,7 @@ export function PriceLineup({
                     종로 귀금속 시세 · 매입 안내
                   </p>
                   <h2 className="mt-4 text-[1.9rem] font-semibold leading-[1.22] tracking-[-0.055em] text-[#1a1e20] sm:text-[2.2rem]">
-                    오늘 고시 시세와 방문 상담 기준 안내
+                    오늘 고시 시세와 거래 상담 기준 안내
                   </h2>
                   <p className="mt-4 max-w-2xl text-[15px] leading-7 text-[#5f6868]">
                     순금, 18K, 14K, 백금, 은 시세는 당일 고시 시각 기준으로 안내되며,
@@ -599,7 +514,7 @@ export function PriceLineup({
                   </div>
 
                   <div className="border border-[#d9e4e1] bg-white/88 p-5 shadow-[0_18px_44px_rgba(31,47,43,0.1)]">
-                    <p className="text-[11px] font-semibold tracking-[0.22em] text-[#9b7700]">방문 상담 안내</p>
+                    <p className="text-[11px] font-semibold tracking-[0.22em] text-[#9b7700]">거래 기준 안내</p>
                     <div className="mt-3 grid gap-4 border-y border-[#e2e7e5] py-4 text-sm leading-7 text-[#5f6868]">
                       <div>
                         <p className="font-semibold text-[#15191b]">당일 고시 시각</p>
@@ -610,7 +525,7 @@ export function PriceLineup({
                         <p>{siteConfig.contact.businessHours}</p>
                       </div>
                       <div>
-                        <p className="font-semibold text-[#15191b]">방문 위치</p>
+                        <p className="font-semibold text-[#15191b]">오시는 길</p>
                         <p>{siteConfig.contact.address}</p>
                       </div>
                       <div>
@@ -664,10 +579,10 @@ export function PriceLineup({
             </p>
           </div>
           <div className="px-6 py-6">
-            <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">방문 상담</p>
+            <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">전화 문의</p>
             <p className="mt-3 text-base font-bold tracking-[-0.03em] text-[#15191b]">{siteConfig.contact.phone}</p>
             <p className="mt-3 text-sm leading-6 text-[#687171]">
-              종로 골든타워 303호 방문 전 전화 문의를 권장드립니다.
+              거래 품목과 수량은 대표번호로 먼저 문의해 주세요.
             </p>
           </div>
         </div>

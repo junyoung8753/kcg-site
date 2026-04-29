@@ -47,7 +47,7 @@ export function getLaunchReadiness() {
         : `현재 사이트 URL은 ${siteConfig.siteUrl}입니다.`,
       action: siteConfig.siteUrl.includes("kcgold.co.kr")
         ? "DNS 정상 연결과 www 리다이렉트만 최종 확인합니다."
-        : "Vercel에 kcgold.co.kr와 www.kcgold.co.kr를 추가하고 Gabia DNS를 연결합니다.",
+        : "Vercel에 kcgold.co.kr와 www.kcgold.co.kr를 추가하고 Cafe24 DNS를 연결합니다. 기존 MX/TXT/SPF/DKIM 레코드는 보존합니다.",
     },
     {
       key: "search-indexing",

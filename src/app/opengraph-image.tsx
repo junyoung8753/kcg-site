@@ -47,7 +47,7 @@ export default async function OpenGraphImage() {
             (주)한국센터금거래소
           </div>
           <div style={{ fontSize: 34, lineHeight: 1.5, maxWidth: 900, opacity: 0.82 }}>
-            오늘 고시 시세, 귀금속 매입 상담, 방문 거래 안내를 확인할 수 있는 종로 귀금속 거래 안내 사이트
+            오늘 고시 시세, 귀금속 매입 상담, 거래 전 기준을 확인할 수 있는 종로 귀금속 거래 안내 사이트
           </div>
         </div>
         <div

@@ -9,20 +9,22 @@ The KCG site is a trust-and-consultation site for a real gold exchange office in
 - Check the company-posted gold, silver, platinum, 18K, and 14K prices.
 - Understand the difference between "I buy" and "I sell" 기준.
 - Confirm the posted time and the fact that final amounts are confirmed on site.
-- Call before visiting, especially for large quantities, legal-entity holdings, inheritance cleanup, bars, or mixed jewelry.
-- Find the address, operating hours, and visit preparation checklist quickly.
+- Call before transaction consultation, especially for large quantities, legal-entity holdings, inheritance cleanup, bars, or mixed jewelry.
+- Find the address, operating hours, and transaction preparation checklist quickly.
 
 The site should feel like a serious price desk and consultation counter, not a generic ecommerce mall, a financial trading platform, or a broad marketing landing page.
 
+Confirmed operating scope as of 2026-04-27 KST: 순금·고금 매입, 순금/골드바 판매, B2C 전화 문의·거래 상담, and B2B 대량·기업 상담. Product pages may present sellable items and inquiry categories, but conversion stays phone inquiry/trade consultation until a separate payment, privacy, and legal flow is approved.
+
 ## Product Thesis
 
-회사 고시 시세가 주인공이다. The first screen should make the company price table, posted time, and buy/sell distinction immediately clear, then give a fast path to 전화/방문 상담.
+회사 고시 시세가 주인공이다. The first screen should make the company price table, posted time, and buy/sell distinction immediately clear, then give a fast path to 전화 문의/거래 상담.
 
 Everything else supports that path:
 
 - Campaign imagery establishes that this is a physical gold/silver consultation business.
 - 자동 참고 시세는 보조 정보 for market context only.
-- Service and trade guidance reduce uncertainty before a phone call or visit.
+- Service and trade guidance reduce uncertainty before a phone call or transaction consultation.
 - Legal and safety copy prevents false confidence, KRX confusion, or invented claims.
 - `/` is the single public home surface; old option or temporary comparison routes should not exist unless a new comparison workflow is explicitly requested.
 
@@ -42,7 +44,7 @@ This visitor asks about 골드바, 실버바, corporate holdings, gifts, or bulk
 
 ### Location-First Visitor
 
-This visitor already intends to visit. They need the phone number, address, operating hours, map links, parking/building note, and visit checklist.
+This visitor already intends to come to the office. They need the phone number, address, operating hours, map links, parking/building note, and transaction checklist.
 
 ## Design Direction
 
@@ -60,7 +62,7 @@ The design should be restrained, dense enough for price scanning, and visibly ti
 ## UX Priorities
 
 1. Company posted price table: Must show the posted date/time, buy/sell distinction, important item names, and caution that final transaction amount is confirmed after on-site checks.
-2. Consultation path: Phone and visit actions should be visible near the price table and repeated after high-intent sections.
+2. Consultation path: Phone inquiry and trade guidance should be visible near the price table and repeated after high-intent sections.
 3. Service clarity: Services should explain what KCG can consult on and what information the customer should prepare.
 4. Safety and trust: 가격·거래·법적 사실은 검증 없이 만들지 않는다. Temporary legal placeholders are allowed only when visibly labeled as temporary and blocked by launch-readiness checks before public search exposure.
 5. Market context hierarchy: Automatic market data, conversion estimates, and news must not override or visually compete with the company posted prices.

@@ -28,3 +28,96 @@
 - Do not make visual QA code changes just to bypass a Cloud environment restriction. If Google Fonts, Playwright browser downloads, npm audit endpoints, or external fetches are blocked, report the environment/network issue and fix the Cloud setup or run the verification locally instead of removing design assets, fonts, images, or routes.
 - When a user points out a miss, update the smallest relevant executable guardrail first, then fix similar cases. Keep `docs/quality/agent-quality-system.md` aligned with meaningful process changes.
 - If a deployment is needed, prefer a preview deployment first. Use production deployment or alias changes only when the user clearly asks for the live URL to change.
+
+<!-- BEGIN: FRONTEND_DESIGN_QUALITY_ADDON -->
+
+# Frontend / Website / UI Design Quality Add-on
+
+## Purpose
+
+For KCG website, homepage, route, product catalog, price desk, responsive UI, visual polish, Figma-to-code, screenshot-to-code, browser QA, or design-critical tasks, do not jump straight into code unless the change is a tiny obvious fix.
+
+First build a task-local design brief, then implement in the existing KCG system, then verify the rendered result.
+
+## Existing rules remain higher priority
+
+- This add-on does not override the KCG rules above, global Codex safety rules, security boundaries, code style, test policy, data-source compliance, or launch/search-indexing constraints.
+- KCG-specific product facts, posted prices, legal/business information, admin auth, public launch, payments, trading, and production deployment remain high-risk. Stop and ask when a wrong assumption could create legal, financial, credential, or production risk.
+- Company posted prices stay separate from automatic market-reference data. External APIs must not overwrite company prices.
+
+## Required context before design work
+
+For non-trivial frontend or design work, read the relevant current context before deciding:
+
+- `docs/setup/CURRENT_HANDOFF.md`
+- `docs/quality/product-experience-rubric.md`
+- `docs/quality/design-review-checklist.md`
+- `docs/quality/ai-site-production-playbook.md`
+- `docs/quality/data-source-compliance.md`
+- `docs/research/gold-exchange-deep-audit-2026-04-27.md`
+- Existing route/component/style files touched by the task
+
+Use official/current docs for fast-moving framework, Codex, API, browser, deployment, or data-source questions.
+
+## Required design workflow
+
+For frontend/design tasks:
+
+1. Restate the KCG product goal in one sentence.
+2. Identify target user, business goal, primary CTA, brand tone, required page/section, and technical constraints.
+3. Create a concise design brief before coding.
+4. If no visual direction is provided, compare 2-3 feasible directions and choose one based on KCG fit, clarity, conversion, maintainability, and verification cost.
+5. Define task-local design tokens before implementation: color, type scale, spacing rhythm, layout grid, radius, border/shadow, image treatment, and motion principles.
+6. Implement one coherent KCG composition, not a generic template or alternate option playground.
+7. Reuse existing KCG routes, components, data presenters, design tokens, and verification helpers before adding new abstractions.
+8. Implement desktop and mobile states together.
+9. Start or reuse the local dev/build server when practical.
+10. Inspect the rendered UI with Browser Use or Playwright/screenshots when available.
+11. Check and fix visual hierarchy, first viewport composition, CTA clarity, price-table readability, spacing rhythm, alignment, text overflow, horizontal overflow, contrast, hover/focus states, loading/error states, console errors, and mobile header/bottom CTA behavior.
+12. Run the relevant repo validation commands. For code changes, follow the full command list above unless the change is docs-only.
+13. Review the final diff for unrelated changes, secret exposure, route regressions, and accidental preview/launch behavior changes.
+
+## KCG design quality bar
+
+A strong KCG UI must have:
+
+- price-first hierarchy with company posted prices as the primary surface
+- clear phone/visit consultation path rather than checkout/cart behavior
+- restrained gold-exchange visual language: professional, readable, trustworthy, not flashy
+- a dominant first viewport with real campaign/product/store signal
+- mobile-first scanability for prices, CTAs, location, and consultation steps
+- precise source attribution for market-reference data, headlines, charts, and calculators
+- real-feeling Korean copy that avoids unsupported legal, price, or trading claims
+- accessible contrast, focus states, and readable tables on mobile
+
+Avoid:
+
+- generic SaaS or shopping-mall templates
+- random card grids, meaningless badges, filler stat strips, or placeholder copy
+- purple-gradient defaults or one-note decorative palettes unrelated to KCG
+- visual experiments that make the site feel less like a Korean gold exchange
+- scraping, republishing, or charting competitor data
+- adding online payment, cart, live trading, or public launch behavior without explicit approval
+
+## Model, skill, and subagent routing
+
+- The lead Codex session remains responsible for final design, implementation, verification, and reporting.
+- Use existing skills and tools deliberately: `frontend-skill` for frontend product work, `recursive-improvement` for repeated quality misses, `openai-docs` for current Codex/OpenAI guidance, and Playwright/screenshots for repeatable visual QA.
+- Use actual subagents only when the user explicitly permits delegated agent work and the task is low-risk, parallelizable, and independently reviewable.
+- Spark or smaller helpers may only provide read-only, bounded advice or tiny independently verifiable notes. They must not be final authority for edits, architecture, security, auth, payments, trading, legal/compliance, production deployment, dependency selection, or launch decisions.
+- Do not create or change project `.codex/config.toml`, model, reasoning, sandbox, approval, MCP, hook, skill, or custom-agent settings unless the support path is verified and the change is clearly safer than AGENTS-based guidance.
+
+## Required final report for frontend/design tasks
+
+End every frontend/design task with:
+
+- Design direction chosen
+- Files changed
+- Components/pages added or modified
+- Browser/Playwright/screenshot checks performed
+- Desktop/mobile status
+- Commands run and validation result
+- Remaining risks or user-only steps
+- Suggested next improvement when it materially advances launch quality
+
+<!-- END: FRONTEND_DESIGN_QUALITY_ADDON -->

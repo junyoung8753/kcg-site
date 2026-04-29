@@ -4,11 +4,12 @@
 
 ## 제품 방향
 
-KCG 사이트는 쇼핑몰보다 `시세 확인 + 전화 상담 + 방문 준비`에 집중합니다.
+KCG 사이트는 쇼핑몰보다 `시세 확인 + 전화 문의 + 거래 전 준비`에 집중합니다. 회사 범위는 순금·고금 매입, 순금/골드바 판매, B2C 전화 문의·거래 상담, B2B 대량·기업 상담입니다.
 
 - 첫 화면은 회사 고시 시세표, 기준 시각, 내가 살 때/팔 때 구분을 가장 먼저 보여줍니다.
 - 자동 국제 시세와 뉴스 헤드라인은 시장 흐름을 보는 보조 정보입니다.
 - 실제 거래 금액은 순도, 중량, 부속, 보증서, 실물 상태 확인 후 현장에서 최종 안내합니다.
+- 상품 판매란은 결제/장바구니가 아닌 상담형 카탈로그입니다. 골드바, 순금 제품, 실버바, 고금·주얼리 매입, B2B 문의를 사진·가격 문구와 함께 관리할 수 있습니다.
 - KRX 금시장, 유사 투자/리딩방, 원격 선입금 거래와 혼동되지 않도록 민간 현장 상담 사이트로 안내합니다.
 - 사업자등록번호와 법적 고지는 확인 문서가 들어오기 전까지 임시값임을 명시하며, 공개 오픈 전 점검에서 차단합니다.
 
@@ -28,7 +29,7 @@ KCG 사이트는 쇼핑몰보다 `시세 확인 + 전화 상담 + 방문 준비`
 - `/announcements` 공지사항 목록
 - `/announcements/[slug]` 공지 상세
 - `/services` 취급 품목과 상담 범위
-- `/about` 위치, 방문 준비, 운영 안내
+- `/about` 위치, 거래 전 준비, 운영 안내
 - `/admin/login` 관리자 로그인
 - `/admin/launch` 오픈 전 점검판
 
@@ -46,6 +47,7 @@ KCG 사이트는 쇼핑몰보다 `시세 확인 + 전화 상담 + 방문 준비`
 - 키가 없으면 Gold API 무료 현재가를 사용합니다.
 - 두 공급자 모두 실패하면 체크된 운영 seed 데이터로 내려갑니다.
 - 모든 자동 데이터는 출처와 참고용 안내를 함께 표시합니다.
+- KRX 금시장 데이터는 공식성이 있어도 약관과 시장정보 계약 범위 확인 전에는 production 참고시세나 차트에 넣지 않습니다.
 
 ### 뉴스 헤드라인
 
@@ -57,8 +59,9 @@ KCG 사이트는 쇼핑몰보다 `시세 확인 + 전화 상담 + 방문 준비`
 
 - `public/brand/kcg-logo.png`: KCG 심볼
 - `public/brand/kcg-lockup.png`: 로고 + 상호 조합
-- `public/campaign/*.jpg`: 시세/상담/방문 안내용 캠페인 이미지
+- `public/campaign/*`: 시세/상담/거래 안내용 캠페인 이미지
 - `src/app/icon.png`: 사이트 아이콘
+- `docs/brand/campaign-image-prompts.md`: ChatGPT 이미지 생성용 메인 배너 프롬프트
 
 ## 환경 변수
 
@@ -86,6 +89,17 @@ KCG_FORCE_NOINDEX=1
 
 `KCG_FORCE_NOINDEX=1`은 공개 launch 승인 전 검색 색인을 막기 위한 설정입니다. 실제 공개 도메인과 검색 허용은 사업자등록번호, 관리자 비밀번호, 법적 안내 문구, 운영 데이터가 확정된 뒤 승인받고 변경합니다. 사업자등록번호가 `000-00-00000` 임시값이면 robots/sitemap이 검색 노출을 허용하지 않습니다.
 
+## 도메인, Supabase, API 준비
+
+자세한 실행 절차는 `docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md`를 기준으로 봅니다.
+
+- `kcgold.co.kr`와 `www.kcgold.co.kr`는 Whois에서 구매한 도메인 기준입니다.
+- Vercel에 도메인을 추가한 뒤 `vercel domains inspect`가 알려주는 정확한 A/CNAME 값을 Whois DNS에 입력합니다.
+- 기존 MX/TXT/SPF/DKIM 같은 메일·인증 레코드는 삭제하지 않습니다.
+- DNS 연결 후에도 `KCG_FORCE_NOINDEX=1`은 유지합니다.
+- Supabase 운영 DB는 `supabase/schema.sql`과 `supabase/seed.sql`을 기준으로 준비합니다.
+- Supabase service role 또는 secret key, Vercel env, Whois 비밀번호는 채팅이나 Git에 남기지 않습니다.
+
 ## 로컬 실행
 
 가장 쉬운 방법은 `바로실행.cmd`를 실행하는 것입니다.
@@ -106,7 +120,7 @@ cmd /c npm.cmd run start
 
 ## 관리자
 
-- 로컬 기본 관리자 비밀번호: `gold-demo-2026`
+- 로컬 기본 관리자 비밀번호: `0000`
 - 배포 환경에서는 `ADMIN_PASSWORD`와 `ADMIN_SESSION_SECRET`을 Vercel 환경 변수로 설정합니다.
 - Supabase 미연결 상태에서는 seed 데이터 기반으로 읽기/관리 화면이 동작합니다.
 - Supabase 연결 시 공개 데이터와 관리자 저장이 실제 DB 기준으로 동작합니다.
@@ -142,6 +156,16 @@ $env:SITE_AUDIT_URL="http://127.0.0.1:3000"; npm run audit:site
 
 `/api/health`에는 데이터 공급자, 출처 URL, 약관 URL, stale 여부, headline 출처 정보, launch readiness 요약이 포함됩니다.
 
+## 작업 보드
+
+KCG 오픈 준비 TODO 원장은 `docs/setup/OPEN_TASKS.md`입니다. 브라우저에서 보기 편한 로컬 대시보드는 아래 명령으로 생성합니다.
+
+```bash
+cmd /c npm.cmd run tasks:dashboard
+```
+
+생성 결과는 `output/kcg-open-tasks.html`이며, 이 파일은 로컬 확인용 생성물이므로 Git에 올리지 않습니다. 작업 상태를 바꿀 때는 원본 `docs/setup/OPEN_TASKS.md`를 수정한 뒤 대시보드를 다시 생성합니다.
+
 ## Cloud 작업 재개
 
 이 repo가 Codex Cloud / 새 PC 작업 기준입니다. 자세한 흐름은 `docs/setup/continue-anywhere.md`와 `docs/setup/CLOUD_ONLY_WORKFLOW.md`를 기준으로 봅니다.
@@ -170,3 +194,4 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\check-continua
 - 사업자등록번호는 확인 전까지 `000-00-00000` 임시값으로 표시하되, 화면에 임시값임을 명시하고 공개 오픈 전 점검에서 차단합니다.
 - 회사 시세표와 자동 참고 시세는 분리되어 있습니다.
 - Metals.Dev 키가 추가되면 별도 코드 수정 없이 더 풍부한 실시간 참고 시세로 승격됩니다.
+- KRX Open API 또는 시장정보는 승인·계약 범위 확인 전까지 공개 production 데이터 소스로 사용하지 않습니다.

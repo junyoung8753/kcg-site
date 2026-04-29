@@ -36,9 +36,9 @@ export const mockMarketBriefs: MarketBriefItem[] = [
   },
   {
     id: "brief-3",
-    title: "방문 전 전화 문의 시 상담 가능 시간과 준비 사항을 먼저 안내해 드립니다.",
+    title: "거래 전 전화 문의 시 상담 가능 시간과 준비 사항을 먼저 안내해 드립니다.",
     summary:
-      "고중량 거래, 상속·법인 정리, 골드바·실버바 매입 문의는 방문 전 먼저 연락 주시면 처리 가능 범위를 먼저 확인해 드립니다.",
+      "고중량 거래, 상속·법인 정리, 골드바·실버바 매입 문의는 먼저 연락 주시면 처리 가능 범위를 확인해 드립니다.",
     publishedAt: "2026-04-22T09:00:00+09:00",
     tone: "steady",
   },
@@ -159,7 +159,7 @@ export const mockMarketData: MarketDashboardData = {
   domesticPrices: mockDomesticPrices,
   benchmarks: [
     {
-      label: "순금 3.75g 자동 환산 참고가",
+      label: "순금 3.75g 참고가",
       unit: "3.75g",
       value: 987000,
       note: "국제 금 시세와 환율을 반영한 참고 기준",
@@ -167,7 +167,7 @@ export const mockMarketData: MarketDashboardData = {
       source: "mock",
     },
     {
-      label: "골드바 10g 자동 환산 참고가",
+      label: "골드바 10g 참고가",
       unit: "10g",
       value: 2632000,
       note: "실제 판매가는 중량, 브랜드, 공임 확인 후 안내",

@@ -47,6 +47,7 @@
 
 html {
   background: #f7fbf8;
+  scroll-padding-bottom: calc(6.25rem + env(safe-area-inset-bottom));
 }
 
 body {

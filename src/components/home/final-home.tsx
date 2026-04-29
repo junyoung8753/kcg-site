@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { PurchaseGuide } from "@/components/home/purchase-guide";
 import { MarketDashboard } from "@/components/market/market-dashboard";
 import { PriceLineup } from "@/components/market/price-lineup";
@@ -6,21 +7,20 @@ import { getRepository } from "@/lib/data";
 import { formatDateDot, formatDateTimeKorean } from "@/lib/format";
 import { getBusinessInfoLine } from "@/lib/legal-info";
 import { getMarketDashboardData } from "@/lib/market-data";
-import { getProductStatusLabel } from "@/lib/product-presenter";
+import { getProductImageSrc, getProductStatusLabel, productCatalogTabs } from "@/lib/product-presenter";
 import {
   homeHighlights,
-  serviceCategories,
   siteConfig,
   visitChecklist,
 } from "@/lib/site-config";
 
 const quickLinks = [
-  { href: "/prices", label: "오늘 시세", caption: "고시 시세와 자동 참고 시세 확인" },
-  { href: "/services", label: "고금매입", caption: "순금·18K·14K·백금·은 매입 상담 기준" },
-  { href: "/products", label: "골드바·실버바", caption: "수급, 중량, 재고 문의 안내" },
-  { href: "/about", label: "방문 전 준비", caption: "신분증, 보증서, 거래 절차 안내" },
-  { href: "/about", label: "위치·영업시간", caption: "종로 골든타워 303호 / 대표번호 안내" },
-  { href: "/announcements", label: "운영 공지", caption: "시세 운영과 방문 상담 변동 확인" },
+  { href: "/prices", label: "시세조회", caption: "회사 고시 시세와 국제 참고 시세" },
+  { href: "/products", label: "상품/매입", caption: "골드바·실버바·고금 매입 안내" },
+  { href: "/services", label: "서비스", caption: "매입 가능 품목과 상담 범위" },
+  { href: "/about", label: "매장안내", caption: "성창빌딩 매장과 골든타워 본사" },
+  { href: "/company", label: "회사소개", caption: "법인 정보와 패밀리 사이트" },
+  { href: "/announcements", label: "공지", caption: "시세 운영과 거래 준비 안내" },
 ];
 
 export async function FinalHome() {
@@ -48,13 +48,11 @@ export async function FinalHome() {
 
       <MarketDashboard data={marketData} />
 
-      <PurchaseGuide />
-
       <section className="border-y border-[#dfe7e5] bg-white">
         <div className="section-shell grid gap-0 py-0 xl:grid-cols-[0.94fr_0.62fr_0.62fr]">
           <div className="border-x border-[#e4ebe9]">
             <div className="border-b border-[#e4ebe9] bg-[#f7fbfa] px-6 py-4 sm:px-8">
-              <p className="text-xs font-semibold tracking-[0.26em] text-[#9a7800]">빠른 메뉴</p>
+              <p className="text-xs font-semibold tracking-[0.26em] text-[#9a7800]">KCG 바로가기</p>
             </div>
             <div className="grid gap-px bg-[#e4ebe9] sm:grid-cols-2">
               {quickLinks.map((item) => (
@@ -73,9 +71,9 @@ export async function FinalHome() {
           <div className="border-r border-[#e4ebe9] bg-[#fbfdfc] px-6 py-6 sm:px-8">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold tracking-[0.26em] text-[#9a7800]">오늘의 운영 안내</p>
+                <p className="text-xs font-semibold tracking-[0.26em] text-[#9a7800]">공지사항</p>
                 <h2 className="mt-2 text-[1.75rem] font-semibold tracking-[-0.06em] text-[#15191b]">
-                  운영 공지와 시세 안내
+                  시세 운영과 거래 준비 안내
                 </h2>
               </div>
               <Link href="/announcements" className="text-sm font-semibold text-[#697170]">
@@ -106,9 +104,9 @@ export async function FinalHome() {
                 ))
               ) : (
                 <div className="border-b border-[#e4ebe9] py-4">
-                  <p className="font-semibold text-[#171717]">현재 등록된 운영 공지가 없습니다.</p>
+                  <p className="font-semibold text-[#171717]">현재 등록된 공지가 없습니다.</p>
                   <p className="mt-2 text-sm leading-6 text-[#707878]">
-                    당일 시세와 방문 상담 가능 시간은 대표번호로 먼저 확인해 주세요.
+                    당일 시세와 상담 가능 시간은 대표번호로 먼저 확인해 주세요.
                   </p>
                 </div>
               )}
@@ -125,9 +123,9 @@ export async function FinalHome() {
           </div>
 
           <div className="border-r border-[#e4ebe9] px-6 py-6 sm:px-8">
-            <p className="text-xs font-semibold tracking-[0.26em] text-[#9a7800]">방문 준비</p>
+            <p className="text-xs font-semibold tracking-[0.26em] text-[#9a7800]">거래 준비</p>
             <h2 className="mt-2 text-[1.75rem] font-semibold tracking-[-0.06em] text-[#15191b]">
-              방문 전 확인 사항
+              거래 전 확인 사항
             </h2>
             <div className="mt-5 space-y-4">
               {homeHighlights.map((item, index) => (
@@ -153,38 +151,51 @@ export async function FinalHome() {
         <div className="section-shell">
           <div className="mb-7 flex items-end justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">상품 문의</p>
+              <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">상품안내</p>
               <h2 className="mt-3 text-[2rem] font-semibold tracking-[-0.06em] text-[#15191b]">
-                상품 문의와 상담 범위
+                상품/매입 카테고리
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-[#687171]">
                 상품 수보다 먼저 확인해야 하는 것은 매입 가능 품목, 수급 가능 여부,
-                상담 범위와 방문 기준입니다.
+                상담 범위와 고시 시세 기준입니다.
               </p>
             </div>
             <Link href="/products" className="text-sm font-semibold text-[#707878]">
               전체보기
             </Link>
           </div>
-          <div className="grid border-x border-t border-[#dfe5e3] md:grid-cols-5">
-            {serviceCategories.map((category, index) => {
-              const matched = products.find((product) => product.category === category.key);
+          <div className="grid gap-px overflow-hidden border border-[#dfe5e3] bg-[#dfe5e3] md:grid-cols-2 xl:grid-cols-5">
+            {productCatalogTabs.filter((tab) => tab.category).map((category, index) => {
+              const matched = products.find((product) => product.category === category.category);
               return (
                 <Link
-                  key={category.key}
-                  href="/products"
-                  className="min-h-48 border-b border-[#dfe5e3] bg-[#fbfdfc] p-6 transition hover:bg-[#fff7d2] md:border-r md:last:border-r-0"
+                  key={category.slug}
+                  href={`/products?category=${category.slug}`}
+                  className="group bg-white transition hover:bg-[#fff7d2]"
                 >
-                  <p className="text-xs font-semibold text-[#9a8a00]">0{index + 1}</p>
-                  <h3 className="mt-5 text-xl font-bold tracking-[-0.05em] text-[#15191b]">
-                    {category.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-6 text-[#687171]">
-                    {matched?.shortDescription || category.description}
-                  </p>
-                  <p className="mt-6 text-xs font-semibold text-[#8d9494]">
-                    {matched ? getProductStatusLabel(matched.status) : "사전 문의 필요"}
-                  </p>
+                  <div className="relative aspect-[4/3] overflow-hidden bg-[#eef4f2]">
+                    <Image
+                      src={matched ? getProductImageSrc(matched) : "/products/kcg-gold-bar-catalog-20260427-v2.jpg"}
+                      alt={`${category.label} 이미지`}
+                      fill
+                      className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                      sizes="(min-width: 1280px) 20vw, (min-width: 768px) 50vw, 100vw"
+                      loading="eager"
+                      unoptimized
+                    />
+                  </div>
+                  <div className="p-5">
+                    <p className="text-xs font-semibold text-[#9a8a00]">0{index + 1}</p>
+                    <h3 className="mt-3 text-xl font-bold tracking-[-0.05em] text-[#15191b]">
+                      {category.label}
+                    </h3>
+                    <p className="mt-3 min-h-[3rem] text-sm leading-6 text-[#687171]">
+                      {matched?.shortDescription || `${category.label} 기준을 확인합니다.`}
+                    </p>
+                    <p className="mt-5 text-xs font-semibold text-[#8d9494]">
+                      {matched ? getProductStatusLabel(matched.status) : "사전 문의 필요"}
+                    </p>
+                  </div>
                 </Link>
               );
             })}
@@ -192,12 +203,14 @@ export async function FinalHome() {
         </div>
       </section>
 
+      <PurchaseGuide />
+
       <section className="section-shell pb-18">
         <div className="grid gap-6 border border-[#dfe5e3] bg-[#fffbe8] p-7 sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">방문 상담</p>
+            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">거래 상담</p>
             <h2 className="mt-3 text-[2rem] font-semibold tracking-[-0.06em] text-[#15191b]">
-              방문 전 대표번호 문의 시 상담 가능 시간과 준비 사항을 먼저 안내해 드립니다
+              대표번호 문의 시 상담 가능 범위와 준비 사항을 먼저 안내해 드립니다
             </h2>
             <p className="mt-3 text-base leading-7 text-[#687171]">{siteConfig.contact.address}</p>
             <p className="mt-1 text-base leading-7 text-[#687171]">{siteConfig.contact.businessHours}</p>
@@ -217,7 +230,7 @@ export async function FinalHome() {
               href="/about"
               className="inline-flex justify-center rounded-full border border-[#d8dfdc] bg-white px-7 py-4 text-sm font-semibold text-[#171717]"
             >
-              방문 안내 보기
+              오시는 길 보기
             </Link>
           </div>
         </div>

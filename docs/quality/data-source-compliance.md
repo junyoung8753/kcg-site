@@ -9,7 +9,9 @@ It is not legal advice. It is an operating checklist for product and engineering
 | Use | Current source | Current status | KCG rule |
 | --- | --- | --- | --- |
 | International spot reference prices | Gold API | Free endpoint, no auth for current prices, no rate limits stated for real-time prices | Allowed as a free reference source while attribution and "reference only" copy remain visible. Do not describe it as KCG's transaction price. |
+| Chart widget | TradingView official widget | Public embeddable widget with TradingView branding/attribution | Allowed only as an embedded visual reference. Keep TradingView attribution visible. Do not scrape, store, transform, or republish TradingView data as KCG-owned data. |
 | Premium metals data candidate | Metals.Dev | Free plan exists but only 100 requests/month; paid plans include spot, bid/ask, LBMA, LME, MCX/IBJA, currency conversion, and higher quotas | Use only with a KCG-owned API key. Worth considering when we need production-grade bid/ask, authority prices, and time-series chart data. |
+| KRX official data candidate | KRX OPEN API / Koscom market-data channels | KRX OPEN API lists 금시장 일별매매정보, but OPEN API terms restrict commercial/third-party use and KRX market data distribution may require separate approval or Koscom contract | Do not use KRX values as KCG production live/reference prices until authentication, utilization approval, commercial-use scope, attribution wording, and any market-data contract requirement are confirmed. Keep KRX references as confusion-prevention education only. |
 | News headlines | Google News RSS-style URLs | Useful but not a stable official commercial news API; Google Terms also restrict abusive automated access and IP/content misuse | Treat as a temporary link-only headline reference. Show article title, publisher/source, date, and outbound link only. Do not republish full article body, article images, or summaries copied from publishers. |
 | News API candidate | GNews API | Free plan is for non-commercial/dev use; paid plans permit production/commercial usage by plan | Consider paid plan if news becomes a real production feature. Still preserve publisher source and links. |
 | News API candidate | NewsAPI.org | Developer plan is development/testing only; paid subscription required outside development; terms prohibit republishing copyrighted material | Consider only paid plan for production. Do not scrape article bodies from returned URLs unless separately licensed or clearly permitted. |
@@ -47,6 +49,7 @@ For market data, use Korean labels such as:
 
 - `출처: Gold API`
 - `출처: Metals.Dev`
+- `KRX 통계정보 사용 시 승인 범위와 표시 문구 확인 필요`
 - `자동 참고 시세`
 - `회사 고시 시세와 실제 거래 금액은 별도입니다.`
 
@@ -89,8 +92,25 @@ Do not show charts that imply live execution, investment advice, guaranteed retu
 For production chart data:
 
 - Gold API is useful for simple current price references.
+- TradingView official widgets may be embedded for visual chart context when TradingView attribution remains visible and the widget data is not extracted into KCG tables, cache, or DB.
 - Metals.Dev is the better candidate when bid/ask, authority prices, and timeseries are needed.
 - A paid plan is likely required once public traffic or history charts exceed free quotas.
+- KRX data must remain blocked from public production charts until KRX/Koscom approval and redistribution scope are confirmed.
+
+## KRX Use Boundary
+
+KRX is useful as a safety and confusion-prevention reference because KRX Gold Market is materially different from a private physical gold-exchange consultation site. KCG can explain that difference in plain Korean, but it must not imply KCG is a KRX venue, KRX member, securities-account provider, exchange-traded execution service, or official KRX price distributor.
+
+Before adding KRX data to any rendered production page:
+
+- Apply for and receive the KRX authentication key and utilization approval for the exact API.
+- Confirm whether the intended use is non-commercial only or requires separate data purchase/distribution approval.
+- Confirm whether Koscom market-data contract steps apply, especially for real-time, delayed, EOD, or redistributed market information.
+- Store the API key only in environment variables.
+- Record the approved attribution wording and usage limits in this file.
+- Keep KRX data visually separate from KCG company posted prices and automatic international reference prices.
+
+Until those checks are complete, KRX remains a blocked production data source and may be used only for static safety education with source links.
 
 ## Tools, Forms, And Calculators
 
@@ -98,7 +118,7 @@ Useful KCG features inspired by gold exchange sites and visitor needs:
 
 - 금/은/백금 단위 변환: g, 돈, kg, T.oz.
 - 예상 참고가 계산기: item type, purity, weight, and reference price, with a strong "현장 확인 후 최종 안내" disclaimer.
-- 방문 상담 준비 form: phone, item type, estimated weight, quantity, visit date, photo upload only after explicit privacy/retention rules are approved.
+- 거래 상담 준비 form: phone, item type, estimated weight, quantity, desired consultation time, photo upload only after explicit privacy/retention rules are approved.
 - 매입 상담 checklist: 신분증, 보증서, 영수증, 제품 상태, 케이스, 수량.
 - Chart time-range controls: 1개월, 5개월, 1년, 3년 when licensed data exists.
 - Source switch/status panel: company posted price, automatic reference price, fallback mode.

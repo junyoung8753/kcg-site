@@ -2,60 +2,59 @@ import Image from "next/image";
 import Link from "next/link";
 import { siteConfig, siteNavigation } from "@/lib/site-config";
 
-const utilityLinks = [
-  { href: "/about", label: "오시는 길" },
-];
-
-const shortcutLinks = [
-  { href: "/prices", label: "시세조회" },
-  { href: "/services", label: "고금매입 상담" },
-  { href: "/products", label: "골드바·실버바" },
-  { href: "/announcements", label: "운영 공지" },
-];
-
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-[#dce6e3] bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-[#dce6e3] bg-white/96 backdrop-blur">
       <div className="hidden border-b border-[#edf2f0] bg-[#f7fbfa] xl:block">
-        <div className="section-shell flex h-10 items-center justify-between gap-6 text-sm font-medium text-[#4d5656]">
-          <p className="truncate text-[#6f7777]">
-            당일 고시 시세와 귀금속 상담 기준을 안내하는 종로 거래 안내 데스크
-          </p>
-          <div className="flex items-center gap-6">
-            {utilityLinks.map((item) => (
-              <Link key={item.label} href={item.href} className="transition hover:text-[#141718]">
+        <div className="section-shell flex h-9 items-center justify-between gap-6 text-[0.82rem] font-medium text-[#596261]">
+          <div className="flex items-center gap-4">
+            <Link href="/company" className="transition hover:text-[#141718]">
+              회사소개
+            </Link>
+            <Link href="/about" className="transition hover:text-[#141718]">
+              매장안내
+            </Link>
+            {siteConfig.familyLinks.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noreferrer"
+                className="transition hover:text-[#8c6700]"
+              >
                 {item.label}
-              </Link>
+              </a>
             ))}
-            <a
-              href={`tel:${siteConfig.contact.phone}`}
-              className="font-semibold text-[#9c6d00] transition hover:text-[#6d4f00]"
-            >
-              전화상담 {siteConfig.contact.phone}
+          </div>
+          <div className="flex items-center gap-5">
+            <span>본사 {siteConfig.locations.headOffice.phone}</span>
+            <span>매장 {siteConfig.locations.store.phone}</span>
+            <a href={`mailto:${siteConfig.contact.email}`} className="transition hover:text-[#8c6700]">
+              {siteConfig.contact.email}
             </a>
           </div>
         </div>
       </div>
 
-      <div className="section-shell flex min-h-[5.85rem] items-center justify-between gap-4 py-4 xl:gap-8">
-        <Link href="/" className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4 xl:max-w-[28rem]">
-          <span className="relative h-[2.9rem] w-[2.9rem] shrink-0 sm:hidden">
+      <div className="section-shell flex min-h-[4.85rem] items-center justify-between gap-4 py-3 xl:gap-8">
+        <Link href="/" className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4 xl:max-w-[27rem]">
+          <span className="relative h-[2.7rem] w-[2.7rem] shrink-0 sm:hidden">
             <Image
               src={siteConfig.brandAssets.symbolPath}
               alt={siteConfig.brandAssets.symbolAlt}
               fill
               className="object-contain"
-              sizes="56px"
+              sizes="48px"
               priority
             />
           </span>
-          <span className="relative hidden h-[3.9rem] w-[24rem] shrink-0 sm:block">
+          <span className="relative hidden h-[3.35rem] w-[23rem] shrink-0 sm:block">
             <Image
               src={siteConfig.brandAssets.lockupPath}
               alt={siteConfig.brandAssets.lockupAlt}
               fill
               className="object-contain object-left"
-              sizes="384px"
+              sizes="368px"
               priority
             />
           </span>
@@ -70,28 +69,24 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-6 text-[1rem] font-medium tracking-[-0.03em] text-[#121517] lg:flex xl:gap-8">
+        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-5 text-[0.98rem] font-semibold tracking-[-0.035em] text-[#121517] lg:flex xl:gap-7">
           {siteNavigation.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="shrink-0 whitespace-nowrap transition hover:text-[#8c6700]"
-            >
+            <Link key={item.href} href={item.href} className="shrink-0 whitespace-nowrap transition hover:text-[#8c6700]">
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden shrink-0 items-center gap-5 xl:flex">
-          <div className="text-right text-sm text-[#66706f]">
+        <div className="hidden shrink-0 items-center gap-4 xl:flex">
+          <div className="w-[9rem] text-right text-sm text-[#66706f]">
             <p className="text-lg font-bold text-[#15191b]">{siteConfig.contact.phone}</p>
-            <p className="max-w-[22rem] truncate">{siteConfig.contact.address}</p>
+            <p className="truncate">대표 문의</p>
           </div>
           <Link
             href="/about"
             className="inline-flex h-11 items-center rounded-full bg-[#ffcc00] px-5 text-sm font-semibold text-[#171717] transition hover:bg-[#f2bf00]"
           >
-            방문 상담 안내
+            매장안내
           </Link>
         </div>
 
@@ -109,7 +104,7 @@ export function SiteHeader() {
           >
             <span aria-hidden="true">메뉴</span>
           </summary>
-          <div className="absolute right-0 mt-3 w-[19rem] overflow-hidden border border-[#d8e1df] bg-white shadow-[0_22px_48px_rgba(18,24,24,0.14)]">
+          <div className="absolute right-0 mt-3 w-[20rem] overflow-hidden border border-[#d8e1df] bg-white shadow-[0_22px_48px_rgba(18,24,24,0.14)]">
             <div className="border-b border-[#edf2f0] bg-[#f7fbfa] px-5 py-4">
               <div className="relative h-[3rem] w-[12.5rem]">
                 <Image
@@ -120,9 +115,10 @@ export function SiteHeader() {
                   sizes="200px"
                 />
               </div>
-              <p className="mt-2 text-sm text-[#687171]">{siteConfig.contact.phone}</p>
+              <p className="mt-2 text-sm font-semibold text-[#15191b]">{siteConfig.contact.phone}</p>
+              <p className="mt-1 text-xs leading-5 text-[#687171]">본사 문의 · 상품/매입 상담</p>
             </div>
-            <div className="p-3">
+            <div className="grid gap-1 p-3">
               {siteNavigation.map((item) => (
                 <Link
                   key={item.href}
@@ -134,26 +130,24 @@ export function SiteHeader() {
               ))}
             </div>
             <div className="border-t border-[#edf2f0] bg-[#fbfdfc] px-5 py-4 text-sm leading-6 text-[#687171]">
-              <p>{siteConfig.contact.address}</p>
+              <p className="font-semibold text-[#15191b]">{siteConfig.locations.store.title}</p>
+              <p>{siteConfig.locations.store.address}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {siteConfig.familyLinks.map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full border border-[#d8e1df] bg-white px-3 py-1.5 text-xs font-semibold text-[#15191b]"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </details>
-      </div>
-
-      <div className="hidden border-t border-[#edf2f0] bg-[#fbfdfc] lg:block">
-        <div className="section-shell grid grid-cols-4 border-x border-[#edf2f0]">
-          {shortcutLinks.map((item, index) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`flex h-12 items-center justify-center text-sm font-semibold text-[#424a4a] transition hover:bg-[#fff7d2] hover:text-[#111] ${
-                index < shortcutLinks.length - 1 ? "border-r border-[#edf2f0]" : ""
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </div>
       </div>
     </header>
   );

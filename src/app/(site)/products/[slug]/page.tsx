@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import {
   getProductCategoryLabel,
   getProductImageSrc,
-  getProductPriceLabel,
+  getProductPriceDisplay,
   getProductStatusLabel,
 } from "@/lib/product-presenter";
 import { getRepository } from "@/lib/data";
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
 
   if (!product) {
     return {
-      title: "상품 문의",
+      title: "상품/매입",
     };
   }
 
@@ -35,11 +35,16 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { slug } = await params;
   const repository = getRepository();
-  const product = (await repository.getProducts()).find((item) => item.slug === slug);
+  const [products, prices] = await Promise.all([
+    repository.getProducts(),
+    repository.getPrices({ visibleOnly: true }),
+  ]);
+  const product = products.find((item) => item.slug === slug);
 
   if (!product) notFound();
 
   const imageSrc = getProductImageSrc(product);
+  const price = getProductPriceDisplay(product, prices);
 
   return (
     <>
@@ -53,6 +58,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               className="object-cover"
               sizes="(min-width: 1024px) 48vw, 100vw"
               priority
+              unoptimized
             />
           </div>
           <div className="flex flex-col justify-center border-y border-[#dfe6e4] py-8">
@@ -73,11 +79,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               <div className="bg-white px-5 py-5">
                 <p className="text-xs font-bold tracking-[0.18em] text-[#9a8a00]">가격 안내</p>
                 <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-[#15191b]">
-                  {getProductPriceLabel(product)}
+                  {price.main}
                 </p>
                 <p className="mt-2 text-sm leading-6 text-[#687171]">
-                  {product.priceNote || "최종 안내는 대표번호 상담 후 진행합니다."}
+                  {price.detail}
                 </p>
+                <p className="mt-2 text-xs leading-5 text-[#8a9291]">{price.footnote}</p>
               </div>
               <div className="bg-white px-5 py-5">
                 <p className="text-xs font-bold tracking-[0.18em] text-[#9a8a00]">상담 기준</p>
@@ -114,7 +121,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             </h2>
           </div>
           <div className="grid gap-px overflow-hidden border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-2">
-            {(product.specs.length ? product.specs : ["중량", "수량", "방문 가능 시간"]).map((item) => (
+            {(product.specs.length ? product.specs : ["중량", "수량", "상담 가능 시간"]).map((item) => (
               <p key={item} className="bg-white px-5 py-4 text-sm font-semibold text-[#15191b]">
                 {item}
               </p>

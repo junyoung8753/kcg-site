@@ -269,7 +269,7 @@ function buildBenchmarks(
 
   return [
     {
-      label: "순금 3.75g 자동 환산 참고가",
+      label: "순금 3.75g 참고가",
       unit: "3.75g",
       value: gold.krwPerDon,
       note: noteByProvider,
@@ -277,7 +277,7 @@ function buildBenchmarks(
       source: provider,
     },
     {
-      label: "골드바 10g 자동 환산 참고가",
+      label: "골드바 10g 참고가",
       unit: "10g",
       value: Math.round(gold.krwPerGram * 10),
       note: "실제 판매가는 브랜드, 공임, 보증 상태 확인 후 안내",
@@ -453,8 +453,8 @@ function buildMarketBriefs(
     },
     {
       id: "market-brief-3",
-      title: "방문 전 문의 시 상담 가능 시간과 준비 사항을 먼저 안내해 드립니다.",
-      summary: `당일 고시 기준과 방문 준비 사항을 먼저 안내해 드리며, ${movementText}`,
+      title: "거래 전 문의 시 상담 가능 시간과 준비 사항을 먼저 안내해 드립니다.",
+      summary: `당일 고시 기준과 거래 준비 사항을 먼저 안내해 드리며, ${movementText}`,
       publishedAt: updatedAt,
       tone: "guide",
     },

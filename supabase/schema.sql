@@ -42,6 +42,7 @@ create table if not exists announcements (
 create table if not exists products (
   id uuid primary key default gen_random_uuid(),
   category text not null,
+  subcategory text,
   name text not null,
   slug text not null unique,
   short_description text not null,
@@ -52,12 +53,22 @@ create table if not exists products (
   display_order integer not null default 100,
   is_featured boolean not null default false,
   price_visible boolean not null default false,
+  price_basis text not null default 'inquiry',
+  weight_grams numeric,
+  making_fee integer,
+  manual_price integer,
   price_label text not null default '전화 문의',
   price_note text,
   public_note text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table products add column if not exists subcategory text;
+alter table products add column if not exists price_basis text not null default 'inquiry';
+alter table products add column if not exists weight_grams numeric;
+alter table products add column if not exists making_fee integer;
+alter table products add column if not exists manual_price integer;
 
 create index if not exists idx_prices_display_order on prices(display_order);
 create index if not exists idx_price_history_changed_at on price_history(changed_at desc);

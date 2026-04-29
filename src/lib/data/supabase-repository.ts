@@ -50,6 +50,7 @@ type SupabaseAnnouncementRow = {
 type SupabaseProductRow = {
   id: string;
   category: Product["category"];
+  subcategory: string | null;
   name: string;
   slug: string;
   short_description: string;
@@ -60,6 +61,10 @@ type SupabaseProductRow = {
   display_order: number | null;
   is_featured: boolean | null;
   price_visible: boolean;
+  price_basis: Product["priceBasis"] | null;
+  weight_grams: number | null;
+  making_fee: number | null;
+  manual_price: number | null;
   price_label: string | null;
   price_note: string | null;
   public_note: string | null;
@@ -116,6 +121,7 @@ function mapProduct(row: SupabaseProductRow): Product {
   return {
     id: row.id,
     category: row.category,
+    subcategory: row.subcategory,
     name: row.name,
     slug: row.slug,
     shortDescription: row.short_description,
@@ -126,6 +132,10 @@ function mapProduct(row: SupabaseProductRow): Product {
     displayOrder: row.display_order ?? 0,
     isFeatured: row.is_featured ?? false,
     priceVisible: row.price_visible,
+    priceBasis: row.price_basis ?? "inquiry",
+    weightGrams: row.weight_grams,
+    makingFee: row.making_fee,
+    manualPrice: row.manual_price,
     priceLabel: row.price_label ?? "전화 문의",
     priceNote: row.price_note,
     publicNote: row.public_note,
@@ -347,6 +357,7 @@ export class SupabaseRepository implements SiteRepository {
     const client = getSupabaseAdminClient();
     const payload = {
       category: input.category,
+      subcategory: input.subcategory,
       name: input.name,
       slug: input.slug,
       short_description: input.shortDescription,
@@ -357,6 +368,10 @@ export class SupabaseRepository implements SiteRepository {
       display_order: input.displayOrder,
       is_featured: input.isFeatured,
       price_visible: input.priceVisible,
+      price_basis: input.priceBasis,
+      weight_grams: input.weightGrams,
+      making_fee: input.makingFee,
+      manual_price: input.manualPrice,
       price_label: input.priceLabel,
       price_note: input.priceNote,
       public_note: input.publicNote,

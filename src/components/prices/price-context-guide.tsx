@@ -23,8 +23,8 @@ const consultationRows = [
   {
     purpose: "법인·상속·대량 정리",
     priceLine: "당일 고시 시세와 수량 기준",
-    prepare: "품목 목록, 예상 수량, 방문 목적",
-    confirm: "대기 시간을 줄이기 위해 방문 전 대표번호 확인을 권장합니다.",
+    prepare: "품목 목록, 예상 수량, 상담 목적",
+    confirm: "대기 시간을 줄이기 위해 대표번호 확인을 권장합니다.",
   },
 ] as const;
 
@@ -60,7 +60,7 @@ export function PriceContextGuide() {
           </h2>
           <p className="mt-5 max-w-2xl text-sm leading-7 text-[#687171]">
             대표 금거래소 사이트들이 공통으로 강조하는 것은 가격표, 살 때·팔 때 구분, 기준 시각, 상품별 준비
-            항목입니다. KCG는 쇼핑몰 주문보다 전화와 방문 상담에 맞춰 필요한 기준만 먼저 보여드립니다.
+            항목입니다. KCG는 쇼핑몰 주문보다 전화 문의와 거래 상담에 맞춰 필요한 기준만 먼저 보여드립니다.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <a
@@ -73,7 +73,7 @@ export function PriceContextGuide() {
               href="/about"
               className="inline-flex h-11 items-center justify-center rounded-full border border-[#d7e0dd] bg-white px-5 text-sm font-semibold text-[#171717] transition hover:bg-[#fbfdfc]"
             >
-              방문 안내
+              오시는 길
             </Link>
           </div>
         </div>

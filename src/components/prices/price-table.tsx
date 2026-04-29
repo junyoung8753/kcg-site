@@ -10,6 +10,8 @@ interface PriceTableProps {
 export function PriceTable({ prices, compact = false }: PriceTableProps) {
   const units = Array.from(new Set(prices.map((price) => price.unit))).filter(Boolean);
   const hasOneUnit = units.length === 1;
+  const announcedTimes = Array.from(new Set(prices.map((price) => price.announcedAt))).filter(Boolean);
+  const hasOneAnnouncedAt = announcedTimes.length === 1;
   const postedPriceLabel = hasOneUnit ? `고시가 / ${units[0]} 기준` : "고시가 / 품목별 기준";
 
   return (
@@ -36,7 +38,7 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
               </div>
             </div>
             <div className="mt-4 grid gap-2 text-sm leading-6 text-[var(--color-muted)]">
-              <p>기준 시각: {formatDateTimeKorean(price.announcedAt)}</p>
+              {!hasOneAnnouncedAt ? <p>기준 시각: {formatDateTimeKorean(price.announcedAt)}</p> : null}
               {!compact ? <p>{price.note || "상담 후 안내"}</p> : null}
             </div>
           </article>
@@ -50,7 +52,7 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
               <th className="px-5 py-4">종류</th>
               <th className="px-5 py-4">거래 기준</th>
               <th className="px-5 py-4">{postedPriceLabel}</th>
-              <th className="px-5 py-4">기준 시각</th>
+              {!hasOneAnnouncedAt ? <th className="px-5 py-4">기준 시각</th> : null}
               {!compact && <th className="px-5 py-4">안내</th>}
             </tr>
           </thead>
@@ -78,9 +80,11 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
                     <p className="mt-1 text-xs font-medium text-[var(--color-muted)]">{price.unit} 기준</p>
                   ) : null}
                 </td>
-                <td className="px-5 py-5 align-top text-sm text-[var(--color-muted)]">
-                  {formatDateTimeKorean(price.announcedAt)}
-                </td>
+                {!hasOneAnnouncedAt ? (
+                  <td className="px-5 py-5 align-top text-sm text-[var(--color-muted)]">
+                    {formatDateTimeKorean(price.announcedAt)}
+                  </td>
+                ) : null}
                 {!compact && (
                   <td className="px-5 py-5 align-top text-sm leading-7 text-[var(--color-muted)]">
                     {price.note || "-"}

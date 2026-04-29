@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { PurchaseGuide } from "@/components/home/purchase-guide";
-import { PageIntro } from "@/components/layout/page-intro";
 import { getRepository } from "@/lib/data";
 import { getProductPriceLabel, getProductStatusLabel } from "@/lib/product-presenter";
 import { serviceCategories, serviceExamples, serviceFaqs, serviceGuides, siteConfig } from "@/lib/site-config";
@@ -18,27 +18,43 @@ export default async function ServicesPage() {
 
   return (
     <>
-      <PageIntro
-        eyebrow="상품·서비스"
-        title="취급 품목과 상담 범위 안내"
-        description="골드바·실버바 문의, 귀금속 매입, 주얼리 정리 상담은 품목과 수량에 따라 안내 방식이 달라질 수 있어 방문 전 기준을 먼저 정리했습니다."
-        asideLabel="상담 기준"
-        asideTitle="품목·수량에 따라 상담 가능 여부 먼저 안내"
-        asideBody={
-          <>
-            <p>재고, 중량, 수량, 제작 가능 여부는 시점에 따라 달라질 수 있습니다.</p>
-            <p>방문 전 대표번호 문의를 권장드립니다.</p>
-          </>
-        }
-        asideAction={
-          <a
-            href={`tel:${siteConfig.contact.phone}`}
-            className="inline-flex rounded-full bg-[#ffcc00] px-5 py-3 text-sm font-semibold text-[#171717]"
-          >
-            전화 문의 {siteConfig.contact.phone}
-          </a>
-        }
-      />
+      <section className="bg-[#f7faf8]">
+        <div className="section-shell grid gap-8 py-10 sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
+          <div className="relative min-h-[18rem] overflow-hidden bg-[#eef4f2] sm:min-h-[24rem]">
+            <Image
+              src="/services/kcg-service-counter-20260427.jpg"
+              alt="골드바와 실버바 상담 카운터"
+              fill
+              className="object-cover"
+              sizes="(min-width: 1024px) 54vw, 100vw"
+              priority
+            />
+          </div>
+          <div className="max-w-2xl">
+            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">TRADE CONSULTATION</p>
+            <h2 className="mt-4 text-[1.95rem] font-semibold leading-tight tracking-[-0.06em] text-[#15191b] sm:text-[2.28rem]">
+              취급 품목 확인에서 실물 확인, 금액 확정까지 한 흐름으로 봅니다.
+            </h2>
+            <p className="mt-5 text-base leading-8 text-[#687171]">
+              골드바·실버바 판매 문의와 고금·주얼리 매입 문의를 품목, 중량, 수량, 보증서 기준으로 나누어 확인합니다.
+              최종 금액은 당일 고시 시세와 실물 확인 결과를 함께 반영합니다.
+            </p>
+            <div className="mt-7 grid gap-px overflow-hidden border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-3 lg:grid-cols-1">
+              {[
+                ["01", "취급 품목 확인", "골드바, 실버바, 순금 제품, 고금·주얼리 범위를 먼저 구분합니다."],
+                ["02", "당일 고시 기준 확인", "회사 고시 시세와 자동 참고 시세를 혼동하지 않게 안내합니다."],
+                ["03", "실물 확인 후 금액 확정", "최종 금액과 수급 가능 여부는 실물 확인 뒤 정합니다."],
+              ].map(([number, title, body]) => (
+                <div key={title} className="bg-white px-5 py-5">
+                  <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">{number}</p>
+                  <p className="mt-3 text-base font-semibold tracking-[-0.03em] text-[#15191b]">{title}</p>
+                  <p className="mt-2 text-sm leading-7 text-[#687171]">{body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="section-shell pb-18">
         <div className="mb-10 grid gap-px overflow-hidden border border-[var(--color-line)] bg-[var(--color-line)] lg:grid-cols-3">
@@ -127,7 +143,7 @@ export default async function ServicesPage() {
               필요한 품목과 예상 수량을 알려주시면 상담 가능 여부를 먼저 안내해 드립니다.
             </h2>
             <p className="mt-5 max-w-3xl text-base leading-8 text-[#687171]">
-              재고, 중량, 수량, 제작 가능 여부는 시점에 따라 달라질 수 있어 방문 전 대표번호 문의를 권장드립니다.
+              재고, 중량, 수량, 제작 가능 여부는 시점에 따라 달라질 수 있어 거래 전 대표번호 문의를 권장드립니다.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
@@ -141,7 +157,7 @@ export default async function ServicesPage() {
               href="/products"
               className="rounded-full border border-[#d8dfdc] bg-white px-6 py-3 text-center text-sm font-semibold text-[#171717] transition hover:bg-[#fbfdfc]"
             >
-              상품 문의 보기
+              상품/매입 보기
             </Link>
           </div>
         </div>
