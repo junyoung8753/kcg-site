@@ -76,8 +76,47 @@ export function getProductFallbackImage(category: ProductCategory) {
   return "/products/kcg-gold-bar-catalog-20260427-v2.jpg";
 }
 
+const defaultProductImages = new Set([
+  "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
+  "/products/kcg-gold-bar-catalog-20260427.jpg",
+  "/products/kcg-silver-gift-20260427-v2.jpg",
+  "/products/kcg-silver-bar-catalog-20260427.jpg",
+  "/products/kcg-pure-gold-products-20260427-v2.jpg",
+  "/products/kcg-old-gold-jewelry-20260427-v2.jpg",
+  "/products/kcg-jewelry-purchase-20260427.jpg",
+  "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
+  "/products/kcg-b2b-consulting-20260427.jpg",
+]);
+
+const defaultProductImagesBySlug: Record<string, string> = {
+  "kcg-gold-bar-1g": "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
+  "investment-gold-bar-consulting": "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
+  "kcg-gold-bar-10g": "/products/kcg-gold-bar-catalog-20260427.jpg",
+  "kcg-gold-bar-37-5g": "/campaign/kcg-hero-gold-bars.jpg",
+  "kcg-gold-bar-100g": "/campaign/kcg-brand-gold-bars-20260427-v4.png",
+  "kcg-silver-bar-100g": "/products/kcg-silver-gift-20260427-v2.jpg",
+  "kcg-silver-bar-500g": "/products/kcg-silver-bar-catalog-20260427.jpg",
+  "kcg-silver-bar-1kg": "/campaign/kcg-hero-metal-bars.jpg",
+  "pure-gold-baby-ring-3-75g": "/products/kcg-pure-gold-products-20260427-v2.jpg",
+  "pure-gold-card-1g": "/products/kcg-gold-bar-catalog-20260427.jpg",
+  "pure-gold-commemorative-medal": "/campaign/kcg-hero-gold-bars.jpg",
+  "pure-gold-gift-consulting": "/products/kcg-pure-gold-products-20260427-v2.jpg",
+  "pure-gold-baby-ring-buying": "/products/kcg-old-gold-jewelry-20260427-v2.jpg",
+  "18k-jewelry-buying": "/products/kcg-jewelry-purchase-20260427.jpg",
+  "14k-jewelry-buying": "/products/kcg-jewelry-purchase-20260427.jpg",
+  "platinum-silver-buying": "/products/kcg-buying-process-20260427-v2.jpg",
+  "corporate-gift-production": "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
+  "corporate-precious-metal-buying": "/products/kcg-b2b-consulting-20260427.jpg",
+  "bulk-gold-silver-bar-consulting": "/campaign/kcg-hero-metal-bars.jpg",
+};
+
 export function getProductImageSrc(product: Product) {
   const imageUrl = product.imageUrl?.trim();
+  const slugDefaultImage = defaultProductImagesBySlug[product.slug];
+  if (imageUrl?.startsWith("/") && (!slugDefaultImage || !defaultProductImages.has(imageUrl))) {
+    return imageUrl;
+  }
+  if (slugDefaultImage) return slugDefaultImage;
   if (imageUrl?.startsWith("/")) return imageUrl;
   return getProductFallbackImage(product.category);
 }

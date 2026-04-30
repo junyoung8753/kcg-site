@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { siteConfig } from "@/lib/site-config";
+import { companyStory, siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "회사소개",
@@ -48,6 +48,42 @@ export default function CompanyPage() {
               className="object-contain p-6"
               sizes="(min-width: 1024px) 42vw, 100vw"
             />
+          </div>
+        </div>
+      </section>
+
+      <section className="section-shell py-10 sm:py-12">
+        <div className="grid gap-8 border-y border-[#dfe6e4] py-8 lg:grid-cols-[0.36fr_0.64fr]">
+          <div>
+            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">KCG STORY</p>
+            <h2 className="mt-3 text-[1.9rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+              {companyStory.missionTitle}
+            </h2>
+          </div>
+          <div className="space-y-6">
+            <p className="border-l-4 border-[#ffcc00] bg-[#fffdf4] px-5 py-4 text-lg font-semibold leading-8 tracking-[-0.04em] text-[#15191b]">
+              {companyStory.mission}
+            </p>
+            <div className="space-y-4 text-sm leading-7 text-[#5f6867]">
+              <p className="text-xs font-semibold tracking-[0.22em] text-[#9a8a00]">
+                {companyStory.introductionTitle}
+              </p>
+              {companyStory.introductionParagraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+            <div className="grid gap-px overflow-hidden border border-[#dfe6e4] bg-[#dfe6e4] sm:grid-cols-2">
+              {companyStory.specialties.map((item, index) => (
+                <div key={item} className="bg-white px-5 py-4">
+                  <p className="text-xs font-semibold tracking-[0.18em] text-[#9a8a00]">
+                    {companyStory.specialtyTitle} 0{index + 1}
+                  </p>
+                  <p className="mt-2 break-keep text-sm font-semibold leading-6 text-[#15191b]">
+                    {item}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

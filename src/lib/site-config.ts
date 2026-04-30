@@ -89,6 +89,22 @@ export const siteConfig = {
   adminDemoPassword: "0000",
 };
 
+export const companyStory = {
+  missionTitle: "KC주얼리 그룹 사명",
+  mission:
+    "고객가치를 높이고 보다 많은 사람들이 귀금속과 다이아몬드를 즐기며 행복할수 있도록 돕는다.",
+  introductionTitle: "한국센터금거래소(KCG) 회사소개",
+  introductionParagraphs: [
+    "또한 국내 금 시장의 무질서한 양성화에 대한 시대적인 리즈에 부흥하여  (주)한국센터금거래소를 통하여 성공적인 금거래소를 확장하고 소비자들의 안전하고 믿을수 있는 금투자 욕구에 대한 사명을 이루기 위해 온 힘을 다하고 있습니다.",
+    "30여년을 한결같은 마음과 정성으로 고객에게 다가가며, 소비자에게 정상적인 금 매입과 판매 그리고, 취급점 도매유통으로 투명한 금거래 시장을 확대하고 있습니다.",
+  ],
+  specialtyTitle: "전문 품목",
+  specialties: [
+    "온라인 소비자 고금 정상매입 및 골드바, 실버바 및 제품판매",
+    "KCG골드바, KCG실버바, 지금, 지은 도매",
+  ],
+} as const;
+
 export const homeHighlights = [
   {
     title: "고시 시세와 기준 시각 확인",

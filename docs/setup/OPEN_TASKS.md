@@ -1,6 +1,6 @@
 # KCG Open Tasks
 
-Last updated: 2026-04-29 KST.
+Last updated: 2026-04-30 KST.
 
 This is the active task ledger for the KCG launch candidate on `codex/kcg-launch-readiness-catalog-20260427`.
 
@@ -52,6 +52,8 @@ Do not record passwords, tokens, cookies, recovery codes, real account credentia
 | KCG-TODO-032 | P1 | done | codex | Add a repeatable external-services status check after reconnects. | `npm run check:external` checks the stable URL health, robots/noindex posture, empty pre-launch sitemap, and Cafe24 DNS A-record status without reading or storing secrets. | Passed: `npm run check:external`; DNS warnings remain expected until Cafe24 records are entered |
 | KCG-TODO-033 | P1 | done | codex | Create a local no-secret working-tree backup for USB transfer. | A zip backup exists under `C:\Users\junyo\Documents\File-Hub\90_Backups\kcg-site` and excludes `.git`, `.env*`, `.vercel`, `.next`, `node_modules`, `output`, and Supabase temp metadata. | Created `kcg-site-workingtree-20260428-210137.zip`; tar listing check found 208 entries and no excluded secret/cache paths |
 | KCG-TODO-034 | P0 | done | codex | Verify Vercel HTTPS certificate on `kcgold.co.kr` and `www.kcgold.co.kr`. | Both custom domains respond over HTTPS, `/robots.txt` still returns `Disallow: /`, and `/api/health` still reports `indexing: disabled`. | Completed 2026-04-29 KST after deployment `dpl_8MiBBbh3UyUe4RoKqSfLd1vkcCHQ`: `https://kcgold.co.kr/api/health`, `https://www.kcgold.co.kr/api/health`, and both HTTPS `/robots.txt` checks return 200 with `mode=supabase`, `indexing=disabled`, and `Disallow: /`. |
+| KCG-TODO-035 | P1 | done | codex | Apply boss-written company mission and KCG intro without rewriting. | Public company page uses only public-safe excerpts from `회사소개.txt` verbatim; internal strategy/future plans/unverified ranking claims are omitted and guarded. | Passed: `npm run audit:site`, `npm run test:site`; guardrails block `잠언`, `할리스`, `국내최대`, `도매유통 1위`, `공식 인증센터 10군데`, `신사옥`, `신문광고`, `오푼`. |
+| KCG-TODO-036 | P1 | done | codex | Align temporary posted prices and mobile product/catalog polish before the stable refresh. | Mock/seed posted-price defaults match the one-time 2026-04-30 benchmark values; production Supabase prices were manually updated; mobile product count/sort appears before mobile promo banners; product fallback images are less repetitive. | Passed: local and stable `npm run test:site`, local and stable `npm run screenshot:site`, `npm run check:external -- --strict-domain`; production deployment `dpl_GKF7Fw3qobbStuRBkTLsRtrxNCXq`. |
 
 ## Review Policy
 

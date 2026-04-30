@@ -453,6 +453,7 @@ expectNoText("src/app/(site)/company/page.tsx", [
   "순금·고금 매입 순금",
   "골드바·실버바 판매 투자용",
   "B2B 대량 상담 법인",
+  "사업자등록증 기준",
 ]);
 
 expectText("src/lib/site-config.ts", [
@@ -471,6 +472,20 @@ expectText("src/lib/site-config.ts", [
   "custom_order",
   "고금매입은 시세표의 어느 금액을 보면 되나요?",
   "전화로 금액을 확정받을 수 있나요?",
+  "KC주얼리 그룹 사명",
+  "고객가치를 높이고 보다 많은 사람들이 귀금속과 다이아몬드를 즐기며 행복할수 있도록 돕는다.",
+  "한국센터금거래소(KCG) 회사소개",
+  "전문 품목",
+]);
+expectNoText("src/lib/site-config.ts", [
+  "잠언",
+  "할리스",
+  "국내최대",
+  "도매유통 1위",
+  "공식 인증센터 10군데",
+  "신사옥",
+  "신문광고",
+  "오푼",
 ]);
 expectText("src/components/home/purchase-guide.tsx", ["백금·은 제품"]);
 expectText("src/components/products/product-catalog.tsx", [

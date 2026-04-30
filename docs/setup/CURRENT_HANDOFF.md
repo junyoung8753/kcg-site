@@ -1,6 +1,6 @@
 # Current KCG Handoff
 
-Last updated: 2026-04-29 KST.
+Last updated: 2026-04-30 KST.
 
 This file is the short, durable context for a new Codex chat, another PC, or Codex Cloud. Read it before continuing KCG site work.
 
@@ -51,6 +51,7 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 - The baseline product catalog now uses a tabbed `상품/매입` structure: `전체`, `골드바`, `실버바`, `순금제품`, `고금·주얼리 매입`, and `B2B·기업`. Product cards may show current posted-price reference calculations, but they must remain inquiry-first and must not behave like checkout, payment, live trading, or guaranteed quote flow.
 - Product data now has a shared repo contract across mock data, Supabase schema/seed, public pages, and admin editing. Keep product statuses limited to `active`, `inquiry_required`, and `hidden` unless a real operational need appears.
 - Public business-registration wording now uses the supplied business registration document: `505-88-03567`, `주식회사 한국센터금거래소`, representative `홍연호`, and the registered address at `서울특별시 종로구 서순라길 17, 1층 6호 (봉익동, 성창빌딩)`. Search indexing remains blocked until a separate public-launch approval.
+- Company mission and `한국센터금거래소(KCG) 회사소개` copy came from `C:\Users\junyo\Desktop\회사소개.txt`. When using that content publicly, do not polish, rewrite, or normalize the boss-written wording. Use only public-safe excerpts verbatim, and omit internal strategy notes, Bible verse text, future opening targets, unverified ranking claims, newspaper/YouTube plans, and other non-public material.
 - `/admin/launch` is the launch-readiness dashboard. It checks legal placeholders, domain, search exposure, admin auth, storage, and launch approval status. Keep this route updated when adding launch-critical behavior.
 - Search exposure must use `canExposeToSearch()` rather than raw production/noindex state, so legal placeholders and non-final domains keep robots/sitemap blocked.
 - Keep search blocking/noindex until public launch approval.
@@ -77,7 +78,7 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 - Junyoung has approved refreshing `https://kcg-confirm-preview.vercel.app` with the validated image/UI work in this task.
 - This is not approval for robots/noindex release or search indexing. Cafe24 DNS changes require junyoung to complete the registrar login/MFA step directly.
 - Do not perform production deploys beyond an explicitly approved stable review refresh, and do not treat a Vercel deploy as public launch approval.
-- Last stable review refresh: 2026-04-29 16:38 KST, Vercel deployment `dpl_8MiBBbh3UyUe4RoKqSfLd1vkcCHQ`, aliased to `https://kcg-confirm-preview.vercel.app`, `https://kcgold.co.kr`, and `https://www.kcgold.co.kr`.
+- Last stable review refresh: 2026-04-30 13:50 KST, Vercel deployment `dpl_GKF7Fw3qobbStuRBkTLsRtrxNCXq`, aliased to `https://kcg-confirm-preview.vercel.app`, `https://kcgold.co.kr`, and `https://www.kcgold.co.kr`.
 - Production admin access was reset on 2026-04-28 KST for pre-launch editing. `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` are set only in Vercel production env; no secret value is stored in this repo. Rotate the admin password to a stronger final value before public launch/search exposure.
 - Previous post-deploy verification passed on `https://kcg-confirm-preview.vercel.app`: rendered audit, Playwright tests, `/robots.txt` `Disallow: /`, empty pre-launch sitemap, noindex, and `/api/health` launch-readiness blockers all behaved as expected. Re-verify after each stable refresh.
 
@@ -110,6 +111,8 @@ After deployment, `vercel inspect` showed production deployment `dpl_4Zv1VNPYsyA
 2026-04-29 KST domain and Supabase status: `kcgold.co.kr` and `www.kcgold.co.kr` are added to project `kcg-confirm-preview`, Cafe24 DNS contains `A kcgold.co.kr 76.76.21.21` and `A www.kcgold.co.kr 76.76.21.21`, and HTTPS works for both custom domains. `https://kcgold.co.kr/api/health`, `https://www.kcgold.co.kr/api/health`, and the stable review URL all report `mode: "supabase"`, `indexing: "disabled"`, and `adminAuth: "env-password"`. Both custom-domain `/robots.txt` paths return `Disallow: /`, and the pre-launch sitemap remains empty. Do not remove noindex/search blocking. Do not treat domain/Supabase readiness as public search-launch approval.
 
 Supabase production data status as of 2026-04-29 KST: project `ehmsqlfxxydnebzjfarr` has `prices=8`, `price_history=0`, `announcements=2`, and `products=20` after applying the checked-in schema/seed through the Supabase SQL Editor. Admin login with the temporary site-admin password reaches `/admin/products`, and the product manager renders 20 Supabase-backed products.
+
+2026-04-30 KST polish/status: the public company page now includes the boss-written KC mission and selected KCG company-intro excerpts verbatim, with internal strategy/future-plan/unverified ranking content omitted. The temporary KCG posted price table was manually aligned once to the 2026-04-30 Korean Gold Exchange visible benchmark values for pre-operation similarity: 순금 살 때 `954,000`, 순금 팔 때 `799,000`, 18K 팔 때 `587,300`, 14K 팔 때 `455,500`, 백금 살 때 `397,000`, 백금 팔 때 `322,000`, 은 살 때 `14,650`, 은 팔 때 `12,020`. Product mobile flow was tightened so tabs, product count, sorting, and product cards appear before mobile promo banners; product-card fallback images are varied by slug to reduce repetition; the mobile home campaign image no longer uses an over-tall crop. Production deployment `dpl_GKF7Fw3qobbStuRBkTLsRtrxNCXq` was deployed and aliased to the stable/custom domains. Verification passed: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run tasks:dashboard`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm audit --audit-level=moderate`, `git diff --check`, stable rendered audit on `https://kcgold.co.kr`, stable Playwright tests on `https://kcgold.co.kr`, stable screenshots, and `npm run check:external -- --strict-domain`. Search blocking remains active.
 
 Local no-secret transfer backup: `C:\Users\junyo\Documents\File-Hub\90_Backups\kcg-site\kcg-site-workingtree-20260428-210137.zip`. It was created from the current working tree and excludes `.git`, `.env*`, `.vercel`, `.next`, `node_modules`, `output`, and Supabase CLI temp metadata.
 

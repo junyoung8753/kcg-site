@@ -77,6 +77,11 @@ function getCategoryFromSlug(slug: string): ProductCategory | null {
 }
 
 function getProductImagePositionClass(product: Product) {
+  if (product.slug === "kcg-gold-bar-37-5g") return "object-[52%_50%]";
+  if (product.slug === "kcg-gold-bar-100g") return "object-[58%_50%]";
+  if (product.slug === "kcg-silver-bar-1kg") return "object-[52%_50%]";
+  if (product.slug === "pure-gold-card-1g") return "object-[48%_52%]";
+  if (product.slug === "platinum-silver-buying") return "object-[48%_58%]";
   if (product.category === "pure_gold") return "object-[76%_50%]";
   if (product.category === "custom_order") return "object-[42%_58%]";
   return "object-center";
@@ -204,7 +209,7 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
 
   return (
     <section className="section-shell py-8 sm:py-10">
-      <div className="grid overflow-hidden border border-[#d8dfdd] bg-white md:grid-cols-3 xl:grid-cols-6">
+      <div className="grid grid-cols-2 overflow-hidden border border-[#d8dfdd] bg-white sm:grid-cols-3 xl:grid-cols-6">
         {productCatalogTabs.map((tab) => {
           const isActive = tab.slug === selectedCategory;
           return (
@@ -212,7 +217,7 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
               key={tab.slug}
               type="button"
               onClick={() => updateQuery("category", tab.slug)}
-              className={`min-h-14 border-b border-r border-[#d8dfdd] px-4 py-4 text-center text-sm font-semibold transition md:text-base ${
+              className={`min-h-12 border-b border-r border-[#d8dfdd] px-3 py-3 text-center text-[13px] font-semibold leading-tight transition sm:text-sm md:min-h-14 md:px-4 md:py-4 md:text-base ${
                 isActive
                   ? "border-[#ff6a00] text-[#f05a00]"
                   : "text-[#7a8382] hover:bg-[#fff8df] hover:text-[#15191b]"
@@ -222,12 +227,6 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
             </button>
           );
         })}
-      </div>
-
-      <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:hidden">
-        {promoBanners.slice(0, 2).map((banner) => (
-          <ProductPromoCard key={banner.title} banner={banner} compact />
-        ))}
       </div>
 
       <ProductQuickRail />
@@ -316,6 +315,12 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
                 </article>
               );
             })}
+          </div>
+
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 xl:hidden">
+            {promoBanners.slice(0, 2).map((banner) => (
+              <ProductPromoCard key={banner.title} banner={banner} compact />
+            ))}
           </div>
         </div>
 

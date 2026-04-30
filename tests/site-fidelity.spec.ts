@@ -210,6 +210,8 @@ test("mobile products route exposes a consultation catalog without checkout", as
   await expect(page.getByRole("button", { name: "순금제품" })).toBeVisible();
   await expect(page.getByRole("button", { name: "고금·주얼리 매입" })).toBeVisible();
   await expect(page.getByTestId("product-count")).toContainText(/상품 \d+개/);
+  const productCountBox = await page.getByTestId("product-count").boundingBox();
+  expect(productCountBox?.y ?? 9999).toBeLessThan(900);
   await expect(page.getByText("추천순")).toBeVisible();
   await expect(page.getByText("낮은가격순")).toBeVisible();
   await expect(page.getByText("높은가격순")).toBeVisible();
@@ -227,7 +229,7 @@ test("mobile products route exposes a consultation catalog without checkout", as
   expect(productImageSources.some((src) => src.includes("kcg-old-gold-jewelry-20260427-v2"))).toBe(true);
   expect(productImageSources.some((src) => src.includes("kcg-silver-gift-20260427-v2"))).toBe(true);
   expect(productImageSources.some((src) => src.includes("kcg-b2b-bulk-consulting-20260427-v2"))).toBe(true);
-  expect(new Set(productImageSources).size).toBeGreaterThanOrEqual(4);
+  expect(new Set(productImageSources).size).toBeGreaterThanOrEqual(6);
   await expect(page.locator("main")).not.toContainText("방문 상담");
   await expect(page.locator("main")).not.toContainText("관리자에서");
   await expect(page.locator("main")).not.toContainText("등록해 운영");
@@ -236,6 +238,27 @@ test("mobile products route exposes a consultation catalog without checkout", as
   await expect(page.locator("main")).not.toContainText("결제하기");
   await expect(page.locator("main")).not.toContainText("주문하기");
   await expect(page.locator("main")).not.toContainText("바로 구매");
+  await expectNoHorizontalOverflow(page);
+  await expectNoVisibleElementEscapesViewport(page);
+});
+
+test("company route uses approved company copy without internal strategy notes", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1200 });
+  await page.goto("/company", { waitUntil: "domcontentloaded" });
+
+  const main = page.locator("main");
+  await expect(page.getByRole("heading", { name: "주식회사 한국센터금거래소" })).toBeVisible();
+  await expect(main).toContainText("KC주얼리 그룹 사명");
+  await expect(main).toContainText("고객가치를 높이고 보다 많은 사람들이 귀금속과 다이아몬드를 즐기며 행복할수 있도록 돕는다.");
+  await expect(main).toContainText("한국센터금거래소(KCG) 회사소개");
+  await expect(main).toContainText("온라인 소비자 고금 정상매입 및 골드바, 실버바 및 제품판매");
+  await expect(main).not.toContainText("잠언");
+  await expect(main).not.toContainText("할리스");
+  await expect(main).not.toContainText("국내최대");
+  await expect(main).not.toContainText("도매유통 1위");
+  await expect(main).not.toContainText("공식 인증센터 10군데");
+  await expect(main).not.toContainText("신사옥");
+  await expect(main).not.toContainText("신문광고");
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
 });

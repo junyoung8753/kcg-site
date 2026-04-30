@@ -219,7 +219,7 @@ export function PriceLineup({
   const priceByCategory = new Map(prices.map((price) => [price.category, price]));
   const style = lineupStyle;
   const wrapperHeightClass = "lg:min-h-[36rem]";
-  const contentHeightClass = "min-h-[22rem] sm:min-h-[25rem] lg:min-h-[36rem]";
+  const contentHeightClass = "aspect-[16/9] min-h-0 sm:min-h-[23rem] lg:aspect-auto lg:min-h-[36rem]";
   const zeroChangeSymbol = visualMode === "signboard" ? "-" : "━";
   const visualShellClass = visualMode === "campaign" ? "w-full kcg-full-bleed-campaign" : "mx-auto max-w-[1500px]";
   const wrapperLayoutClass = "relative flex flex-col lg:block";

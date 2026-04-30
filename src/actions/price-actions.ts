@@ -108,6 +108,8 @@ export async function updatePricesAction(formData: FormData) {
     changedBy,
   }));
 
+  let redirectPath = "/admin/prices?status=error";
+
   try {
     const repository = getRepository();
     const currentPrices = await repository.getPrices();
@@ -122,8 +124,10 @@ export async function updatePricesAction(formData: FormData) {
     revalidatePath("/");
     revalidatePath("/prices");
     revalidatePath("/admin/prices");
-    redirect(`/admin/prices?${search.toString()}`);
+    redirectPath = `/admin/prices?${search.toString()}`;
   } catch {
-    redirect("/admin/prices?status=error");
+    redirectPath = "/admin/prices?status=error";
   }
+
+  redirect(redirectPath);
 }
