@@ -2,9 +2,9 @@
 
 Last updated: 2026-04-30 KST.
 
-This file is the short, durable context for a new Codex chat, another PC, or Codex Cloud. Read it before continuing KCG site work.
+This file is the short, durable context for a new Codex chat, another PC, or a future Codex Cloud task. Read it before continuing KCG site work.
 
-Junyoung's preferred workflow is cloud-only when possible. Use `docs/setup/CLOUD_ONLY_WORKFLOW.md` before suggesting local PC setup.
+Junyoung's current preferred workflow is local-first. Codex Cloud is not the default right now because it has been inconvenient and unreliable for current KCG work. Keep Cloud docs as a future option and use `docs/setup/CLOUD_ONLY_WORKFLOW.md` only when junyoung explicitly asks for Codex Cloud or wants to avoid computer-specific setup.
 
 If the old KCG project chat disappears from the Codex app UI, do not treat that as lost project state. Continue from this repo and read `docs/setup/MISSING_CHAT_RECOVERY.md` for the recovered local session file, E: backup locations, and no-secret backup path.
 
@@ -120,9 +120,9 @@ Supabase production data status as of 2026-04-29 KST: project `ehmsqlfxxydnebzjf
 
 Local no-secret transfer backup: `C:\Users\junyo\Documents\File-Hub\90_Backups\kcg-site\kcg-site-workingtree-20260428-210137.zip`. It was created from the current working tree and excludes `.git`, `.env*`, `.vercel`, `.next`, `node_modules`, `output`, and Supabase CLI temp metadata.
 
-## Codex Cloud Status
+## Future Codex Cloud Status
 
-- Codex Cloud environment: `junyoung8753/kcg-site`.
+- Codex Cloud is not the current default workflow. The known future environment is `junyoung8753/kcg-site`.
 - Current confirmed runtime: Node.js 22 in Cloud. Do not assume Node 24 unless the Cloud UI explicitly exposes it.
 - Setup script:
 
@@ -177,7 +177,7 @@ Local no-secret transfer backup: `C:\Users\junyo\Documents\File-Hub\90_Backups\k
 
 ## Backup Before Switching Or Launch
 
-When launch-prep work is complete, preserve the finished state in GitHub before switching computers or starting a new Codex Cloud task:
+When launch-prep work is complete, preserve the finished state in GitHub before switching computers or starting a future Codex Cloud task:
 
 ```powershell
 npm run lint
@@ -206,16 +206,16 @@ kcg사이트 만들던거 이어나갈수있게 준비해
 Agents must treat that short prompt as equivalent to:
 
 ```text
-KCG 사이트 작업 이어가자. 이 repo의 AGENTS.md, docs/setup/CURRENT_HANDOFF.md, docs/quality/product-experience-rubric.md, docs/quality/data-source-compliance.md, docs/quality/ai-site-production-playbook.md를 먼저 읽고, 접근 권한이 있으면 private repo junyoung8753/kcg-company-knowledge의 README.md, company/identity.md, company/business-rules.md, pricing/posted-price-policy.md, projects/kcg-site.md도 회사 맥락으로 참고해줘. 현재 repo를 단일 오픈 후보 기준으로 점검하고, 내부자료는 public-safe subset만 site repo에 반영해. API/RSS/차트/폼/경쟁사 참고는 출처와 약관 기준을 지키고, old option route 복구나 production 배포, stable alias 변경, 검색 색인 허용은 내가 명확히 승인하기 전에는 하지 마.
+KCG 사이트 작업 이어가자. 이 repo의 AGENTS.md, docs/setup/CURRENT_HANDOFF.md, docs/quality/product-experience-rubric.md, docs/quality/data-source-compliance.md, docs/quality/ai-site-production-playbook.md를 먼저 읽고, 접근 권한이 있으면 private repo junyoung8753/kcg-company-knowledge의 README.md, ops/local-first-workflow.md, company/identity.md, company/business-rules.md, pricing/posted-price-policy.md, projects/kcg-site.md도 회사 맥락으로 참고해줘. 현재 repo를 단일 오픈 후보 기준으로 점검하고, 내부자료는 public-safe subset만 site repo에 반영해. API/RSS/차트/폼/경쟁사 참고는 출처와 약관 기준을 지키고, old option route 복구나 production 배포, stable alias 변경, 검색 색인 허용은 내가 명확히 승인하기 전에는 하지 마.
 ```
 
 For task tracking, also read `docs/setup/OPEN_TASKS.md`. For visual or route work, also read `docs/quality/design-review-checklist.md`.
 
 If this prompt is being used because the old project chat disappeared, also read `docs/setup/MISSING_CHAT_RECOVERY.md` before deciding whether any old session context is still needed.
 
-## Cloud-Only Start
+## Future Cloud-Only Start
 
-For the least confusing workflow, use Codex Cloud attached to:
+This is not the current default. If junyoung later asks to use Codex Cloud, use Codex Cloud attached to:
 
 ```text
 Repository: junyoung8753/kcg-site
@@ -226,7 +226,7 @@ Then paste the New Chat Prompt above. No PowerShell is needed unless the user wa
 
 ## New Computer Setup
 
-Only do this if the user wants local files on that computer. It is not required for cloud-only work.
+Use this when the user wants local files on a new computer. It is separate from the future Cloud-only option.
 
 On a new local computer:
 
