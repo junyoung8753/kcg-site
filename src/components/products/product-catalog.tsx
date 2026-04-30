@@ -39,13 +39,13 @@ const promoBanners = [
     title: "고금·주얼리 매입",
     body: "순금, 18K, 14K 기준가를 확인합니다.",
     href: "/products?category=jewelry",
-    image: "/products/kcg-old-gold-jewelry-20260427-v2.jpg",
+    image: "/products/kcg-jewelry-buying-tray-20260430.png",
   },
   {
     title: "기업체 기념품·대량 상담",
     body: "수량, 납기, 예산 기준으로 상담합니다.",
     href: "/products?category=b2b",
-    image: "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
+    image: "/products/kcg-b2b-gift-packaging-20260430.png",
   },
   {
     title: "KC 랩그로운 다이아몬드",
@@ -55,10 +55,17 @@ const promoBanners = [
     external: true,
   },
   {
+    title: "Davis Dia",
+    body: "KC주얼리 그룹 다이아몬드 유통",
+    href: "https://davisdia.com/",
+    image: "/company/kcg-company-heritage-20260430.png",
+    external: true,
+  },
+  {
     title: "KCG 네이버 블로그",
     body: "금값 정보와 KCG 소식",
     href: "https://m.blog.naver.com/kcgoldx?tab=1",
-    image: "/services/kcg-service-counter-20260427.jpg",
+    image: "/campaign/kcg-hero-gold-bars.jpg",
     external: true,
   },
 ] as const;
@@ -200,7 +207,7 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
         <div className="border border-[var(--color-line)] bg-white px-6 py-8">
           <p className="text-lg font-semibold text-[#15191b]">현재 공개된 상품/매입 항목이 없습니다.</p>
           <p className="mt-3 text-sm leading-7 text-[#687171]">
-            골드바·실버바 수급과 고금 매입 상담은 대표번호로 먼저 문의해 주세요.
+            골드바·실버바 수급과 고금 매입 상담은 본사 전화로 먼저 문의해 주세요.
           </p>
         </div>
       </section>

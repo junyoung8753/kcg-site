@@ -49,7 +49,7 @@ export function SiteHeader() {
         <div className="hidden shrink-0 items-center gap-3 xl:flex">
           <div className="w-[8.5rem] text-right text-sm text-[#66706f]">
             <p className="text-lg font-bold text-[#15191b]">{siteConfig.contact.phone}</p>
-            <p className="truncate">대표번호</p>
+            <p className="truncate">본사 전화</p>
           </div>
           <Link
             href="/about"

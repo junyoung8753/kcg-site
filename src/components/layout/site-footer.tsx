@@ -22,7 +22,7 @@ export function SiteFooter() {
             />
           </div>
           <p className="mt-4 max-w-xl text-sm leading-7 text-[#687171]">
-            종로 본사와 성창빌딩 매장의 금 시세, 상품/매입, 거래 전 준비 정보를 제공합니다.
+            종로 본사와 매장의 금 시세, 상품/매입, 거래 전 준비 정보를 제공합니다.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
             {siteConfig.familyLinks.map((item) => (
@@ -75,7 +75,7 @@ export function SiteFooter() {
           {siteConfig.company.isLegalInfoConfirmed ? (
             <>
               <p>상호: {siteConfig.company.legalBusinessName || siteConfig.brandName}</p>
-              <p>대표: {siteConfig.company.representative}</p>
+              <p>대표이사: {siteConfig.company.representative}</p>
               <p>{getBusinessRegistrationDisplay()}</p>
               <p>본사: {siteConfig.locations.headOffice.address} / {siteConfig.locations.headOffice.phone}</p>
               <p>매장: {siteConfig.locations.store.address} / {siteConfig.locations.store.phone}</p>
@@ -85,7 +85,7 @@ export function SiteFooter() {
           ) : (
             <>
               <p>브랜드명: {siteConfig.brandName}</p>
-              <p>대표: {siteConfig.company.representative}</p>
+              <p>대표이사: {siteConfig.company.representative}</p>
               <p>{getBusinessRegistrationDisplay()}</p>
               <p>운영시간: {siteConfig.contact.businessHours}</p>
               <p>업태 / 종목: {siteConfig.company.businessType} / {siteConfig.company.businessItems}</p>

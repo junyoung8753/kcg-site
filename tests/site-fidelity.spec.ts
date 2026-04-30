@@ -4,7 +4,7 @@ const campaignAlts = [
   "한국센터금거래소 골드바 브랜드 캠페인 이미지",
   "한국센터금거래소 금·은 상담 데스크 이미지",
   "골드바와 실버바 키비주얼 배너",
-  "골드바와 순금 거래 상담 배너",
+  "중량별 골드바 제품 배너",
 ];
 const explicitAdminPassword = process.env.KCG_TEST_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
 const auditUrl = process.env.SITE_AUDIT_URL;
@@ -186,7 +186,7 @@ test("services route preserves high-risk business wording", async ({ page }) => 
   await page.goto("/services", { waitUntil: "domcontentloaded" });
 
   await expect(page.getByRole("heading", { name: "취급 품목, 당일 기준, 실물 확인 순서로 봅니다." })).toBeVisible();
-  await expect(page.getByAltText("골드바와 실버바 상담 카운터")).toBeVisible();
+  await expect(page.getByAltText("장갑을 착용한 금거래소 상담 데스크")).toBeVisible();
   await expect(page.getByText("취급 품목", { exact: true })).toBeVisible();
   await expect(page.getByText("당일 기준", { exact: true })).toBeVisible();
   await expect(page.getByText("실물 확인", { exact: true })).toBeVisible();
@@ -226,9 +226,9 @@ test("mobile products route exposes a consultation catalog without checkout", as
     images.map((image) => (image instanceof HTMLImageElement ? image.currentSrc || image.src : "")),
   );
   expect(productImageSources.some((src) => src.includes("kcg-gold-bar-catalog-20260427"))).toBe(true);
-  expect(productImageSources.some((src) => src.includes("kcg-old-gold-jewelry-20260427-v2"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-jewelry-buying-tray-20260430"))).toBe(true);
   expect(productImageSources.some((src) => src.includes("kcg-silver-gift-20260427-v2"))).toBe(true);
-  expect(productImageSources.some((src) => src.includes("kcg-b2b-bulk-consulting-20260427-v2"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-b2b-gift-packaging-20260430"))).toBe(true);
   expect(new Set(productImageSources).size).toBeGreaterThanOrEqual(6);
   await expect(page.locator("main")).not.toContainText("방문 상담");
   await expect(page.locator("main")).not.toContainText("관리자에서");
@@ -251,11 +251,13 @@ test("company route uses approved company copy without internal strategy notes",
   await expect(main).toContainText("KC주얼리 그룹 사명");
   await expect(main).toContainText("고객가치를 높이고 보다 많은 사람들이 귀금속과 다이아몬드를 즐기며 행복할수 있도록 돕는다.");
   await expect(main).toContainText("한국센터금거래소(KCG) 회사소개");
-  await expect(main).toContainText("온라인 소비자 고금 정상매입 및 골드바, 실버바 및 제품판매");
+  await expect(main).toContainText("국내 다이아몬드 수입 도매유통 1위 기업");
+  await expect(main).toContainText("국내최대 랩그로운 도매법인");
+  await expect(main).not.toContainText("전문 품목");
+  await expect(main).not.toContainText("온라인 소비자 고금 정상매입 및 골드바, 실버바 및 제품판매");
+  await expect(page.getByAltText("한국센터금거래소 회사소개 상담 데스크 이미지")).toBeVisible();
   await expect(main).not.toContainText("잠언");
   await expect(main).not.toContainText("할리스");
-  await expect(main).not.toContainText("국내최대");
-  await expect(main).not.toContainText("도매유통 1위");
   await expect(main).not.toContainText("공식 인증센터 10군데");
   await expect(main).not.toContainText("신사옥");
   await expect(main).not.toContainText("신문광고");
@@ -310,7 +312,7 @@ test("mobile prices puts consultation actions before the company price columns",
   expect(mainText.split("3.75g 자동 환산").length - 1).toBe(0);
   await expect(page.locator("main")).not.toContainText("단위: 3.75g");
   const postedDetailSection = page.locator("section", { hasText: "품목별 회사 고시 시세 상세" }).first();
-  await expect(postedDetailSection.getByText("기준 고시 시각")).toBeVisible();
+  await expect(postedDetailSection.getByText(/기준 고시 (시각|예정)/)).toBeVisible();
   await expect(postedDetailSection).not.toContainText("기준 시각:");
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
@@ -368,7 +370,7 @@ test("critical routes respond with expected content", async ({ page }) => {
     { path: "/announcements", text: "시세 운영 및 거래 준비 공지" },
     { path: "/services", text: "고금·주얼리" },
     { path: "/company", text: "사업자등록번호" },
-    { path: "/about", text: "성창빌딩 매장" },
+    { path: "/about", text: "본사 전화" },
     { path: "/admin/login", text: "관리자 로그인" },
     { path: "/api/health", text: "launchReadiness" },
     { path: "/robots.txt", text: "Disallow: /" },

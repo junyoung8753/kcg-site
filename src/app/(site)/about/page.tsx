@@ -6,7 +6,7 @@ import { siteConfig, visitChecklist } from "@/lib/site-config";
 export const metadata: Metadata = {
   title: "매장안내",
   description:
-    "한국센터금거래소의 골든타워 본사, 성창빌딩 매장, 대표번호, 거래 전 준비 사항을 확인합니다.",
+    "한국센터금거래소의 본사, 매장, 전화번호, 거래 전 준비 사항을 확인합니다.",
 };
 
 const quickChecks = [
@@ -39,7 +39,7 @@ export default function AboutPage() {
               본사·매장 위치와 거래 전 준비 항목
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-[#687171]">
-              성창빌딩 매장과 골든타워 본사를 구분해 확인하고, 거래 전 필요한 항목만 먼저 봅니다.
+              본사와 매장을 구분해 확인하고, 거래 전 필요한 항목만 먼저 봅니다.
             </p>
             <div className="mt-6 grid gap-px overflow-hidden border border-[#dfe6e3] bg-[#dfe6e3] sm:grid-cols-3">
               {quickChecks.map(([label, body]) => (
@@ -115,7 +115,7 @@ export default function AboutPage() {
           <div>
             <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">CONTACT</p>
             <h2 className="mt-2 text-[1.8rem] font-semibold tracking-[-0.06em] text-[#15191b]">
-              대표번호 {siteConfig.contact.phone}
+              본사 전화 {siteConfig.contact.phone}
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#687171]">
               품목, 예상 중량, 수량을 알려주시면 상담 가능 범위와 본사·매장 동선을 확인해 드립니다.

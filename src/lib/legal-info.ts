@@ -32,10 +32,10 @@ export function getBusinessRegistrationDisplay() {
 
 export function getBusinessInfoLine() {
   if (siteConfig.company.isLegalInfoConfirmed) {
-    return `대표 ${siteConfig.company.representative} · 사업자등록번호 ${siteConfig.company.businessRegistrationNumber}`;
+    return `대표이사 ${siteConfig.company.representative} · 사업자등록번호 ${siteConfig.company.businessRegistrationNumber}`;
   }
 
-  return `대표 ${siteConfig.company.representative} · 사업자등록번호 임시 ${siteConfig.company.businessRegistrationNumber} · 오픈 전 교체`;
+  return `대표이사 ${siteConfig.company.representative} · 사업자등록번호 임시 ${siteConfig.company.businessRegistrationNumber} · 오픈 전 교체`;
 }
 
 export function getLegalPlaceholderNotice() {

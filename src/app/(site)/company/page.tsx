@@ -23,11 +23,11 @@ export default function CompanyPage() {
               </h1>
               <div className="mt-5 grid gap-px overflow-hidden border border-[#dbe4e0] bg-[#dbe4e0] sm:grid-cols-2">
                 {[
-                  ["대표", siteConfig.company.representative],
+                  ["대표이사", siteConfig.company.representative],
                   ["사업자등록번호", siteConfig.company.businessRegistrationNumber],
                   ["본사", siteConfig.locations.headOffice.address],
                   ["매장", siteConfig.locations.store.address],
-                  ["대표번호", siteConfig.contact.phone],
+                  ["본사 전화", siteConfig.contact.phone],
                   ["이메일", siteConfig.contact.email],
                 ].map(([label, value]) => (
                   <div key={label} className="bg-white px-5 py-4">
@@ -41,13 +41,27 @@ export default function CompanyPage() {
 
           <div className="relative min-h-[13rem] overflow-hidden border border-[#dde5e2] bg-[#151518] sm:min-h-[20rem]">
             <Image
-              src="/brand/signboard-clean.jpg"
-              alt="한국센터금거래소 브랜드 간판"
+              src="/company/kcg-company-heritage-20260430.png"
+              alt="한국센터금거래소 회사소개 상담 데스크 이미지"
               fill
               priority
-              className="object-contain p-6"
+              className="object-cover"
               sizes="(min-width: 1024px) 42vw, 100vw"
             />
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/82 via-black/24 to-transparent p-5">
+              <div className="inline-flex items-center gap-3 bg-black/62 px-4 py-3 text-white backdrop-blur">
+                <Image
+                  src={siteConfig.brandAssets.symbolPath}
+                  alt=""
+                  width={42}
+                  height={28}
+                  className="h-auto w-10"
+                />
+                <span className="text-xs font-semibold tracking-[0.2em] text-white/78">
+                  KOREA CENTER GOLD EXCHANGE
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -72,18 +86,6 @@ export default function CompanyPage() {
                 <p key={paragraph}>{paragraph}</p>
               ))}
             </div>
-            <div className="grid gap-px overflow-hidden border border-[#dfe6e4] bg-[#dfe6e4] sm:grid-cols-2">
-              {companyStory.specialties.map((item, index) => (
-                <div key={item} className="bg-white px-5 py-4">
-                  <p className="text-xs font-semibold tracking-[0.18em] text-[#9a8a00]">
-                    {companyStory.specialtyTitle} 0{index + 1}
-                  </p>
-                  <p className="mt-2 break-keep text-sm font-semibold leading-6 text-[#15191b]">
-                    {item}
-                  </p>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
@@ -99,7 +101,7 @@ export default function CompanyPage() {
           <div className="grid gap-px overflow-hidden border border-[var(--color-line)] bg-[var(--color-line)] sm:grid-cols-2">
             {[
               ["법인명", siteConfig.company.legalBusinessName || siteConfig.brandName],
-              ["대표자", siteConfig.company.representative],
+              ["대표이사", siteConfig.company.representative],
               ["사업자등록번호", siteConfig.company.businessRegistrationNumber],
               ["법인등록번호", siteConfig.company.corporateRegistrationNumber || "-"],
               ["개업일", siteConfig.company.openedAt || "-"],
@@ -130,7 +132,7 @@ export default function CompanyPage() {
                 <p className="text-xs font-semibold tracking-[0.22em] text-[#ffcc00]">{location.label}</p>
                 <h3 className="mt-3 text-xl font-semibold tracking-[-0.04em]">{location.title}</h3>
                 <p className="mt-4 text-sm leading-7 text-white/72">{location.address}</p>
-                <p className="mt-3 text-sm font-semibold text-white">대표전화 {location.phone}</p>
+                <p className="mt-3 text-sm font-semibold text-white">{location.label} 전화 {location.phone}</p>
               </article>
             ))}
           </div>

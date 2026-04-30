@@ -93,9 +93,9 @@ const campaignSlides = [
     objectPosition: "center center",
   },
   {
-    image: "/campaign/kcg-consulting-desk-20260427.jpg",
-    alt: "골드바와 순금 거래 상담 배너",
-    objectPosition: "56% center",
+    image: "/campaign/kcg-hero-gold-bars.jpg",
+    alt: "중량별 골드바 제품 배너",
+    objectPosition: "58% center",
   },
 ] as const;
 
@@ -203,6 +203,7 @@ export function PriceLineup({
   showSummaryCards = true,
   announcedLabel = "당일 고시 준비중",
   announcedDateLabel = "고시 준비중",
+  announcedHeading = "당일 고시 시각",
   krwRate,
 }: {
   prices: PriceRecord[];
@@ -212,6 +213,7 @@ export function PriceLineup({
   showSummaryCards?: boolean;
   announcedLabel?: string;
   announcedDateLabel?: string;
+  announcedHeading?: string;
   krwRate?: number;
 }) {
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
@@ -476,7 +478,7 @@ export function PriceLineup({
                   </h2>
                   <p className="mt-4 max-w-2xl text-[15px] leading-7 text-[#5f6868]">
                     순금, 18K, 14K, 백금, 은 시세는 당일 고시 시각 기준으로 안내되며,
-                    실제 거래 금액은 현장 확인 후 최종 안내합니다. 대표번호로 문의하시면
+                    실제 거래 금액은 현장 확인 후 최종 안내합니다. 본사 전화로 문의하시면
                     상담 가능 시간과 준비 사항을 먼저 확인하실 수 있습니다.
                   </p>
                 </div>
@@ -517,7 +519,7 @@ export function PriceLineup({
                     <p className="text-[11px] font-semibold tracking-[0.22em] text-[#9b7700]">거래 기준 안내</p>
                     <div className="mt-3 grid gap-4 border-y border-[#e2e7e5] py-4 text-sm leading-7 text-[#5f6868]">
                       <div>
-                        <p className="font-semibold text-[#15191b]">당일 고시 시각</p>
+                        <p className="font-semibold text-[#15191b]">{announcedHeading}</p>
                         <p>{announcedLabel}</p>
                       </div>
                       <div>
@@ -582,7 +584,7 @@ export function PriceLineup({
             <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">전화 문의</p>
             <p className="mt-3 text-base font-bold tracking-[-0.03em] text-[#15191b]">{siteConfig.contact.phone}</p>
             <p className="mt-3 text-sm leading-6 text-[#687171]">
-              거래 품목과 수량은 대표번호로 먼저 문의해 주세요.
+              거래 품목과 수량은 본사 전화로 먼저 문의해 주세요.
             </p>
           </div>
         </div>

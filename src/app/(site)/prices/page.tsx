@@ -6,8 +6,8 @@ import { PriceContextGuide } from "@/components/prices/price-context-guide";
 import { PriceHistoryList } from "@/components/prices/price-history-list";
 import { PriceTable } from "@/components/prices/price-table";
 import { getRepository } from "@/lib/data";
-import { formatDateDot, formatDateTimeKorean } from "@/lib/format";
 import { getMarketDashboardData } from "@/lib/market-data";
+import { getPriceAnnouncementDisplay } from "@/lib/price-announcement";
 
 export const metadata: Metadata = {
   title: "오늘의 시세",
@@ -24,6 +24,7 @@ export default async function PricesPage() {
   ]);
 
   const announcedAt = prices[0]?.announcedAt;
+  const announcementDisplay = getPriceAnnouncementDisplay(announcedAt);
 
   return (
     <>
@@ -33,8 +34,9 @@ export default async function PricesPage() {
         lineupTitle="한국센터금거래소 시세표"
         visualMode="signboard"
         showSummaryCards={false}
-        announcedLabel={announcedAt ? formatDateTimeKorean(announcedAt) : "당일 고시 준비중"}
-        announcedDateLabel={announcedAt ? formatDateDot(announcedAt) : "고시 준비중"}
+        announcedLabel={announcementDisplay.valueLabel}
+        announcedDateLabel={announcementDisplay.dateLabel}
+        announcedHeading={announcementDisplay.detailLabel}
       />
 
       <section className="border-y border-[#dfe7e5] bg-[#fbfdfc]">
@@ -57,7 +59,7 @@ export default async function PricesPage() {
           <div className="border border-[#dfe6e4] bg-white px-5 py-4 lg:w-72">
             <p className="text-xs font-semibold tracking-[0.2em] text-[#8b9292]">고시 시각</p>
             <p className="mt-2 text-lg font-bold tracking-[-0.04em] text-[#15191b]">
-              {announcedAt ? formatDateTimeKorean(announcedAt) : "당일 고시 준비중"}
+              {announcementDisplay.valueLabel}
             </p>
           </div>
         </div>
@@ -73,8 +75,10 @@ export default async function PricesPage() {
           </div>
           <div className="flex flex-wrap items-center gap-3 text-sm">
             <p className="border border-[#dfe6e4] bg-white px-4 py-3 font-medium text-[#596261]">
-              <span className="mr-2 font-semibold text-[#15191b]">기준 고시 시각</span>
-              {announcedAt ? formatDateTimeKorean(announcedAt) : "당일 고시 준비중"}
+              <span className="mr-2 font-semibold text-[#15191b]">
+                {announcementDisplay.isScheduled ? "기준 고시 예정" : "기준 고시 시각"}
+              </span>
+              {announcementDisplay.valueLabel}
             </p>
             <Link href="/about" className="font-semibold text-[#687171]">
               매장 안내

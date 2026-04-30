@@ -251,7 +251,7 @@ function blankProduct(category: ProductCategory): Product {
     manualPrice: null,
     priceLabel: "전화 문의",
     priceNote: "상담 후 안내",
-    publicNote: "최종 안내는 대표번호 상담 후 진행합니다.",
+    publicNote: "최종 안내는 본사 전화 상담 후 진행합니다.",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -272,7 +272,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
         <h2 className="font-display text-4xl">상품 카탈로그 관리</h2>
         <p className="mt-4 max-w-3xl text-sm leading-8 text-white/72">
           결제 없는 상담형 상품/매입 관리 화면입니다. 순금 제품, 골드바, 고금 매입, 실버바, B2B 대량 상담의 사진, 가격 표시
-          문구, 공개 상태와 정렬만 관리하고 실제 재고·수급·최종 금액은 대표번호 문의와 거래 상담에서 확인합니다.
+          문구, 공개 상태와 정렬만 관리하고 실제 재고·수급·최종 금액은 본사 전화 문의와 거래 상담에서 확인합니다.
         </p>
         {message ? (
           <p className="mt-5 rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-white/78">

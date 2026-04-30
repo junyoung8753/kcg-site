@@ -35,7 +35,7 @@ export function ConsultationPlanner({ className }: ConsultationPlannerProps) {
 
       <div className="grid gap-5 border-b border-[var(--color-line)] bg-[#fffbe8] px-6 py-6 md:grid-cols-[1fr_auto] md:items-center">
         <p className="text-sm leading-7 text-[#6f6a54]">
-          정확한 안내가 필요한 경우 품목, 중량, 수량, 상담 희망 시점을 대표번호로 먼저 알려주세요.
+          정확한 안내가 필요한 경우 품목, 중량, 수량, 상담 희망 시점을 본사 전화로 먼저 알려주세요.
         </p>
         <a
           href={`tel:${siteConfig.contact.phone}`}

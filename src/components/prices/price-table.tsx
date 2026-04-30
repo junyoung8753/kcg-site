@@ -1,4 +1,5 @@
 import { formatDateTimeKorean, formatWon } from "@/lib/format";
+import { getPriceAnnouncementDisplay } from "@/lib/price-announcement";
 import { getPriceReferenceLabel, getPriceTradeGuide } from "@/lib/price-presenter";
 import type { PriceRecord } from "@/types/price";
 
@@ -38,7 +39,11 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
               </div>
             </div>
             <div className="mt-4 grid gap-2 text-sm leading-6 text-[var(--color-muted)]">
-              {!hasOneAnnouncedAt ? <p>기준 시각: {formatDateTimeKorean(price.announcedAt)}</p> : null}
+              {!hasOneAnnouncedAt ? (
+                <p>
+                  {getPriceAnnouncementDisplay(price.announcedAt).tableLabel}: {formatDateTimeKorean(price.announcedAt)}
+                </p>
+              ) : null}
               {!compact ? <p>{price.note || "상담 후 안내"}</p> : null}
             </div>
           </article>
@@ -82,6 +87,7 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
                 </td>
                 {!hasOneAnnouncedAt ? (
                   <td className="px-5 py-5 align-top text-sm text-[var(--color-muted)]">
+                    {getPriceAnnouncementDisplay(price.announcedAt).tableLabel}:{" "}
                     {formatDateTimeKorean(price.announcedAt)}
                   </td>
                 ) : null}

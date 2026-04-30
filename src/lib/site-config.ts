@@ -17,17 +17,17 @@ export const siteConfig = {
   } satisfies BrandAssets,
   title: "(주)한국센터금거래소 | 종로 금 시세·귀금속 매입 상담",
   description:
-    "종로 본사와 성창빌딩 매장을 기준으로 (주)한국센터금거래소의 오늘 금 시세, 순금·고금 매입, 골드바·실버바 판매, B2C 전화 문의·B2B 대량 상담 안내를 제공합니다.",
+    "종로 본사와 매장을 기준으로 (주)한국센터금거래소의 오늘 금 시세, 순금·고금 매입, 골드바·실버바 판매, B2C 전화 문의·B2B 대량 상담 정보를 제공합니다.",
   siteUrl: getResolvedSiteUrl(),
   contact: {
-    phone: "02-747-1802",
+    phone: "02-747-1807",
     storePhone: "02-747-1806",
     email: "kcgoldx@gmail.com",
     kakaoChannel: "@koreacentergold",
     address: headOfficeAddress,
     businessHours: "평일 09:00 - 18:30",
     parkingNote:
-      "거래 전 전화 주시면 상담 가능 시간, 성창빌딩 매장과 골든타워 본사 동선을 함께 안내해 드립니다.",
+      "거래 전 전화 주시면 상담 가능 시간과 본사·매장 동선을 함께 확인하실 수 있습니다.",
     naverMapUrl:
       "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EC%A2%85%EB%A1%9C%EA%B5%AC%20%EB%8F%88%ED%99%94%EB%AC%B8%EB%A1%9C6%EA%B0%80%EA%B8%B8%2012%20%EA%B3%A8%EB%93%A0%ED%83%80%EC%9B%8C%20303%ED%98%B8",
     kakaoMapUrl:
@@ -36,10 +36,10 @@ export const siteConfig = {
   locations: {
     headOffice: {
       label: "본사",
-      title: "골든타워 본사",
+      title: "본사",
       address: headOfficeAddress,
-      phone: "02-747-1802",
-      description: "대표번호 문의, 법인·B2B 대량 상담, 상품/매입 상담 기준 안내를 담당합니다.",
+      phone: "02-747-1807",
+      description: "법인·B2B 대량 상담, 상품/매입 기준 확인을 담당합니다.",
       naverMapUrl:
         "https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EC%A2%85%EB%A1%9C%EA%B5%AC%20%EB%8F%88%ED%99%94%EB%AC%B8%EB%A1%9C6%EA%B0%80%EA%B8%B8%2012%20%EA%B3%A8%EB%93%A0%ED%83%80%EC%9B%8C%20303%ED%98%B8",
       kakaoMapUrl:
@@ -47,7 +47,7 @@ export const siteConfig = {
     },
     store: {
       label: "매장",
-      title: "성창빌딩 매장",
+      title: "매장",
       address: storeAddress,
       phone: "02-747-1806",
       description: "순금·고금 매입, 골드바·실버바 상담과 실물 확인 안내를 담당합니다.",
@@ -81,9 +81,24 @@ export const siteConfig = {
       description: "관계 법인의 랩그로운 다이아몬드 상품 안내 사이트입니다.",
     },
     {
+      label: "Davis Dia",
+      href: "https://davisdia.com/",
+      description: "KC주얼리 그룹 관계 법인의 다이아몬드 유통 사이트입니다.",
+    },
+    {
+      label: "Diamin",
+      href: "https://diamin.co.kr/",
+      description: "다이아몬드 정보와 상품을 확인할 수 있는 관계 사이트입니다.",
+    },
+    {
       label: "KCG 네이버 블로그",
       href: "https://m.blog.naver.com/kcgoldx?tab=1",
       description: "KCG 소식과 금값 정보 콘텐츠를 확인할 수 있는 외부 채널입니다.",
+    },
+    {
+      label: "Davis Diamond 블로그",
+      href: "https://blog.naver.com/davis_diamond",
+      description: "다비스다이아몬드 소식과 다이아몬드 정보를 확인할 수 있는 블로그입니다.",
     },
   ] satisfies FamilyLink[],
   adminDemoPassword: "0000",
@@ -95,7 +110,9 @@ export const companyStory = {
     "고객가치를 높이고 보다 많은 사람들이 귀금속과 다이아몬드를 즐기며 행복할수 있도록 돕는다.",
   introductionTitle: "한국센터금거래소(KCG) 회사소개",
   introductionParagraphs: [
-    "또한 국내 금 시장의 무질서한 양성화에 대한 시대적인 리즈에 부흥하여  (주)한국센터금거래소를 통하여 성공적인 금거래소를 확장하고 소비자들의 안전하고 믿을수 있는 금투자 욕구에 대한 사명을 이루기 위해 온 힘을 다하고 있습니다.",
+    "KC주얼리 그룹은, 국내 다이아몬드 시장에서 정상적인 수입과 유통을 지향하며 음성시장 양성화에 앞장서왔던 국내 다이아몬드 수입 도매유통 1위 기업 (주)다비스다이아몬드와",
+    "소비시장의 변화와 함께 성장하고 있는  국내최대 랩그로운 도매법인 (주)KC랩그로운 다이아몬드를 운영하고 있습니다. 또한 국내 금 시장의 무질서와 양성화에 대한 시대적인 리즈에 부흥하여  (주)한국센터금거래소를 통하여",
+    "성공적인 금거래소를 확장하고 소비자들의 안전하고 믿을수 있는 금투자와 매매에 대한 책임을 다하기 위해 온 힘을 다하고 있습니다.",
     "30여년을 한결같은 마음과 정성으로 고객에게 다가가며, 소비자에게 정상적인 금 매입과 판매 그리고, 취급점 도매유통으로 투명한 금거래 시장을 확대하고 있습니다.",
   ],
   specialtyTitle: "전문 품목",
@@ -112,7 +129,7 @@ export const homeHighlights = [
   },
   {
     title: "사전 문의 권장 항목 안내",
-    description: "고중량 거래, 법인·상속 정리, 대량 매입은 대표번호 문의를 권장드립니다.",
+    description: "고중량 거래, 법인·상속 정리, 대량 매입은 본사 전화 문의를 권장드립니다.",
   },
   {
     title: "현장 확인 후 최종 금액 안내",
@@ -168,7 +185,7 @@ export const tradeStandardPrinciples = [
   {
     title: "거래 전 상담 기준 확보",
     description:
-      "고중량, 법인 보유분, 상속 정리, 골드바·실버바 수급은 대표번호로 품목과 수량을 먼저 확인하도록 유도합니다.",
+      "고중량, 법인 보유분, 상속 정리, 골드바·실버바 수급은 본사 전화로 품목과 수량을 먼저 확인하도록 유도합니다.",
   },
 ] as const;
 

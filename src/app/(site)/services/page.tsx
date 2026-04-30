@@ -29,8 +29,8 @@ export default function ServicesPage() {
         <div className="section-shell grid gap-6 py-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
           <div className="relative min-h-[13rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:min-h-[17rem] lg:min-h-[18rem]">
             <Image
-              src="/services/kcg-service-counter-20260427.jpg"
-              alt="골드바와 실버바 상담 카운터"
+              src="/campaign/kcg-advisor-counter-20260430.png"
+              alt="장갑을 착용한 금거래소 상담 데스크"
               fill
               className="object-cover"
               sizes="(min-width: 1024px) 42vw, 100vw"

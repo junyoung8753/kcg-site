@@ -25,7 +25,7 @@ export const mockProducts: Product[] = [
     manualPrice: null,
     priceLabel: "현재 고시가 기준 참고가",
     priceNote: "실제 금액은 공임·수급·실물 확인 후 달라질 수 있습니다.",
-    publicNote: "소형 골드바는 당일 수급 가능 여부를 대표번호로 먼저 확인해 주세요.",
+    publicNote: "소형 골드바는 당일 수급 가능 여부를 본사 전화로 먼저 확인해 주세요.",
     createdAt,
     updatedAt,
   },
@@ -38,7 +38,7 @@ export const mockProducts: Product[] = [
     shortDescription: "1돈 기준 투자·선물용 순금 골드바",
     description:
       "가장 많이 찾는 3.75g 단위 골드바입니다. 가격은 현재 회사 고시가와 임시 공임 기준 참고가이며, 재고와 브랜드·포장 상태는 문의 후 확인합니다.",
-    imageUrl: "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
+    imageUrl: "/campaign/kcg-main-desk-photo-20260427-v3.png",
     specs: ["순금 999.9", "중량 3.75g", "1돈 단위 상담"],
     status: "active",
     displayOrder: 20,
@@ -63,7 +63,7 @@ export const mockProducts: Product[] = [
     shortDescription: "중량감 있는 실물 보유용 10g 골드바",
     description:
       "10g 단위 골드바는 투자용 실물 보유와 선물 수요에 모두 대응하는 중량입니다. 현재 고시가 기준 참고가를 먼저 확인하고 수급 가능 여부를 문의해 주세요.",
-    imageUrl: "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
+    imageUrl: "/campaign/kcg-hero-gold-bars.jpg",
     specs: ["순금 999.9", "중량 10g", "수량별 수급 확인"],
     status: "active",
     displayOrder: 30,
@@ -88,7 +88,7 @@ export const mockProducts: Product[] = [
     shortDescription: "10돈 기준 고중량 순금 골드바",
     description:
       "37.5g 골드바는 고중량 실물 보유 수요에 맞춘 상품입니다. 현재 고시가 기준 참고가와 별도로 수급·공임 조건 확인이 필요합니다.",
-    imageUrl: "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
+    imageUrl: "/products/kcg-pure-gold-products-20260427-v2.jpg",
     specs: ["순금 999.9", "중량 37.5g", "고중량 수급 확인"],
     status: "inquiry_required",
     displayOrder: 40,
@@ -100,7 +100,7 @@ export const mockProducts: Product[] = [
     manualPrice: null,
     priceLabel: "현재 고시가 기준 참고가",
     priceNote: "고중량은 공임과 수급 조건을 별도 확인합니다.",
-    publicNote: "당일 상담 가능 여부와 수급 조건을 대표번호로 확인해 주세요.",
+    publicNote: "당일 상담 가능 여부와 수급 조건을 본사 전화로 확인해 주세요.",
     createdAt,
     updatedAt,
   },
@@ -113,7 +113,7 @@ export const mockProducts: Product[] = [
     shortDescription: "법인·고액 실물 보유 상담용 100g 골드바",
     description:
       "100g 골드바는 수량, 브랜드, 납기, 서류 필요 여부를 함께 확인해야 하는 고중량 상품입니다. 화면 가격은 현재 고시가 기준 참고가입니다.",
-    imageUrl: "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
+    imageUrl: "/campaign/kcg-brand-gold-bars-20260427-v4.png",
     specs: ["순금 999.9", "중량 100g", "법인·대량 상담 가능"],
     status: "inquiry_required",
     displayOrder: 50,
@@ -163,7 +163,7 @@ export const mockProducts: Product[] = [
     shortDescription: "중량 실물 보유용 500g 실버바",
     description:
       "500g 실버바는 중량 실물 보유와 단체 기념품 상담에 활용할 수 있습니다. 화면 가격은 현재 고시가 기준 참고가입니다.",
-    imageUrl: "/products/kcg-silver-gift-20260427-v2.jpg",
+    imageUrl: "/campaign/kcg-hero-metal-bars.jpg",
     specs: ["순은 999", "중량 500g", "대량 수량 상담"],
     status: "inquiry_required",
     displayOrder: 120,
@@ -175,7 +175,7 @@ export const mockProducts: Product[] = [
     manualPrice: null,
     priceLabel: "현재 고시가 기준 참고가",
     priceNote: "수량과 납기 조건을 확인한 뒤 최종 안내합니다.",
-    publicNote: "고중량 실버바는 수급 가능 여부를 대표번호로 확인해 주세요.",
+    publicNote: "고중량 실버바는 수급 가능 여부를 본사 전화로 확인해 주세요.",
     createdAt,
     updatedAt,
   },
@@ -313,7 +313,7 @@ export const mockProducts: Product[] = [
     shortDescription: "순금 제품과 돌반지 매입 기준 확인",
     description:
       "순금 제품과 돌반지는 중량, 각인, 보증서, 상태를 확인한 뒤 당일 내가 팔 때 고시 시세를 기준으로 매입 상담을 진행합니다.",
-    imageUrl: "/products/kcg-old-gold-jewelry-20260427-v2.jpg",
+    imageUrl: "/products/kcg-jewelry-buying-tray-20260430.png",
     specs: ["순금·돌반지", "중량·각인 확인", "보증서 지참 권장"],
     status: "active",
     displayOrder: 310,
@@ -338,7 +338,7 @@ export const mockProducts: Product[] = [
     shortDescription: "18K 반지·목걸이·예물 매입 기준 확인",
     description:
       "18K 주얼리는 순도, 중량, 큐빅·스톤·부속 상태를 확인한 뒤 당일 18K 매입 고시 시세를 기준으로 상담합니다.",
-    imageUrl: "/products/kcg-old-gold-jewelry-20260427-v2.jpg",
+    imageUrl: "/products/kcg-jewelry-buying-tray-20260430.png",
     specs: ["18K 각인 확인", "스톤·부속 확인", "파손 상태 확인"],
     status: "active",
     displayOrder: 320,
@@ -363,7 +363,7 @@ export const mockProducts: Product[] = [
     shortDescription: "14K 귀금속 매입 기준 확인",
     description:
       "14K 제품은 합금 상태와 부속을 확인한 뒤 당일 14K 매입 고시 시세를 기준으로 상담합니다.",
-    imageUrl: "/products/kcg-old-gold-jewelry-20260427-v2.jpg",
+    imageUrl: "/products/kcg-jewelry-buying-tray-20260430.png",
     specs: ["14K 각인 확인", "중량 계근", "부속 분리 확인"],
     status: "active",
     displayOrder: 330,
@@ -388,7 +388,7 @@ export const mockProducts: Product[] = [
     shortDescription: "백금과 은 제품 매입 기준 확인",
     description:
       "백금과 은 제품은 순도와 제품 형태, 산업용 여부, 부속 상태를 확인한 뒤 매입 기준을 안내합니다.",
-    imageUrl: "/products/kcg-old-gold-jewelry-20260427-v2.jpg",
+    imageUrl: "/products/kcg-jewelry-buying-tray-20260430.png",
     specs: ["백금·은 제품", "순도 확인", "제품 형태 확인"],
     status: "active",
     displayOrder: 340,
@@ -413,7 +413,7 @@ export const mockProducts: Product[] = [
     shortDescription: "순금·실버 기념품 제작 상담",
     description:
       "기업 기념품 제작은 수량, 예산, 납기, 포장 조건을 확인한 뒤 상담 범위를 정합니다. 가격은 사전 문의 기준입니다.",
-    imageUrl: "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
+    imageUrl: "/products/kcg-b2b-gift-packaging-20260430.png",
     specs: ["수량·예산 확인", "납기 일정 확인", "포장·문안 협의"],
     status: "inquiry_required",
     displayOrder: 410,
@@ -438,7 +438,7 @@ export const mockProducts: Product[] = [
     shortDescription: "법인 보유분·상속 정리·대량 매입 상담",
     description:
       "법인 보유 귀금속이나 상속 정리 품목은 품목 목록, 예상 중량, 필요 서류를 먼저 확인한 뒤 상담 일정을 잡습니다.",
-    imageUrl: "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
+    imageUrl: "/products/kcg-b2b-gift-packaging-20260430.png",
     specs: ["품목 목록 확인", "예상 중량 확인", "서류 필요 여부 확인"],
     status: "inquiry_required",
     displayOrder: 420,
@@ -463,7 +463,7 @@ export const mockProducts: Product[] = [
     shortDescription: "골드바·실버바 대량 수량 상담",
     description:
       "골드바와 실버바 대량 상담은 중량, 수량, 납기, 결제 방식, 서류 필요 여부를 함께 확인합니다.",
-    imageUrl: "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
+    imageUrl: "/products/kcg-b2b-gift-packaging-20260430.png",
     specs: ["중량·수량 확인", "납기 조건 확인", "법인 서류 확인"],
     status: "inquiry_required",
     displayOrder: 430,

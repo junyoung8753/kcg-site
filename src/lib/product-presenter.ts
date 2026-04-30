@@ -70,9 +70,9 @@ export function getProductFallbackImage(category: ProductCategory) {
   if (category === "gold_bar") return "/products/kcg-gold-bar-catalog-20260427-v2.jpg";
   if (category === "silver_bar") return "/products/kcg-silver-gift-20260427-v2.jpg";
   if (category === "pure_gold") return "/products/kcg-pure-gold-products-20260427-v2.jpg";
-  if (category === "jewelry") return "/products/kcg-old-gold-jewelry-20260427-v2.jpg";
+  if (category === "jewelry") return "/products/kcg-jewelry-buying-tray-20260430.png";
   if (category === "purchase_guide") return "/products/kcg-buying-process-20260427-v2.jpg";
-  if (category === "custom_order") return "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg";
+  if (category === "custom_order") return "/products/kcg-b2b-gift-packaging-20260430.png";
   return "/products/kcg-gold-bar-catalog-20260427-v2.jpg";
 }
 
@@ -86,6 +86,8 @@ const defaultProductImages = new Set([
   "/products/kcg-jewelry-purchase-20260427.jpg",
   "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
   "/products/kcg-b2b-consulting-20260427.jpg",
+  "/products/kcg-jewelry-buying-tray-20260430.png",
+  "/products/kcg-b2b-gift-packaging-20260430.png",
 ]);
 
 const defaultProductImagesBySlug: Record<string, string> = {
@@ -101,12 +103,12 @@ const defaultProductImagesBySlug: Record<string, string> = {
   "pure-gold-card-1g": "/products/kcg-gold-bar-catalog-20260427.jpg",
   "pure-gold-commemorative-medal": "/campaign/kcg-hero-gold-bars.jpg",
   "pure-gold-gift-consulting": "/products/kcg-pure-gold-products-20260427-v2.jpg",
-  "pure-gold-baby-ring-buying": "/products/kcg-old-gold-jewelry-20260427-v2.jpg",
-  "18k-jewelry-buying": "/products/kcg-jewelry-purchase-20260427.jpg",
-  "14k-jewelry-buying": "/products/kcg-jewelry-purchase-20260427.jpg",
-  "platinum-silver-buying": "/products/kcg-buying-process-20260427-v2.jpg",
-  "corporate-gift-production": "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
-  "corporate-precious-metal-buying": "/products/kcg-b2b-consulting-20260427.jpg",
+  "pure-gold-baby-ring-buying": "/products/kcg-jewelry-buying-tray-20260430.png",
+  "18k-jewelry-buying": "/products/kcg-jewelry-buying-tray-20260430.png",
+  "14k-jewelry-buying": "/products/kcg-jewelry-buying-tray-20260430.png",
+  "platinum-silver-buying": "/products/kcg-jewelry-buying-tray-20260430.png",
+  "corporate-gift-production": "/products/kcg-b2b-gift-packaging-20260430.png",
+  "corporate-precious-metal-buying": "/products/kcg-b2b-gift-packaging-20260430.png",
   "bulk-gold-silver-bar-consulting": "/campaign/kcg-hero-metal-bars.jpg",
 };
 
@@ -174,7 +176,7 @@ export function getProductPriceDisplay(product: Product, prices: PriceRecord[]) 
     return {
       main: getProductPriceLabel(product),
       detail: "수동 가격 확인 필요",
-      footnote: product.priceNote || "대표번호 문의 후 상담 기준을 확인합니다.",
+      footnote: product.priceNote || "본사 전화 문의 후 상담 기준을 확인합니다.",
       numericValue: null,
     };
   }
@@ -208,7 +210,7 @@ export function getProductPriceDisplay(product: Product, prices: PriceRecord[]) 
   return {
     main: getProductPriceLabel(product),
     detail: "현재 고시가 기준 확인 필요",
-    footnote: product.priceNote || "대표번호 문의 후 상담 기준을 확인합니다.",
+    footnote: product.priceNote || "본사 전화 문의 후 상담 기준을 확인합니다.",
     numericValue: null,
   };
 }

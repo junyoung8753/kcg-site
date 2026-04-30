@@ -4,9 +4,9 @@ import { PurchaseGuide } from "@/components/home/purchase-guide";
 import { MarketDashboard } from "@/components/market/market-dashboard";
 import { PriceLineup } from "@/components/market/price-lineup";
 import { getRepository } from "@/lib/data";
-import { formatDateDot, formatDateTimeKorean } from "@/lib/format";
 import { getBusinessInfoLine } from "@/lib/legal-info";
 import { getMarketDashboardData } from "@/lib/market-data";
+import { getPriceAnnouncementDisplay } from "@/lib/price-announcement";
 import { getProductImageSrc, getProductStatusLabel, productCatalogTabs } from "@/lib/product-presenter";
 import {
   homeHighlights,
@@ -18,7 +18,7 @@ const quickLinks = [
   { href: "/prices", label: "시세조회", caption: "회사 고시 시세와 국제 참고 시세" },
   { href: "/products", label: "상품/매입", caption: "골드바·실버바·고금 매입 안내" },
   { href: "/services", label: "서비스", caption: "매입 가능 품목과 상담 범위" },
-  { href: "/about", label: "매장안내", caption: "성창빌딩 매장과 골든타워 본사" },
+  { href: "/about", label: "매장안내", caption: "본사와 매장 위치" },
   { href: "/company", label: "회사소개", caption: "법인 정보와 패밀리 사이트" },
   { href: "/announcements", label: "공지", caption: "시세 운영과 거래 준비 안내" },
 ];
@@ -34,6 +34,7 @@ export async function FinalHome() {
   ]);
 
   const announcedAt = prices[0]?.announcedAt;
+  const announcementDisplay = getPriceAnnouncementDisplay(announcedAt);
   const businessInfoLine = getBusinessInfoLine();
 
   return (
@@ -41,8 +42,9 @@ export async function FinalHome() {
       <PriceLineup
         prices={prices}
         history={history}
-        announcedLabel={announcedAt ? formatDateTimeKorean(announcedAt) : "당일 고시 준비중"}
-        announcedDateLabel={announcedAt ? formatDateDot(announcedAt) : "고시 준비중"}
+        announcedLabel={announcementDisplay.valueLabel}
+        announcedDateLabel={announcementDisplay.dateLabel}
+        announcedHeading={announcementDisplay.detailLabel}
         krwRate={marketData.krwRate}
       />
 
@@ -106,14 +108,14 @@ export async function FinalHome() {
                 <div className="border-b border-[#e4ebe9] py-4">
                   <p className="font-semibold text-[#171717]">현재 등록된 공지가 없습니다.</p>
                   <p className="mt-2 text-sm leading-6 text-[#707878]">
-                    당일 시세와 상담 가능 시간은 대표번호로 먼저 확인해 주세요.
+                    당일 시세와 상담 가능 시간은 본사 전화로 먼저 확인해 주세요.
                   </p>
                 </div>
               )}
             </div>
             <div className="mt-6 rounded-[1.5rem] border border-[#e3e9e7] bg-white px-5 py-5 text-sm leading-7 text-[#66706f]">
               <p className="font-semibold text-[#15191b]">
-                오늘 고시 시각: {announcedAt ? formatDateTimeKorean(announcedAt) : "당일 고시 준비중"}
+                {announcementDisplay.homeLabel}: {announcementDisplay.valueLabel}
               </p>
               <p className="mt-2">{siteConfig.company.transactionNotice}</p>
               <p className="mt-3 text-xs leading-6 text-[#8b9292]">
@@ -210,7 +212,7 @@ export async function FinalHome() {
           <div>
             <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">거래 상담</p>
             <h2 className="mt-3 text-[2rem] font-semibold tracking-[-0.06em] text-[#15191b]">
-              대표번호 문의 시 상담 가능 범위와 준비 사항을 먼저 안내해 드립니다
+              본사 전화 문의 시 상담 가능 범위와 준비 사항을 먼저 안내해 드립니다
             </h2>
             <p className="mt-3 text-base leading-7 text-[#687171]">{siteConfig.contact.address}</p>
             <p className="mt-1 text-base leading-7 text-[#687171]">{siteConfig.contact.businessHours}</p>

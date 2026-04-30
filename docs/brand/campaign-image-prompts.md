@@ -1,6 +1,6 @@
 # KCG Campaign Image Prompts
 
-Last updated: 2026-04-27 KST.
+Last updated: 2026-04-30 KST.
 
 This document is the source of truth for KCG campaign, product, service, and visit-guide image generation. It intentionally describes the image itself and avoids brittle layout instructions such as price-table placement, empty space, black boxes, UI overlays, or left/right panel slots.
 
@@ -15,8 +15,13 @@ This document is the source of truth for KCG campaign, product, service, and vis
 
 - `public/campaign/kcg-brand-gold-bars-20260427-v4.png`: current home first-slide review banner. It uses the KCG-owned/generated source `1.png` as a stronger gold-bar campaign visual. The baked KCG-style brand marks are accepted for this review candidate because they are KCG-specific and sit behind the live price lineup rather than replacing HTML/UI text.
 - `public/campaign/kcg-main-desk-photo-20260427-v3.png`: supporting home slide. It uses the approved File-Hub source `ChatGPT Image 2026년 4월 27일 오후 01_02_09.png` without baked campaign copy, fake logo text, white haze, or UI-like placeholders.
+- `public/campaign/kcg-advisor-counter-20260430.png`: generated with the built-in image tool for a gloved-hands consultation scene. It is allowed because it shows no identifiable face, staff identity, customer testimonial, fake logo, price board, or private document. Use it mainly for service/process contexts; avoid overusing it as a home campaign slide so the whole site does not become a same-looking white-glove visual set.
+- `public/campaign/kcg-hero-gold-bars.jpg`: preferred fourth home slide after the 2026-04-30 image-role review. It keeps the home carousel product-led and moves the white-glove action image back to service/process surfaces.
+- `public/company/kcg-company-heritage-20260430.png`: generated with the built-in image tool for company-introduction visual credibility. It is a generic KCG-compatible consultation desk mood image and does not replace verified legal/company information.
+- `public/products/kcg-jewelry-buying-tray-20260430.png`: generated with the built-in image tool to replace the jewelry category fallback with a more accurate old-gold/jewelry buying tray scene.
+- `public/products/kcg-b2b-gift-packaging-20260430.png`: generated with the built-in image tool for B2B and corporate gift consultation cards.
 - `public/campaign/kcg-main-commerce-banner-20260427-v2.jpg`: retired from the first slide. The composition was useful as a controlled experiment, but the baked advertising copy and generated commercial-poster feel did not match the requested reference direction.
-- `public/products/kcg-old-gold-jewelry-20260427-v2.jpg`: old-gold/jewelry category asset cropped from a Wikimedia Commons / The Met public-domain (CC0) image: `https://upload.wikimedia.org/wikipedia/commons/d/d9/Gold_ring_set_with_an_emerald_MET_DT283.jpg`. Use only as a category fallback until KCG has its own jewelry tray photo.
+- `public/products/kcg-old-gold-jewelry-20260427-v2.jpg`: old-gold/jewelry category asset cropped from a Wikimedia Commons / The Met public-domain (CC0) image: `https://upload.wikimedia.org/wikipedia/commons/d/d9/Gold_ring_set_with_an_emerald_MET_DT283.jpg`. Keep only as a fallback; current public catalog should prefer `kcg-jewelry-buying-tray-20260430.png`.
 - `KakaoTalk_20260427_125126082_01.png`: official wide KCG lockup. Use as a real UI or compositing layer when needed; do not ask AI to redraw it.
 - `KakaoTalk_20260427_125126082.png`: official KCG symbol. Use as a real UI or compositing layer when needed.
 - `ChatGPT Image 2026년 4월 27일 오후 01_02_09.png`: approved source for the current first slide because it avoids baked text, fake KCG marks, price boards, people, and private documents. It can still be replaced later by a stronger real KCG-shot commercial key visual.

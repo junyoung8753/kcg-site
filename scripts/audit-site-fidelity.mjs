@@ -177,11 +177,15 @@ async function expectUrlStatus(pathname, expectedStatus) {
   "public/campaign/kcg-hero-consulting.jpg",
   "public/campaign/kcg-consulting-desk-20260427.jpg",
   "public/campaign/kcg-visit-desk-20260427.jpg",
+  "public/campaign/kcg-advisor-counter-20260430.png",
+  "public/company/kcg-company-heritage-20260430.png",
   "public/products/kcg-gold-bar-catalog-20260427-v2.jpg",
   "public/products/kcg-pure-gold-products-20260427-v2.jpg",
   "public/products/kcg-old-gold-jewelry-20260427-v2.jpg",
+  "public/products/kcg-jewelry-buying-tray-20260430.png",
   "public/products/kcg-silver-gift-20260427-v2.jpg",
   "public/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
+  "public/products/kcg-b2b-gift-packaging-20260430.png",
   "public/products/kcg-buying-process-20260427-v2.jpg",
   "public/services/kcg-service-counter-20260427.jpg",
   "public/brand/kcg-logo.png",
@@ -224,11 +228,11 @@ expectText("src/components/market/price-lineup.tsx", [
   "/campaign/kcg-brand-gold-bars-20260427-v4.png",
   "/campaign/kcg-main-desk-photo-20260427-v3.png",
   "/campaign/kcg-hero-metal-bars.jpg",
-  "/campaign/kcg-consulting-desk-20260427.jpg",
+  "/campaign/kcg-hero-gold-bars.jpg",
   "한국센터금거래소 골드바 브랜드 캠페인 이미지",
   "한국센터금거래소 금·은 상담 데스크 이미지",
   "골드바와 실버바 키비주얼 배너",
-  "골드바와 순금 거래 상담 배너",
+  "중량별 골드바 제품 배너",
   "siteConfig.englishName",
   "kcg-full-bleed-campaign",
   'data-testid="home-campaign-visual"',
@@ -309,7 +313,12 @@ expectNoText("src/components/market/market-dashboard.tsx", [
 ]);
 expectText("src/components/prices/price-table.tsx", ["고시가 /", "formatWon"]);
 expectNoText("src/components/prices/price-table.tsx", ["단위: {price.unit}", ">단위<"]);
-expectText("src/app/(site)/prices/page.tsx", ["PriceContextGuide", "시세 이용 기준"]);
+expectText("src/lib/price-announcement.ts", ["오늘 고시 예정 시각", "고시 예정 시각"]);
+expectText("src/components/home/final-home.tsx", ["getPriceAnnouncementDisplay"]);
+expectNoText("src/components/home/final-home.tsx", ["오늘 고시 시각: {"]);
+expectText("src/app/(site)/prices/page.tsx", ["PriceContextGuide", "시세 이용 기준", "getPriceAnnouncementDisplay", "기준 고시 예정"]);
+expectText("src/components/market/price-lineup.tsx", ["announcedHeading"]);
+expectText("src/components/prices/price-table.tsx", ["getPriceAnnouncementDisplay", "tableLabel"]);
 expectNoText("src/app/(site)/prices/page.tsx", ["PageIntro"]);
 expectTextOrder("src/app/(site)/prices/page.tsx", "<PriceLineup", "시세 이용 기준");
 expectText("src/components/prices/price-context-guide.tsx", [
@@ -424,12 +433,12 @@ expectText("src/app/(site)/about/page.tsx", [
   "siteConfig.locations",
   "/campaign/kcg-visit-desk-20260427.jpg",
   "거래 전 준비 항목을 확인하면 현장 안내가 빨라집니다.",
-  "성창빌딩 매장",
-  "골든타워 본사",
+  "본사와 매장을 구분해 확인",
+  "본사 전화",
 ]);
 
 expectText("src/app/(site)/services/page.tsx", [
-  "/services/kcg-service-counter-20260427.jpg",
+  "/campaign/kcg-advisor-counter-20260430.png",
   "취급 품목, 당일 기준, 실물 확인 순서로 봅니다.",
   "serviceFaqs",
   "거래 기준",
@@ -448,21 +457,32 @@ expectText("src/app/(site)/products/[slug]/page.tsx", [
   "문의 전 확인하면 상담이 빨라집니다",
   "전화 문의",
 ]);
+expectText("src/app/(site)/company/page.tsx", [
+  "/company/kcg-company-heritage-20260430.png",
+  "한국센터금거래소 회사소개 상담 데스크 이미지",
+]);
 expectNoText("src/app/(site)/company/page.tsx", [
   "const businessScopes",
   "순금·고금 매입 순금",
   "골드바·실버바 판매 투자용",
   "B2B 대량 상담 법인",
   "사업자등록증 기준",
+  "companyStory.specialties",
+  "companyStory.specialtyTitle",
 ]);
 
 expectText("src/lib/site-config.ts", [
   "/products",
   "505-88-03567",
   "110111-0950729",
+  "02-747-1807",
+  "02-747-1806",
   "서울시 종로구 봉익동 97-1 성창빌딩 1층 6호",
   "서울시 종로구 돈화문로6가길 12 골든타워 303호",
   "familyLinks",
+  "https://davisdia.com/",
+  "https://diamin.co.kr/",
+  "https://blog.naver.com/davis_diamond",
   "순금·고금 매입",
   "B2C 전화 문의·B2B",
   "상품/매입",
@@ -475,13 +495,19 @@ expectText("src/lib/site-config.ts", [
   "KC주얼리 그룹 사명",
   "고객가치를 높이고 보다 많은 사람들이 귀금속과 다이아몬드를 즐기며 행복할수 있도록 돕는다.",
   "한국센터금거래소(KCG) 회사소개",
+  "국내 다이아몬드 수입 도매유통 1위 기업",
+  "국내최대 랩그로운 도매법인",
   "전문 품목",
+]);
+expectNoText("src/lib/site-config.ts", [
+  "02-747-1802",
+  "골든타워 본사",
+  "성창빌딩 매장",
+  "대표번호",
 ]);
 expectNoText("src/lib/site-config.ts", [
   "잠언",
   "할리스",
-  "국내최대",
-  "도매유통 1위",
   "공식 인증센터 10군데",
   "신사옥",
   "신문광고",
@@ -538,9 +564,9 @@ expectNoText("src/components/products/product-catalog.tsx", [
 expectText("src/lib/product-presenter.ts", [
   "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
   "/products/kcg-silver-gift-20260427-v2.jpg",
-  "/products/kcg-old-gold-jewelry-20260427-v2.jpg",
+  "/products/kcg-jewelry-buying-tray-20260430.png",
   "/products/kcg-buying-process-20260427-v2.jpg",
-  "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
+  "/products/kcg-b2b-gift-packaging-20260430.png",
 ]);
 
 expectText("src/mock/products.ts", [
@@ -553,8 +579,8 @@ expectText("src/mock/products.ts", [
   "현재 고시가 기준 참고가",
   "custom_order",
   "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
-  "/products/kcg-old-gold-jewelry-20260427-v2.jpg",
-  "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
+  "/products/kcg-jewelry-buying-tray-20260430.png",
+  "/products/kcg-b2b-gift-packaging-20260430.png",
 ]);
 expectText("supabase/seed.sql", [
   "KCG 골드바 1g",
@@ -565,6 +591,8 @@ expectText("supabase/seed.sql", [
   "귀금속 매입 절차 안내",
   "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
   "/products/kcg-silver-gift-20260427-v2.jpg",
+  "/products/kcg-jewelry-buying-tray-20260430.png",
+  "/products/kcg-b2b-gift-packaging-20260430.png",
   "/products/kcg-buying-process-20260427-v2.jpg",
 ]);
 expectText("src/types/product.ts", ["displayOrder", "priceLabel", "ProductUpsertInput", "ProductPriceBasis", "pure_gold"]);
@@ -809,17 +837,20 @@ if (siteUrl) {
     "TradingView 제공",
   ]);
   await expectUrl("/about", [
-    "대표번호",
+    "본사 전화",
     "네이버 지도",
     "카카오맵",
     "거래 전 준비 항목을 확인하면 현장 안내가 빨라집니다.",
     "사업자등록번호",
-    "성창빌딩 매장",
+    "매장",
   ]);
   await expectUrl("/company", [
     "주식회사 한국센터금거래소",
     "505-88-03567",
+    "대표이사",
     "패밀리 사이트",
+    "Davis Dia",
+    "Diamin",
   ]);
   await expectUrl("/admin/login", ["관리자 로그인"]);
   await expectRedirect("/admin/launch", "/admin/login?next=%2Fadmin%2Flaunch");
