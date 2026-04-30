@@ -11,6 +11,7 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 ## Current Source Of Truth
 
 - GitHub repo: `junyoung8753/kcg-site`
+- Private company knowledge repo: `junyoung8753/kcg-company-knowledge` (private). Use it for broader KCG company context when the current workspace is authorized, but keep internal notes, sensitive originals, customer data, credentials, and unapproved private material out of this public-style site repo.
 - Current local working branch: `codex/kcg-launch-readiness-catalog-20260427`
 - Base branch: `main`
 - Vercel project: `kcg-confirm-preview`
@@ -203,7 +204,7 @@ kcg사이트 만들던거 이어나갈수있게 준비해
 Agents must treat that short prompt as equivalent to:
 
 ```text
-KCG 사이트 작업 이어가자. 이 repo의 AGENTS.md, docs/setup/CURRENT_HANDOFF.md, docs/quality/product-experience-rubric.md, docs/quality/data-source-compliance.md, docs/quality/ai-site-production-playbook.md를 먼저 읽고, 현재 repo를 단일 오픈 후보 기준으로 점검해줘. API/RSS/차트/폼/경쟁사 참고는 출처와 약관 기준을 지키고, old option route 복구나 production 배포, stable alias 변경, 검색 색인 허용은 내가 명확히 승인하기 전에는 하지 마.
+KCG 사이트 작업 이어가자. 이 repo의 AGENTS.md, docs/setup/CURRENT_HANDOFF.md, docs/quality/product-experience-rubric.md, docs/quality/data-source-compliance.md, docs/quality/ai-site-production-playbook.md를 먼저 읽고, 접근 권한이 있으면 private repo junyoung8753/kcg-company-knowledge의 README.md, company/identity.md, company/business-rules.md, pricing/posted-price-policy.md, projects/kcg-site.md도 회사 맥락으로 참고해줘. 현재 repo를 단일 오픈 후보 기준으로 점검하고, 내부자료는 public-safe subset만 site repo에 반영해. API/RSS/차트/폼/경쟁사 참고는 출처와 약관 기준을 지키고, old option route 복구나 production 배포, stable alias 변경, 검색 색인 허용은 내가 명확히 승인하기 전에는 하지 마.
 ```
 
 For task tracking, also read `docs/setup/OPEN_TASKS.md`. For visual or route work, also read `docs/quality/design-review-checklist.md`.

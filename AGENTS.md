@@ -3,8 +3,10 @@
 - This repository is the working source for `https://kcg-confirm-preview.vercel.app/`.
 - Vercel project: `kcg-confirm-preview`.
 - GitHub repo: `junyoung8753/kcg-site`.
+- Private company knowledge source: `junyoung8753/kcg-company-knowledge` when the current workspace has access. Use it for broader KCG company context, but do not copy internal notes, sensitive originals, customer data, credentials, or unapproved private material into this public-style site repo.
 - Treat short Korean continuation requests such as "kcg사이트 만들던거 이어나갈수있게 준비해", "KCG 사이트 이어가자", "금거래소 사이트 이어가자", or "작업 이어가자" as a request to continue this KCG site from the current handoff. Do not make junyoung paste a long bootstrap prompt.
 - For those short continuation requests, immediately read `docs/setup/CLOUD_ONLY_WORKFLOW.md` and `docs/setup/CURRENT_HANDOFF.md`, then prepare the task using the source-of-truth status below. Treat the current repository as the single production candidate unless the user explicitly asks to recover an older source.
+- If the task needs broader KCG company knowledge, read the private knowledge repo's `README.md`, `company/identity.md`, `company/business-rules.md`, `pricing/posted-price-policy.md`, and `projects/kcg-site.md` when available. Keep this repo limited to approved public-safe summaries and implementation handoff notes.
 - Before continuing KCG work in a new chat, read `docs/setup/CURRENT_HANDOFF.md` for the latest source-of-truth status and next action.
 - Prefer the cloud-only flow in `docs/setup/CLOUD_ONLY_WORKFLOW.md` when the user wants to avoid computer-specific setup.
 - For local, cloud, or cross-computer continuation, follow `docs/setup/continue-anywhere.md` and use `scripts/check-continuation.ps1` for repeatable setup checks.
