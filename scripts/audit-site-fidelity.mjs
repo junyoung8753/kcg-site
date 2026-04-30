@@ -223,6 +223,10 @@ expectText("scripts/check-external-services.mjs", [
   "mode=",
   "--strict-domain",
 ]);
+expectText("scripts/capture-site-screenshots.mjs", [
+  "products-mobile.png",
+  "products-desktop.png",
+]);
 
 expectText("src/components/market/price-lineup.tsx", [
   "/campaign/kcg-brand-gold-bars-20260427-v4.png",
@@ -522,6 +526,9 @@ expectText("src/components/products/product-catalog.tsx", [
   "등록일순",
   "20개씩보기",
   "현재 고시가 기준",
+  "window.history.replaceState",
+  "prefetch={false}",
+  "aria-pressed={isActive}",
   "data-testid=\"product-quick-rail\"",
   "상품/매입 빠른 링크",
   "fixed right-0",
@@ -552,6 +559,9 @@ expectNoText("src/components/products/product-catalog.tsx", [
   "TODAY",
   "VIEW",
   "koreagoldx.co.kr",
+  "router.replace",
+  "useRouter",
+  "unoptimized",
 ]);
 [
   "src/app/(site)/products/page.tsx",
@@ -634,6 +644,9 @@ expectText("docs/quality/agent-quality-system.md", [
   "vague quality goals were not translated into deterministic acceptance checks",
   "Do not treat route `200` as visual completeness.",
   "Benchmark-driven work must inspect more than the first screen.",
+  "Product tabs were allowed to behave like route refreshes",
+  "Product/category tabs that filter already-loaded data must be tested as local interactions.",
+  "Public route typography should stay inside the KCG scale.",
   "docs/quality/product-experience-rubric.md",
   "docs/quality/ai-site-production-playbook.md",
 ]);
@@ -728,6 +741,7 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-024",
   "KCG-TODO-025",
   "KCG-TODO-026",
+  "KCG-TODO-039",
   "Cafe24 DNS",
   "DOMAIN_SUPABASE_MARKET_RUNBOOK.md",
   "campaign-image-prompts.md",

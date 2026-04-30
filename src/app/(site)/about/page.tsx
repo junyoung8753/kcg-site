@@ -34,17 +34,17 @@ export default function AboutPage() {
           </div>
 
           <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-6 lg:py-7">
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">STORE GUIDE</p>
-            <h1 className="mt-3 text-[2rem] font-semibold leading-tight tracking-[-0.07em] text-[#15191b] sm:text-[2.55rem]">
+            <p className="kcg-eyebrow text-[#9a8a00]">STORE GUIDE</p>
+            <h1 className="kcg-page-title mt-3 text-[#15191b]">
               본사·매장 위치와 거래 전 준비 항목
             </h1>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-[#687171]">
+            <p className="kcg-body-copy mt-4 max-w-2xl text-[#687171]">
               본사와 매장을 구분해 확인하고, 거래 전 필요한 항목만 먼저 봅니다.
             </p>
             <div className="mt-6 grid gap-px overflow-hidden border border-[#dfe6e3] bg-[#dfe6e3] sm:grid-cols-3">
               {quickChecks.map(([label, body]) => (
                 <div key={label} className="bg-white px-4 py-4">
-                  <p className="text-xs font-semibold tracking-[0.18em] text-[#9a8a00]">{label}</p>
+                  <p className="kcg-fine-label text-[#9a8a00]">{label}</p>
                   <p className="mt-2 text-sm leading-6 text-[#687171]">{body}</p>
                 </div>
               ))}
@@ -56,16 +56,16 @@ export default function AboutPage() {
       <section className="section-shell py-10 sm:py-12">
         <div className="grid gap-8 lg:grid-cols-[0.36fr_0.64fr]">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">LOCATION</p>
-            <h2 className="mt-3 text-[1.9rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+            <p className="kcg-eyebrow text-[#9a8a00]">LOCATION</p>
+            <h2 className="kcg-section-title mt-3 text-[#15191b]">
               본사·매장
             </h2>
           </div>
           <div className="grid gap-px overflow-hidden border border-[#dfe6e4] bg-[#dfe6e4] sm:grid-cols-2">
             {[headOffice, store].map((location) => (
               <article key={location.label} className="bg-white px-5 py-5">
-                <p className="text-xs font-semibold tracking-[0.2em] text-[#9a8a00]">{location.label}</p>
-                <h3 className="mt-3 text-xl font-semibold tracking-[-0.04em] text-[#15191b]">{location.title}</h3>
+                <p className="kcg-fine-label text-[#9a8a00]">{location.label}</p>
+                <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-[#15191b]">{location.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-[#687171]">{location.address}</p>
                 <p className="mt-2 text-sm font-semibold text-[#15191b]">{location.phone}</p>
                 <div className="mt-5 flex flex-wrap gap-2">
@@ -95,8 +95,8 @@ export default function AboutPage() {
       <section className="section-shell pb-12 sm:pb-14">
         <div className="grid gap-8 border-y border-[var(--color-line)] py-8 lg:grid-cols-[0.36fr_0.64fr]">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">TRADE READY</p>
-            <h2 className="mt-3 text-[1.9rem] font-semibold leading-tight tracking-[-0.06em] text-[#15191b]">
+            <p className="kcg-eyebrow text-[#9a8a00]">TRADE READY</p>
+            <h2 className="kcg-section-title mt-3 text-[#15191b]">
               거래 전 준비 항목을 확인하면 현장 안내가 빨라집니다.
             </h2>
           </div>
@@ -113,8 +113,8 @@ export default function AboutPage() {
       <section className="bg-[#fffbe8] py-10 sm:py-12">
         <div className="section-shell grid gap-6 lg:grid-cols-[0.55fr_0.45fr] lg:items-center">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">CONTACT</p>
-            <h2 className="mt-2 text-[1.8rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+            <p className="kcg-eyebrow text-[#9a8a00]">CONTACT</p>
+            <h2 className="kcg-section-title mt-2 text-[#15191b]">
               본사 전화 {siteConfig.contact.phone}
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#687171]">

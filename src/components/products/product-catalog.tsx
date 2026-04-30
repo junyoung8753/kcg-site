@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import {
   getProductCategoryLabel,
   getProductImageSrc,
@@ -115,11 +115,11 @@ function ProductPromoCard({
         fill
         className={`object-cover transition duration-500 group-hover:scale-[1.03] ${rail ? "opacity-[0.46]" : "opacity-50"}`}
         sizes={compact ? "50vw" : rail ? "160px" : "180px"}
-        unoptimized
+        loading="lazy"
       />
       <span className="absolute inset-0 bg-gradient-to-br from-black/82 via-black/48 to-black/16" />
       <span className={`relative z-10 flex h-full min-h-[inherit] flex-col justify-end ${rail ? "p-3" : "p-4"}`}>
-        <span className={`${rail ? "text-sm" : "text-base"} font-bold tracking-[-0.04em] text-white`}>
+        <span className={`${rail ? "text-sm" : "text-base"} font-bold tracking-[-0.03em] text-white`}>
           {banner.title}
         </span>
         <span className={`${rail ? "mt-1 line-clamp-2 text-[11px] leading-4" : "mt-2 text-xs leading-5"} text-white/72`}>
@@ -138,7 +138,7 @@ function ProductPromoCard({
   }
 
   return (
-    <Link href={banner.href} className="block">
+    <Link href={banner.href} prefetch={false} className="block">
       {content}
     </Link>
   );
@@ -165,12 +165,22 @@ function ProductQuickRail() {
 }
 
 export function ProductCatalog({ products, prices }: ProductCatalogProps) {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const selectedCategory = normalizeCategory(searchParams.get("category"));
-  const selectedSort = normalizeSort(searchParams.get("sort"));
+  const [selectedCategory, setSelectedCategory] = useState(() => normalizeCategory(searchParams.get("category")));
+  const [selectedSort, setSelectedSort] = useState(() => normalizeSort(searchParams.get("sort")));
   const category = getCategoryFromSlug(selectedCategory);
+
+  useEffect(() => {
+    function syncFromLocation() {
+      const params = new URLSearchParams(window.location.search);
+      setSelectedCategory(normalizeCategory(params.get("category")));
+      setSelectedSort(normalizeSort(params.get("sort")));
+    }
+
+    window.addEventListener("popstate", syncFromLocation);
+    return () => window.removeEventListener("popstate", syncFromLocation);
+  }, []);
 
   const publicProducts = useMemo(
     () =>
@@ -190,15 +200,33 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
     return sortProductsForCatalog(filtered, prices, selectedSort);
   }, [category, prices, publicProducts, selectedSort]);
 
-  function updateQuery(key: "category" | "sort", value: string) {
-    const params = new URLSearchParams(searchParams.toString());
-    if ((key === "category" && value === "all") || (key === "sort" && value === "recommended")) {
-      params.delete(key);
+  function writeCatalogUrl(nextCategory: string, nextSort: ProductCatalogSort) {
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    if (nextCategory === "all") {
+      params.delete("category");
     } else {
-      params.set(key, value);
+      params.set("category", nextCategory);
     }
+
+    if (nextSort === "recommended") {
+      params.delete("sort");
+    } else {
+      params.set("sort", nextSort);
+    }
+
     const query = params.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    window.history.replaceState(null, "", query ? `${pathname}?${query}` : pathname);
+  }
+
+  function updateQuery(key: "category" | "sort", value: string) {
+    const nextCategory = key === "category" ? normalizeCategory(value) : selectedCategory;
+    const nextSort = key === "sort" ? normalizeSort(value) : selectedSort;
+
+    setSelectedCategory(nextCategory);
+    setSelectedSort(nextSort);
+    writeCatalogUrl(nextCategory, nextSort);
   }
 
   if (!publicProducts.length) {
@@ -223,6 +251,8 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
             <button
               key={tab.slug}
               type="button"
+              aria-pressed={isActive}
+              data-testid={`product-tab-${tab.slug}`}
               onClick={() => updateQuery("category", tab.slug)}
               className={`min-h-12 border-b border-r border-[#d8dfdd] px-3 py-3 text-center text-[13px] font-semibold leading-tight transition sm:text-sm md:min-h-14 md:px-4 md:py-4 md:text-base ${
                 isActive
@@ -269,22 +299,21 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
           </div>
 
           <div className="mt-7 grid gap-y-9 gap-x-6 sm:grid-cols-2 lg:grid-cols-3">
-            {visibleProducts.map((product) => {
+            {visibleProducts.map((product, index) => {
               const imageSrc = getProductImageSrc(product);
               const price = getProductPriceDisplay(product, prices);
 
               return (
                 <article key={product.id} className="group bg-white">
-                  <Link href={`/products/${product.slug}`} className="block">
-                    <div className="relative aspect-[4/3] overflow-hidden bg-[#f4f6f5]">
+                  <Link href={`/products/${product.slug}`} prefetch={false} className="block">
+                    <div className="relative aspect-[4/3] overflow-hidden bg-[#eef4f2] before:absolute before:inset-0 before:bg-[linear-gradient(120deg,rgba(255,255,255,0.52),rgba(218,226,223,0.28),rgba(255,255,255,0.45))]">
                       <Image
                         src={imageSrc}
                         alt={`${product.name} 이미지`}
                         fill
                         className={`object-cover transition duration-500 group-hover:scale-[1.035] ${getProductImagePositionClass(product)}`}
-                        sizes="(min-width: 1280px) 300px, (min-width: 768px) 50vw, 100vw"
-                        loading="eager"
-                        unoptimized
+                        sizes="(min-width: 1280px) 280px, (min-width: 1024px) 31vw, (min-width: 640px) 50vw, 100vw"
+                        loading={index < 4 ? "eager" : "lazy"}
                       />
                     </div>
                     <div className="pt-5">
@@ -298,7 +327,7 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
                           </span>
                         ) : null}
                       </div>
-                      <h3 className="mt-4 text-xl font-semibold tracking-[-0.05em] text-[#15191b]">
+                      <h3 className="mt-4 text-xl font-semibold tracking-[-0.03em] text-[#15191b]">
                         {product.name}
                       </h3>
                       <p className="mt-3 line-clamp-2 min-h-[3rem] text-sm leading-6 text-[#687171]">
@@ -314,6 +343,7 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
                   <div className="mt-5">
                     <Link
                       href={`/products/${product.slug}`}
+                      prefetch={false}
                       className="inline-flex h-10 w-full items-center justify-center rounded-full border border-[#d8dfdd] px-4 text-sm font-semibold text-[#171717] transition hover:bg-[#fff8df]"
                     >
                       상세보기

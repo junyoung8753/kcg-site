@@ -31,8 +31,8 @@ export default async function ProductsPage() {
               sizes="(min-width: 1024px) 48vw, 100vw"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/62 via-black/18 to-transparent px-5 py-5 text-white sm:px-6">
-              <p className="text-xs font-semibold tracking-[0.28em] text-[#ffd95a]">PRODUCTS & BUYING</p>
-              <h1 className="mt-2 max-w-2xl text-[2rem] font-semibold leading-none tracking-[-0.07em] sm:text-[2.55rem]">
+              <p className="kcg-eyebrow text-[#ffd95a]">PRODUCTS & BUYING</p>
+              <h1 className="kcg-page-title mt-2 max-w-2xl">
                 상품/매입
               </h1>
             </div>
@@ -40,11 +40,11 @@ export default async function ProductsPage() {
 
           <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-6 lg:py-7">
             <div>
-              <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">KCG CATEGORY</p>
-              <h2 className="mt-3 max-w-3xl text-[1.8rem] font-semibold leading-tight tracking-[-0.06em] text-[#15191b] sm:text-[2.25rem]">
+              <p className="kcg-eyebrow text-[#9a8a00]">KCG CATEGORY</p>
+              <h2 className="kcg-section-title mt-3 max-w-3xl text-[#15191b]">
                 골드바, 실버바, 순금제품, 고금 매입을 바로 고릅니다.
               </h2>
-              <p className="mt-4 max-w-2xl text-base leading-7 text-[#687171]">
+              <p className="kcg-body-copy mt-4 max-w-2xl text-[#687171]">
                 탭에서 품목을 고르면 현재 고시가 기준 참고가와 상품 정보를 바로 확인할 수 있습니다.
               </p>
             </div>

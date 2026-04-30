@@ -40,7 +40,12 @@ export function SiteHeader() {
 
         <nav className="hidden min-w-0 flex-1 items-center justify-center gap-5 text-[0.98rem] font-semibold tracking-[-0.035em] text-[#121517] lg:flex xl:gap-7">
           {siteNavigation.map((item) => (
-            <Link key={item.href} href={item.href} className="shrink-0 whitespace-nowrap transition hover:text-[#8c6700]">
+            <Link
+              key={item.href}
+              href={item.href}
+              prefetch={false}
+              className="shrink-0 whitespace-nowrap transition hover:text-[#8c6700]"
+            >
               {item.label}
             </Link>
           ))}
@@ -92,6 +97,7 @@ export function SiteHeader() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={false}
                   className="block rounded-xl px-4 py-3 text-sm font-semibold text-[#15191b] transition hover:bg-[#fff7d2]"
                 >
                   {item.label}

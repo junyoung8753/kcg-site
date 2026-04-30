@@ -29,17 +29,17 @@ export function PageIntro({
     <section className="border-b border-[#dfe7e5] bg-[#f3faf8]">
       <div className="section-shell grid gap-6 py-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-center">
         <div className="max-w-3xl">
-          <p className="text-[10px] font-semibold tracking-[0.3em] text-[#9a8a00]">{eyebrow}</p>
-          <h1 className="mt-3 text-[1.85rem] font-semibold leading-[1.22] tracking-[-0.055em] text-[#15191b] sm:text-[2.15rem]">
+          <p className="kcg-eyebrow text-[#9a8a00]">{eyebrow}</p>
+          <h1 className="kcg-page-title mt-3 text-[#15191b]">
             {title}
           </h1>
-          <p className="mt-4 max-w-3xl text-[15px] leading-7 text-[#687171]">{description}</p>
+          <p className="kcg-body-copy mt-4 max-w-3xl text-[#687171]">{description}</p>
 
           {highlights.length ? (
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
               {highlights.map((item) => (
                 <div key={item.title} className="border border-[#e4ebe8] bg-white/72 px-4 py-4">
-                  <p className="text-[10px] font-semibold tracking-[0.2em] text-[#9a8a00]">{item.label}</p>
+                  <p className="kcg-fine-label text-[#9a8a00]">{item.label}</p>
                   <p className="mt-2 text-sm font-semibold tracking-[-0.02em] text-[#15191b]">{item.title}</p>
                   <p className="mt-2 text-xs leading-6 text-[#687171]">{item.body}</p>
                 </div>
@@ -51,7 +51,7 @@ export function PageIntro({
         {asideTitle || asideBody || asideAction ? (
           <div className="border border-[#dfe7e5] bg-[#fffef9] px-5 py-5">
             {asideLabel ? (
-              <p className="text-[11px] font-semibold tracking-[0.28em] text-[#8e9696]">{asideLabel}</p>
+              <p className="kcg-fine-label text-[#8e9696]">{asideLabel}</p>
             ) : null}
             {asideTitle ? (
               <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#15191b]">{asideTitle}</p>

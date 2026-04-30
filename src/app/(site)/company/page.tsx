@@ -17,8 +17,8 @@ export default function CompanyPage() {
         <div className="section-shell grid gap-6 py-6 sm:py-8 lg:grid-cols-[0.58fr_0.42fr] lg:items-stretch">
           <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-6 lg:py-7">
             <div>
-              <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">COMPANY</p>
-              <h1 className="mt-3 max-w-3xl text-[2rem] font-semibold leading-tight tracking-[-0.07em] text-[#15191b] sm:text-[2.7rem]">
+              <p className="kcg-eyebrow text-[#9a8a00]">COMPANY</p>
+              <h1 className="kcg-page-title mt-3 max-w-3xl text-[#15191b]">
                 {siteConfig.company.legalBusinessName}
               </h1>
               <div className="mt-5 grid gap-px overflow-hidden border border-[#dbe4e0] bg-[#dbe4e0] sm:grid-cols-2">
@@ -31,7 +31,7 @@ export default function CompanyPage() {
                   ["이메일", siteConfig.contact.email],
                 ].map(([label, value]) => (
                   <div key={label} className="bg-white px-5 py-4">
-                    <p className="text-xs font-semibold tracking-[0.2em] text-[#8b9292]">{label}</p>
+                    <p className="kcg-fine-label text-[#8b9292]">{label}</p>
                     <p className="mt-2 break-keep text-sm font-semibold leading-6 text-[#15191b]">{value}</p>
                   </div>
                 ))}
@@ -57,7 +57,7 @@ export default function CompanyPage() {
                   height={28}
                   className="h-auto w-10"
                 />
-                <span className="text-xs font-semibold tracking-[0.2em] text-white/78">
+                <span className="kcg-fine-label text-white/78">
                   KOREA CENTER GOLD EXCHANGE
                 </span>
               </div>
@@ -69,8 +69,8 @@ export default function CompanyPage() {
       <section className="section-shell py-10 sm:py-12">
         <div className="grid gap-8 border-y border-[#dfe6e4] py-8 lg:grid-cols-[0.36fr_0.64fr]">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">KCG STORY</p>
-            <h2 className="mt-3 text-[1.9rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+            <p className="kcg-eyebrow text-[#9a8a00]">KCG STORY</p>
+            <h2 className="kcg-section-title mt-3 text-[#15191b]">
               {companyStory.missionTitle}
             </h2>
           </div>
@@ -79,7 +79,7 @@ export default function CompanyPage() {
               {companyStory.mission}
             </p>
             <div className="space-y-4 text-sm leading-7 text-[#5f6867]">
-              <p className="text-xs font-semibold tracking-[0.22em] text-[#9a8a00]">
+              <p className="kcg-eyebrow text-[#9a8a00]">
                 {companyStory.introductionTitle}
               </p>
               {companyStory.introductionParagraphs.map((paragraph) => (
@@ -93,8 +93,8 @@ export default function CompanyPage() {
       <section className="section-shell py-10 sm:py-12">
         <div className="grid gap-8 lg:grid-cols-[0.36fr_0.64fr]">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">BUSINESS INFO</p>
-            <h2 className="mt-3 text-[1.9rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+            <p className="kcg-eyebrow text-[#9a8a00]">BUSINESS INFO</p>
+            <h2 className="kcg-section-title mt-3 text-[#15191b]">
               사업자 정보
             </h2>
           </div>
@@ -110,7 +110,7 @@ export default function CompanyPage() {
               ["종목", siteConfig.company.businessItems],
             ].map(([label, value]) => (
               <div key={label} className="bg-white px-5 py-5">
-                <p className="text-xs font-semibold tracking-[0.2em] text-[#8b9292]">{label}</p>
+                <p className="kcg-fine-label text-[#8b9292]">{label}</p>
                 <p className="mt-2 break-keep text-sm font-semibold leading-7 text-[#15191b]">{value}</p>
               </div>
             ))}
@@ -121,16 +121,16 @@ export default function CompanyPage() {
       <section className="bg-[#151518] py-10 text-white sm:py-12">
         <div className="section-shell grid gap-8 lg:grid-cols-[0.36fr_0.64fr]">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#ffcc00]">HEAD OFFICE & STORE</p>
-            <h2 className="mt-3 text-[1.9rem] font-semibold tracking-[-0.06em]">
+            <p className="kcg-eyebrow text-[#ffcc00]">HEAD OFFICE & STORE</p>
+            <h2 className="kcg-section-title mt-3">
               본사·매장
             </h2>
           </div>
           <div className="grid gap-px overflow-hidden border border-white/14 bg-white/14 sm:grid-cols-2">
             {[headOffice, store].map((location) => (
               <article key={location.label} className="bg-[#202024] px-6 py-6">
-                <p className="text-xs font-semibold tracking-[0.22em] text-[#ffcc00]">{location.label}</p>
-                <h3 className="mt-3 text-xl font-semibold tracking-[-0.04em]">{location.title}</h3>
+                <p className="kcg-fine-label text-[#ffcc00]">{location.label}</p>
+                <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em]">{location.title}</h3>
                 <p className="mt-4 text-sm leading-7 text-white/72">{location.address}</p>
                 <p className="mt-3 text-sm font-semibold text-white">{location.label} 전화 {location.phone}</p>
               </article>
@@ -142,8 +142,8 @@ export default function CompanyPage() {
       <section className="section-shell py-10 sm:py-12">
         <div className="grid gap-8 border-y border-[var(--color-line)] py-8 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">FAMILY & NEWS</p>
-            <h2 className="mt-4 text-[2rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+            <p className="kcg-eyebrow text-[#9a8a00]">FAMILY & NEWS</p>
+            <h2 className="kcg-section-title mt-4 text-[#15191b]">
               패밀리 사이트와 KCG 소식
             </h2>
           </div>

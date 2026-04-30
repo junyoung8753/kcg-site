@@ -35,11 +35,11 @@ export function PurchaseGuide({ showExtendedRows = false }: { showExtendedRows?:
       <div className="section-shell py-12 sm:py-14">
         <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">고금매입 안내</p>
-            <h2 className="mt-3 max-w-2xl text-[2rem] font-semibold leading-tight tracking-[-0.06em] text-[#15191b] sm:text-[2.6rem]">
+            <p className="kcg-eyebrow text-[#9a8a00]">고금매입 안내</p>
+            <h2 className="kcg-section-title mt-3 max-w-2xl text-[#15191b]">
               고객이 팔 때 기준을 먼저 확인하고 상담하실 수 있습니다.
             </h2>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-[#687171]">
+            <p className="kcg-body-copy mt-5 max-w-2xl text-[#687171]">
               순금, 18K, 14K, 백금, 은 제품은 같은 금액으로 일괄 처리하지 않습니다. 시세표의 매입 기준을
               참고한 뒤 실물의 순도와 중량을 현장에서 확인합니다.
             </p>

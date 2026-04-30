@@ -152,7 +152,7 @@ function HeadlineList({
   return (
     <div className="border border-[#dfe6e4] bg-white">
       <div className="flex items-center justify-between border-b border-[#e4ebe9] px-5 py-4">
-        <h3 className="text-lg font-semibold tracking-[-0.04em] text-[#15191b]">{title}</h3>
+        <h3 className="kcg-card-title text-[#15191b]">{title}</h3>
         {sourceUrl ? (
           <a
             href={sourceUrl}
@@ -207,8 +207,8 @@ export function MarketDashboard({
     <section data-testid="market-dashboard" className="section-shell py-10 sm:py-12">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">MARKET</p>
-          <h2 className="mt-2 text-[2rem] font-semibold leading-tight tracking-[-0.07em] text-[#15191b] sm:text-[2.45rem]">
+          <p className="kcg-eyebrow text-[#9a8a00]">MARKET</p>
+          <h2 className="kcg-section-title mt-2 text-[#15191b]">
             국제 현재가
           </h2>
         </div>

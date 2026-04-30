@@ -10,8 +10,8 @@ export function PriceContextGuide() {
     <section className="section-shell py-10 sm:py-12">
       <div className="grid gap-8 border-y border-[var(--color-line)] py-8 lg:grid-cols-[0.34fr_0.66fr]">
         <div>
-          <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">시세 확인 기준</p>
-          <h2 className="mt-3 text-[1.9rem] font-semibold leading-tight tracking-[-0.06em] text-[#15191b]">
+          <p className="kcg-eyebrow text-[#9a8a00]">시세 확인 기준</p>
+          <h2 className="kcg-section-title mt-3 text-[#15191b]">
             품목별로 볼 기준만 확인합니다.
           </h2>
         </div>

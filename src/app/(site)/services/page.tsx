@@ -39,15 +39,15 @@ export default function ServicesPage() {
           </div>
 
           <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-6 lg:py-7">
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">SERVICE FLOW</p>
-            <h1 className="mt-3 text-[1.9rem] font-semibold leading-tight tracking-[-0.06em] text-[#15191b] sm:text-[2.35rem]">
+            <p className="kcg-eyebrow text-[#9a8a00]">SERVICE FLOW</p>
+            <h1 className="kcg-page-title mt-3 text-[#15191b]">
               취급 품목, 당일 기준, 실물 확인 순서로 봅니다.
             </h1>
             <div className="mt-6 grid gap-px overflow-hidden border border-[#dfe6e3] bg-[#dfe6e3] sm:grid-cols-3">
               {flowSteps.map(([number, title, body]) => (
                 <div key={title} className="bg-white px-4 py-4">
-                  <p className="text-xs font-semibold tracking-[0.18em] text-[#9a8a00]">{number}</p>
-                  <p className="mt-2 text-base font-bold tracking-[-0.03em] text-[#15191b]">{title}</p>
+                  <p className="kcg-fine-label text-[#9a8a00]">{number}</p>
+                  <p className="mt-2 text-base font-bold tracking-[-0.02em] text-[#15191b]">{title}</p>
                   <p className="mt-2 text-sm leading-6 text-[#687171]">{body}</p>
                 </div>
               ))}
@@ -59,8 +59,8 @@ export default function ServicesPage() {
       <section className="section-shell py-10 sm:py-12">
         <div className="grid gap-8 lg:grid-cols-[0.36fr_0.64fr]">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">거래 기준</p>
-            <h2 className="mt-3 text-[1.9rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+            <p className="kcg-eyebrow text-[#9a8a00]">거래 기준</p>
+            <h2 className="kcg-section-title mt-3 text-[#15191b]">
               필요한 항목만 빠르게 확인합니다.
             </h2>
           </div>
@@ -81,8 +81,8 @@ export default function ServicesPage() {
       <section className="section-shell pb-12 sm:pb-14">
         <div className="grid gap-8 border-y border-[var(--color-line)] py-8 lg:grid-cols-[0.36fr_0.64fr]">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">FAQ</p>
-            <h2 className="mt-3 text-[1.9rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+            <p className="kcg-eyebrow text-[#9a8a00]">FAQ</p>
+            <h2 className="kcg-section-title mt-3 text-[#15191b]">
               자주 묻는 기준
             </h2>
           </div>
@@ -103,8 +103,8 @@ export default function ServicesPage() {
       <section className="bg-[#fffbe8] py-10 sm:py-12">
         <div className="section-shell flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">NEXT</p>
-            <h2 className="mt-2 text-[1.8rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+            <p className="kcg-eyebrow text-[#9a8a00]">NEXT</p>
+            <h2 className="kcg-section-title mt-2 text-[#15191b]">
               품목별 상품과 매입 기준은 상품/매입에서 확인하세요.
             </h2>
           </div>

@@ -24,11 +24,11 @@ export function TradeStandardPanel({
     <section className={cn("section-shell py-14 sm:py-16", className)}>
       <div className="grid gap-8 border-y border-[var(--color-line)] py-8 xl:grid-cols-[0.8fr_1.2fr]">
         <div className="xl:pr-8">
-          <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">거래 기준</p>
-          <h2 className="mt-4 text-[2rem] font-semibold leading-tight tracking-[-0.06em] text-[#15191b] sm:text-[2.3rem]">
+          <p className="kcg-eyebrow text-[#9a8a00]">거래 기준</p>
+          <h2 className="kcg-section-title mt-4 text-[#15191b]">
             {heading}
           </h2>
-          <p className="mt-5 max-w-2xl text-sm leading-7 text-[#687171]">{description}</p>
+          <p className="kcg-body-copy mt-5 max-w-2xl text-[#687171]">{description}</p>
           <div className="mt-6 flex flex-wrap gap-3">
             <a
               href={`tel:${siteConfig.contact.phone}`}
@@ -48,10 +48,10 @@ export function TradeStandardPanel({
         <div className="grid gap-px overflow-hidden border border-[var(--color-line)] bg-[var(--color-line)] md:grid-cols-2">
           {tradeStandardPrinciples.map((item, index) => (
             <article key={item.title} className="bg-white px-6 py-6">
-              <p className="text-xs font-semibold tracking-[0.22em] text-[#9a8a00]">
+              <p className="kcg-fine-label text-[#9a8a00]">
                 기준 0{index + 1}
               </p>
-              <h3 className="mt-4 text-xl font-semibold tracking-[-0.05em] text-[#15191b]">
+              <h3 className="kcg-card-title mt-4 text-[#15191b]">
                 {item.title}
               </h3>
               <p className="mt-3 text-sm leading-7 text-[#687171]">{item.description}</p>
@@ -62,7 +62,7 @@ export function TradeStandardPanel({
 
       <div className="grid gap-6 border-b border-[var(--color-line)] py-8 xl:grid-cols-[1fr_0.72fr]">
         <div>
-          <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">안전 안내</p>
+          <p className="kcg-eyebrow text-[#9a8a00]">안전 안내</p>
           <div className="mt-4 grid gap-3 text-sm leading-7 text-[#687171]">
             {krxSafetyNotes.map((note) => (
               <p key={note}>· {note}</p>

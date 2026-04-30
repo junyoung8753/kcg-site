@@ -42,7 +42,7 @@ export default async function PricesPage() {
       <section className="border-y border-[#dfe7e5] bg-[#fbfdfc]">
         <div className="section-shell grid gap-6 py-7 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">시세 이용 기준</p>
+            <p className="kcg-eyebrow text-[#9a8a00]">시세 이용 기준</p>
             <div className="mt-4 grid gap-px overflow-hidden border border-[#dfe6e4] bg-[#dfe6e4] md:grid-cols-3">
               {[
                 ["회사 고시 시세", "살 때·팔 때 기준과 고시 시각"],
@@ -50,7 +50,7 @@ export default async function PricesPage() {
                 ["품목 확인", "중량·수량·실물 상태에 따라 최종 확정"],
               ].map(([label, title, body]) => (
                 <div key={label} className="bg-white px-5 py-4">
-                  <p className="text-xs font-semibold tracking-[0.18em] text-[#9a8a00]">{label}</p>
+                  <p className="kcg-fine-label text-[#9a8a00]">{label}</p>
                   <p className="mt-2 text-sm font-bold leading-6 tracking-[-0.03em] text-[#15191b]">{title || body}</p>
                 </div>
               ))}
@@ -68,8 +68,8 @@ export default async function PricesPage() {
       <section className="section-shell py-14">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">고시 시세 상세</p>
-            <h2 className="mt-3 text-[1.95rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+            <p className="kcg-eyebrow text-[#9a8a00]">고시 시세 상세</p>
+            <h2 className="kcg-section-title mt-3 text-[#15191b]">
               품목별 회사 고시 시세 상세
             </h2>
           </div>

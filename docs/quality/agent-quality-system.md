@@ -14,6 +14,8 @@ The missed campaign slider and mobile CTA defects were not caused by a build pro
 - Codex Cloud readiness checks were treated like normal implementation work even though a no-diff Cloud task can be hard to inspect from the local CLI and Playwright browser failures may be caused by missing Linux system libraries rather than site code.
 - Competitor benchmarking was treated too much like a home-screen visual comparison, which missed subpage structure, forms, price wording, scripts, and network/API behavior.
 - The home campaign slider was allowed to become a right-side half-width surface when the price table panel was open, even though the intended design was a full-bleed exchange-site banner with the price table overlaid or separated without shrinking the image.
+- Product tabs were allowed to behave like route refreshes, so category changes could wait for App Router RSC prefetch/fetch work and eager image loading even though all product data was already on the page.
+- Public route typography drifted because many headings used one-off arbitrary font sizes and aggressive negative letter spacing instead of a KCG scale.
 
 ## Root Cause
 
@@ -36,6 +38,8 @@ The deeper root cause is process design: AI agents can produce plausible results
 - Codex Cloud diagnostics must be timeboxed. If a Cloud task returns no inspectable diff or fails because of browser/system dependencies, switch to local verification or CI, then record the exact Cloud setup issue instead of changing app UI, fonts, assets, or route logic to bypass the environment.
 - Temporary Cloud diagnostic files such as `zz-*-delete-me.md` are evidence only. Do not apply, merge, or treat them as product changes.
 - Benchmark-driven work must inspect more than the first screen. The minimum useful pass records site map, price labels, product/service/detail pages, branch/contact/FAQ/policy pages, forms, script/network/API sources, and explicit KCG use/do-not-use decisions.
+- Product/category tabs that filter already-loaded data must be tested as local interactions. `npm run test:site` should fail if tab clicks trigger `/products?...&_rsc=` route fetches or product-detail RSC prefetches.
+- Public route typography should stay inside the KCG scale. Rendered tests check representative mobile and desktop heading sizes so future copy/layout work does not reintroduce oversized hero text or unreadably tiny labels.
 
 ## Required Flow For Visual Or Launch-Candidate Work
 

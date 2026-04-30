@@ -54,7 +54,7 @@ export async function FinalHome() {
         <div className="section-shell grid gap-0 py-0 xl:grid-cols-[0.94fr_0.62fr_0.62fr]">
           <div className="border-x border-[#e4ebe9]">
             <div className="border-b border-[#e4ebe9] bg-[#f7fbfa] px-6 py-4 sm:px-8">
-              <p className="text-xs font-semibold tracking-[0.26em] text-[#9a7800]">KCG 바로가기</p>
+              <p className="kcg-eyebrow text-[#9a7800]">KCG 바로가기</p>
             </div>
             <div className="grid gap-px bg-[#e4ebe9] sm:grid-cols-2">
               {quickLinks.map((item) => (
@@ -63,7 +63,7 @@ export async function FinalHome() {
                   href={item.href}
                   className="min-h-28 bg-white px-6 py-5 transition hover:bg-[#fff9df] sm:px-8"
                 >
-                  <p className="text-lg font-bold tracking-[-0.04em] text-[#15191b]">{item.label}</p>
+                  <p className="kcg-card-title text-[#15191b]">{item.label}</p>
                   <p className="mt-3 text-sm leading-6 text-[#67706f]">{item.caption}</p>
                 </Link>
               ))}
@@ -73,8 +73,8 @@ export async function FinalHome() {
           <div className="border-r border-[#e4ebe9] bg-[#fbfdfc] px-6 py-6 sm:px-8">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold tracking-[0.26em] text-[#9a7800]">공지사항</p>
-                <h2 className="mt-2 text-[1.75rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+                <p className="kcg-eyebrow text-[#9a7800]">공지사항</p>
+                <h2 className="kcg-section-title mt-2 text-[#15191b]">
                   시세 운영과 거래 준비 안내
                 </h2>
               </div>
@@ -125,8 +125,8 @@ export async function FinalHome() {
           </div>
 
           <div className="border-r border-[#e4ebe9] px-6 py-6 sm:px-8">
-            <p className="text-xs font-semibold tracking-[0.26em] text-[#9a7800]">거래 준비</p>
-            <h2 className="mt-2 text-[1.75rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+            <p className="kcg-eyebrow text-[#9a7800]">거래 준비</p>
+            <h2 className="kcg-section-title mt-2 text-[#15191b]">
               거래 전 확인 사항
             </h2>
             <div className="mt-5 space-y-4">
@@ -153,8 +153,8 @@ export async function FinalHome() {
         <div className="section-shell">
           <div className="mb-7 flex items-end justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">상품안내</p>
-              <h2 className="mt-3 text-[2rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+              <p className="kcg-eyebrow text-[#9a8a00]">상품안내</p>
+              <h2 className="kcg-section-title mt-3 text-[#15191b]">
                 상품/매입 카테고리
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-[#687171]">
@@ -173,6 +173,7 @@ export async function FinalHome() {
                 <Link
                   key={category.slug}
                   href={`/products?category=${category.slug}`}
+                  prefetch={false}
                   className="group bg-white transition hover:bg-[#fff7d2]"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-[#eef4f2]">
@@ -182,13 +183,12 @@ export async function FinalHome() {
                       fill
                       className="object-cover transition duration-500 group-hover:scale-[1.03]"
                       sizes="(min-width: 1280px) 20vw, (min-width: 768px) 50vw, 100vw"
-                      loading="eager"
-                      unoptimized
+                      loading={index < 2 ? "eager" : "lazy"}
                     />
                   </div>
                   <div className="p-5">
                     <p className="text-xs font-semibold text-[#9a8a00]">0{index + 1}</p>
-                    <h3 className="mt-3 text-xl font-bold tracking-[-0.05em] text-[#15191b]">
+                    <h3 className="kcg-card-title mt-3 text-[#15191b]">
                       {category.label}
                     </h3>
                     <p className="mt-3 min-h-[3rem] text-sm leading-6 text-[#687171]">
@@ -210,8 +210,8 @@ export async function FinalHome() {
       <section className="section-shell pb-18">
         <div className="grid gap-6 border border-[#dfe5e3] bg-[#fffbe8] p-7 sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">거래 상담</p>
-            <h2 className="mt-3 text-[2rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+            <p className="kcg-eyebrow text-[#9a8a00]">거래 상담</p>
+            <h2 className="kcg-section-title mt-3 text-[#15191b]">
               본사 전화 문의 시 상담 가능 범위와 준비 사항을 먼저 안내해 드립니다
             </h2>
             <p className="mt-3 text-base leading-7 text-[#687171]">{siteConfig.contact.address}</p>

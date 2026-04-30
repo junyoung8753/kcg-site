@@ -242,6 +242,70 @@ test("mobile products route exposes a consultation catalog without checkout", as
   await expectNoVisibleElementEscapesViewport(page);
 });
 
+test("products tabs filter locally without RSC refetch or detail prefetch", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await page.goto("/products", { waitUntil: "domcontentloaded" });
+  await expect(page.getByTestId("product-count")).toContainText(/상품 \d+개/);
+
+  const productRequests: string[] = [];
+  page.on("request", (request) => {
+    const url = request.url();
+    if (url.includes("/products") && url.includes("_rsc=")) {
+      productRequests.push(url);
+    }
+  });
+
+  const tabs = [
+    "gold-bar",
+    "silver-bar",
+    "pure-gold",
+    "jewelry",
+    "b2b",
+    "all",
+  ];
+
+  for (const slug of tabs) {
+    const tab = page.getByTestId(`product-tab-${slug}`);
+    const startedAt = Date.now();
+    await tab.click();
+    await expect(tab).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByTestId("product-count")).toContainText(/상품 \d+개/);
+    expect(Date.now() - startedAt, `${slug} tab local response`).toBeLessThan(500);
+  }
+
+  await page.waitForTimeout(300);
+  expect(productRequests).toEqual([]);
+});
+
+test("public typography stays within the KCG route scale", async ({ page }) => {
+  const routes = ["/", "/prices", "/products", "/services", "/company", "/about", "/announcements"];
+
+  for (const path of routes) {
+    await page.setViewportSize({ width: 390, height: 1200 });
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    const mobileSizes = await page.evaluate(() => {
+      const heading = document.querySelector("main h1, main h2");
+      const paragraph = document.querySelector("main p");
+      return {
+        heading: heading ? Number.parseFloat(window.getComputedStyle(heading).fontSize) : 0,
+        paragraph: paragraph ? Number.parseFloat(window.getComputedStyle(paragraph).fontSize) : 0,
+      };
+    });
+    expect(mobileSizes.heading, `${path} mobile heading`).toBeGreaterThanOrEqual(21);
+    expect(mobileSizes.heading, `${path} mobile heading`).toBeLessThanOrEqual(34);
+    expect(mobileSizes.paragraph, `${path} mobile paragraph`).toBeGreaterThanOrEqual(10);
+
+    await page.setViewportSize({ width: 1440, height: 1200 });
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    const desktopHeading = await page.evaluate(() => {
+      const heading = document.querySelector("main h1, main h2");
+      return heading ? Number.parseFloat(window.getComputedStyle(heading).fontSize) : 0;
+    });
+    expect(desktopHeading, `${path} desktop heading`).toBeGreaterThanOrEqual(24);
+    expect(desktopHeading, `${path} desktop heading`).toBeLessThanOrEqual(44);
+  }
+});
+
 test("company route uses approved company copy without internal strategy notes", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1200 });
   await page.goto("/company", { waitUntil: "domcontentloaded" });

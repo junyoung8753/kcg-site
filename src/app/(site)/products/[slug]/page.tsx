@@ -58,7 +58,6 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               className="object-cover"
               sizes="(min-width: 1024px) 48vw, 100vw"
               priority
-              unoptimized
             />
           </div>
           <div className="flex flex-col justify-center border-y border-[#dfe6e4] py-8">
@@ -70,7 +69,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 {getProductStatusLabel(product.status)}
               </span>
             </div>
-            <h1 className="mt-5 text-[2.35rem] font-semibold leading-tight tracking-[-0.07em] text-[#15191b] sm:text-[3.25rem]">
+            <h1 className="kcg-page-title mt-5 text-[#15191b]">
               {product.name}
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-[#687171]">{product.description}</p>
@@ -115,8 +114,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       <section className="section-shell py-12">
         <div className="grid gap-8 border-y border-[var(--color-line)] py-8 lg:grid-cols-[0.72fr_1.28fr]">
           <div>
-            <p className="text-xs font-semibold tracking-[0.28em] text-[#9a8a00]">확인 항목</p>
-            <h2 className="mt-3 text-[2rem] font-semibold tracking-[-0.06em] text-[#15191b]">
+            <p className="kcg-eyebrow text-[#9a8a00]">확인 항목</p>
+            <h2 className="kcg-section-title mt-3 text-[#15191b]">
               문의 전 확인하면 상담이 빨라집니다
             </h2>
           </div>

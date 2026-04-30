@@ -291,7 +291,7 @@ export function PriceLineup({
                   <div className="min-w-0">
                     <h1
                       className={cn(
-                        "text-[1.35rem] font-semibold leading-tight tracking-[-0.04em] sm:text-[1.96rem] sm:tracking-[-0.06em]",
+                        "text-[1.35rem] font-semibold leading-tight tracking-[-0.035em] sm:text-[1.96rem] sm:tracking-[-0.04em]",
                         style.titleText,
                       )}
                     >
@@ -299,7 +299,7 @@ export function PriceLineup({
                     </h1>
                     <p
                       className={cn(
-                        "mt-3 text-[0.62rem] font-semibold uppercase leading-4 tracking-[0.24em] sm:hidden",
+                        "mt-3 text-[0.7rem] font-semibold uppercase leading-4 tracking-[0.18em] sm:hidden",
                         "text-white/42",
                       )}
                     >
@@ -408,7 +408,6 @@ export function PriceLineup({
                       alt={slide.alt}
                       fill
                       priority={index === 0}
-                      unoptimized={slide.image.endsWith(".png")}
                       className="object-cover"
                       style={{ objectPosition: slide.objectPosition }}
                       sizes="100vw"
@@ -470,10 +469,10 @@ export function PriceLineup({
                       priority
                     />
                   </div>
-                  <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.26em] text-[#9b7700]">
+                  <p className="kcg-eyebrow mt-4 text-[#9b7700]">
                     종로 귀금속 시세 · 매입 안내
                   </p>
-                  <h2 className="mt-4 text-[1.9rem] font-semibold leading-[1.22] tracking-[-0.055em] text-[#1a1e20] sm:text-[2.2rem]">
+                  <h2 className="kcg-section-title mt-4 text-[#1a1e20]">
                     오늘 고시 시세와 거래 상담 기준 안내
                   </h2>
                   <p className="mt-4 max-w-2xl text-[15px] leading-7 text-[#5f6868]">
@@ -486,7 +485,7 @@ export function PriceLineup({
                 <div className="mt-7 grid gap-px overflow-hidden border border-[#dbe4e1] bg-[#dbe4e1] sm:grid-cols-2">
                   {homeDeskNotes.map((item) => (
                     <div key={item.title} className="bg-white/86 px-5 py-5">
-                      <p className="text-[11px] font-semibold tracking-[0.22em] text-[#9b7700]">{item.label}</p>
+                      <p className="kcg-fine-label text-[#9b7700]">{item.label}</p>
                       <p className="mt-2 text-base font-semibold tracking-[-0.03em] text-[#15191b]">
                         {item.title}
                       </p>
@@ -499,7 +498,7 @@ export function PriceLineup({
                   <div className="border border-black/10 bg-white/88 p-5 shadow-[0_18px_44px_rgba(31,47,43,0.1)]">
                     <div className="mb-3 flex items-start justify-between gap-3">
                       <div>
-                        <p className="text-[11px] font-semibold tracking-[0.22em] text-[#9b7700]">매장 확인</p>
+                        <p className="kcg-fine-label text-[#9b7700]">매장 확인</p>
                         <p className="mt-1 text-base font-semibold text-[#15191b]">실매장 및 간판 기준</p>
                       </div>
                       <p className="text-right text-xs leading-5 text-[#6d7575]">종로 골든타워 303호</p>
@@ -516,7 +515,7 @@ export function PriceLineup({
                   </div>
 
                   <div className="border border-[#d9e4e1] bg-white/88 p-5 shadow-[0_18px_44px_rgba(31,47,43,0.1)]">
-                    <p className="text-[11px] font-semibold tracking-[0.22em] text-[#9b7700]">거래 기준 안내</p>
+                    <p className="kcg-fine-label text-[#9b7700]">거래 기준 안내</p>
                     <div className="mt-3 grid gap-4 border-y border-[#e2e7e5] py-4 text-sm leading-7 text-[#5f6868]">
                       <div>
                         <p className="font-semibold text-[#15191b]">{announcedHeading}</p>

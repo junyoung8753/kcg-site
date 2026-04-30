@@ -69,8 +69,8 @@ export function TradingViewMarketWidget() {
     <section className="border border-[#dfe6e4] bg-white p-5 shadow-[0_18px_50px_rgba(31,47,43,0.06)] sm:p-7">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold tracking-[0.18em] text-[#9a8a00]">TRADINGVIEW CHART</p>
-          <h2 className="mt-2 text-[2rem] font-semibold tracking-[-0.06em] text-[#15191b]">국제 금속 시세 차트</h2>
+          <p className="kcg-eyebrow text-[#9a8a00]">TRADINGVIEW CHART</p>
+          <h2 className="kcg-section-title mt-2 text-[#15191b]">국제 금속 시세 차트</h2>
         </div>
         <a
           href="https://www.tradingview.com/"
