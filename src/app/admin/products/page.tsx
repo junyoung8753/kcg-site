@@ -13,7 +13,16 @@ interface AdminProductsPageProps {
 }
 
 const productStatuses: ProductStatus[] = ["active", "inquiry_required", "hidden"];
-const adminCategories = productCatalogTabs.filter((tab) => tab.category);
+const adminCategories = [
+  ...productCatalogTabs.flatMap((tab) =>
+    tab.category ? [{ slug: tab.slug, label: tab.label, category: tab.category }] : [],
+  ),
+  { slug: "purchase-guide", label: getProductCategoryLabel("purchase_guide"), category: "purchase_guide" },
+] as const satisfies ReadonlyArray<{
+  slug: string;
+  label: string;
+  category: ProductCategory;
+}>;
 const productPriceBases: ProductPriceBasis[] = [
   "gold_24k_sell",
   "gold_24k_buy",
@@ -115,7 +124,7 @@ function productForm(product: Product) {
               className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
             >
               {adminCategories.map((category) => (
-                <option key={category.slug} value={category.category || "gold_bar"}>
+                <option key={category.slug} value={category.category}>
                   {category.label}
                 </option>
               ))}

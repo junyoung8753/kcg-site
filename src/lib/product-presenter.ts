@@ -70,32 +70,18 @@ export function getProductFallbackImage(category: ProductCategory) {
   if (category === "gold_bar") return "/products/kcg-gold-bar-catalog-20260427-v2.jpg";
   if (category === "silver_bar") return "/products/kcg-silver-gift-20260427-v2.jpg";
   if (category === "pure_gold") return "/products/kcg-pure-gold-products-20260427-v2.jpg";
-  if (category === "jewelry") return "/products/kcg-jewelry-buying-tray-20260430.png";
+  if (category === "jewelry") return "/products/kcg-jewelry-buying-tray-20260430.webp";
   if (category === "purchase_guide") return "/products/kcg-buying-process-20260427-v2.jpg";
-  if (category === "custom_order") return "/products/kcg-b2b-gift-packaging-20260430.png";
+  if (category === "custom_order") return "/products/kcg-b2b-gift-packaging-20260430.webp";
   return "/products/kcg-gold-bar-catalog-20260427-v2.jpg";
 }
-
-const defaultProductImages = new Set([
-  "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
-  "/products/kcg-gold-bar-catalog-20260427.jpg",
-  "/products/kcg-silver-gift-20260427-v2.jpg",
-  "/products/kcg-silver-bar-catalog-20260427.jpg",
-  "/products/kcg-pure-gold-products-20260427-v2.jpg",
-  "/products/kcg-old-gold-jewelry-20260427-v2.jpg",
-  "/products/kcg-jewelry-purchase-20260427.jpg",
-  "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
-  "/products/kcg-b2b-consulting-20260427.jpg",
-  "/products/kcg-jewelry-buying-tray-20260430.png",
-  "/products/kcg-b2b-gift-packaging-20260430.png",
-]);
 
 const defaultProductImagesBySlug: Record<string, string> = {
   "kcg-gold-bar-1g": "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
   "investment-gold-bar-consulting": "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
   "kcg-gold-bar-10g": "/products/kcg-gold-bar-catalog-20260427.jpg",
   "kcg-gold-bar-37-5g": "/campaign/kcg-hero-gold-bars.jpg",
-  "kcg-gold-bar-100g": "/campaign/kcg-brand-gold-bars-20260427-v4.png",
+  "kcg-gold-bar-100g": "/campaign/kcg-brand-gold-bars-20260427-v4.webp",
   "kcg-silver-bar-100g": "/products/kcg-silver-gift-20260427-v2.jpg",
   "kcg-silver-bar-500g": "/products/kcg-silver-bar-catalog-20260427.jpg",
   "kcg-silver-bar-1kg": "/campaign/kcg-hero-metal-bars.jpg",
@@ -103,23 +89,23 @@ const defaultProductImagesBySlug: Record<string, string> = {
   "pure-gold-card-1g": "/products/kcg-gold-bar-catalog-20260427.jpg",
   "pure-gold-commemorative-medal": "/campaign/kcg-hero-gold-bars.jpg",
   "pure-gold-gift-consulting": "/products/kcg-pure-gold-products-20260427-v2.jpg",
-  "pure-gold-baby-ring-buying": "/products/kcg-jewelry-buying-tray-20260430.png",
-  "18k-jewelry-buying": "/products/kcg-jewelry-buying-tray-20260430.png",
-  "14k-jewelry-buying": "/products/kcg-jewelry-buying-tray-20260430.png",
-  "platinum-silver-buying": "/products/kcg-jewelry-buying-tray-20260430.png",
-  "corporate-gift-production": "/products/kcg-b2b-gift-packaging-20260430.png",
-  "corporate-precious-metal-buying": "/products/kcg-b2b-gift-packaging-20260430.png",
+  "pure-gold-baby-ring-buying": "/products/kcg-jewelry-buying-tray-20260430.webp",
+  "18k-jewelry-buying": "/products/kcg-jewelry-buying-tray-20260430.webp",
+  "14k-jewelry-buying": "/products/kcg-jewelry-buying-tray-20260430.webp",
+  "platinum-silver-buying": "/products/kcg-jewelry-buying-tray-20260430.webp",
+  "corporate-gift-production": "/products/kcg-b2b-gift-packaging-20260430.webp",
+  "corporate-precious-metal-buying": "/products/kcg-b2b-gift-packaging-20260430.webp",
   "bulk-gold-silver-bar-consulting": "/campaign/kcg-hero-metal-bars.jpg",
 };
 
 export function getProductImageSrc(product: Product) {
   const imageUrl = product.imageUrl?.trim();
-  const slugDefaultImage = defaultProductImagesBySlug[product.slug];
-  if (imageUrl?.startsWith("/") && (!slugDefaultImage || !defaultProductImages.has(imageUrl))) {
+  if (imageUrl?.startsWith("/")) {
     return imageUrl;
   }
+
+  const slugDefaultImage = defaultProductImagesBySlug[product.slug];
   if (slugDefaultImage) return slugDefaultImage;
-  if (imageUrl?.startsWith("/")) return imageUrl;
   return getProductFallbackImage(product.category);
 }
 

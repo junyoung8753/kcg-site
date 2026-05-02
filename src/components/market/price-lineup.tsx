@@ -78,12 +78,12 @@ const rows: LineupRow[] = [
 
 const campaignSlides = [
   {
-    image: "/campaign/kcg-brand-gold-bars-20260427-v4.png",
+    image: "/campaign/kcg-brand-gold-bars-20260427-v4.webp",
     alt: "한국센터금거래소 골드바 브랜드 캠페인 이미지",
     objectPosition: "68% center",
   },
   {
-    image: "/campaign/kcg-main-desk-photo-20260427-v3.png",
+    image: "/campaign/kcg-main-desk-photo-20260427-v3.webp",
     alt: "한국센터금거래소 금·은 상담 데스크 이미지",
     objectPosition: "center center",
   },

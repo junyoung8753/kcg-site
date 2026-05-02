@@ -2,6 +2,10 @@ const encoder = new TextEncoder();
 
 export const ADMIN_SESSION_COOKIE = "kcga_admin_session";
 
+export function getAdminSessionSecretMode() {
+  return process.env.ADMIN_SESSION_SECRET ? "env" : "local-fallback";
+}
+
 function getSessionSecret() {
   return process.env.ADMIN_SESSION_SECRET || "local-admin-session-secret";
 }

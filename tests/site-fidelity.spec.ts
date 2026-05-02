@@ -150,6 +150,9 @@ test("desktop home keeps campaign slider and streamlined navigation", async ({ p
   const campaignVisual = page.getByTestId("home-campaign-visual");
   await expect(campaignVisual.getByRole("heading")).toHaveCount(0);
   await expect(campaignVisual).not.toContainText("방문 상담");
+  await expect(page.getByTestId("tradingview-market-widget")).toHaveCount(0);
+  await page.getByText("국제 금속 차트 열기").first().click();
+  await expect(page.getByTestId("tradingview-market-widget")).toBeVisible();
 
   await expectCampaignImagesLoaded(page);
   const heroImageWidth = await page.getByAltText(campaignAlts[0]).evaluate((node) => {
@@ -208,7 +211,7 @@ test("mobile products route exposes a consultation catalog without checkout", as
   await expect(page.getByRole("button", { name: "전체" })).toBeVisible();
   await expect(page.getByRole("button", { name: "골드바" })).toBeVisible();
   await expect(page.getByRole("button", { name: "순금제품" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "고금·주얼리 매입" })).toBeVisible();
+  await expect(page.getByTestId("product-tab-jewelry")).toBeVisible();
   await expect(page.getByTestId("product-count")).toContainText(/상품 \d+개/);
   const productCountBox = await page.getByTestId("product-count").boundingBox();
   expect(productCountBox?.y ?? 9999).toBeLessThan(900);
@@ -275,6 +278,20 @@ test("products tabs filter locally without RSC refetch or detail prefetch", asyn
 
   await page.waitForTimeout(300);
   expect(productRequests).toEqual([]);
+});
+
+test("product quick links sync same-route category query", async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 1100 });
+  await page.goto("/products", { waitUntil: "domcontentloaded" });
+
+  await page
+    .getByTestId("product-quick-rail")
+    .getByRole("button", { name: /고금·주얼리 매입/ })
+    .click();
+
+  await expect(page).toHaveURL(/category=jewelry/);
+  await expect(page.getByTestId("product-tab-jewelry")).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByTestId("product-count")).toContainText("4개");
 });
 
 test("public typography stays within the KCG route scale", async ({ page }) => {

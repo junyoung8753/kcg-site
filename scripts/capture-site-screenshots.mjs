@@ -71,6 +71,36 @@ async function waitForServer(url, timeoutMs = 120_000) {
   throw new Error(`Timed out waiting for ${url}: ${lastError?.message || "unknown error"}`);
 }
 
+async function primeLazyImagesForScreenshot(page) {
+  const images = page.locator("img");
+  const imageCount = await images.count();
+  for (let index = 0; index < imageCount; index += 1) {
+    const image = images.nth(index);
+    await image.scrollIntoViewIfNeeded({ timeout: 2_000 }).catch(() => {});
+    await image
+      .evaluate(
+        (node) =>
+          node.complete && node.naturalWidth > 0
+            ? true
+            : Promise.race([
+                new Promise((resolve) => {
+                  const settle = () => resolve(true);
+                  node.addEventListener("load", settle, { once: true });
+                  node.addEventListener("error", settle, { once: true });
+                }),
+                new Promise((resolve) => setTimeout(resolve, 1_200)),
+              ]),
+      )
+      .catch(() => {});
+  }
+
+  await page.evaluate(async () => {
+    window.scrollTo(0, 0);
+    await new Promise((resolve) => setTimeout(resolve, 180));
+  });
+  await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => {});
+}
+
 async function capture(page, route, viewport, filename, expectedText) {
   await page.setViewportSize(viewport);
   await page.goto(new URL(route, baseURL).href, { waitUntil: "domcontentloaded" });
@@ -79,6 +109,7 @@ async function capture(page, route, viewport, filename, expectedText) {
   if (!bodyText.includes(expectedText)) {
     throw new Error(`Refusing to capture ${route}; missing expected text: ${expectedText}`);
   }
+  await primeLazyImagesForScreenshot(page);
   await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: true });
 }
 

@@ -81,12 +81,12 @@ export const siteConfig = {
       description: "관계 법인의 랩그로운 다이아몬드 상품 안내 사이트입니다.",
     },
     {
-      label: "Davis Dia",
+      label: "다비스 다이아몬드",
       href: "https://davisdia.com/",
       description: "KC주얼리 그룹 관계 법인의 다이아몬드 유통 사이트입니다.",
     },
     {
-      label: "Diamin",
+      label: "다이아민족",
       href: "https://diamin.co.kr/",
       description: "다이아몬드 정보와 상품을 확인할 수 있는 관계 사이트입니다.",
     },
@@ -96,7 +96,7 @@ export const siteConfig = {
       description: "KCG 소식과 금값 정보 콘텐츠를 확인할 수 있는 외부 채널입니다.",
     },
     {
-      label: "Davis Diamond 블로그",
+      label: "다비스 다이아몬드 블로그",
       href: "https://blog.naver.com/davis_diamond",
       description: "다비스다이아몬드 소식과 다이아몬드 정보를 확인할 수 있는 블로그입니다.",
     },

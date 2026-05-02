@@ -33,32 +33,32 @@ const promoBanners = [
     title: "오늘 고시 시세",
     body: "살 때·팔 때 기준을 먼저 확인하세요.",
     href: "/prices",
-    image: "/campaign/kcg-brand-gold-bars-20260427-v4.png",
+    image: "/campaign/kcg-brand-gold-bars-20260427-v4.webp",
   },
   {
     title: "고금·주얼리 매입",
     body: "순금, 18K, 14K 기준가를 확인합니다.",
     href: "/products?category=jewelry",
-    image: "/products/kcg-jewelry-buying-tray-20260430.png",
+    image: "/products/kcg-jewelry-buying-tray-20260430.webp",
   },
   {
     title: "기업체 기념품·대량 상담",
     body: "수량, 납기, 예산 기준으로 상담합니다.",
     href: "/products?category=b2b",
-    image: "/products/kcg-b2b-gift-packaging-20260430.png",
+    image: "/products/kcg-b2b-gift-packaging-20260430.webp",
   },
   {
     title: "KC 랩그로운 다이아몬드",
     body: "관계 법인 다이아몬드 상품 안내",
     href: "https://www.kcdia.co.kr/",
-    image: "/campaign/kcg-main-desk-photo-20260427-v3.png",
+    image: "/campaign/kcg-main-desk-photo-20260427-v3.webp",
     external: true,
   },
   {
-    title: "Davis Dia",
+    title: "다비스 다이아몬드",
     body: "KC주얼리 그룹 다이아몬드 유통",
     href: "https://davisdia.com/",
-    image: "/company/kcg-company-heritage-20260430.png",
+    image: "/company/kcg-company-heritage-20260430.webp",
     external: true,
   },
   {
@@ -98,10 +98,12 @@ function ProductPromoCard({
   banner,
   compact = false,
   rail = false,
+  onInternalNavigate,
 }: {
   banner: (typeof promoBanners)[number];
   compact?: boolean;
   rail?: boolean;
+  onInternalNavigate?: (href: string) => void;
 }) {
   const content = (
     <span
@@ -137,6 +139,18 @@ function ProductPromoCard({
     );
   }
 
+  if (banner.href.startsWith("/products?") && onInternalNavigate) {
+    return (
+      <button
+        type="button"
+        onClick={() => onInternalNavigate(banner.href)}
+        className="block w-full text-left"
+      >
+        {content}
+      </button>
+    );
+  }
+
   return (
     <Link href={banner.href} prefetch={false} className="block">
       {content}
@@ -144,7 +158,7 @@ function ProductPromoCard({
   );
 }
 
-function ProductQuickRail() {
+function ProductQuickRail({ onInternalNavigate }: { onInternalNavigate: (href: string) => void }) {
   return (
     <aside
       data-testid="product-quick-rail"
@@ -152,7 +166,12 @@ function ProductQuickRail() {
       className="fixed right-0 top-[8.9rem] z-30 hidden w-[10.25rem] overflow-hidden border-y border-l border-black/20 bg-[#111] shadow-[-14px_18px_32px_rgba(0,0,0,0.16)] 2xl:block"
     >
       {promoBanners.map((banner) => (
-        <ProductPromoCard key={banner.title} banner={banner} rail />
+        <ProductPromoCard
+          key={banner.title}
+          banner={banner}
+          rail
+          onInternalNavigate={onInternalNavigate}
+        />
       ))}
       <a
         href="#top"
@@ -229,6 +248,17 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
     writeCatalogUrl(nextCategory, nextSort);
   }
 
+  function handleProductPromoNavigate(href: string) {
+    if (typeof window === "undefined") return;
+    const url = new URL(href, window.location.origin);
+    const nextCategory = normalizeCategory(url.searchParams.get("category"));
+    const nextSort = normalizeSort(url.searchParams.get("sort"));
+
+    setSelectedCategory(nextCategory);
+    setSelectedSort(nextSort);
+    writeCatalogUrl(nextCategory, nextSort);
+  }
+
   if (!publicProducts.length) {
     return (
       <section className="section-shell py-14">
@@ -266,7 +296,7 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
         })}
       </div>
 
-      <ProductQuickRail />
+      <ProductQuickRail onInternalNavigate={handleProductPromoNavigate} />
 
       <div className="mt-6">
         <div>
@@ -356,7 +386,12 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
 
           <div className="mt-10 grid gap-3 sm:grid-cols-2 xl:hidden">
             {promoBanners.slice(0, 2).map((banner) => (
-              <ProductPromoCard key={banner.title} banner={banner} compact />
+              <ProductPromoCard
+                key={banner.title}
+                banner={banner}
+                compact
+                onInternalNavigate={handleProductPromoNavigate}
+              />
             ))}
           </div>
         </div>

@@ -2,6 +2,17 @@ import { hasLegalInfoPlaceholders } from "@/lib/legal-info";
 import { isConfirmPreviewMode, isProductionDeployment } from "@/lib/runtime-env";
 import { siteConfig } from "@/lib/site-config";
 
+const approvedLaunchHostnames = new Set(["kcgold.co.kr", "www.kcgold.co.kr"]);
+
+export function isApprovedLaunchHostname(siteUrl = siteConfig.siteUrl) {
+  try {
+    const hostname = new URL(siteUrl).hostname.toLowerCase();
+    return approvedLaunchHostnames.has(hostname);
+  } catch {
+    return false;
+  }
+}
+
 export function getPublicLaunchContentBlockers() {
   const blockers: string[] = [];
 
@@ -9,7 +20,7 @@ export function getPublicLaunchContentBlockers() {
     blockers.push("사업자등록번호와 법적 표시가 임시값입니다.");
   }
 
-  if (!siteConfig.siteUrl.includes("kcgold.co.kr")) {
+  if (!isApprovedLaunchHostname()) {
     blockers.push("공개 대표 도메인이 kcgold.co.kr로 확정되지 않았습니다.");
   }
 

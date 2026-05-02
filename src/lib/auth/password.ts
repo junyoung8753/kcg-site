@@ -10,7 +10,7 @@ export function getAdminPassword() {
   }
 
   if (isPreviewDeployment() || isProductionDeployment()) {
-    return "__KCG_ADMIN_PASSWORD_NOT_CONFIGURED__";
+    return "";
   }
 
   return siteConfig.adminDemoPassword;
@@ -33,7 +33,12 @@ export function isUsingDemoPassword() {
 }
 
 export function compareAdminPassword(input: string) {
-  const expected = Buffer.from(getAdminPassword());
+  const adminPassword = getAdminPassword();
+  if (!adminPassword || getAdminPasswordMode() === "missing-env") {
+    return false;
+  }
+
+  const expected = Buffer.from(adminPassword);
   const actual = Buffer.from(input);
 
   if (expected.length !== actual.length) {

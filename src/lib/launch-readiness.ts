@@ -1,6 +1,11 @@
 import { getAdminPasswordMode } from "@/lib/auth/password";
+import { getAdminSessionSecretMode } from "@/lib/auth/session";
 import { getLegalPlaceholderNotice, hasLegalInfoPlaceholders } from "@/lib/legal-info";
-import { getPublicLaunchContentBlockers, getSearchExposureStatus } from "@/lib/public-launch";
+import {
+  getPublicLaunchContentBlockers,
+  getSearchExposureStatus,
+  isApprovedLaunchHostname,
+} from "@/lib/public-launch";
 import { getDeploymentStage, isConfirmPreviewMode } from "@/lib/runtime-env";
 import { siteConfig } from "@/lib/site-config";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
@@ -23,10 +28,13 @@ function scoreItem(level: LaunchReadinessLevel) {
 
 export function getLaunchReadiness() {
   const passwordMode = getAdminPasswordMode();
+  const sessionSecretMode = getAdminSessionSecretMode();
+  const adminAuthReady = passwordMode === "env" && sessionSecretMode === "env";
   const supabaseConfigured = isSupabaseConfigured();
   const publicLaunchBlockers = getPublicLaunchContentBlockers();
   const legalNotice = getLegalPlaceholderNotice();
   const deployment = getDeploymentStage();
+  const approvedLaunchHostname = isApprovedLaunchHostname();
 
   const items: LaunchReadinessItem[] = [
     {
@@ -41,11 +49,11 @@ export function getLaunchReadiness() {
     {
       key: "domain",
       title: "대표 도메인",
-      level: siteConfig.siteUrl.includes("kcgold.co.kr") ? "pass" : "warning",
-      summary: siteConfig.siteUrl.includes("kcgold.co.kr")
+      level: approvedLaunchHostname ? "pass" : "warning",
+      summary: approvedLaunchHostname
         ? "대표 도메인이 kcgold.co.kr 계열로 설정되어 있습니다."
         : `현재 사이트 URL은 ${siteConfig.siteUrl}입니다.`,
-      action: siteConfig.siteUrl.includes("kcgold.co.kr")
+      action: approvedLaunchHostname
         ? "DNS 정상 연결과 www 리다이렉트만 최종 확인합니다."
         : "Vercel에 kcgold.co.kr와 www.kcgold.co.kr를 추가하고 Cafe24 DNS를 연결합니다. 기존 MX/TXT/SPF/DKIM 레코드는 보존합니다.",
     },
@@ -65,15 +73,13 @@ export function getLaunchReadiness() {
     {
       key: "admin-auth",
       title: "관리자 인증",
-      level: passwordMode === "env" ? "pass" : "blocker",
-      summary:
-        passwordMode === "env"
-          ? "ADMIN_PASSWORD 환경변수 기반 인증을 사용합니다."
-          : `현재 인증 모드는 ${passwordMode}입니다.`,
-      action:
-        passwordMode === "env"
-          ? "정기 교체와 비밀값 보관 방식만 운영 절차로 유지합니다."
-          : "Vercel Preview/Production 환경변수에 ADMIN_PASSWORD와 ADMIN_SESSION_SECRET을 실제 비밀값으로 설정합니다.",
+      level: adminAuthReady ? "pass" : "blocker",
+      summary: adminAuthReady
+        ? "ADMIN_PASSWORD와 ADMIN_SESSION_SECRET 환경변수 기반 인증을 사용합니다."
+        : `현재 인증 모드는 password=${passwordMode}, session=${sessionSecretMode}입니다.`,
+      action: adminAuthReady
+        ? "정기 교체와 비밀값 보관 방식만 운영 절차로 유지합니다."
+        : "Vercel Preview/Production 환경변수에 ADMIN_PASSWORD와 ADMIN_SESSION_SECRET을 실제 비밀값으로 설정합니다.",
     },
     {
       key: "storage",

@@ -123,6 +123,8 @@ export async function updatePricesAction(formData: FormData) {
 
     revalidatePath("/");
     revalidatePath("/prices");
+    revalidatePath("/products");
+    revalidatePath("/products/[slug]", "page");
     revalidatePath("/admin/prices");
     redirectPath = `/admin/prices?${search.toString()}`;
   } catch {

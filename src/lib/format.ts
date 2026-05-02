@@ -16,7 +16,7 @@ export function formatNumber(value: number) {
 
 export function formatDateTimeKorean(value: string | Date) {
   const date = typeof value === "string" ? new Date(value) : value;
-  const parts = new Intl.DateTimeFormat("en-US", {
+  const parts = new Intl.DateTimeFormat("ko-KR", {
     year: "numeric",
     month: "numeric",
     day: "numeric",

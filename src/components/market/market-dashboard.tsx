@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TradingViewDisclosure } from "@/components/market/trading-view-disclosure";
 import { TradingViewMarketWidget } from "@/components/market/trading-view-widget";
 import { formatDateTimeKorean, formatWon } from "@/lib/format";
 import type {
@@ -38,32 +39,45 @@ function getToneClass(value: number) {
 
 function SourceLine({ data }: { data: MarketDashboardData }) {
   const sourceIsExternal = /^https?:\/\//.test(data.sourceUrl);
+  const staleLabel =
+    data.status === "fallback"
+      ? "fallback 기준으로 표시 중"
+      : data.isStale
+        ? `데이터 지연 가능 · ${data.staleMinutes}분 경과`
+        : null;
 
   return (
-    <p data-testid="market-source-line" className="text-xs leading-6 text-[#7d8585]">
-      출처:{" "}
-      <a
-        href={data.sourceUrl}
-        target={sourceIsExternal ? "_blank" : undefined}
-        rel={sourceIsExternal ? "noreferrer" : undefined}
-        className="font-semibold underline underline-offset-4"
-      >
-        {data.sourceName}
-      </a>{" "}
-      · 참고용 · {formatDateTimeKorean(data.updatedAt)} 기준 · USD/KRW {formatExchangeRate(data.krwRate)}
-    </p>
+    <div data-testid="market-source-line" className="text-xs leading-6 text-[#7d8585]">
+      <p>
+        출처:{" "}
+        <a
+          href={data.sourceUrl}
+          target={sourceIsExternal ? "_blank" : undefined}
+          rel={sourceIsExternal ? "noreferrer" : undefined}
+          className="font-semibold underline underline-offset-4"
+        >
+          {data.sourceName}
+        </a>{" "}
+        · 참고용 · {formatDateTimeKorean(data.updatedAt)} 기준 · USD/KRW {formatExchangeRate(data.krwRate)}
+      </p>
+      {staleLabel ? (
+        <p className="font-semibold text-[#9a6b00]">{staleLabel}</p>
+      ) : null}
+    </div>
   );
 }
 
-function SpotTable({ spots }: { spots: MarketSpot[] }) {
+function SpotTable({ data }: { data: MarketDashboardData }) {
+  const hasChangeData = data.capabilities.change;
+
   return (
     <div className="overflow-hidden border border-[#dfe6e4] bg-white">
       <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,0.8fr)] bg-[#f7fbfa] px-5 py-3 text-xs font-bold tracking-[0.14em] text-[#697171]">
         <p>국제 현재가</p>
         <p className="text-right">가격</p>
-        <p className="text-right">전일</p>
+        <p className="text-right">{hasChangeData ? "전일" : "상태"}</p>
       </div>
-      {spots.map((spot) => (
+      {data.spots.map((spot) => (
         <div
           key={spot.metal}
           className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,0.8fr)] items-center border-t border-[#e4ebe9] px-5 py-4 text-sm"
@@ -73,9 +87,13 @@ function SpotTable({ spots }: { spots: MarketSpot[] }) {
             <p className="mt-1 text-xs font-medium text-[#7d8585]">USD/T.oz</p>
           </div>
           <p className="text-right font-semibold tabular-nums text-[#15191b]">{formatUsd(spot.price)}</p>
-          <p className={`text-right text-xs font-semibold ${getToneClass(spot.changePercent)}`}>
-            {formatSignedPercent(spot.changePercent)}
-          </p>
+          {hasChangeData ? (
+            <p className={`text-right text-xs font-semibold ${getToneClass(spot.changePercent)}`}>
+              {formatSignedPercent(spot.changePercent)}
+            </p>
+          ) : (
+            <p className="text-right text-xs font-semibold text-[#8a9292]">현재가</p>
+          )}
         </div>
       ))}
     </div>
@@ -216,7 +234,7 @@ export function MarketDashboard({
       </div>
 
       <div className="grid items-start gap-6 xl:grid-cols-[1fr_0.82fr]">
-        <SpotTable spots={data.spots} />
+        <SpotTable data={data} />
         <ConversionTable
           data={data}
           goldDomestic={goldDomestic}
@@ -231,14 +249,7 @@ export function MarketDashboard({
           <TradingViewMarketWidget />
         </section>
       ) : (
-        <details className="mt-8 border border-[#dfe6e4] bg-white">
-          <summary className="cursor-pointer px-5 py-4 text-sm font-semibold text-[#15191b]">
-            국제 금속 차트 열기
-          </summary>
-          <div className="border-t border-[#e4ebe9]">
-            <TradingViewMarketWidget />
-          </div>
-        </details>
+        <TradingViewDisclosure />
       )}
 
       <section className="mt-8 grid gap-6 xl:grid-cols-2">

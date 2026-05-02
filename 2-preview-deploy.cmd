@@ -49,9 +49,9 @@ del /q "%LAST_URL_FILE%" 2>nul
 
 node .vercel-cli\node_modules\vercel\dist\index.js ^
   link ^
-  --scope %TEAM_SCOPE% ^
+  --scope "%TEAM_SCOPE%" ^
   --yes ^
-  --project %PROJECT_NAME%
+  --project "%PROJECT_NAME%"
 
 if errorlevel 1 (
   echo Failed to link Vercel project.
@@ -59,19 +59,7 @@ if errorlevel 1 (
   exit /b 1
 )
 
-node .vercel-cli\node_modules\vercel\dist\index.js ^
-  --scope %TEAM_SCOPE% ^
-  --yes ^
-  --format json ^
-  --build-env KCG_FORCE_NOINDEX=1 ^
-  --build-env NEXT_PUBLIC_SITE_URL=%SITE_URL% ^
-  --build-env ADMIN_PASSWORD=%KCG_PREVIEW_ADMIN_PASSWORD% ^
-  --build-env ADMIN_SESSION_SECRET=%KCG_PREVIEW_ADMIN_SESSION_SECRET% ^
-  --env KCG_FORCE_NOINDEX=1 ^
-  --env NEXT_PUBLIC_SITE_URL=%SITE_URL% ^
-  --env ADMIN_PASSWORD=%KCG_PREVIEW_ADMIN_PASSWORD% ^
-  --env ADMIN_SESSION_SECRET=%KCG_PREVIEW_ADMIN_SESSION_SECRET% ^
-  > "%LAST_URL_FILE%"
+node scripts\run-vercel-preview-deploy.mjs "%LAST_URL_FILE%"
 
 if errorlevel 1 (
   echo Preview deployment failed.

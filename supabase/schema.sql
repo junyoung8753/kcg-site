@@ -65,10 +65,38 @@ create table if not exists products (
 );
 
 alter table products add column if not exists subcategory text;
+alter table products add column if not exists short_description text not null default '';
+alter table products add column if not exists description text not null default '';
+alter table products add column if not exists image_url text;
+alter table products add column if not exists specs text[] not null default '{}';
+alter table products add column if not exists status text;
+alter table products add column if not exists display_order integer not null default 100;
+alter table products add column if not exists is_featured boolean not null default false;
+alter table products add column if not exists price_visible boolean not null default false;
 alter table products add column if not exists price_basis text not null default 'inquiry';
 alter table products add column if not exists weight_grams numeric;
 alter table products add column if not exists making_fee integer;
 alter table products add column if not exists manual_price integer;
+alter table products add column if not exists price_label text not null default '전화 문의';
+alter table products add column if not exists price_note text;
+alter table products add column if not exists public_note text;
+alter table products add column if not exists created_at timestamptz not null default now();
+alter table products add column if not exists updated_at timestamptz not null default now();
+
+alter table products drop constraint if exists products_status_check;
+
+update products
+set status = case
+  when status in ('active', 'inquiry_required', 'hidden') then status
+  when status in ('published', 'available') then 'active'
+  when status in ('draft', 'archived', 'inactive') then 'hidden'
+  else 'inquiry_required'
+end
+where status is null or status not in ('active', 'inquiry_required', 'hidden');
+
+alter table products alter column status set default 'inquiry_required';
+alter table products alter column status set not null;
+alter table products add constraint products_status_check check (status in ('active', 'inquiry_required', 'hidden'));
 
 create index if not exists idx_prices_display_order on prices(display_order);
 create index if not exists idx_price_history_changed_at on price_history(changed_at desc);

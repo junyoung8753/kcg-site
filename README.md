@@ -93,12 +93,12 @@ KCG_FORCE_NOINDEX=1
 
 자세한 실행 절차는 `docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md`를 기준으로 봅니다.
 
-- `kcgold.co.kr`와 `www.kcgold.co.kr`는 Whois에서 구매한 도메인 기준입니다.
-- Vercel에 도메인을 추가한 뒤 `vercel domains inspect`가 알려주는 정확한 A/CNAME 값을 Whois DNS에 입력합니다.
+- `kcgold.co.kr`와 `www.kcgold.co.kr`는 Cafe24 DNS 관리 화면을 기준으로 연결합니다.
+- Vercel에 도메인을 추가한 뒤 `vercel domains inspect`가 알려주는 정확한 A/CNAME 값을 Cafe24 DNS에 입력합니다.
 - 기존 MX/TXT/SPF/DKIM 같은 메일·인증 레코드는 삭제하지 않습니다.
 - DNS 연결 후에도 `KCG_FORCE_NOINDEX=1`은 유지합니다.
 - Supabase 운영 DB는 `supabase/schema.sql`과 `supabase/seed.sql`을 기준으로 준비합니다.
-- Supabase service role 또는 secret key, Vercel env, Whois 비밀번호는 채팅이나 Git에 남기지 않습니다.
+- Supabase service role 또는 secret key, Vercel env, Cafe24 비밀번호는 채팅이나 Git에 남기지 않습니다.
 
 ## 로컬 실행
 
