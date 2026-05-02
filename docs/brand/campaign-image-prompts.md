@@ -1,6 +1,6 @@
 # KCG Campaign Image Prompts
 
-Last updated: 2026-04-30 KST.
+Last updated: 2026-05-03 KST.
 
 This document is the source of truth for KCG campaign, product, service, and visit-guide image generation. It intentionally describes the image itself and avoids brittle layout instructions such as price-table placement, empty space, black boxes, UI overlays, or left/right panel slots.
 
@@ -14,21 +14,30 @@ This document is the source of truth for KCG campaign, product, service, and vis
 ## Current Asset Decisions
 
 - Public UI should reference the optimized `.webp` versions of the large generated assets. Keep the original `.png` files in `public/` only as source-preserving originals for review and future re-export.
-- `public/campaign/kcg-brand-gold-bars-20260427-v4.webp`: current home first-slide review banner. It uses the KCG-owned/generated source `1.png` as a stronger gold-bar campaign visual. The baked KCG-style brand marks are accepted for this review candidate because they are KCG-specific and sit behind the live price lineup rather than replacing HTML/UI text.
-- `public/campaign/kcg-main-desk-photo-20260427-v3.webp`: supporting home slide. It uses the approved File-Hub source `ChatGPT Image 2026년 4월 27일 오후 01_02_09.png` without baked campaign copy, fake logo text, white haze, or UI-like placeholders.
+- `public/campaign/kcg-home-product-keyvisual-20260503.webp`: current home first-slide candidate. It is a text-free commercial product key visual with larger gold/silver product scale, a scale, blank envelopes, and calmer left-side space for the live price panel.
+- `public/campaign/kcg-home-inspection-action-20260503.webp`: current service/home supporting candidate. It shows a cropped gloved inspection action without faces, readable documents, prices, or fake logos.
+- `public/campaign/kcg-visit-transaction-guide-20260503.webp`: current visit/company supporting image. It is a clean transaction-preparation counter scene for 매장안내, 회사소개, or service context.
+- `public/products/kcg-product-gold-silver-catalog-20260503.webp`: current gold/silver catalog candidate. It gives product cards a sharper catalog image than the older repeated desk photos.
+- `public/products/kcg-silver-gift-20260427-v2.jpg`: retained for silver-bar product/category cards so gold and silver surfaces do not repeat the same image. Keep it only where silver recognition matters more than using the newest generated set.
+- `public/products/kcg-product-jewelry-buying-20260503.webp`: current jewelry-buying candidate. It replaces repeated jewelry-buying fallback imagery with a cleaner tray/scale scene.
+- `public/products/kcg-product-b2b-consulting-20260503.webp`: current B2B candidate. It separates corporate/bulk consultation from generic jewelry or white-glove images.
+- `public/image-options/2026-05-03`: review folder with copied existing-current images, new original PNGs, optimized new WebPs, contact sheets, and a manifest so junyoung can compare choices later.
+- `public/image-options/2026-05-03/diverse-banner-directions`: second-pass banner candidates created after junyoung pointed out that the first 2026-05-03 set still repeated the same gold-bar, gloves, envelope, and scale vocabulary. These candidates are not applied by default; use them for choosing a genuinely different home/banner direction.
+- `public/campaign/kcg-brand-gold-bars-20260427-v4.webp`: previous home first-slide review banner. Keep it as a comparison candidate; it has campaign energy but baked KCG-style marks and a darker poster feel than the 2026-05-03 text-free key visual.
+- `public/campaign/kcg-main-desk-photo-20260427-v3.webp`: previous supporting home slide. Keep it as a comparison candidate; it avoids fake copy but repeats the beige consultation-room desk mood.
 - `public/campaign/kcg-advisor-counter-20260430.webp`: generated with the built-in image tool for a gloved-hands consultation scene. It is allowed because it shows no identifiable face, staff identity, customer testimonial, fake logo, price board, or private document. Use it mainly for service/process contexts; avoid overusing it as a home campaign slide so the whole site does not become a same-looking white-glove visual set.
-- `public/campaign/kcg-hero-gold-bars.jpg`: preferred fourth home slide after the 2026-04-30 image-role review. It keeps the home carousel product-led and moves the white-glove action image back to service/process surfaces.
+- `public/campaign/kcg-hero-gold-bars.jpg`: previous fourth home slide after the 2026-04-30 image-role review. Keep as a clean product fallback, but current home carousel uses `kcg-hero-metal-bars.jpg` as the retained legacy slide because it contrasts better with the new text-free 2026-05-03 candidates.
 - `public/company/kcg-company-heritage-20260430.webp`: generated with the built-in image tool for company-introduction visual credibility. It is a generic KCG-compatible consultation desk mood image and does not replace verified legal/company information.
-- `public/products/kcg-jewelry-buying-tray-20260430.webp`: generated with the built-in image tool to replace the jewelry category fallback with a more accurate old-gold/jewelry buying tray scene.
-- `public/products/kcg-b2b-gift-packaging-20260430.webp`: generated with the built-in image tool for B2B and corporate gift consultation cards.
+- `public/products/kcg-jewelry-buying-tray-20260430.webp`: previous jewelry-buying fallback. Keep as a comparison candidate; current public catalog prefers `kcg-product-jewelry-buying-20260503.webp`.
+- `public/products/kcg-b2b-gift-packaging-20260430.webp`: previous B2B/corporate gift fallback. Keep as a comparison candidate; current public catalog prefers `kcg-product-b2b-consulting-20260503.webp`.
 - `public/campaign/kcg-main-commerce-banner-20260427-v2.jpg`: retired from the first slide. The composition was useful as a controlled experiment, but the baked advertising copy and generated commercial-poster feel did not match the requested reference direction.
-- `public/products/kcg-old-gold-jewelry-20260427-v2.jpg`: old-gold/jewelry category asset cropped from a Wikimedia Commons / The Met public-domain (CC0) image: `https://upload.wikimedia.org/wikipedia/commons/d/d9/Gold_ring_set_with_an_emerald_MET_DT283.jpg`. Keep only as a fallback; current public catalog should prefer `kcg-jewelry-buying-tray-20260430.webp`.
+- `public/products/kcg-old-gold-jewelry-20260427-v2.jpg`: old-gold/jewelry category asset cropped from a Wikimedia Commons / The Met public-domain (CC0) image: `https://upload.wikimedia.org/wikipedia/commons/d/d9/Gold_ring_set_with_an_emerald_MET_DT283.jpg`. Keep only as a fallback; current public catalog should prefer `kcg-product-jewelry-buying-20260503.webp`.
 - `KakaoTalk_20260427_125126082_01.png`: official wide KCG lockup. Use as a real UI or compositing layer when needed; do not ask AI to redraw it.
 - `KakaoTalk_20260427_125126082.png`: official KCG symbol. Use as a real UI or compositing layer when needed.
-- `ChatGPT Image 2026년 4월 27일 오후 01_02_09.png`: approved source for the current first slide because it avoids baked text, fake KCG marks, price boards, people, and private documents. It can still be replaced later by a stronger real KCG-shot commercial key visual.
+- `ChatGPT Image 2026년 4월 27일 오후 01_02_09.png`: approved in the 2026-04-27 image pass because it avoided baked text, fake KCG marks, price boards, people, and private documents. It is now a comparison/fallback candidate; the 2026-05-03 text-free commercial product key visual is the current first slide.
 - `ChatGPT Image 2026년 4월 27일 오후 01_01_57.png`: usable only for location, silver bar, and purchase-guide supporting surfaces.
 - `ChatGPT Image 2026년 4월 27일 오후 01_01_43.png`: usable only for service/process and B2B supporting surfaces.
-- `1.png`: promoted into `public/campaign/kcg-brand-gold-bars-20260427-v4.webp` for this review round because it has stronger campaign energy than the plain consultation-room image and uses KCG-specific generated branding rather than competitor material.
+- `1.png`: promoted into `public/campaign/kcg-brand-gold-bars-20260427-v4.webp` in the 2026-04-30 review round because it had stronger campaign energy than the plain consultation-room image and used KCG-specific generated branding rather than competitor material.
 - `ChatGPT Image 2026년 4월 27일 오후 01_28_38.png`: hold for public backgrounds because text, logo-like marks, and campaign copy are baked into the image without enough first-screen advantage.
 
 ## Benchmark Direction After 2026-04-27 Review
@@ -44,7 +53,8 @@ KCG takeaway:
 
 - The home banner should feel like a Korean gold-exchange advertisement key visual, not a generic AI consultation-room photo.
 - Competitor patterns may be borrowed aggressively at the level of structure, hierarchy, category grouping, and visual grammar, but competitor-owned images, prices, slogans, copy, logos, staff/model photos, and internal endpoints are not copied into KCG.
-- The hero visual needs one dominant object group: large gold bars, silver bars, packaging, scale, or a gloved hand interacting with metal.
+- The hero visual needs one dominant idea, not one repeated prop formula. Candidate batches must include at least three genuinely different directions such as pure product minimalism, retail/store atmosphere, secure vault/custody mood, local storefront context, warm metal macro, silver-led contrast, or editorial graphic treatment. Do not make every banner a variation of gold bars plus gloves, envelopes, and a scale.
+- Gloves, certificate envelopes, and scales are useful process props, but they are not required for banners. Use them only when the image role is inspection, weighing, transaction preparation, or service explanation.
 - Product scale must be bigger than the current desk images. Small objects on a beige desk read as stock photography and lose the exchange-site feeling.
 - Use clean white, charcoal, gold, muted orange, and warm metal reflections. Avoid purple, bokeh, fantasy glow, luxury-hotel lounge mood, and generic marble desk staging.
 - Human faces should remain out unless KCG approves model rights. Hands, gloves, sleeves, or a cropped torso can be used when they make the scene feel more commercial and real.
@@ -138,6 +148,7 @@ Generate a realistic high-end but understated 16:9 commercial image for a Korean
 ## Use Notes
 
 - Generate one candidate per prompt number before asking for variants.
+- For a new banner exploration, generate one candidate per distinct art direction before making variants. A usable set should let junyoung choose between different concepts, not just different crops of the same gold-bar tabletop.
 - Save accepted source files in the File-Hub AI folder first, then copy only approved, optimized public assets into the repo.
 - Reject images that introduce fake prices, fake compliance claims, competitor marks, or private document details.
 - Reject home banner candidates where the product scale is small, the scene reads as a generic beige office, or the image still feels usable for any random finance/luxury site.

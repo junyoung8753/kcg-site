@@ -41,7 +41,7 @@ export default function CompanyPage() {
 
           <div className="relative min-h-[13rem] overflow-hidden border border-[#dde5e2] bg-[#151518] sm:min-h-[20rem]">
             <Image
-              src="/company/kcg-company-heritage-20260430.webp"
+              src="/campaign/kcg-visit-transaction-guide-20260503.webp"
               alt="한국센터금거래소 회사소개 상담 데스크 이미지"
               fill
               priority

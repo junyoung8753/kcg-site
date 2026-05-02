@@ -1,10 +1,10 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const campaignAlts = [
-  "한국센터금거래소 골드바 브랜드 캠페인 이미지",
-  "한국센터금거래소 금·은 상담 데스크 이미지",
+  "한국센터금거래소 골드바와 실버바 상담 키비주얼",
+  "한국센터금거래소 금괴 확인 상담 장면",
+  "한국센터금거래소 거래 준비 상담 데스크",
   "골드바와 실버바 키비주얼 배너",
-  "중량별 골드바 제품 배너",
 ];
 const explicitAdminPassword = process.env.KCG_TEST_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
 const auditUrl = process.env.SITE_AUDIT_URL;
@@ -228,10 +228,10 @@ test("mobile products route exposes a consultation catalog without checkout", as
   const productImageSources = await page.locator("main img[alt$='이미지']").evaluateAll((images) =>
     images.map((image) => (image instanceof HTMLImageElement ? image.currentSrc || image.src : "")),
   );
-  expect(productImageSources.some((src) => src.includes("kcg-gold-bar-catalog-20260427"))).toBe(true);
-  expect(productImageSources.some((src) => src.includes("kcg-jewelry-buying-tray-20260430"))).toBe(true);
-  expect(productImageSources.some((src) => src.includes("kcg-silver-gift-20260427-v2"))).toBe(true);
-  expect(productImageSources.some((src) => src.includes("kcg-b2b-gift-packaging-20260430"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-product-gold-silver-catalog-20260503"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-product-jewelry-buying-20260503"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-product-b2b-consulting-20260503"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-home-product-keyvisual-20260503"))).toBe(true);
   expect(new Set(productImageSources).size).toBeGreaterThanOrEqual(6);
   await expect(page.locator("main")).not.toContainText("방문 상담");
   await expect(page.locator("main")).not.toContainText("관리자에서");
@@ -503,13 +503,23 @@ test("admin prices exposes auto-fill draft workflow and compact posted-price edi
   await expect(page).toHaveURL(/\/admin\/prices/);
 
   await expect(page.getByRole("heading", { name: "오늘 시세 관리" })).toBeVisible();
-  await expect(page.getByText("자동입력", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("초안만 생성")).toBeVisible();
+  await expect(page.getByTestId("admin-price-mode-switch")).toBeVisible();
+  await expect(page.getByRole("button", { name: "자동시세 ON" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "자동시세 OFF" })).toBeVisible();
+  await expect(page.getByText("대표가 직접 넣는")).toHaveCount(0);
+
+  await page.getByRole("button", { name: "자동시세 ON" }).click();
+  await expect(page.getByTestId("admin-price-auto-panel")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "자동시세 초안" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "자동 계산 공식" })).toBeVisible();
+  await expect(page.getByText("국제 금 3.75g 환산가").first()).toBeVisible();
   await expect(page.getByRole("button", { name: "초안 생성" })).toBeVisible();
   await expect(page.getByRole("link", { name: "한국금거래소 참고 보기" })).toBeVisible();
   await expect(page.getByRole("link", { name: "삼성금거래소 참고 보기" })).toBeVisible();
   await expect(page.getByRole("link", { name: "GBK 참고 보기" })).toBeVisible();
+  await expect(page.getByTestId("admin-price-editor")).toHaveCount(0);
 
+  await page.getByRole("button", { name: "자동시세 OFF" }).click();
   const editor = page.getByTestId("admin-price-editor");
   await expect(editor.getByRole("columnheader", { name: "품목" })).toBeVisible();
   await expect(editor.getByRole("columnheader", { name: "현재 공개가" })).toBeVisible();

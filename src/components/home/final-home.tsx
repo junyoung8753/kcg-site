@@ -178,7 +178,7 @@ export async function FinalHome() {
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-[#eef4f2]">
                     <Image
-                      src={matched ? getProductImageSrc(matched) : "/products/kcg-gold-bar-catalog-20260427-v2.jpg"}
+                      src={matched ? getProductImageSrc(matched) : "/products/kcg-product-gold-silver-catalog-20260503.webp"}
                       alt={`${category.label} 이미지`}
                       fill
                       className="object-cover transition duration-500 group-hover:scale-[1.03]"

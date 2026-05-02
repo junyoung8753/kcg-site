@@ -1,0 +1,66 @@
+[
+  {
+    "code": "A",
+    "slug": "product-minimalism",
+    "title": "제품 미니멀",
+    "differentiation": "장갑/봉투/저울 없음",
+    "original": "originals/kcg-banner-direction-a-product-minimalism-20260503.png",
+    "webp": "webp/kcg-banner-direction-a-product-minimalism-20260503.webp"
+  },
+  {
+    "code": "B",
+    "slug": "retail-store-atmosphere",
+    "title": "매장 분위기",
+    "differentiation": "테이블 소품 중심 아님",
+    "original": "originals/kcg-banner-direction-b-retail-store-atmosphere-20260503.png",
+    "webp": "webp/kcg-banner-direction-b-retail-store-atmosphere-20260503.webp"
+  },
+  {
+    "code": "C",
+    "slug": "secure-vault-confidence",
+    "title": "금고/보관 신뢰감",
+    "differentiation": "매장 카운터 클리셰 아님",
+    "original": "originals/kcg-banner-direction-c-secure-vault-confidence-20260503.png",
+    "webp": "webp/kcg-banner-direction-c-secure-vault-confidence-20260503.webp"
+  },
+  {
+    "code": "D",
+    "slug": "jongno-storefront",
+    "title": "종로형 매장 외부",
+    "differentiation": "제품 테이블 아님",
+    "original": "originals/kcg-banner-direction-d-jongno-storefront-20260503.png",
+    "webp": "webp/kcg-banner-direction-d-jongno-storefront-20260503.webp"
+  },
+  {
+    "code": "E",
+    "slug": "warm-metal-macro",
+    "title": "금속 매크로",
+    "differentiation": "판매 장면 아님",
+    "original": "originals/kcg-banner-direction-e-warm-metal-macro-20260503.png",
+    "webp": "webp/kcg-banner-direction-e-warm-metal-macro-20260503.webp"
+  },
+  {
+    "code": "F",
+    "slug": "editorial-graphic",
+    "title": "그래픽 포스터형",
+    "differentiation": "실사 매장 아님",
+    "original": "originals/kcg-banner-direction-f-editorial-graphic-20260503.png",
+    "webp": "webp/kcg-banner-direction-f-editorial-graphic-20260503.webp"
+  },
+  {
+    "code": "G",
+    "slug": "consultation-table",
+    "title": "상담 테이블",
+    "differentiation": "장갑/저울/봉투 없음",
+    "original": "originals/kcg-banner-direction-g-consultation-table-20260503.png",
+    "webp": "webp/kcg-banner-direction-g-consultation-table-20260503.webp"
+  },
+  {
+    "code": "H",
+    "slug": "silver-led-contrast",
+    "title": "실버 중심 대비",
+    "differentiation": "골드 과다 아님",
+    "original": "originals/kcg-banner-direction-h-silver-led-contrast-20260503.png",
+    "webp": "webp/kcg-banner-direction-h-silver-led-contrast-20260503.webp"
+  }
+]

@@ -67,35 +67,35 @@ export function getProductPriceBasisLabel(priceBasis: ProductPriceBasis) {
 }
 
 export function getProductFallbackImage(category: ProductCategory) {
-  if (category === "gold_bar") return "/products/kcg-gold-bar-catalog-20260427-v2.jpg";
+  if (category === "gold_bar") return "/products/kcg-product-gold-silver-catalog-20260503.webp";
   if (category === "silver_bar") return "/products/kcg-silver-gift-20260427-v2.jpg";
   if (category === "pure_gold") return "/products/kcg-pure-gold-products-20260427-v2.jpg";
-  if (category === "jewelry") return "/products/kcg-jewelry-buying-tray-20260430.webp";
-  if (category === "purchase_guide") return "/products/kcg-buying-process-20260427-v2.jpg";
-  if (category === "custom_order") return "/products/kcg-b2b-gift-packaging-20260430.webp";
-  return "/products/kcg-gold-bar-catalog-20260427-v2.jpg";
+  if (category === "jewelry") return "/products/kcg-product-jewelry-buying-20260503.webp";
+  if (category === "purchase_guide") return "/campaign/kcg-visit-transaction-guide-20260503.webp";
+  if (category === "custom_order") return "/products/kcg-product-b2b-consulting-20260503.webp";
+  return "/products/kcg-product-gold-silver-catalog-20260503.webp";
 }
 
 const defaultProductImagesBySlug: Record<string, string> = {
-  "kcg-gold-bar-1g": "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
-  "investment-gold-bar-consulting": "/products/kcg-gold-bar-catalog-20260427-v2.jpg",
-  "kcg-gold-bar-10g": "/products/kcg-gold-bar-catalog-20260427.jpg",
-  "kcg-gold-bar-37-5g": "/campaign/kcg-hero-gold-bars.jpg",
-  "kcg-gold-bar-100g": "/campaign/kcg-brand-gold-bars-20260427-v4.webp",
+  "kcg-gold-bar-1g": "/products/kcg-product-gold-silver-catalog-20260503.webp",
+  "investment-gold-bar-consulting": "/products/kcg-product-gold-silver-catalog-20260503.webp",
+  "kcg-gold-bar-10g": "/campaign/kcg-home-product-keyvisual-20260503.webp",
+  "kcg-gold-bar-37-5g": "/campaign/kcg-home-product-keyvisual-20260503.webp",
+  "kcg-gold-bar-100g": "/campaign/kcg-home-product-keyvisual-20260503.webp",
   "kcg-silver-bar-100g": "/products/kcg-silver-gift-20260427-v2.jpg",
-  "kcg-silver-bar-500g": "/products/kcg-silver-bar-catalog-20260427.jpg",
-  "kcg-silver-bar-1kg": "/campaign/kcg-hero-metal-bars.jpg",
+  "kcg-silver-bar-500g": "/campaign/kcg-hero-metal-bars.jpg",
+  "kcg-silver-bar-1kg": "/products/kcg-silver-gift-20260427-v2.jpg",
   "pure-gold-baby-ring-3-75g": "/products/kcg-pure-gold-products-20260427-v2.jpg",
-  "pure-gold-card-1g": "/products/kcg-gold-bar-catalog-20260427.jpg",
-  "pure-gold-commemorative-medal": "/campaign/kcg-hero-gold-bars.jpg",
+  "pure-gold-card-1g": "/products/kcg-product-gold-silver-catalog-20260503.webp",
+  "pure-gold-commemorative-medal": "/products/kcg-pure-gold-products-20260427-v2.jpg",
   "pure-gold-gift-consulting": "/products/kcg-pure-gold-products-20260427-v2.jpg",
-  "pure-gold-baby-ring-buying": "/products/kcg-jewelry-buying-tray-20260430.webp",
-  "18k-jewelry-buying": "/products/kcg-jewelry-buying-tray-20260430.webp",
-  "14k-jewelry-buying": "/products/kcg-jewelry-buying-tray-20260430.webp",
-  "platinum-silver-buying": "/products/kcg-jewelry-buying-tray-20260430.webp",
-  "corporate-gift-production": "/products/kcg-b2b-gift-packaging-20260430.webp",
-  "corporate-precious-metal-buying": "/products/kcg-b2b-gift-packaging-20260430.webp",
-  "bulk-gold-silver-bar-consulting": "/campaign/kcg-hero-metal-bars.jpg",
+  "pure-gold-baby-ring-buying": "/products/kcg-product-jewelry-buying-20260503.webp",
+  "18k-jewelry-buying": "/products/kcg-product-jewelry-buying-20260503.webp",
+  "14k-jewelry-buying": "/products/kcg-product-jewelry-buying-20260503.webp",
+  "platinum-silver-buying": "/products/kcg-product-jewelry-buying-20260503.webp",
+  "corporate-gift-production": "/products/kcg-product-b2b-consulting-20260503.webp",
+  "corporate-precious-metal-buying": "/products/kcg-product-b2b-consulting-20260503.webp",
+  "bulk-gold-silver-bar-consulting": "/products/kcg-product-b2b-consulting-20260503.webp",
 };
 
 export function getProductImageSrc(product: Product) {

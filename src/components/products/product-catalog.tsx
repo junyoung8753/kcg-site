@@ -33,25 +33,25 @@ const promoBanners = [
     title: "오늘 고시 시세",
     body: "살 때·팔 때 기준을 먼저 확인하세요.",
     href: "/prices",
-    image: "/campaign/kcg-brand-gold-bars-20260427-v4.webp",
+    image: "/campaign/kcg-home-product-keyvisual-20260503.webp",
   },
   {
     title: "고금·주얼리 매입",
     body: "순금, 18K, 14K 기준가를 확인합니다.",
     href: "/products?category=jewelry",
-    image: "/products/kcg-jewelry-buying-tray-20260430.webp",
+    image: "/products/kcg-product-jewelry-buying-20260503.webp",
   },
   {
     title: "기업체 기념품·대량 상담",
     body: "수량, 납기, 예산 기준으로 상담합니다.",
     href: "/products?category=b2b",
-    image: "/products/kcg-b2b-gift-packaging-20260430.webp",
+    image: "/products/kcg-product-b2b-consulting-20260503.webp",
   },
   {
     title: "KC 랩그로운 다이아몬드",
     body: "관계 법인 다이아몬드 상품 안내",
     href: "https://www.kcdia.co.kr/",
-    image: "/campaign/kcg-main-desk-photo-20260427-v3.webp",
+    image: "/products/kcg-product-jewelry-buying-20260503.webp",
     external: true,
   },
   {
@@ -65,7 +65,7 @@ const promoBanners = [
     title: "KCG 네이버 블로그",
     body: "금값 정보와 KCG 소식",
     href: "https://m.blog.naver.com/kcgoldx?tab=1",
-    image: "/campaign/kcg-hero-gold-bars.jpg",
+    image: "/campaign/kcg-visit-transaction-guide-20260503.webp",
     external: true,
   },
 ] as const;

@@ -24,7 +24,7 @@ export default function AboutPage() {
         <div className="section-shell grid gap-6 py-6 sm:py-8 lg:grid-cols-[0.44fr_0.56fr] lg:items-stretch">
           <div className="relative min-h-[13rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:min-h-[17rem] lg:min-h-[18rem]">
             <Image
-              src="/campaign/kcg-visit-desk-20260427.jpg"
+              src="/campaign/kcg-visit-transaction-guide-20260503.webp"
               alt="한국센터금거래소 거래 확인 데스크"
               fill
               priority

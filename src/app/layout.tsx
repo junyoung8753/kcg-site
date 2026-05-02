@@ -18,7 +18,7 @@ const ibmPlexSansKr = IBM_Plex_Sans_KR({
 });
 
 const socialImage = {
-  url: "/campaign/kcg-brand-gold-bars-20260427-v4.webp",
+  url: "/campaign/kcg-home-product-keyvisual-20260503.webp",
   width: 1672,
   height: 941,
   alt: "한국센터금거래소 골드바와 금거래 상담 이미지",

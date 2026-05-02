@@ -1,0 +1,62 @@
+[
+  {
+    "slug": "kcg-home-product-keyvisual-20260503",
+    "category": "campaign",
+    "original": "public/image-options/2026-05-03/new/originals/kcg-home-product-keyvisual-20260503.png",
+    "optimized": "public/campaign/kcg-home-product-keyvisual-20260503.webp",
+    "review_copy": "public/image-options/2026-05-03/new/webp/kcg-home-product-keyvisual-20260503.webp",
+    "width": 1672,
+    "height": 941,
+    "optimized_bytes": 111286
+  },
+  {
+    "slug": "kcg-home-inspection-action-20260503",
+    "category": "campaign",
+    "original": "public/image-options/2026-05-03/new/originals/kcg-home-inspection-action-20260503.png",
+    "optimized": "public/campaign/kcg-home-inspection-action-20260503.webp",
+    "review_copy": "public/image-options/2026-05-03/new/webp/kcg-home-inspection-action-20260503.webp",
+    "width": 1672,
+    "height": 941,
+    "optimized_bytes": 114082
+  },
+  {
+    "slug": "kcg-product-gold-silver-catalog-20260503",
+    "category": "products",
+    "original": "public/image-options/2026-05-03/new/originals/kcg-product-gold-silver-catalog-20260503.png",
+    "optimized": "public/products/kcg-product-gold-silver-catalog-20260503.webp",
+    "review_copy": "public/image-options/2026-05-03/new/webp/kcg-product-gold-silver-catalog-20260503.webp",
+    "width": 1448,
+    "height": 1086,
+    "optimized_bytes": 164464
+  },
+  {
+    "slug": "kcg-product-jewelry-buying-20260503",
+    "category": "products",
+    "original": "public/image-options/2026-05-03/new/originals/kcg-product-jewelry-buying-20260503.png",
+    "optimized": "public/products/kcg-product-jewelry-buying-20260503.webp",
+    "review_copy": "public/image-options/2026-05-03/new/webp/kcg-product-jewelry-buying-20260503.webp",
+    "width": 1448,
+    "height": 1086,
+    "optimized_bytes": 153790
+  },
+  {
+    "slug": "kcg-product-b2b-consulting-20260503",
+    "category": "products",
+    "original": "public/image-options/2026-05-03/new/originals/kcg-product-b2b-consulting-20260503.png",
+    "optimized": "public/products/kcg-product-b2b-consulting-20260503.webp",
+    "review_copy": "public/image-options/2026-05-03/new/webp/kcg-product-b2b-consulting-20260503.webp",
+    "width": 1448,
+    "height": 1086,
+    "optimized_bytes": 102386
+  },
+  {
+    "slug": "kcg-visit-transaction-guide-20260503",
+    "category": "campaign",
+    "original": "public/image-options/2026-05-03/new/originals/kcg-visit-transaction-guide-20260503.png",
+    "optimized": "public/campaign/kcg-visit-transaction-guide-20260503.webp",
+    "review_copy": "public/image-options/2026-05-03/new/webp/kcg-visit-transaction-guide-20260503.webp",
+    "width": 1672,
+    "height": 941,
+    "optimized_bytes": 121650
+  }
+]

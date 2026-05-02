@@ -78,24 +78,24 @@ const rows: LineupRow[] = [
 
 const campaignSlides = [
   {
-    image: "/campaign/kcg-brand-gold-bars-20260427-v4.webp",
-    alt: "한국센터금거래소 골드바 브랜드 캠페인 이미지",
+    image: "/campaign/kcg-home-product-keyvisual-20260503.webp",
+    alt: "한국센터금거래소 골드바와 실버바 상담 키비주얼",
     objectPosition: "68% center",
   },
   {
-    image: "/campaign/kcg-main-desk-photo-20260427-v3.webp",
-    alt: "한국센터금거래소 금·은 상담 데스크 이미지",
-    objectPosition: "center center",
+    image: "/campaign/kcg-home-inspection-action-20260503.webp",
+    alt: "한국센터금거래소 금괴 확인 상담 장면",
+    objectPosition: "64% center",
+  },
+  {
+    image: "/campaign/kcg-visit-transaction-guide-20260503.webp",
+    alt: "한국센터금거래소 거래 준비 상담 데스크",
+    objectPosition: "58% center",
   },
   {
     image: "/campaign/kcg-hero-metal-bars.jpg",
     alt: "골드바와 실버바 키비주얼 배너",
     objectPosition: "center center",
-  },
-  {
-    image: "/campaign/kcg-hero-gold-bars.jpg",
-    alt: "중량별 골드바 제품 배너",
-    objectPosition: "58% center",
   },
 ] as const;
 

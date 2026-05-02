@@ -1,6 +1,6 @@
 # KCG Open Tasks
 
-Last updated: 2026-04-30 KST.
+Last updated: 2026-05-03 KST.
 
 This is the active task ledger for the KCG launch candidate on `codex/kcg-launch-readiness-catalog-20260427`.
 
@@ -62,6 +62,7 @@ Do not record passwords, tokens, cookies, recovery codes, real account credentia
 | KCG-TODO-042 | P2 | done | codex | Prepare a concise launch briefing for management review. | A no-secret briefing explains site direction, benchmark rationale, current readiness, remaining real-data decisions, and API/search launch posture. | `docs/setup/LAUNCH_BRIEFING.md` |
 | KCG-TODO-043 | P1 | done | codex | Add admin posted-price auto-fill drafts and improve admin operation UX. | `/admin/prices` has a compact posted-price table, auto-fill settings, draft generation/apply/reject flow, lawful-source-only formulas, Supabase schema for settings/suggestions, cron route guarded by secret auth, and no competitor scraping or random price offsets. `/admin`, `/admin/products`, and `/admin/announcements` are easier to scan. | Passed locally: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run tasks:dashboard`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm audit --audit-level=moderate`, `git diff --check`. Vercel production `CRON_SECRET` was added without exposing the secret value. The deployable Hobby-plan cron is daily at `0 0 * * *`; 2-hour cron requires Vercel Pro or an external scheduler. |
 | KCG-TODO-044 | P0 | done | codex | Apply the new auto-fill Supabase tables to the production database if the admin page reports schema-not-ready. | `price_auto_settings` and `price_auto_suggestions` exist in production Supabase; `/admin/prices` no longer shows the automatic-entry table warning; settings save and draft generation persist after refresh. | Completed 2026-05-03 KST through the Supabase SQL Editor in project `ehmsqlfxxydnebzjfarr`: `supabase/schema.sql` returned `Success. No rows returned`; `price_auto_settings` has default row `default / false / gold-api / 2 / draft / 100 / 관리자`; `price_auto_suggestions` exists and draft records persist. `/admin/prices` renders in Supabase mode without the schema warning. Public price-changing `초안 적용` was not clicked. |
+| KCG-TODO-045 | P1 | done | codex | Refresh KCG banner/product imagery and organize old/new candidates for selection. | Home, service, company, catalog, product fallback, mock data, seed data, and social image references use the 2026-05-03 text-free commercial image set where stronger than the old repeated desk assets; old/current and new candidates are grouped under `public/image-options/2026-05-03`; docs record the selection rationale and remaining real-photo risk. | Passed: `npm run audit:site`, `npm run lint`, `npm run typecheck`, `npm run tasks:dashboard`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm audit --audit-level=moderate`, `git diff --check`; visual check of home/products/services/company screenshots |
 
 ## Review Policy
 
