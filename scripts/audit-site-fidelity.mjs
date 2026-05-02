@@ -689,6 +689,7 @@ expectText("src/lib/product-presenter.ts", [
   "B2B·기업",
   "productCatalogTabs",
   "if (imageUrl?.startsWith(\"/\"))",
+  "legacyProductImageReplacements",
   "kcg-product-gold-silver-catalog-20260503.webp",
   "kcg-silver-gift-20260427-v2.jpg",
   "kcg-product-jewelry-buying-20260503.webp",

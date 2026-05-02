@@ -98,10 +98,18 @@ const defaultProductImagesBySlug: Record<string, string> = {
   "bulk-gold-silver-bar-consulting": "/products/kcg-product-b2b-consulting-20260503.webp",
 };
 
+const legacyProductImageReplacements: Record<string, string> = {
+  "/products/kcg-gold-bar-catalog-20260427-v2.jpg": "/products/kcg-product-gold-silver-catalog-20260503.webp",
+  "/products/kcg-old-gold-jewelry-20260427-v2.jpg": "/products/kcg-product-jewelry-buying-20260503.webp",
+  "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg": "/products/kcg-product-b2b-consulting-20260503.webp",
+  "/products/kcg-pure-gold-products-20260427-v2.jpg": "/campaign/kcg-home-product-keyvisual-20260503.webp",
+  "/products/kcg-buying-process-20260427-v2.jpg": "/campaign/kcg-visit-transaction-guide-20260503.webp",
+};
+
 export function getProductImageSrc(product: Product) {
   const imageUrl = product.imageUrl?.trim();
   if (imageUrl?.startsWith("/")) {
-    return imageUrl;
+    return legacyProductImageReplacements[imageUrl] ?? imageUrl;
   }
 
   const slugDefaultImage = defaultProductImagesBySlug[product.slug];
