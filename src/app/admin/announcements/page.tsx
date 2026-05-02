@@ -42,10 +42,9 @@ export default async function AdminAnnouncementsPage({
   return (
     <div className="space-y-6">
       <section className="rounded-[2.2rem] border border-white/10 bg-white/5 p-8">
-        <h2 className="font-display text-4xl">공지 작성 및 수정</h2>
+        <h2 className="font-display text-4xl">공지 관리</h2>
         <p className="mt-4 max-w-3xl text-sm leading-8 text-white/72">
-          pinned 공지, 게시 상태, 발행 시각을 함께 관리합니다. 향후 게시판
-          기능이 추가되더라도 이 기본 구조를 그대로 이어서 쓸 수 있도록 설계합니다.
+          새 공지를 작성하고, 기존 공지는 필요한 항목만 펼쳐 수정합니다.
         </p>
         {message ? (
           <p className="mt-5 rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-white/78">
@@ -134,16 +133,24 @@ export default async function AdminAnnouncementsPage({
 
       <section className="space-y-4">
         {announcements.map((item) => (
-          <div
+          <details
             key={item.id}
-            className="rounded-[2rem] border border-white/10 bg-white/5 p-6"
+            className="rounded-[2rem] border border-white/10 bg-white/5 p-6 open:bg-white/7"
           >
-            <p className="text-sm text-white/54">
-              {item.isPinned ? "Pinned / " : ""}
-              {item.status === "published" ? "게시중" : "초안"} /{" "}
-              {formatDateTimeKorean(item.publishedAt)}
-            </p>
-            <form action={upsertAnnouncementAction} className="mt-5 space-y-4">
+            <summary className="flex cursor-pointer flex-wrap items-center justify-between gap-3 text-sm text-white/68">
+              <span>
+                <span className="font-semibold text-white">{item.title}</span>
+                <span className="ml-3 text-white/45">
+                  {item.isPinned ? "Pinned / " : ""}
+                  {item.status === "published" ? "게시중" : "초안"} /{" "}
+                  {formatDateTimeKorean(item.publishedAt)}
+                </span>
+              </span>
+              <span className="rounded-full border border-white/12 px-3 py-1 text-xs font-semibold text-white/68">
+                편집 열기
+              </span>
+            </summary>
+            <form action={upsertAnnouncementAction} className="mt-5 space-y-4 border-t border-white/10 pt-5">
               <input type="hidden" name="id" value={item.id} />
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="text-sm text-white/74">
@@ -223,7 +230,7 @@ export default async function AdminAnnouncementsPage({
                 삭제
               </button>
             </form>
-          </div>
+          </details>
         ))}
       </section>
     </div>

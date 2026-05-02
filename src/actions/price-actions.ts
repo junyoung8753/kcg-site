@@ -3,9 +3,20 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getRepository } from "@/lib/data";
+import {
+  buildPriceAutoSuggestionInput,
+  buildPriceUpdatesFromSuggestion,
+} from "@/lib/price-auto";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 import { ensureNumber, ensureString, toBoolean } from "@/lib/utils";
-import type { PriceCategory, PriceRecord, PriceSanityWarning, UpdatePriceInput } from "@/types/price";
+import type {
+  PriceAutoMode,
+  PriceAutoSource,
+  PriceCategory,
+  PriceRecord,
+  PriceSanityWarning,
+  UpdatePriceInput,
+} from "@/types/price";
 
 const spreadRules: Array<{
   sellCategory: PriceCategory;
@@ -129,6 +140,133 @@ export async function updatePricesAction(formData: FormData) {
     redirectPath = `/admin/prices?${search.toString()}`;
   } catch {
     redirectPath = "/admin/prices?status=error";
+  }
+
+  redirect(redirectPath);
+}
+
+function ensurePriceAutoSource(value: FormDataEntryValue | null): PriceAutoSource {
+  return value === "metals-dev" ? "metals-dev" : "gold-api";
+}
+
+function ensurePriceAutoMode(value: FormDataEntryValue | null): PriceAutoMode {
+  return value === "emergency_publish" ? "emergency_publish" : "draft";
+}
+
+function ensureIntervalHours(value: FormDataEntryValue | null): 1 | 2 {
+  return ensureNumber(value, 2) === 1 ? 1 : 2;
+}
+
+function revalidatePriceSurfaces() {
+  revalidatePath("/");
+  revalidatePath("/prices");
+  revalidatePath("/products");
+  revalidatePath("/products/[slug]", "page");
+  revalidatePath("/admin");
+  revalidatePath("/admin/prices");
+}
+
+export async function updatePriceAutoSettingsAction(formData: FormData) {
+  if (!isSupabaseConfigured()) {
+    redirect("/admin/prices?status=demo");
+  }
+
+  const repository = getRepository();
+  const result = await repository.updatePriceAutoSettings({
+    isEnabled: toBoolean(formData.get("autoEnabled")),
+    source: ensurePriceAutoSource(formData.get("autoSource")),
+    intervalHours: ensureIntervalHours(formData.get("intervalHours")),
+    mode: ensurePriceAutoMode(formData.get("autoMode")),
+    roundingUnit: ensureNumber(formData.get("roundingUnit"), 100),
+    goldSellPremiumRate: ensureNumber(formData.get("goldSellPremiumRate"), 0.135),
+    goldBuyDiscountRate: ensureNumber(formData.get("goldBuyDiscountRate"), 0.05),
+    gold18kBuyRate: ensureNumber(formData.get("gold18kBuyRate"), 0.735),
+    gold14kBuyRate: ensureNumber(formData.get("gold14kBuyRate"), 0.57),
+    platinumSellPremiumRate: ensureNumber(formData.get("platinumSellPremiumRate"), 0.1),
+    platinumBuyDiscountRate: ensureNumber(formData.get("platinumBuyDiscountRate"), 0.1),
+    silverSellPremiumRate: ensureNumber(formData.get("silverSellPremiumRate"), 0.08),
+    silverBuyDiscountRate: ensureNumber(formData.get("silverBuyDiscountRate"), 0.11),
+    maxAutoChangePercent: ensureNumber(formData.get("maxAutoChangePercent"), 0.15),
+    updatedBy: ensureString(formData.get("updatedBy"), "관리자"),
+  });
+
+  revalidatePriceSurfaces();
+  redirect(`/admin/prices?status=${result.success ? "auto-settings-saved" : "auto-schema"}`);
+}
+
+export async function generatePriceAutoSuggestionAction() {
+  const repository = getRepository();
+  let redirectPath = "/admin/prices?status=auto-error";
+
+  try {
+    const [prices, settings] = await Promise.all([
+      repository.getPrices(),
+      repository.getPriceAutoSettings(),
+    ]);
+    const input = await buildPriceAutoSuggestionInput(prices, settings);
+    const suggestion = await repository.createPriceAutoSuggestion(input);
+    revalidatePriceSurfaces();
+    redirectPath =
+      suggestion.id === "schema-not-ready"
+        ? "/admin/prices?status=auto-schema"
+        : "/admin/prices?status=auto-draft";
+  } catch {
+    redirectPath = "/admin/prices?status=auto-error";
+  }
+
+  redirect(redirectPath);
+}
+
+export async function applyPriceAutoSuggestionAction(formData: FormData) {
+  if (!isSupabaseConfigured()) {
+    redirect("/admin/prices?status=demo");
+  }
+
+  const suggestionId = ensureString(formData.get("suggestionId"));
+  const changedBy = ensureString(formData.get("changedBy"), "자동입력 초안 적용");
+  const repository = getRepository();
+  let redirectPath = "/admin/prices?status=auto-error";
+
+  try {
+    const [prices, suggestion] = await Promise.all([
+      repository.getPrices(),
+      repository.getLatestPriceAutoSuggestion(),
+    ]);
+
+    if (!suggestion || suggestion.id !== suggestionId || suggestion.status !== "draft") {
+      redirectPath = "/admin/prices?status=auto-error";
+    } else {
+      const updates = buildPriceUpdatesFromSuggestion(prices, suggestion, changedBy);
+      const warnings = buildPriceWarnings(prices, updates);
+      await repository.updatePrices(updates);
+      await repository.updatePriceAutoSuggestionStatus(suggestion.id, "applied", changedBy);
+
+      const search = new URLSearchParams({ status: "auto-applied" });
+      warnings.forEach((warning) => {
+        search.append("warning", warning.message);
+      });
+
+      revalidatePriceSurfaces();
+      redirectPath = `/admin/prices?${search.toString()}`;
+    }
+  } catch {
+    redirectPath = "/admin/prices?status=auto-error";
+  }
+
+  redirect(redirectPath);
+}
+
+export async function rejectPriceAutoSuggestionAction(formData: FormData) {
+  const suggestionId = ensureString(formData.get("suggestionId"));
+  const repository = getRepository();
+  let redirectPath = "/admin/prices?status=auto-error";
+
+  try {
+    await repository.updatePriceAutoSuggestionStatus(suggestionId, "rejected", "관리자");
+    revalidatePath("/admin/prices");
+    redirectPath = "/admin/prices?status=auto-rejected";
+  } catch {
+    redirectPath = "/admin/prices?status=auto-error";
   }
 
   redirect(redirectPath);

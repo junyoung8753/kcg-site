@@ -63,3 +63,80 @@ export interface PriceSanityWarning {
   level: "notice" | "warning";
   message: string;
 }
+
+export type PriceAutoSource = "gold-api" | "metals-dev";
+export type PriceAutoMode = "draft" | "emergency_publish";
+export type PriceAutoSuggestionStatus = "draft" | "applied" | "rejected" | "expired";
+
+export interface PriceAutoSettings {
+  id: "default";
+  isEnabled: boolean;
+  source: PriceAutoSource;
+  intervalHours: 1 | 2;
+  mode: PriceAutoMode;
+  roundingUnit: number;
+  goldSellPremiumRate: number;
+  goldBuyDiscountRate: number;
+  gold18kBuyRate: number;
+  gold14kBuyRate: number;
+  platinumSellPremiumRate: number;
+  platinumBuyDiscountRate: number;
+  silverSellPremiumRate: number;
+  silverBuyDiscountRate: number;
+  maxAutoChangePercent: number;
+  updatedBy: string;
+  updatedAt: string;
+  schemaReady: boolean;
+}
+
+export interface PriceAutoSettingsInput {
+  isEnabled: boolean;
+  source: PriceAutoSource;
+  intervalHours: 1 | 2;
+  mode: PriceAutoMode;
+  roundingUnit: number;
+  goldSellPremiumRate: number;
+  goldBuyDiscountRate: number;
+  gold18kBuyRate: number;
+  gold14kBuyRate: number;
+  platinumSellPremiumRate: number;
+  platinumBuyDiscountRate: number;
+  silverSellPremiumRate: number;
+  silverBuyDiscountRate: number;
+  maxAutoChangePercent: number;
+  updatedBy: string;
+}
+
+export interface PriceAutoSuggestionItem {
+  category: PriceCategory;
+  label: string;
+  currentValue: number;
+  proposedValue: number;
+  difference: number;
+  changePercent: number;
+  note: string;
+  needsReview: boolean;
+}
+
+export interface PriceAutoSuggestion {
+  id: string;
+  status: PriceAutoSuggestionStatus;
+  source: PriceAutoSource | "mock";
+  providerLabel: string;
+  sourceUpdatedAt: string;
+  generatedAt: string;
+  settingsSnapshot: PriceAutoSettings;
+  items: PriceAutoSuggestionItem[];
+  warnings: string[];
+  appliedAt: string | null;
+  appliedBy: string | null;
+}
+
+export interface PriceAutoSuggestionInput {
+  source: PriceAutoSource | "mock";
+  providerLabel: string;
+  sourceUpdatedAt: string;
+  settingsSnapshot: PriceAutoSettings;
+  items: PriceAutoSuggestionItem[];
+  warnings: string[];
+}

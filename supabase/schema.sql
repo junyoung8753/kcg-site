@@ -26,6 +26,40 @@ create table if not exists price_history (
   note text
 );
 
+create table if not exists price_auto_settings (
+  id text primary key default 'default' check (id = 'default'),
+  is_enabled boolean not null default false,
+  source text not null default 'gold-api' check (source in ('gold-api', 'metals-dev')),
+  interval_hours integer not null default 2 check (interval_hours in (1, 2)),
+  mode text not null default 'draft' check (mode in ('draft', 'emergency_publish')),
+  rounding_unit integer not null default 100,
+  gold_sell_premium_rate numeric not null default 0.135,
+  gold_buy_discount_rate numeric not null default 0.05,
+  gold_18k_buy_rate numeric not null default 0.735,
+  gold_14k_buy_rate numeric not null default 0.57,
+  platinum_sell_premium_rate numeric not null default 0.1,
+  platinum_buy_discount_rate numeric not null default 0.1,
+  silver_sell_premium_rate numeric not null default 0.08,
+  silver_buy_discount_rate numeric not null default 0.11,
+  max_auto_change_percent numeric not null default 0.15,
+  updated_by text not null default '관리자',
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists price_auto_suggestions (
+  id uuid primary key default gen_random_uuid(),
+  status text not null default 'draft' check (status in ('draft', 'applied', 'rejected', 'expired')),
+  source text not null check (source in ('gold-api', 'metals-dev', 'mock')),
+  provider_label text not null,
+  source_updated_at timestamptz not null,
+  generated_at timestamptz not null default now(),
+  settings_snapshot jsonb not null,
+  items jsonb not null,
+  warnings text[] not null default '{}',
+  applied_at timestamptz,
+  applied_by text
+);
+
 create table if not exists announcements (
   id uuid primary key default gen_random_uuid(),
   title text not null,
@@ -100,6 +134,12 @@ alter table products add constraint products_status_check check (status in ('act
 
 create index if not exists idx_prices_display_order on prices(display_order);
 create index if not exists idx_price_history_changed_at on price_history(changed_at desc);
+create index if not exists idx_price_auto_suggestions_generated_at on price_auto_suggestions(generated_at desc);
+create index if not exists idx_price_auto_suggestions_status on price_auto_suggestions(status);
 create index if not exists idx_announcements_published_at on announcements(published_at desc);
 create index if not exists idx_products_category on products(category);
 create index if not exists idx_products_display_order on products(display_order);
+
+insert into price_auto_settings (id)
+values ('default')
+on conflict (id) do nothing;

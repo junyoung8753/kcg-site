@@ -490,3 +490,60 @@ test("admin launch dashboard separates pre-launch work from public-launch approv
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
 });
+
+test("admin prices exposes auto-fill draft workflow and compact posted-price editor", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await page.goto("/admin/prices", { waitUntil: "domcontentloaded" });
+  await expect(page).toHaveURL(/\/admin\/login\?next=%2Fadmin%2Fprices/);
+
+  if (!adminPassword) return;
+
+  await page.getByLabel("관리자 비밀번호").fill(adminPassword);
+  await page.getByRole("button", { name: "관리자 페이지로 이동" }).click();
+  await expect(page).toHaveURL(/\/admin\/prices/);
+
+  await expect(page.getByRole("heading", { name: "오늘 시세 관리" })).toBeVisible();
+  await expect(page.getByText("자동입력", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("초안만 생성")).toBeVisible();
+  await expect(page.getByRole("button", { name: "초안 생성" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "한국금거래소 참고 보기" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "삼성금거래소 참고 보기" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "GBK 참고 보기" })).toBeVisible();
+
+  const editor = page.getByTestId("admin-price-editor");
+  await expect(editor.getByRole("columnheader", { name: "품목" })).toBeVisible();
+  await expect(editor.getByRole("columnheader", { name: "현재 공개가" })).toBeVisible();
+  await expect(editor.getByRole("columnheader", { name: "새 입력값" })).toBeVisible();
+  await expect(editor.getByRole("columnheader", { name: "차액" })).toBeVisible();
+  await expect(editor.getByRole("columnheader", { name: "노출" })).toBeVisible();
+  await expect(editor.getByRole("columnheader", { name: "비고" })).toBeVisible();
+
+  await expectNoHorizontalOverflow(page);
+  await expectNoVisibleElementEscapesViewport(page);
+});
+
+test("admin products uses a compact list-and-editor management surface", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await page.goto("/admin/products", { waitUntil: "domcontentloaded" });
+  await expect(page).toHaveURL(/\/admin\/login\?next=%2Fadmin%2Fproducts/);
+
+  if (!adminPassword) return;
+
+  await page.getByLabel("관리자 비밀번호").fill(adminPassword);
+  await page.getByRole("button", { name: "관리자 페이지로 이동" }).click();
+  await expect(page).toHaveURL(/\/admin\/products/);
+
+  await expect(page.getByRole("heading", { name: "상품 관리" })).toBeVisible();
+  const productTable = page.getByTestId("admin-product-table");
+  await expect(productTable).toBeVisible();
+  await expect(productTable.getByText("공개상태")).toBeVisible();
+  await expect(productTable.getByText("카테고리")).toBeVisible();
+  await expect(productTable.getByText("가격 기준")).toBeVisible();
+  await expect(productTable.getByText("중량")).toBeVisible();
+  await expect(productTable.getByText("이미지")).toBeVisible();
+  await expect(productTable.getByText("정렬")).toBeVisible();
+  await expect(page.getByText("편집 열기").first()).toBeVisible();
+
+  await expectNoHorizontalOverflow(page);
+  await expectNoVisibleElementEscapesViewport(page);
+});

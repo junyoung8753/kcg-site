@@ -46,13 +46,22 @@ function getStatusMessage(status?: string | string[]) {
 
 function productForm(product: Product) {
   return (
-    <form
+    <details
       key={product.id || `new-${product.category}`}
-      action={upsertProductAction}
-      className="rounded-[2rem] border border-white/10 bg-white/5 p-6"
+      className="rounded-[1.8rem] border border-white/10 bg-white/[0.04] p-5 open:bg-white/[0.06]"
     >
-      <input type="hidden" name="id" value={product.id} />
-      <div className="grid gap-4 lg:grid-cols-[1fr_220px]">
+      <summary className="flex cursor-pointer flex-wrap items-center justify-between gap-3 text-sm text-white/72">
+        <span>
+          <span className="font-semibold text-white">{product.name}</span>
+          <span className="ml-3 text-white/45">{getProductCategoryLabel(product.category)}</span>
+        </span>
+        <span className="rounded-full border border-white/12 px-3 py-1 text-xs font-semibold text-white/68">
+          편집 열기
+        </span>
+      </summary>
+      <form action={upsertProductAction} className="mt-5 border-t border-white/10 pt-5">
+        <input type="hidden" name="id" value={product.id} />
+        <div className="grid gap-4 lg:grid-cols-[1fr_220px]">
         <div className="space-y-4">
           <label className="block text-sm text-white/74">
             상품명
@@ -233,8 +242,41 @@ function productForm(product: Product) {
             상품 저장
           </button>
         </div>
+        </div>
+      </form>
+    </details>
+  );
+}
+
+function ProductManagementTable({ products }: { products: Product[] }) {
+  return (
+    <section
+      data-testid="admin-product-table"
+      className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04]"
+    >
+      <div className="grid grid-cols-[86px_120px_minmax(220px,1fr)_150px_90px_120px_76px] gap-0 overflow-x-auto text-sm">
+        {["공개상태", "카테고리", "상품명", "가격 기준", "중량", "이미지", "정렬"].map((heading) => (
+          <div key={heading} className="border-b border-white/10 bg-white/[0.04] px-4 py-3 text-xs font-semibold text-white/48">
+            {heading}
+          </div>
+        ))}
+        {products.map((product) => (
+          <div key={product.id || product.slug} className="contents">
+            <div className="border-b border-white/8 px-4 py-3 text-white/68">{getProductStatusLabel(product.status)}</div>
+            <div className="border-b border-white/8 px-4 py-3 text-white/68">{getProductCategoryLabel(product.category)}</div>
+            <div className="border-b border-white/8 px-4 py-3 font-semibold text-white">{product.name}</div>
+            <div className="border-b border-white/8 px-4 py-3 text-white/68">{getProductPriceBasisLabel(product.priceBasis)}</div>
+            <div className="border-b border-white/8 px-4 py-3 text-white/68">
+              {product.weightGrams ? `${product.weightGrams}g` : "-"}
+            </div>
+            <div className="border-b border-white/8 px-4 py-3 text-white/68">
+              {product.imageUrl ? "있음" : "없음"}
+            </div>
+            <div className="border-b border-white/8 px-4 py-3 text-white/68">{product.displayOrder}</div>
+          </div>
+        ))}
       </div>
-    </form>
+    </section>
   );
 }
 
@@ -278,10 +320,9 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
   return (
     <div className="space-y-6">
       <section className="rounded-[2.2rem] border border-white/10 bg-white/5 p-8">
-        <h2 className="font-display text-4xl">상품 카탈로그 관리</h2>
+        <h2 className="font-display text-4xl">상품 관리</h2>
         <p className="mt-4 max-w-3xl text-sm leading-8 text-white/72">
-          결제 없는 상담형 상품/매입 관리 화면입니다. 순금 제품, 골드바, 고금 매입, 실버바, B2B 대량 상담의 사진, 가격 표시
-          문구, 공개 상태와 정렬만 관리하고 실제 재고·수급·최종 금액은 본사 전화 문의와 거래 상담에서 확인합니다.
+          목록에서 상태와 가격 기준을 먼저 확인하고, 수정할 상품만 펼쳐서 편집합니다.
         </p>
         {message ? (
           <p className="mt-5 rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-white/78">
@@ -301,6 +342,8 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
           );
         })}
       </section>
+
+      <ProductManagementTable products={sortedProducts} />
 
       <section className="space-y-5">{sortedProducts.map(productForm)}</section>
 

@@ -669,8 +669,10 @@ async function getGoldApiDashboard(headlines: {
   };
 }
 
-export async function getMarketDashboardData(): Promise<MarketDashboardData> {
-  const configuredProvider = marketProviderPreference();
+export async function getMarketDashboardData(
+  providerOverride?: MarketProvider,
+): Promise<MarketDashboardData> {
+  const configuredProvider = providerOverride || marketProviderPreference();
   const apiKey = process.env.METALS_DEV_API_KEY;
   const headlines = await getExternalHeadlines();
 

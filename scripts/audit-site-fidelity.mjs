@@ -377,6 +377,8 @@ expectText("src/components/prices/price-context-guide.tsx", [
 expectText("tests/site-fidelity.spec.ts", [
   "expectNoVisibleElementEscapesViewport",
   "expectMobileBottomBarDoesNotCover",
+  "admin prices exposes auto-fill draft workflow",
+  "admin products uses a compact list-and-editor management surface",
   "product quick links sync same-route category query",
   "고시가 / 3.75g 기준",
   "품목별로 볼 기준만 확인합니다.",
@@ -395,6 +397,39 @@ expectText("src/lib/market-data.ts", [
   "순금 3.75g 참고가",
   "기사 제목·출처·날짜만 링크로 제공하며, 본문·이미지는 재게시하지 않습니다.",
 ]);
+expectText("src/lib/price-auto.ts", [
+  "getDefaultPriceAutoSettings",
+  "buildPriceAutoSuggestionInput",
+  "buildPriceUpdatesFromSuggestion",
+  "roundToUnit",
+  "goldSellPremiumRate",
+  "maxAutoChangePercent",
+]);
+expectNoText("src/lib/price-auto.ts", [
+  "Math.random",
+  "koreagoldx.co.kr",
+  "ssgold.co.kr",
+  "gbkmall.com",
+]);
+expectText("src/actions/price-actions.ts", [
+  "updatePriceAutoSettingsAction",
+  "generatePriceAutoSuggestionAction",
+  "applyPriceAutoSuggestionAction",
+  "rejectPriceAutoSuggestionAction",
+  "buildPriceWarnings",
+]);
+expectText("src/app/api/admin/price-auto-refresh/route.ts", [
+  "CRON_SECRET",
+  "PRICE_AUTOFILL_ALLOW_EMERGENCY_PUBLISH",
+  "buildPriceAutoSuggestionInput",
+  "auto-fill-disabled",
+]);
+expectText("src/app/api/admin/price-auto-apply/route.ts", [
+  "verifyAdminSession",
+  "draft-not-found",
+  "buildPriceUpdatesFromSuggestion",
+]);
+expectText("vercel.json", ["/api/admin/price-auto-refresh", "0 */2 * * *"]);
 expectNoText("src/lib/market-data.ts", [
   "koreagoldx.co.kr",
   "chart.gold-you.com",
@@ -478,6 +513,12 @@ expectText("src/app/admin/launch/page.tsx", [
   "robots/noindex 해제와 검색 색인 승인",
 ]);
 expectText("src/app/admin/layout.tsx", ["/admin/launch", "오픈 점검"]);
+expectText("src/app/admin/page.tsx", [
+  "오늘 운영 상태",
+  "자동입력 상태",
+  "최근 자동 초안",
+  "상품 공개 수",
+]);
 expectText("src/components/layout/site-footer.tsx", [
   "getBusinessRegistrationDisplay",
   "getLegalPlaceholderNotice",
@@ -660,8 +701,22 @@ expectText("supabase/seed.sql", [
 ]);
 expectText("src/types/product.ts", ["displayOrder", "priceLabel", "ProductUpsertInput", "ProductPriceBasis", "pure_gold"]);
 expectText("src/actions/product-actions.ts", ["upsertProductAction", "revalidatePath(\"/products\")", "priceBasis", "weightGrams"]);
-expectText("src/app/admin/products/page.tsx", ["상품 카탈로그 관리", "연동 시세", "중량(g)", "임시 공임", "수동 가격", "upsertProductAction"]);
+expectText("src/app/admin/products/page.tsx", [
+  "상품 관리",
+  "ProductManagementTable",
+  "data-testid=\"admin-product-table\"",
+  "편집 열기",
+  "연동 시세",
+  "중량(g)",
+  "임시 공임",
+  "수동 가격",
+  "upsertProductAction",
+]);
 expectText("supabase/schema.sql", [
+  "price_auto_settings",
+  "price_auto_suggestions",
+  "gold_sell_premium_rate",
+  "max_auto_change_percent",
   "price_basis",
   "weight_grams",
   "making_fee",

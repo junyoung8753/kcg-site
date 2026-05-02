@@ -3,8 +3,15 @@ import { mockPriceHistory, mockPrices } from "@/mock/prices";
 import { mockProducts } from "@/mock/products";
 import type { AnnouncementUpsertInput } from "@/types/announcement";
 import type { RepositoryMutationResult } from "@/types/admin";
-import type { UpdatePriceInput } from "@/types/price";
+import type {
+  PriceAutoSuggestion,
+  PriceAutoSettingsInput,
+  PriceAutoSuggestionInput,
+  PriceAutoSuggestionStatus,
+  UpdatePriceInput,
+} from "@/types/price";
 import type { ProductUpsertInput } from "@/types/product";
+import { getDefaultPriceAutoSettings } from "@/lib/price-auto";
 import type { SiteRepository } from "./repository";
 
 const demoResult: RepositoryMutationResult = {
@@ -23,6 +30,49 @@ export class MockRepository implements SiteRepository {
 
   async getPriceHistory(limit = 5) {
     return mockPriceHistory.slice(0, limit);
+  }
+
+  async getPriceAutoSettings() {
+    return getDefaultPriceAutoSettings();
+  }
+
+  async updatePriceAutoSettings(input: PriceAutoSettingsInput) {
+    void input;
+    return demoResult;
+  }
+
+  async getLatestPriceAutoSuggestion() {
+    return null;
+  }
+
+  async createPriceAutoSuggestion(input: PriceAutoSuggestionInput) {
+    return {
+      id: "mock-auto-suggestion",
+      status: "draft",
+      source: input.source,
+      providerLabel: input.providerLabel,
+      sourceUpdatedAt: input.sourceUpdatedAt,
+      generatedAt: new Date().toISOString(),
+      settingsSnapshot: input.settingsSnapshot,
+      items: input.items,
+      warnings: [
+        ...input.warnings,
+        "Supabase 미연결 상태에서는 자동입력 초안을 저장할 수 없습니다.",
+      ],
+      appliedAt: null,
+      appliedBy: null,
+    } satisfies PriceAutoSuggestion;
+  }
+
+  async updatePriceAutoSuggestionStatus(
+    id: string,
+    status: PriceAutoSuggestionStatus,
+    appliedBy?: string,
+  ) {
+    void id;
+    void status;
+    void appliedBy;
+    return demoResult;
   }
 
   async getAnnouncements(options?: { limit?: number; includeDrafts?: boolean }) {

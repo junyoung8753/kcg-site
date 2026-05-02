@@ -4,8 +4,19 @@ import type {
   AnnouncementUpsertInput,
 } from "@/types/announcement";
 import type { RepositoryMutationResult } from "@/types/admin";
-import type { PriceHistoryEntry, PriceRecord, UpdatePriceInput } from "@/types/price";
+import type {
+  PriceAutoSettings,
+  PriceAutoSettingsInput,
+  PriceAutoSuggestion,
+  PriceAutoSuggestionInput,
+  PriceAutoSuggestionItem,
+  PriceAutoSuggestionStatus,
+  PriceHistoryEntry,
+  PriceRecord,
+  UpdatePriceInput,
+} from "@/types/price";
 import type { Product, ProductUpsertInput } from "@/types/product";
+import { getDefaultPriceAutoSettings } from "@/lib/price-auto";
 import type { SiteRepository } from "./repository";
 
 type SupabasePriceRow = {
@@ -32,6 +43,40 @@ type SupabasePriceHistoryRow = {
   changed_at: string;
   changed_by: string;
   note: string | null;
+};
+
+type SupabasePriceAutoSettingsRow = {
+  id: "default";
+  is_enabled: boolean;
+  source: PriceAutoSettings["source"];
+  interval_hours: 1 | 2;
+  mode: PriceAutoSettings["mode"];
+  rounding_unit: number;
+  gold_sell_premium_rate: number;
+  gold_buy_discount_rate: number;
+  gold_18k_buy_rate: number;
+  gold_14k_buy_rate: number;
+  platinum_sell_premium_rate: number;
+  platinum_buy_discount_rate: number;
+  silver_sell_premium_rate: number;
+  silver_buy_discount_rate: number;
+  max_auto_change_percent: number;
+  updated_by: string;
+  updated_at: string;
+};
+
+type SupabasePriceAutoSuggestionRow = {
+  id: string;
+  status: PriceAutoSuggestionStatus;
+  source: PriceAutoSuggestion["source"];
+  provider_label: string;
+  source_updated_at: string;
+  generated_at: string;
+  settings_snapshot: PriceAutoSettings;
+  items: PriceAutoSuggestionItem[];
+  warnings: string[] | null;
+  applied_at: string | null;
+  applied_by: string | null;
 };
 
 type SupabaseAnnouncementRow = {
@@ -100,6 +145,61 @@ function mapHistory(row: SupabasePriceHistoryRow): PriceHistoryEntry {
     changedBy: row.changed_by,
     note: row.note,
   };
+}
+
+function mapPriceAutoSettings(row: SupabasePriceAutoSettingsRow): PriceAutoSettings {
+  return getDefaultPriceAutoSettings({
+    id: "default",
+    isEnabled: row.is_enabled,
+    source: row.source,
+    intervalHours: row.interval_hours,
+    mode: row.mode,
+    roundingUnit: row.rounding_unit,
+    goldSellPremiumRate: Number(row.gold_sell_premium_rate),
+    goldBuyDiscountRate: Number(row.gold_buy_discount_rate),
+    gold18kBuyRate: Number(row.gold_18k_buy_rate),
+    gold14kBuyRate: Number(row.gold_14k_buy_rate),
+    platinumSellPremiumRate: Number(row.platinum_sell_premium_rate),
+    platinumBuyDiscountRate: Number(row.platinum_buy_discount_rate),
+    silverSellPremiumRate: Number(row.silver_sell_premium_rate),
+    silverBuyDiscountRate: Number(row.silver_buy_discount_rate),
+    maxAutoChangePercent: Number(row.max_auto_change_percent),
+    updatedBy: row.updated_by,
+    updatedAt: row.updated_at,
+    schemaReady: true,
+  });
+}
+
+function mapPriceAutoSuggestion(row: SupabasePriceAutoSuggestionRow): PriceAutoSuggestion {
+  return {
+    id: row.id,
+    status: row.status,
+    source: row.source,
+    providerLabel: row.provider_label,
+    sourceUpdatedAt: row.source_updated_at,
+    generatedAt: row.generated_at,
+    settingsSnapshot: getDefaultPriceAutoSettings({
+      ...row.settings_snapshot,
+      schemaReady: true,
+    }),
+    items: row.items,
+    warnings: row.warnings ?? [],
+    appliedAt: row.applied_at,
+    appliedBy: row.applied_by,
+  };
+}
+
+function isMissingTableError(error: unknown) {
+  if (!error || typeof error !== "object") return false;
+  const maybeError = error as { code?: string; message?: string };
+  const message = maybeError.message || "";
+  return (
+    maybeError.code === "42P01" ||
+    maybeError.code === "PGRST205" ||
+    /relation .* does not exist/i.test(message) ||
+    /could not find .*table/i.test(message) ||
+    /schema cache/i.test(message)
+  );
 }
 
 function mapAnnouncement(row: SupabaseAnnouncementRow): Announcement {
@@ -178,6 +278,192 @@ export class SupabaseRepository implements SiteRepository {
     }
 
     return (data as SupabasePriceHistoryRow[]).map(mapHistory);
+  }
+
+  async getPriceAutoSettings() {
+    const client = getSupabaseAdminClient();
+    const { data, error } = await client
+      .from("price_auto_settings")
+      .select("*")
+      .eq("id", "default")
+      .maybeSingle();
+
+    if (error) {
+      if (isMissingTableError(error)) {
+        return getDefaultPriceAutoSettings();
+      }
+      throw error;
+    }
+
+    if (data) {
+      return mapPriceAutoSettings(data as SupabasePriceAutoSettingsRow);
+    }
+
+    const defaults = getDefaultPriceAutoSettings({ schemaReady: true });
+    const { data: inserted, error: insertError } = await client
+      .from("price_auto_settings")
+      .insert({
+        id: "default",
+        is_enabled: defaults.isEnabled,
+        source: defaults.source,
+        interval_hours: defaults.intervalHours,
+        mode: defaults.mode,
+        rounding_unit: defaults.roundingUnit,
+        gold_sell_premium_rate: defaults.goldSellPremiumRate,
+        gold_buy_discount_rate: defaults.goldBuyDiscountRate,
+        gold_18k_buy_rate: defaults.gold18kBuyRate,
+        gold_14k_buy_rate: defaults.gold14kBuyRate,
+        platinum_sell_premium_rate: defaults.platinumSellPremiumRate,
+        platinum_buy_discount_rate: defaults.platinumBuyDiscountRate,
+        silver_sell_premium_rate: defaults.silverSellPremiumRate,
+        silver_buy_discount_rate: defaults.silverBuyDiscountRate,
+        max_auto_change_percent: defaults.maxAutoChangePercent,
+        updated_by: defaults.updatedBy,
+      })
+      .select("*")
+      .single();
+
+    if (insertError) {
+      if (isMissingTableError(insertError)) {
+        return getDefaultPriceAutoSettings();
+      }
+      throw insertError;
+    }
+
+    return mapPriceAutoSettings(inserted as SupabasePriceAutoSettingsRow);
+  }
+
+  async updatePriceAutoSettings(input: PriceAutoSettingsInput) {
+    const client = getSupabaseAdminClient();
+    const { error } = await client.from("price_auto_settings").upsert({
+      id: "default",
+      is_enabled: input.isEnabled,
+      source: input.source,
+      interval_hours: input.intervalHours,
+      mode: input.mode,
+      rounding_unit: input.roundingUnit,
+      gold_sell_premium_rate: input.goldSellPremiumRate,
+      gold_buy_discount_rate: input.goldBuyDiscountRate,
+      gold_18k_buy_rate: input.gold18kBuyRate,
+      gold_14k_buy_rate: input.gold14kBuyRate,
+      platinum_sell_premium_rate: input.platinumSellPremiumRate,
+      platinum_buy_discount_rate: input.platinumBuyDiscountRate,
+      silver_sell_premium_rate: input.silverSellPremiumRate,
+      silver_buy_discount_rate: input.silverBuyDiscountRate,
+      max_auto_change_percent: input.maxAutoChangePercent,
+      updated_by: input.updatedBy,
+      updated_at: new Date().toISOString(),
+    });
+
+    if (error) {
+      if (isMissingTableError(error)) {
+        return {
+          success: false,
+          message: "자동입력 테이블이 아직 적용되지 않았습니다.",
+          mode: "supabase",
+        } satisfies RepositoryMutationResult;
+      }
+      throw error;
+    }
+
+    return {
+      success: true,
+      message: "자동입력 설정이 저장되었습니다.",
+      mode: "supabase",
+    } satisfies RepositoryMutationResult;
+  }
+
+  async getLatestPriceAutoSuggestion() {
+    const client = getSupabaseAdminClient();
+    const { data, error } = await client
+      .from("price_auto_suggestions")
+      .select("*")
+      .order("generated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      if (isMissingTableError(error)) {
+        return null;
+      }
+      throw error;
+    }
+
+    return data ? mapPriceAutoSuggestion(data as SupabasePriceAutoSuggestionRow) : null;
+  }
+
+  async createPriceAutoSuggestion(input: PriceAutoSuggestionInput) {
+    const client = getSupabaseAdminClient();
+    const { data, error } = await client
+      .from("price_auto_suggestions")
+      .insert({
+        status: "draft",
+        source: input.source,
+        provider_label: input.providerLabel,
+        source_updated_at: input.sourceUpdatedAt,
+        settings_snapshot: input.settingsSnapshot,
+        items: input.items,
+        warnings: input.warnings,
+      })
+      .select("*")
+      .single();
+
+    if (error) {
+      if (isMissingTableError(error)) {
+        return {
+          id: "schema-not-ready",
+          status: "draft",
+          source: input.source,
+          providerLabel: input.providerLabel,
+          sourceUpdatedAt: input.sourceUpdatedAt,
+          generatedAt: new Date().toISOString(),
+          settingsSnapshot: input.settingsSnapshot,
+          items: input.items,
+          warnings: [
+            ...input.warnings,
+            "자동입력 테이블이 아직 적용되지 않아 초안을 저장하지 못했습니다.",
+          ],
+          appliedAt: null,
+          appliedBy: null,
+        } satisfies PriceAutoSuggestion;
+      }
+      throw error;
+    }
+
+    return mapPriceAutoSuggestion(data as SupabasePriceAutoSuggestionRow);
+  }
+
+  async updatePriceAutoSuggestionStatus(
+    id: string,
+    status: PriceAutoSuggestionStatus,
+    appliedBy?: string,
+  ) {
+    const client = getSupabaseAdminClient();
+    const { error } = await client
+      .from("price_auto_suggestions")
+      .update({
+        status,
+        applied_by: appliedBy ?? null,
+        applied_at: status === "applied" ? new Date().toISOString() : null,
+      })
+      .eq("id", id);
+
+    if (error) {
+      if (isMissingTableError(error)) {
+        return {
+          success: false,
+          message: "자동입력 테이블이 아직 적용되지 않았습니다.",
+          mode: "supabase",
+        } satisfies RepositoryMutationResult;
+      }
+      throw error;
+    }
+
+    return {
+      success: true,
+      message: "자동입력 초안 상태가 변경되었습니다.",
+      mode: "supabase",
+    } satisfies RepositoryMutationResult;
   }
 
   async getAnnouncements(options?: { limit?: number; includeDrafts?: boolean }) {
