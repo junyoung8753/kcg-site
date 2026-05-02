@@ -429,7 +429,7 @@ expectText("src/app/api/admin/price-auto-apply/route.ts", [
   "draft-not-found",
   "buildPriceUpdatesFromSuggestion",
 ]);
-expectText("vercel.json", ["/api/admin/price-auto-refresh", "0 */2 * * *"]);
+expectText("vercel.json", ["/api/admin/price-auto-refresh", "0 0 * * *"]);
 expectNoText("src/lib/market-data.ts", [
   "koreagoldx.co.kr",
   "chart.gold-you.com",
