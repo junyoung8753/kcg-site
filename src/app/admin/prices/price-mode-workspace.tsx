@@ -11,8 +11,6 @@ import {
 import { formatDateTimeKorean } from "@/lib/format";
 import type { PriceAutoSettings, PriceAutoSuggestion, PriceRecord } from "@/types/price";
 
-type PriceInputMode = "auto" | "manual";
-
 interface AdminPricesWorkspaceProps {
   prices: PriceRecord[];
   settings: PriceAutoSettings;
@@ -34,6 +32,10 @@ function formatRate(value: number) {
   return `${(value * 100).toFixed(1)}%`;
 }
 
+function formatPercentInput(value: number) {
+  return Number((value * 100).toFixed(3));
+}
+
 function getLatestUpdate(prices: PriceRecord[]) {
   const sorted = [...prices].sort(
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
@@ -41,19 +43,35 @@ function getLatestUpdate(prices: PriceRecord[]) {
   return sorted[0]?.updatedAt ?? prices[0]?.announcedAt ?? new Date().toISOString();
 }
 
+function addMinutes(date: Date, minutes: number) {
+  return new Date(date.getTime() + minutes * 60 * 1000);
+}
+
+function getNextCheckLabel(settings: PriceAutoSettings, isAutoOn: boolean) {
+  const savedIsAutoOn = settings.isEnabled && settings.mode === "auto_publish";
+  if (!isAutoOn) return "자동시세 OFF";
+  if (!savedIsAutoOn) return "저장 후 활성화";
+  const base = settings.lastCheckedAt ? new Date(settings.lastCheckedAt) : new Date();
+  if (Number.isNaN(base.getTime())) return "다음 cron 실행 시";
+  return formatDateTimeKorean(addMinutes(base, settings.checkIntervalMinutes).toISOString());
+}
+
 function HiddenAutoSettingsFields({
   settings,
   enabled,
+  mode,
 }: {
   settings: PriceAutoSettings;
   enabled: boolean;
+  mode: PriceAutoSettings["mode"];
 }) {
   return (
     <>
       {enabled ? <input type="hidden" name="autoEnabled" value="on" /> : null}
       <input type="hidden" name="autoSource" value={settings.source} />
-      <input type="hidden" name="intervalHours" value={settings.intervalHours} />
-      <input type="hidden" name="autoMode" value="draft" />
+      <input type="hidden" name="intervalHours" value={settings.checkIntervalMinutes === 120 ? 2 : 1} />
+      <input type="hidden" name="checkIntervalMinutes" value={settings.checkIntervalMinutes} />
+      <input type="hidden" name="autoMode" value={mode} />
       <input type="hidden" name="roundingUnit" value={settings.roundingUnit} />
       <input type="hidden" name="goldSellPremiumRate" value={settings.goldSellPremiumRate} />
       <input type="hidden" name="goldBuyDiscountRate" value={settings.goldBuyDiscountRate} />
@@ -63,41 +81,67 @@ function HiddenAutoSettingsFields({
       <input type="hidden" name="platinumBuyDiscountRate" value={settings.platinumBuyDiscountRate} />
       <input type="hidden" name="silverSellPremiumRate" value={settings.silverSellPremiumRate} />
       <input type="hidden" name="silverBuyDiscountRate" value={settings.silverBuyDiscountRate} />
-      <input type="hidden" name="maxAutoChangePercent" value={settings.maxAutoChangePercent} />
+      <input type="hidden" name="minApplyChangeWon" value={settings.minApplyChangeWon} />
+      <input type="hidden" name="maxAutoPublishChangePercent" value={settings.maxAutoPublishChangePercent} />
+      {settings.businessHoursOnly ? <input type="hidden" name="businessHoursOnly" value="on" /> : null}
       <input type="hidden" name="updatedBy" value="관리자" />
     </>
   );
 }
 
-function StatusPanel({
+function CurrentPriceSnapshot({ prices }: { prices: PriceRecord[] }) {
+  const visiblePrices = prices.filter((price) => price.isVisible).slice(0, 8);
+
+  return (
+    <section className="rounded-[1.8rem] border border-white/10 bg-white/[0.04] p-4 sm:p-5">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-gold-soft)]">
+            현재 공개 시세
+          </p>
+          <h3 className="mt-2 text-lg font-semibold text-white">사이트에 보이는 가격</h3>
+        </div>
+        <p className="text-xs text-white/45">기준 {formatDateTimeKorean(prices[0]?.announcedAt ?? new Date().toISOString())}</p>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+        {visiblePrices.map((price) => (
+          <div key={price.id} className="rounded-2xl border border-white/8 bg-black/18 px-4 py-3">
+            <p className="text-xs text-white/45">{price.label}</p>
+            <p className="mt-1 text-lg font-semibold tabular-nums text-white">{formatWon(price.value)}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function OperationSummary({
   prices,
   settings,
   suggestion,
-  mode,
+  isAutoOn,
 }: {
   prices: PriceRecord[];
   settings: PriceAutoSettings;
   suggestion: PriceAutoSuggestion | null;
-  mode: PriceInputMode;
+  isAutoOn: boolean;
 }) {
-  const announcedAt = prices[0]?.announcedAt ?? new Date().toISOString();
   const latestUpdate = getLatestUpdate(prices);
   const draftCount = suggestion?.status === "draft" ? suggestion.items.length : 0;
-
   const stats = [
-    { label: "기준 시각", value: formatDateTimeKorean(announcedAt) },
+    { label: "운영 상태", value: isAutoOn ? "자동시세 ON" : "직접 입력" },
     { label: "마지막 저장", value: formatDateTimeKorean(latestUpdate) },
-    { label: "현재 작업", value: mode === "auto" ? "자동시세 초안" : "직접 입력" },
-    { label: "저장된 자동시세", value: settings.isEnabled ? `${settings.intervalHours}시간마다 초안` : "꺼짐" },
-    { label: "대기 초안", value: draftCount ? `${draftCount}개 항목` : "없음" },
+    { label: "최근 자동 반영", value: settings.lastAutoAppliedAt ? formatDateTimeKorean(settings.lastAutoAppliedAt) : "아직 없음" },
+    { label: "다음 확인 예정", value: getNextCheckLabel(settings, isAutoOn) },
+    { label: "검토 대기", value: draftCount ? `${draftCount}개 항목` : "없음" },
   ];
 
   return (
-    <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 sm:p-6">
+    <section className="rounded-[1.8rem] border border-white/10 bg-[#111] p-4 sm:p-5">
       <div className="grid gap-3 md:grid-cols-5">
         {stats.map((item) => (
-          <div key={item.label} className="rounded-2xl bg-black/18 px-4 py-3">
-            <p className="text-[11px] font-semibold tracking-[0.16em] text-white/45">{item.label}</p>
+          <div key={item.label} className="rounded-2xl bg-white/[0.045] px-4 py-3">
+            <p className="text-[11px] font-semibold tracking-[0.14em] text-white/42">{item.label}</p>
             <p className="mt-2 text-sm font-semibold text-white">{item.value}</p>
           </div>
         ))}
@@ -107,104 +151,115 @@ function StatusPanel({
 }
 
 function ModeSwitch({
-  mode,
-  setMode,
   settings,
+  isAutoOn,
+  savedIsAutoOn,
+  onModeChange,
 }: {
-  mode: PriceInputMode;
-  setMode: (mode: PriceInputMode) => void;
   settings: PriceAutoSettings;
+  isAutoOn: boolean;
+  savedIsAutoOn: boolean;
+  onModeChange: (nextMode: boolean) => void;
 }) {
-  const savedMode: PriceInputMode = settings.isEnabled ? "auto" : "manual";
-  const changed = mode !== savedMode;
+  const canPersist = settings.schemaReady;
 
   return (
     <section
       data-testid="admin-price-mode-switch"
-      className="rounded-[2rem] border border-white/10 bg-[#111] p-5 sm:p-6"
+      className="rounded-[1.8rem] border border-white/10 bg-[#111] p-5 sm:p-6"
     >
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--color-gold-soft)]">
-            입력 방식
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-gold-soft)]">
+            자동시세
           </p>
-          <h3 className="mt-2 font-display text-2xl text-white">자동시세 ON/OFF</h3>
+          <h3 className="mt-2 font-display text-xl text-white">
+            {isAutoOn ? "자동 계산 후 조건 통과 시 바로 반영" : "직접 입력 모드"}
+          </h3>
           <p className="mt-2 text-sm leading-7 text-white/58">
-            ON은 자동 초안 검토, OFF는 직접 입력으로 화면을 전환합니다.
+            ON을 누르면 자동 운영으로 저장되고, OFF를 누르면 직접 입력표가 열립니다.
           </p>
         </div>
-        <div
-          role="group"
-          aria-label="자동시세 사용 여부"
-          className="grid w-full max-w-[420px] grid-cols-2 rounded-full border border-white/10 bg-black/28 p-1"
-        >
-          <button
-            type="button"
-            aria-pressed={mode === "auto"}
-            onClick={() => setMode("auto")}
-            className={[
-              "rounded-full px-4 py-3 text-sm font-semibold transition",
-              mode === "auto"
-                ? "bg-[var(--color-gold)] text-[#171717]"
-                : "text-white/60 hover:bg-white/8 hover:text-white",
-            ].join(" ")}
-          >
-            자동시세 ON
-          </button>
-          <button
-            type="button"
-            aria-pressed={mode === "manual"}
-            onClick={() => setMode("manual")}
-            className={[
-              "rounded-full px-4 py-3 text-sm font-semibold transition",
-              mode === "manual"
-                ? "bg-white text-[#171717]"
-                : "text-white/60 hover:bg-white/8 hover:text-white",
-            ].join(" ")}
-          >
-            자동시세 OFF
-          </button>
-        </div>
-      </div>
 
-      {changed ? (
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#f2c35a]/25 bg-[#2a2212] px-4 py-3">
-          <p className="text-sm leading-7 text-[#f8e2ab]">
-            지금 화면만 전환되었습니다. 다음 접속에도 유지하려면 선택한 모드를 저장하세요.
-          </p>
+        <div className="w-full max-w-[430px] space-y-3">
           <form action={updatePriceAutoSettingsAction}>
-            <HiddenAutoSettingsFields settings={settings} enabled={mode === "auto"} />
-            <button className="rounded-full bg-[var(--color-gold)] px-5 py-2.5 text-sm font-semibold text-[#171717]">
-              선택한 모드 저장
+            <HiddenAutoSettingsFields
+              settings={settings}
+              enabled={!isAutoOn}
+              mode={isAutoOn ? "manual_review" : "auto_publish"}
+            />
+            <button
+              type={canPersist ? "submit" : "button"}
+              data-testid="admin-price-mode-toggle"
+              onClick={(event) => {
+                onModeChange(!isAutoOn);
+                if (!canPersist) event.preventDefault();
+              }}
+              aria-pressed={isAutoOn}
+              aria-label="자동시세 ON/OFF 전환"
+              className={[
+                "group flex w-full appearance-none items-center justify-between gap-4 rounded-[1.7rem] border px-5 py-4 text-left transition",
+                isAutoOn
+                  ? "border-[var(--color-gold)]/55 bg-[var(--color-gold)]/10"
+                  : "border-white/12 bg-black/24 hover:border-white/22 hover:bg-white/[0.04]",
+              ].join(" ")}
+            >
+              <span>
+                <span className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-white/44">
+                  현재 상태
+                </span>
+                <span className="mt-1 block text-base font-semibold text-white">
+                  {isAutoOn ? "자동시세 ON" : "자동시세 OFF"}
+                </span>
+                <span className="mt-1 block text-xs text-white/46">
+                  {isAutoOn ? "클릭하면 직접 입력으로 전환" : "클릭하면 자동 운영으로 전환"}
+                </span>
+              </span>
+              <span
+                className={[
+                  "relative h-8 w-16 shrink-0 rounded-full border transition",
+                  isAutoOn
+                    ? "border-[var(--color-gold)] bg-[var(--color-gold)]"
+                    : "border-white/16 bg-white/8",
+                ].join(" ")}
+                aria-hidden="true"
+              >
+                <span
+                  className={[
+                    "absolute top-1 h-6 w-6 rounded-full bg-[#171717] shadow transition",
+                    isAutoOn ? "left-[2.15rem]" : "left-1 bg-white/82",
+                  ].join(" ")}
+                />
+              </span>
             </button>
           </form>
+          <p className="text-xs leading-5 text-white/45">
+            현재 저장 상태: {savedIsAutoOn ? "자동시세 ON" : "직접 입력"} ·{" "}
+            {canPersist ? "버튼을 누르면 바로 저장됩니다." : "저장소 미연결: 화면 전환만 미리 볼 수 있습니다."}
+          </p>
         </div>
-      ) : null}
+      </div>
     </section>
   );
 }
 
-function AutoFormulaGuide({ settings }: { settings: PriceAutoSettings }) {
+function AutoCalculationGuide({ settings }: { settings: PriceAutoSettings }) {
   const formulas = [
     {
       label: "순금 살 때",
-      body: `국제 금 3.75g 환산가 × (1 + ${formatRate(settings.goldSellPremiumRate)}) → ${settings.roundingUnit.toLocaleString("ko-KR")}원 단위 반올림`,
+      body: `국제 금 3.75g 환산가 × 판매 프리미엄 ${formatRate(settings.goldSellPremiumRate)} → ${settings.roundingUnit.toLocaleString("ko-KR")}원 단위 반올림`,
     },
     {
       label: "순금 팔 때",
-      body: `국제 금 3.75g 환산가 × (1 - ${formatRate(settings.goldBuyDiscountRate)}) → ${settings.roundingUnit.toLocaleString("ko-KR")}원 단위 반올림`,
+      body: `국제 금 3.75g 환산가 × 매입 할인폭 ${formatRate(settings.goldBuyDiscountRate)} 차감 → 반올림`,
     },
     {
       label: "18K / 14K",
       body: `순금 팔 때 기준 × 18K ${settings.gold18kBuyRate} / 14K ${settings.gold14kBuyRate}`,
     },
     {
-      label: "백금 / 은",
-      body: `각 금속 3.75g 환산가에 판매 프리미엄과 매입 할인폭을 적용`,
-    },
-    {
-      label: "검토 기준",
-      body: `직전 고시가 대비 ${formatRate(settings.maxAutoChangePercent)} 이상 변동하면 검토 필요로 표시`,
+      label: "자동 게시 기준",
+      body: `${settings.minApplyChangeWon.toLocaleString("ko-KR")}원 이상 차이, ${formatRate(settings.maxAutoPublishChangePercent)} 미만 변동일 때 자동 반영`,
     },
   ];
 
@@ -212,13 +267,13 @@ function AutoFormulaGuide({ settings }: { settings: PriceAutoSettings }) {
     <div className="rounded-[1.6rem] border border-white/10 bg-black/20 p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--color-gold-soft)]">
-            Formula
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-gold-soft)]">
+            계산 기준
           </p>
           <h4 className="mt-2 text-lg font-semibold text-white">자동 계산 공식</h4>
         </div>
         <span className="rounded-full border border-white/12 px-3 py-1.5 text-xs font-semibold text-white/58">
-          공개 전 초안만 생성
+          {settings.businessHoursOnly ? "영업시간만 반영" : "항상 확인"}
         </span>
       </div>
       <div className="mt-4 grid gap-3 lg:grid-cols-2">
@@ -229,10 +284,216 @@ function AutoFormulaGuide({ settings }: { settings: PriceAutoSettings }) {
           </div>
         ))}
       </div>
-      <p className="mt-4 text-xs leading-6 text-white/45">
-        원천값은 선택한 시장 참고 소스와 환율로 만든 3.75g 환산가입니다. 초안 적용 전에는 홈, 시세,
-        상품 가격이 바뀌지 않습니다.
-      </p>
+    </div>
+  );
+}
+
+function NumberField({
+  name,
+  label,
+  value,
+  step,
+  help,
+}: {
+  name: string;
+  label: string;
+  value: number;
+  step?: string;
+  help?: string;
+}) {
+  return (
+    <label className="block text-sm text-white/74">
+      <span className="font-semibold text-white/82">{label}</span>
+      {help ? <span className="mt-1 block text-xs leading-5 text-white/44">{help}</span> : null}
+      <input
+        name={name}
+        type="number"
+        step={step}
+        defaultValue={value}
+        className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
+      />
+    </label>
+  );
+}
+
+function AutoSettingsForm({
+  settings,
+  hasMetalsKey,
+}: {
+  settings: PriceAutoSettings;
+  hasMetalsKey: boolean;
+}) {
+  return (
+    <details className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+      <summary className="cursor-pointer text-sm font-semibold text-white">
+        계산 기준 세부 설정
+      </summary>
+      <form action={updatePriceAutoSettingsAction} className="mt-4 grid gap-4">
+        <input type="hidden" name="autoEnabled" value="on" />
+        <input type="hidden" name="autoMode" value="auto_publish" />
+        <input type="hidden" name="intervalHours" value={settings.checkIntervalMinutes === 120 ? 2 : 1} />
+        <label className="block text-sm text-white/74">
+          <span className="font-semibold text-white/82">참고 데이터</span>
+          <span className="mt-1 block text-xs leading-5 text-white/44">
+            회사 시세를 바로 가져오는 것이 아니라, 아래 산식의 원천 참고값입니다.
+          </span>
+          <select
+            name="autoSource"
+            defaultValue={settings.source}
+            className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
+          >
+            <option value="gold-api">Gold API</option>
+            <option value="metals-dev" disabled={!hasMetalsKey}>
+              Metals.Dev{hasMetalsKey ? "" : " (API key 필요)"}
+            </option>
+          </select>
+        </label>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block text-sm text-white/74">
+          <span className="font-semibold text-white/82">확인 주기</span>
+          <span className="mt-1 block text-xs leading-5 text-white/44">
+              자동 작업이 이 시간보다 빨리 다시 실행되면 사이트 시세를 그대로 둡니다.
+          </span>
+            <select
+              name="checkIntervalMinutes"
+              defaultValue={settings.checkIntervalMinutes}
+              className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
+            >
+              <option value="30">30분마다</option>
+              <option value="60">1시간마다</option>
+              <option value="120">2시간마다</option>
+            </select>
+          </label>
+          <NumberField
+            name="minApplyChangeWon"
+            label="최소 반영 금액"
+            value={settings.minApplyChangeWon}
+            help="계산값과 현재 공개가 차이가 이 금액보다 작으면 시세를 바꾸지 않습니다."
+          />
+          <NumberField
+            name="maxAutoPublishChangePercentPct"
+            label="자동 게시 허용 변동폭(%)"
+            value={formatPercentInput(settings.maxAutoPublishChangePercent)}
+            step="0.1"
+            help="현재 공개가 대비 이 비율 이상 크게 움직이면 실수 방지를 위해 자동으로 바꾸지 않습니다."
+          />
+          <NumberField
+            name="roundingUnit"
+            label="반올림 단위"
+            value={settings.roundingUnit}
+            help="계산값을 이 금액 단위로 정리합니다. 예: 100원 단위"
+          />
+        </div>
+
+        <label className="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-black/18 px-4 py-3 text-sm text-white/74">
+          <input name="businessHoursOnly" type="checkbox" defaultChecked={settings.businessHoursOnly} />
+          평일 09:00-18:30에만 자동 반영
+        </label>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <NumberField
+            name="goldSellPremiumRatePct"
+            label="순금 살 때 프리미엄(%)"
+            value={formatPercentInput(settings.goldSellPremiumRate)}
+            step="0.1"
+          />
+          <NumberField
+            name="goldBuyDiscountRatePct"
+            label="순금 팔 때 할인폭(%)"
+            value={formatPercentInput(settings.goldBuyDiscountRate)}
+            step="0.1"
+          />
+          <NumberField name="gold18kBuyRate" label="18K 환산 계수" value={settings.gold18kBuyRate} step="0.001" />
+          <NumberField name="gold14kBuyRate" label="14K 환산 계수" value={settings.gold14kBuyRate} step="0.001" />
+        </div>
+
+        <input type="hidden" name="platinumSellPremiumRate" value={settings.platinumSellPremiumRate} />
+        <input type="hidden" name="platinumBuyDiscountRate" value={settings.platinumBuyDiscountRate} />
+        <input type="hidden" name="silverSellPremiumRate" value={settings.silverSellPremiumRate} />
+        <input type="hidden" name="silverBuyDiscountRate" value={settings.silverBuyDiscountRate} />
+        <input type="hidden" name="updatedBy" value="관리자" />
+        <button className="rounded-full border border-white/14 px-5 py-3 text-sm font-semibold text-white transition hover:border-[var(--color-gold-soft)] hover:bg-white/6">
+          세부 설정 저장
+        </button>
+      </form>
+    </details>
+  );
+}
+
+function AutoSuggestionPanel({ suggestion }: { suggestion: PriceAutoSuggestion }) {
+  const needsReview =
+    suggestion.warnings.length > 0 || suggestion.items.some((item) => item.needsReview);
+
+  return (
+    <div className="mt-5 rounded-[1.6rem] border border-[var(--color-gold)]/25 bg-[#241f12] p-4">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-[#ffd77a]">
+            {needsReview ? "검토 필요 항목" : "최근 자동 계산 기록"}
+          </p>
+          <p className="mt-1 text-xs text-white/55">
+            {suggestion.providerLabel} · 기준 {formatDateTimeKorean(suggestion.sourceUpdatedAt)} · 생성{" "}
+            {formatDateTimeKorean(suggestion.generatedAt)}
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <form action={applyPriceAutoSuggestionAction}>
+            <input type="hidden" name="suggestionId" value={suggestion.id} />
+            <input
+              type="hidden"
+              name="changedBy"
+              value={needsReview ? "자동시세 검토 후 반영" : "자동시세 계산값 반영"}
+            />
+            <button className="rounded-full bg-[var(--color-gold)] px-4 py-2 text-sm font-semibold text-[#171717]">
+              {needsReview ? "검토 후 반영" : "계산값 반영"}
+            </button>
+          </form>
+          <form action={rejectPriceAutoSuggestionAction}>
+            <input type="hidden" name="suggestionId" value={suggestion.id} />
+            <button className="rounded-full border border-white/14 px-4 py-2 text-sm font-semibold text-white/72">
+              {needsReview ? "검토 항목 폐기" : "드래프트 폐기"}
+            </button>
+          </form>
+        </div>
+      </div>
+      {suggestion.warnings.length ? (
+        <div className="mt-4 space-y-1 text-sm leading-7 text-[#f8e2ab]">
+          {suggestion.warnings.map((warning) => (
+            <p key={warning}>· {warning}</p>
+          ))}
+        </div>
+      ) : null}
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full min-w-[720px] text-left text-sm">
+          <thead className="text-xs text-white/48">
+            <tr className="border-b border-white/10">
+              <th className="py-3">품목</th>
+              <th className="py-3">현재</th>
+              <th className="py-3">계산값</th>
+              <th className="py-3">차액</th>
+              <th className="py-3">상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            {suggestion.items.map((item) => (
+              <tr key={item.category} className="border-b border-white/8">
+                <td className="py-3 font-semibold text-white">{item.label}</td>
+                <td className="py-3 text-white/68">{formatWon(item.currentValue)}</td>
+                <td className="py-3 font-semibold text-white">{formatWon(item.proposedValue)}</td>
+                <td className="py-3 text-white/68">
+                  {formatSigned(item.difference)} / {formatRate(item.changePercent)}
+                </td>
+                <td className="py-3">
+                  <span className={item.needsReview ? "text-[#ffd77a]" : "text-white/55"}>
+                    {item.needsReview ? "검토 필요" : "자동 가능"}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -251,113 +512,66 @@ function AutoModePanel({
   return (
     <section
       data-testid="admin-price-auto-panel"
-      className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 sm:p-6"
+      className="rounded-[1.8rem] border border-white/10 bg-white/[0.04] p-5 sm:p-6"
     >
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--color-gold-soft)]">
-            자동입력
-          </p>
-          <h3 className="mt-2 font-display text-2xl text-white">자동시세 초안</h3>
-          <p className="mt-2 max-w-3xl text-sm leading-7 text-white/62">
-            시장 참고값에 KCG 산식을 적용해 초안을 만들고, 적용 버튼을 누를 때만 공개 시세가 바뀝니다.
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <form action={generatePriceAutoSuggestionAction}>
-            <button className="rounded-full bg-[var(--color-gold)] px-5 py-3 text-sm font-semibold text-[#171717] transition hover:bg-[var(--color-gold-soft)]">
-              초안 생성
-            </button>
-          </form>
-          <form action={updatePriceAutoSettingsAction}>
-            <HiddenAutoSettingsFields settings={settings} enabled />
-            <button className="rounded-full border border-white/14 px-5 py-3 text-sm font-semibold text-white/76 transition hover:border-[var(--color-gold-soft)] hover:text-white">
-              ON 저장
-            </button>
-          </form>
+      <div className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
+        <AutoCalculationGuide settings={settings} />
+        <div className="space-y-4">
+          <div className="rounded-[1.6rem] border border-white/10 bg-black/18 p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-gold-soft)]">
+                  자동 운영
+                </p>
+                <h3 className="mt-2 text-lg font-semibold text-white">현재 자동 운영 중</h3>
+              </div>
+              <form action={generatePriceAutoSuggestionAction}>
+                <button className="rounded-full bg-[var(--color-gold)] px-4 py-2.5 text-sm font-semibold text-[#171717] transition hover:bg-[var(--color-gold-soft)]">
+                  지금 자동 확인
+                </button>
+              </form>
+            </div>
+            <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+              <div className="rounded-2xl bg-white/[0.035] px-4 py-3">
+                <dt className="text-white/48">참고 데이터</dt>
+                <dd className="mt-1 font-semibold text-white">{settings.source === "metals-dev" ? "Metals.Dev" : "Gold API"}</dd>
+              </div>
+              <div className="rounded-2xl bg-white/[0.035] px-4 py-3">
+                <dt className="text-white/48">확인 주기</dt>
+                <dd className="mt-1 font-semibold text-white">{settings.checkIntervalMinutes}분마다</dd>
+              </div>
+              <div className="rounded-2xl bg-white/[0.035] px-4 py-3">
+                <dt className="text-white/48">최소 반영 금액</dt>
+                <dd className="mt-1 font-semibold text-white">{settings.minApplyChangeWon.toLocaleString("ko-KR")}원 이상 차이</dd>
+              </div>
+              <div className="rounded-2xl bg-white/[0.035] px-4 py-3">
+                <dt className="text-white/48">자동 게시 허용 변동폭</dt>
+                <dd className="mt-1 font-semibold text-white">{formatRate(settings.maxAutoPublishChangePercent)} 미만</dd>
+              </div>
+            </dl>
+            <p className="mt-3 text-xs leading-5 text-white/42">
+              현재 Vercel 무료 플랜에서는 자동 호출이 하루 1회로 배포됩니다. 30분/1시간 주기는 Pro 또는 외부
+              스케줄러를 연결하면 그대로 적용됩니다.
+            </p>
+          </div>
+
+          <AutoSettingsForm settings={settings} hasMetalsKey={hasMetalsKey} />
         </div>
       </div>
 
       {!settings.schemaReady ? (
         <p className="mt-5 rounded-2xl border border-[#f2c35a]/25 bg-[#2a2212] px-4 py-3 text-sm leading-7 text-[#f8e2ab]">
-          Supabase에 자동입력 테이블을 적용하면 설정 저장과 초안 이력이 활성화됩니다. 적용 전에도 UI와 산식 구조는 확인할 수 있습니다.
+          Supabase에 자동시세 테이블을 적용하면 설정 저장과 자동 반영 이력이 활성화됩니다.
         </p>
       ) : null}
 
-      <div className="mt-5 grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
-        <AutoFormulaGuide settings={settings} />
-        <div className="rounded-[1.6rem] border border-white/10 bg-black/18 p-4">
-          <p className="text-sm font-semibold text-white">현재 설정</p>
-          <dl className="mt-4 space-y-3 text-sm">
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-white/48">소스</dt>
-              <dd className="font-semibold text-white">{settings.source === "metals-dev" ? "Metals.Dev" : "Gold API"}</dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-white/48">주기</dt>
-              <dd className="font-semibold text-white">{settings.intervalHours}시간마다 초안</dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-white/48">반올림</dt>
-              <dd className="font-semibold text-white">{settings.roundingUnit.toLocaleString("ko-KR")}원 단위</dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="text-white/48">자동 게시</dt>
-              <dd className="font-semibold text-white">비활성</dd>
-            </div>
-          </dl>
-
-          <details className="mt-5 rounded-2xl border border-white/10 bg-white/[0.035] p-4">
-            <summary className="cursor-pointer text-sm font-semibold text-white">
-              세부 설정 수정
-            </summary>
-            <form action={updatePriceAutoSettingsAction} className="mt-4 grid gap-4">
-              <input type="hidden" name="autoEnabled" value="on" />
-              <input type="hidden" name="autoMode" value="draft" />
-              <label className="block text-sm text-white/74">
-                소스
-                <select
-                  name="autoSource"
-                  defaultValue={settings.source}
-                  className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
-                >
-                  <option value="gold-api">Gold API</option>
-                  <option value="metals-dev" disabled={!hasMetalsKey}>
-                    Metals.Dev{hasMetalsKey ? "" : " (API key 필요)"}
-                  </option>
-                </select>
-              </label>
-              <label className="block text-sm text-white/74">
-                실행 주기
-                <select
-                  name="intervalHours"
-                  defaultValue={settings.intervalHours}
-                  className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
-                >
-                  <option value="1">1시간마다</option>
-                  <option value="2">2시간마다</option>
-                </select>
-              </label>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <NumberField name="roundingUnit" label="반올림 단위" value={settings.roundingUnit} />
-                <NumberField name="maxAutoChangePercent" label="최대 자동 변동률" value={settings.maxAutoChangePercent} step="0.001" />
-                <NumberField name="goldSellPremiumRate" label="순금 살 때 프리미엄" value={settings.goldSellPremiumRate} step="0.001" />
-                <NumberField name="goldBuyDiscountRate" label="순금 팔 때 할인폭" value={settings.goldBuyDiscountRate} step="0.001" />
-                <NumberField name="gold18kBuyRate" label="18K 환산 계수" value={settings.gold18kBuyRate} step="0.001" />
-                <NumberField name="gold14kBuyRate" label="14K 환산 계수" value={settings.gold14kBuyRate} step="0.001" />
-              </div>
-              <input type="hidden" name="platinumSellPremiumRate" value={settings.platinumSellPremiumRate} />
-              <input type="hidden" name="platinumBuyDiscountRate" value={settings.platinumBuyDiscountRate} />
-              <input type="hidden" name="silverSellPremiumRate" value={settings.silverSellPremiumRate} />
-              <input type="hidden" name="silverBuyDiscountRate" value={settings.silverBuyDiscountRate} />
-              <input type="hidden" name="updatedBy" value="관리자" />
-              <button className="rounded-full border border-white/14 px-5 py-3 text-sm font-semibold text-white transition hover:border-[var(--color-gold-soft)] hover:bg-white/6">
-                세부 설정 저장
-              </button>
-            </form>
-          </details>
+      {draft ? (
+        <AutoSuggestionPanel suggestion={draft} />
+      ) : (
+        <div className="mt-5 rounded-2xl border border-white/10 bg-black/14 px-4 py-3 text-sm text-white/52">
+          검토 대기 항목이 없습니다. 조건을 통과한 자동 계산은 공개 시세에 바로 기록됩니다.
         </div>
-      </div>
+      )}
 
       <div className="mt-5 flex flex-wrap gap-2 text-sm">
         {[
@@ -376,102 +590,7 @@ function AutoModePanel({
           </a>
         ))}
       </div>
-
-      {draft ? <AutoSuggestionPanel suggestion={draft} /> : null}
     </section>
-  );
-}
-
-function NumberField({
-  name,
-  label,
-  value,
-  step,
-}: {
-  name: string;
-  label: string;
-  value: number;
-  step?: string;
-}) {
-  return (
-    <label className="block text-sm text-white/74">
-      {label}
-      <input
-        name={name}
-        type="number"
-        step={step}
-        defaultValue={value}
-        className="mt-2 w-full rounded-2xl border border-white/12 bg-black/18 px-4 py-3 text-white outline-none focus:border-[var(--color-gold-soft)]"
-      />
-    </label>
-  );
-}
-
-function AutoSuggestionPanel({ suggestion }: { suggestion: PriceAutoSuggestion }) {
-  return (
-    <div className="mt-6 rounded-[1.6rem] border border-[var(--color-gold)]/25 bg-[#241f12] p-4">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <p className="text-sm font-semibold text-[#ffd77a]">대기 중인 자동입력 초안</p>
-          <p className="mt-1 text-xs text-white/55">
-            {suggestion.providerLabel} · 기준 {formatDateTimeKorean(suggestion.sourceUpdatedAt)} · 생성{" "}
-            {formatDateTimeKorean(suggestion.generatedAt)}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <form action={applyPriceAutoSuggestionAction}>
-            <input type="hidden" name="suggestionId" value={suggestion.id} />
-            <input type="hidden" name="changedBy" value="자동입력 초안 적용" />
-            <button className="rounded-full bg-[var(--color-gold)] px-4 py-2 text-sm font-semibold text-[#171717]">
-              초안 적용
-            </button>
-          </form>
-          <form action={rejectPriceAutoSuggestionAction}>
-            <input type="hidden" name="suggestionId" value={suggestion.id} />
-            <button className="rounded-full border border-white/14 px-4 py-2 text-sm font-semibold text-white/72">
-              초안 폐기
-            </button>
-          </form>
-        </div>
-      </div>
-      {suggestion.warnings.length ? (
-        <div className="mt-4 space-y-1 text-sm leading-7 text-[#f8e2ab]">
-          {suggestion.warnings.map((warning) => (
-            <p key={warning}>· {warning}</p>
-          ))}
-        </div>
-      ) : null}
-      <div className="mt-4 overflow-x-auto">
-        <table className="w-full min-w-[720px] text-left text-sm">
-          <thead className="text-xs text-white/48">
-            <tr className="border-b border-white/10">
-              <th className="py-3">품목</th>
-              <th className="py-3">현재</th>
-              <th className="py-3">제안</th>
-              <th className="py-3">차액</th>
-              <th className="py-3">확인</th>
-            </tr>
-          </thead>
-          <tbody>
-            {suggestion.items.map((item) => (
-              <tr key={item.category} className="border-b border-white/8">
-                <td className="py-3 font-semibold text-white">{item.label}</td>
-                <td className="py-3 text-white/68">{formatWon(item.currentValue)}</td>
-                <td className="py-3 font-semibold text-white">{formatWon(item.proposedValue)}</td>
-                <td className="py-3 text-white/68">
-                  {formatSigned(item.difference)} / {formatRate(item.changePercent)}
-                </td>
-                <td className="py-3">
-                  <span className={item.needsReview ? "text-[#ffd77a]" : "text-white/55"}>
-                    {item.needsReview ? "검토 필요" : "정상 범위"}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
   );
 }
 
@@ -482,14 +601,14 @@ function PriceEditor({ prices }: { prices: PriceRecord[] }) {
     <form
       action={updatePricesAction}
       data-testid="admin-price-editor"
-      className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 sm:p-6"
+      className="rounded-[1.8rem] border border-white/10 bg-white/[0.04] p-5 sm:p-6"
     >
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--color-gold-soft)]">
-            Manual
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-gold-soft)]">
+            직접 입력
           </p>
-          <h3 className="mt-2 font-display text-2xl text-white">직접 입력</h3>
+          <h3 className="mt-2 font-display text-xl text-white">직접 입력</h3>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="text-sm text-white/74">
@@ -575,13 +694,20 @@ export function AdminPricesWorkspace({
   suggestion,
   hasMetalsKey,
 }: AdminPricesWorkspaceProps) {
-  const [mode, setMode] = useState<PriceInputMode>(settings.isEnabled ? "auto" : "manual");
+  const savedIsAutoOn = settings.isEnabled && settings.mode === "auto_publish";
+  const [isAutoOn, setIsAutoOn] = useState(savedIsAutoOn);
 
   return (
     <>
-      <ModeSwitch mode={mode} setMode={setMode} settings={settings} />
-      <StatusPanel prices={prices} settings={settings} suggestion={suggestion} mode={mode} />
-      {mode === "auto" ? (
+      <CurrentPriceSnapshot prices={prices} />
+      <ModeSwitch
+        settings={settings}
+        isAutoOn={isAutoOn}
+        savedIsAutoOn={savedIsAutoOn}
+        onModeChange={setIsAutoOn}
+      />
+      <OperationSummary prices={prices} settings={settings} suggestion={suggestion} isAutoOn={isAutoOn} />
+      {isAutoOn ? (
         <AutoModePanel settings={settings} suggestion={suggestion} hasMetalsKey={hasMetalsKey} />
       ) : (
         <PriceEditor prices={prices} />

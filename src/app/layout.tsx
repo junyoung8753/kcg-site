@@ -1,19 +1,13 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans_KR, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { canExposeToSearch } from "@/lib/public-launch";
 import { siteConfig } from "@/lib/site-config";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const ibmPlexSansKr = IBM_Plex_Sans_KR({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-ibm-plex-sans-kr",
+const pretendard = localFont({
+  src: "./fonts/PretendardVariable.woff2",
+  variable: "--font-pretendard",
+  weight: "45 920",
   display: "swap",
 });
 
@@ -100,7 +94,7 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${inter.variable} ${ibmPlexSansKr.variable} h-full scroll-smooth antialiased`}
+      className={`${pretendard.variable} h-full scroll-smooth antialiased`}
     >
       <body className="min-h-full bg-[var(--color-ivory)] text-[var(--color-ink)]">
         <script

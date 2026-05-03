@@ -4,9 +4,9 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getRepository } from "@/lib/data";
 import {
-  buildPriceAutoSuggestionInput,
   buildPriceUpdatesFromSuggestion,
 } from "@/lib/price-auto";
+import { runPriceAutoRefresh } from "@/lib/price-auto-runner";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 import { ensureNumber, ensureString, toBoolean } from "@/lib/utils";
 import type {
@@ -150,11 +150,29 @@ function ensurePriceAutoSource(value: FormDataEntryValue | null): PriceAutoSourc
 }
 
 function ensurePriceAutoMode(value: FormDataEntryValue | null): PriceAutoMode {
-  return value === "emergency_publish" ? "emergency_publish" : "draft";
+  if (value === "auto_publish" || value === "emergency_publish") return "auto_publish";
+  return "manual_review";
 }
 
 function ensureIntervalHours(value: FormDataEntryValue | null): 1 | 2 {
   return ensureNumber(value, 2) === 1 ? 1 : 2;
+}
+
+function ensureCheckIntervalMinutes(value: FormDataEntryValue | null): 30 | 60 | 120 {
+  const minutes = ensureNumber(value, 60);
+  if (minutes === 30 || minutes === 120) return minutes;
+  return 60;
+}
+
+function ensureRateFromPercentOrDecimal(
+  percentValue: FormDataEntryValue | null,
+  decimalValue: FormDataEntryValue | null,
+  fallback: number,
+) {
+  if (percentValue !== null) {
+    return ensureNumber(percentValue, fallback * 100) / 100;
+  }
+  return ensureNumber(decimalValue, fallback);
 }
 
 function revalidatePriceSurfaces() {
@@ -176,17 +194,48 @@ export async function updatePriceAutoSettingsAction(formData: FormData) {
     isEnabled: toBoolean(formData.get("autoEnabled")),
     source: ensurePriceAutoSource(formData.get("autoSource")),
     intervalHours: ensureIntervalHours(formData.get("intervalHours")),
+    checkIntervalMinutes: ensureCheckIntervalMinutes(formData.get("checkIntervalMinutes")),
     mode: ensurePriceAutoMode(formData.get("autoMode")),
     roundingUnit: ensureNumber(formData.get("roundingUnit"), 100),
-    goldSellPremiumRate: ensureNumber(formData.get("goldSellPremiumRate"), 0.135),
-    goldBuyDiscountRate: ensureNumber(formData.get("goldBuyDiscountRate"), 0.05),
+    goldSellPremiumRate: ensureRateFromPercentOrDecimal(
+      formData.get("goldSellPremiumRatePct"),
+      formData.get("goldSellPremiumRate"),
+      0.135,
+    ),
+    goldBuyDiscountRate: ensureRateFromPercentOrDecimal(
+      formData.get("goldBuyDiscountRatePct"),
+      formData.get("goldBuyDiscountRate"),
+      0.05,
+    ),
     gold18kBuyRate: ensureNumber(formData.get("gold18kBuyRate"), 0.735),
     gold14kBuyRate: ensureNumber(formData.get("gold14kBuyRate"), 0.57),
-    platinumSellPremiumRate: ensureNumber(formData.get("platinumSellPremiumRate"), 0.1),
-    platinumBuyDiscountRate: ensureNumber(formData.get("platinumBuyDiscountRate"), 0.1),
-    silverSellPremiumRate: ensureNumber(formData.get("silverSellPremiumRate"), 0.08),
-    silverBuyDiscountRate: ensureNumber(formData.get("silverBuyDiscountRate"), 0.11),
-    maxAutoChangePercent: ensureNumber(formData.get("maxAutoChangePercent"), 0.15),
+    platinumSellPremiumRate: ensureRateFromPercentOrDecimal(
+      formData.get("platinumSellPremiumRatePct"),
+      formData.get("platinumSellPremiumRate"),
+      0.1,
+    ),
+    platinumBuyDiscountRate: ensureRateFromPercentOrDecimal(
+      formData.get("platinumBuyDiscountRatePct"),
+      formData.get("platinumBuyDiscountRate"),
+      0.1,
+    ),
+    silverSellPremiumRate: ensureRateFromPercentOrDecimal(
+      formData.get("silverSellPremiumRatePct"),
+      formData.get("silverSellPremiumRate"),
+      0.08,
+    ),
+    silverBuyDiscountRate: ensureRateFromPercentOrDecimal(
+      formData.get("silverBuyDiscountRatePct"),
+      formData.get("silverBuyDiscountRate"),
+      0.11,
+    ),
+    minApplyChangeWon: ensureNumber(formData.get("minApplyChangeWon"), 500),
+    maxAutoPublishChangePercent: ensureRateFromPercentOrDecimal(
+      formData.get("maxAutoPublishChangePercentPct"),
+      formData.get("maxAutoPublishChangePercent"),
+      0.05,
+    ),
+    businessHoursOnly: toBoolean(formData.get("businessHoursOnly")),
     updatedBy: ensureString(formData.get("updatedBy"), "관리자"),
   });
 
@@ -199,17 +248,24 @@ export async function generatePriceAutoSuggestionAction() {
   let redirectPath = "/admin/prices?status=auto-error";
 
   try {
-    const [prices, settings] = await Promise.all([
-      repository.getPrices(),
-      repository.getPriceAutoSettings(),
-    ]);
-    const input = await buildPriceAutoSuggestionInput(prices, settings);
-    const suggestion = await repository.createPriceAutoSuggestion(input);
+    const result = await runPriceAutoRefresh(repository, {
+      force: true,
+      changedBy: "자동시세",
+    });
     revalidatePriceSurfaces();
-    redirectPath =
-      suggestion.id === "schema-not-ready"
-        ? "/admin/prices?status=auto-schema"
-        : "/admin/prices?status=auto-draft";
+
+    const search = new URLSearchParams({
+      status:
+        result.status === "applied"
+          ? "auto-applied"
+          : result.status === "schema-not-ready"
+            ? "auto-schema"
+            : result.status === "auto-fill-disabled"
+              ? "auto-disabled"
+              : "auto-held",
+    });
+    result.warnings.forEach((warning) => search.append("warning", warning));
+    redirectPath = `/admin/prices?${search.toString()}`;
   } catch {
     redirectPath = "/admin/prices?status=auto-error";
   }
@@ -223,7 +279,7 @@ export async function applyPriceAutoSuggestionAction(formData: FormData) {
   }
 
   const suggestionId = ensureString(formData.get("suggestionId"));
-  const changedBy = ensureString(formData.get("changedBy"), "자동입력 초안 적용");
+  const changedBy = ensureString(formData.get("changedBy"), "자동시세 검토 후 반영");
   const repository = getRepository();
   let redirectPath = "/admin/prices?status=auto-error";
 

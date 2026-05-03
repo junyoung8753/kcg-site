@@ -165,7 +165,7 @@ function PriceCell({
   if (text) {
     return (
       <div className="pt-1.5">
-        <p className={cn("text-[1.02rem] font-semibold tracking-[-0.04em] sm:text-[1.55rem]", style.priceText)}>{text}</p>
+        <p className={cn("text-[1.02rem] font-semibold tracking-[-0.022em] sm:text-[1.48rem]", style.priceText)}>{text}</p>
       </div>
     );
   }
@@ -178,10 +178,10 @@ function PriceCell({
 
   return (
     <div>
-      <p className={cn("text-[1.08rem] font-semibold tracking-[-0.05em] sm:text-[1.72rem]", style.priceText)}>
+      <p className={cn("kcg-price-primary text-[1.08rem] font-semibold sm:text-[1.64rem]", style.priceText)}>
         {formatWon(price.value)}
       </p>
-      <p className={cn("mt-1 text-[0.68rem] leading-4 sm:text-[0.9rem]", style.metaText)}>
+      <p className={cn("mt-1 text-[0.68rem] leading-5 sm:text-[0.9rem]", style.metaText)}>
         {change ? (
           <>
             {change.percent} <span className={change.tone}>{change.amount}</span>
@@ -190,7 +190,7 @@ function PriceCell({
           getPriceTradeGuide(price.category)
         )}
       </p>
-      {note ? <p className={cn("mt-1 text-[0.68rem] leading-4 sm:text-[0.9rem]", style.noteText)}>{note}</p> : null}
+      {note ? <p className={cn("mt-1 text-[0.68rem] leading-5 sm:text-[0.9rem]", style.noteText)}>{note}</p> : null}
     </div>
   );
 }
@@ -218,6 +218,7 @@ export function PriceLineup({
 }) {
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [isSlidePaused, setIsSlidePaused] = useState(false);
+  const [isLineupOpen, setIsLineupOpen] = useState(true);
   const priceByCategory = new Map(prices.map((price) => [price.category, price]));
   const style = lineupStyle;
   const wrapperHeightClass = "lg:min-h-[36rem]";
@@ -269,11 +270,14 @@ export function PriceLineup({
           <div className={cn(wrapperLayoutClass, wrapperHeightClass)}>
             <div
               data-testid="home-price-lineup-panel"
+              aria-hidden={visualMode === "campaign" && !isLineupOpen}
               className={cn(
                 "transition-[opacity,transform] duration-300",
                 panelPositionClass,
                 style.panelShell,
-                panelOpenClass,
+                visualMode === "campaign" && !isLineupOpen
+                  ? "hidden opacity-0 lg:invisible lg:block lg:pointer-events-none lg:w-[37vw] lg:-translate-x-8 2xl:w-[42rem]"
+                  : panelOpenClass,
               )}
             >
               <div className={style.panelBase} />
@@ -287,11 +291,11 @@ export function PriceLineup({
                   panelFrameWidthClass,
                 )}
               >
-                <div className="grid grid-cols-[1fr_auto] items-center gap-2 px-4 pb-3 pt-5 sm:gap-3 sm:px-8 sm:pb-4 sm:pt-5">
+                <div className="grid grid-cols-[1fr_auto_auto] items-center gap-2 px-4 pb-3 pt-5 sm:gap-3 sm:px-8 sm:pb-4 sm:pt-5">
                   <div className="min-w-0">
                     <h1
                       className={cn(
-                        "text-[1.35rem] font-semibold leading-tight tracking-[-0.035em] sm:text-[1.96rem] sm:tracking-[-0.04em]",
+                        "text-[1.32rem] font-semibold leading-tight tracking-[-0.022em] sm:text-[1.86rem]",
                         style.titleText,
                       )}
                     >
@@ -299,7 +303,7 @@ export function PriceLineup({
                     </h1>
                     <p
                       className={cn(
-                        "mt-3 text-[0.7rem] font-semibold uppercase leading-4 tracking-[0.18em] sm:hidden",
+                        "mt-3 text-[0.7rem] font-semibold uppercase leading-4 tracking-[0.12em] sm:hidden",
                         "text-white/42",
                       )}
                     >
@@ -309,6 +313,16 @@ export function PriceLineup({
                   <p className={cn("text-right text-[0.72rem] sm:text-[0.95rem]", style.dateText)}>
                     {announcedDateLabel}
                   </p>
+                  {visualMode === "campaign" ? (
+                    <button
+                      type="button"
+                      onClick={() => setIsLineupOpen(false)}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/12 bg-white/8 text-xl font-light leading-none text-white/72 transition hover:border-white/28 hover:bg-white/14 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffcc00]"
+                      aria-label="시세표 닫기"
+                    >
+                      ×
+                    </button>
+                  ) : null}
                 </div>
 
                 {visualMode === "signboard" ? (
@@ -330,7 +344,7 @@ export function PriceLineup({
 
                 <div
                   className={cn(
-                    "grid grid-cols-2 px-4 py-2 text-center text-[0.78rem] font-semibold leading-4 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:px-8 sm:py-3 sm:text-[0.98rem]",
+                    "grid grid-cols-2 px-4 py-2 text-center text-[0.78rem] font-semibold leading-6 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:px-8 sm:py-3 sm:text-[0.98rem]",
                     style.columnHeader,
                   )}
                 >
@@ -347,10 +361,10 @@ export function PriceLineup({
                     return (
                       <div key={row.title} className={style.row}>
                         <div className="col-span-2 sm:col-span-1">
-                          <p className={cn("text-[1.02rem] font-semibold tracking-[-0.04em] sm:text-[1.66rem]", style.rowTitle)}>
+                          <p className={cn("text-[1.02rem] font-semibold tracking-[-0.022em] sm:text-[1.56rem]", style.rowTitle)}>
                             {row.title}
                           </p>
-                          <p className={cn("mt-0.5 text-[0.64rem] font-medium leading-4 sm:text-[0.92rem]", style.rowSubtitle)}>
+                          <p className={cn("mt-0.5 text-[0.7rem] font-medium leading-5 sm:text-[0.92rem]", style.rowSubtitle)}>
                             {row.subtitle}
                           </p>
                         </div>
@@ -385,6 +399,17 @@ export function PriceLineup({
                 ) : null}
               </div>
             </div>
+
+            {visualMode === "campaign" && !isLineupOpen ? (
+              <button
+                type="button"
+                data-testid="home-price-lineup-restore"
+                onClick={() => setIsLineupOpen(true)}
+                className="absolute left-5 top-5 z-30 inline-flex h-10 items-center justify-center rounded-full border border-[#d8e1df] bg-white/90 px-4 text-sm font-bold text-[#15191b] shadow-[0_12px_30px_rgba(24,32,30,0.16)] backdrop-blur transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffcc00] lg:left-[clamp(7rem,12vw,17rem)]"
+              >
+                시세표 보기
+              </button>
+            ) : null}
 
             {visualMode === "campaign" ? (
               <div
@@ -486,7 +511,7 @@ export function PriceLineup({
                   {homeDeskNotes.map((item) => (
                     <div key={item.title} className="bg-white/86 px-5 py-5">
                       <p className="kcg-fine-label text-[#9b7700]">{item.label}</p>
-                      <p className="mt-2 text-base font-semibold tracking-[-0.03em] text-[#15191b]">
+                      <p className="mt-2 text-base font-semibold tracking-[-0.022em] text-[#15191b]">
                         {item.title}
                       </p>
                       <p className="mt-2 text-sm leading-6 text-[#66706f]">{item.body}</p>
@@ -559,32 +584,24 @@ export function PriceLineup({
       {showSummaryCards ? (
         <div className="mx-auto grid max-w-[1500px] border-x border-[#dfe7e5] bg-white sm:grid-cols-2 xl:grid-cols-4">
           <div className="border-b border-r border-[#dfe7e5] px-6 py-6 xl:border-b-0">
-            <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">회사 고시 기준</p>
-            <p className="mt-3 text-base font-bold tracking-[-0.03em] text-[#15191b]">{announcedLabel}</p>
-            <p className="mt-3 text-sm leading-6 text-[#687171]">
-              실제 거래 상담은 회사 고시 시세를 우선 기준으로 안내합니다.
-            </p>
+            <p className="kcg-data-label text-[#9a8a00]">고시 시각</p>
+            <p className="mt-3 text-base font-bold tracking-[-0.018em] text-[#15191b]">{announcedLabel}</p>
+            <p className="mt-2 kcg-caption text-[#687171]">회사 고시가 우선 기준</p>
           </div>
           <div className="border-b border-r border-[#dfe7e5] px-6 py-6 xl:border-b-0">
-            <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">자동 참고 시세</p>
-            <p className="mt-3 text-base font-bold tracking-[-0.03em] text-[#15191b]">무료 실시간 참고</p>
-            <p className="mt-3 text-sm leading-6 text-[#687171]">
-              Gold API 기준으로 시장 흐름을 보조 표시합니다.
-            </p>
+            <p className="kcg-data-label text-[#9a8a00]">국제 참고</p>
+            <p className="mt-3 text-base font-bold tracking-[-0.018em] text-[#15191b]">현재가 흐름</p>
+            <p className="mt-2 kcg-caption text-[#687171]">출처: Gold API · 참고용</p>
           </div>
           <div className="border-b border-r border-[#dfe7e5] px-6 py-6 sm:border-b-0">
-            <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">USD/KRW 환율</p>
-            <p className="mt-3 text-base font-bold tracking-[-0.03em] text-[#15191b]">{krwRateLabel}</p>
-            <p className="mt-3 text-sm leading-6 text-[#687171]">
-              국내 환산 참고 시세 계산에 함께 사용합니다.
-            </p>
+            <p className="kcg-data-label text-[#9a8a00]">USD/KRW</p>
+            <p className="mt-3 text-base font-bold tracking-[-0.018em] text-[#15191b]">{krwRateLabel}</p>
+            <p className="mt-2 kcg-caption text-[#687171]">국내 환산 기준</p>
           </div>
           <div className="px-6 py-6">
-            <p className="text-xs font-semibold tracking-[0.24em] text-[#9a8a00]">전화 문의</p>
-            <p className="mt-3 text-base font-bold tracking-[-0.03em] text-[#15191b]">{siteConfig.contact.phone}</p>
-            <p className="mt-3 text-sm leading-6 text-[#687171]">
-              거래 품목과 수량은 본사 전화로 먼저 문의해 주세요.
-            </p>
+            <p className="kcg-data-label text-[#9a8a00]">상품/매입</p>
+            <p className="mt-3 text-base font-bold tracking-[-0.018em] text-[#15191b]">{siteConfig.contact.phone}</p>
+            <p className="mt-2 kcg-caption text-[#687171]">품목·수량 확인</p>
           </div>
         </div>
       ) : null}

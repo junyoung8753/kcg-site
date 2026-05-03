@@ -75,7 +75,7 @@ export default function CompanyPage() {
             </h2>
           </div>
           <div className="space-y-6">
-            <p className="border-l-4 border-[#ffcc00] bg-[#fffdf4] px-5 py-4 text-lg font-semibold leading-8 tracking-[-0.04em] text-[#15191b]">
+            <p className="border-l-4 border-[#ffcc00] bg-[#fffdf4] px-5 py-4 text-base font-semibold leading-7 tracking-[-0.018em] text-[#15191b]">
               {companyStory.mission}
             </p>
             <div className="space-y-4 text-sm leading-7 text-[#5f6867]">
@@ -130,7 +130,7 @@ export default function CompanyPage() {
             {[headOffice, store].map((location) => (
               <article key={location.label} className="bg-[#202024] px-6 py-6">
                 <p className="kcg-fine-label text-[#ffcc00]">{location.label}</p>
-                <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em]">{location.title}</h3>
+                <h3 className="mt-3 text-xl font-semibold tracking-[-0.022em]">{location.title}</h3>
                 <p className="mt-4 text-sm leading-7 text-white/72">{location.address}</p>
                 <p className="mt-3 text-sm font-semibold text-white">{location.label} 전화 {location.phone}</p>
               </article>
@@ -156,7 +156,7 @@ export default function CompanyPage() {
                 rel="noreferrer"
                 className="border border-[#dfe6e3] bg-white px-5 py-5 transition hover:bg-[#fffdf4]"
               >
-                <p className="text-base font-semibold tracking-[-0.03em] text-[#15191b]">{link.label}</p>
+                <p className="text-base font-semibold tracking-[-0.022em] text-[#15191b]">{link.label}</p>
                 <p className="mt-2 text-sm leading-6 text-[#687171]">{link.description}</p>
               </a>
             ))}

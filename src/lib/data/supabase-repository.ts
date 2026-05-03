@@ -7,6 +7,7 @@ import type { RepositoryMutationResult } from "@/types/admin";
 import type {
   PriceAutoSettings,
   PriceAutoSettingsInput,
+  PriceAutoRunStateInput,
   PriceAutoSuggestion,
   PriceAutoSuggestionInput,
   PriceAutoSuggestionItem,
@@ -50,7 +51,8 @@ type SupabasePriceAutoSettingsRow = {
   is_enabled: boolean;
   source: PriceAutoSettings["source"];
   interval_hours: 1 | 2;
-  mode: PriceAutoSettings["mode"];
+  check_interval_minutes?: 30 | 60 | 120 | null;
+  mode: PriceAutoSettings["mode"] | "draft" | "emergency_publish";
   rounding_unit: number;
   gold_sell_premium_rate: number;
   gold_buy_discount_rate: number;
@@ -60,7 +62,12 @@ type SupabasePriceAutoSettingsRow = {
   platinum_buy_discount_rate: number;
   silver_sell_premium_rate: number;
   silver_buy_discount_rate: number;
-  max_auto_change_percent: number;
+  max_auto_change_percent?: number | null;
+  min_apply_change_won?: number | null;
+  max_auto_publish_change_percent?: number | null;
+  business_hours_only?: boolean | null;
+  last_checked_at?: string | null;
+  last_auto_applied_at?: string | null;
   updated_by: string;
   updated_at: string;
 };
@@ -148,12 +155,20 @@ function mapHistory(row: SupabasePriceHistoryRow): PriceHistoryEntry {
 }
 
 function mapPriceAutoSettings(row: SupabasePriceAutoSettingsRow): PriceAutoSettings {
+  const checkIntervalMinutes = row.check_interval_minutes === 30 || row.check_interval_minutes === 120
+    ? row.check_interval_minutes
+    : 60;
+  const mode = row.mode === "auto_publish" || row.mode === "emergency_publish"
+    ? "auto_publish"
+    : "manual_review";
+
   return getDefaultPriceAutoSettings({
     id: "default",
     isEnabled: row.is_enabled,
     source: row.source,
-    intervalHours: row.interval_hours,
-    mode: row.mode,
+    intervalHours: checkIntervalMinutes === 120 ? 2 : 1,
+    checkIntervalMinutes,
+    mode,
     roundingUnit: row.rounding_unit,
     goldSellPremiumRate: Number(row.gold_sell_premium_rate),
     goldBuyDiscountRate: Number(row.gold_buy_discount_rate),
@@ -163,7 +178,13 @@ function mapPriceAutoSettings(row: SupabasePriceAutoSettingsRow): PriceAutoSetti
     platinumBuyDiscountRate: Number(row.platinum_buy_discount_rate),
     silverSellPremiumRate: Number(row.silver_sell_premium_rate),
     silverBuyDiscountRate: Number(row.silver_buy_discount_rate),
-    maxAutoChangePercent: Number(row.max_auto_change_percent),
+    minApplyChangeWon: Number(row.min_apply_change_won ?? 500),
+    maxAutoPublishChangePercent: Number(
+      row.max_auto_publish_change_percent ?? row.max_auto_change_percent ?? 0.05,
+    ),
+    businessHoursOnly: row.business_hours_only ?? true,
+    lastCheckedAt: row.last_checked_at ?? null,
+    lastAutoAppliedAt: row.last_auto_applied_at ?? null,
     updatedBy: row.updated_by,
     updatedAt: row.updated_at,
     schemaReady: true,
@@ -307,6 +328,7 @@ export class SupabaseRepository implements SiteRepository {
         is_enabled: defaults.isEnabled,
         source: defaults.source,
         interval_hours: defaults.intervalHours,
+        check_interval_minutes: defaults.checkIntervalMinutes,
         mode: defaults.mode,
         rounding_unit: defaults.roundingUnit,
         gold_sell_premium_rate: defaults.goldSellPremiumRate,
@@ -317,7 +339,11 @@ export class SupabaseRepository implements SiteRepository {
         platinum_buy_discount_rate: defaults.platinumBuyDiscountRate,
         silver_sell_premium_rate: defaults.silverSellPremiumRate,
         silver_buy_discount_rate: defaults.silverBuyDiscountRate,
-        max_auto_change_percent: defaults.maxAutoChangePercent,
+        min_apply_change_won: defaults.minApplyChangeWon,
+        max_auto_publish_change_percent: defaults.maxAutoPublishChangePercent,
+        business_hours_only: defaults.businessHoursOnly,
+        last_checked_at: defaults.lastCheckedAt,
+        last_auto_applied_at: defaults.lastAutoAppliedAt,
         updated_by: defaults.updatedBy,
       })
       .select("*")
@@ -340,6 +366,7 @@ export class SupabaseRepository implements SiteRepository {
       is_enabled: input.isEnabled,
       source: input.source,
       interval_hours: input.intervalHours,
+      check_interval_minutes: input.checkIntervalMinutes,
       mode: input.mode,
       rounding_unit: input.roundingUnit,
       gold_sell_premium_rate: input.goldSellPremiumRate,
@@ -350,7 +377,9 @@ export class SupabaseRepository implements SiteRepository {
       platinum_buy_discount_rate: input.platinumBuyDiscountRate,
       silver_sell_premium_rate: input.silverSellPremiumRate,
       silver_buy_discount_rate: input.silverBuyDiscountRate,
-      max_auto_change_percent: input.maxAutoChangePercent,
+      min_apply_change_won: input.minApplyChangeWon,
+      max_auto_publish_change_percent: input.maxAutoPublishChangePercent,
+      business_hours_only: input.businessHoursOnly,
       updated_by: input.updatedBy,
       updated_at: new Date().toISOString(),
     });
@@ -369,6 +398,40 @@ export class SupabaseRepository implements SiteRepository {
     return {
       success: true,
       message: "자동입력 설정이 저장되었습니다.",
+      mode: "supabase",
+    } satisfies RepositoryMutationResult;
+  }
+
+  async updatePriceAutoRunState(input: PriceAutoRunStateInput) {
+    const client = getSupabaseAdminClient();
+    const payload: Record<string, string | null> = {
+      updated_at: new Date().toISOString(),
+    };
+
+    if ("lastCheckedAt" in input) {
+      payload.last_checked_at = input.lastCheckedAt ?? null;
+    }
+
+    if ("lastAutoAppliedAt" in input) {
+      payload.last_auto_applied_at = input.lastAutoAppliedAt ?? null;
+    }
+
+    const { error } = await client.from("price_auto_settings").update(payload).eq("id", "default");
+
+    if (error) {
+      if (isMissingTableError(error)) {
+        return {
+          success: false,
+          message: "자동입력 테이블이 아직 적용되지 않았습니다.",
+          mode: "supabase",
+        } satisfies RepositoryMutationResult;
+      }
+      throw error;
+    }
+
+    return {
+      success: true,
+      message: "자동입력 실행 상태가 저장되었습니다.",
       mode: "supabase",
     } satisfies RepositoryMutationResult;
   }
@@ -461,7 +524,7 @@ export class SupabaseRepository implements SiteRepository {
 
     return {
       success: true,
-      message: "자동입력 초안 상태가 변경되었습니다.",
+      message: "자동시세 검토 상태가 변경되었습니다.",
       mode: "supabase",
     } satisfies RepositoryMutationResult;
   }

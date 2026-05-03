@@ -118,6 +118,10 @@ test("mobile home keeps the production conversion surface", async ({ page }) => 
   await expect(page.getByText("내가 살 때 (VAT포함)")).toBeVisible();
   await expect(page.getByText("내가 팔 때 (현장 기준)")).toBeVisible();
   await expect(page.getByText("시세는 고시 시각 기준이며 실제 거래 금액")).toBeVisible();
+  await page.getByLabel("시세표 닫기").click();
+  await expect(page.getByTestId("home-price-lineup-restore")).toBeVisible();
+  await page.getByTestId("home-price-lineup-restore").click();
+  await expect(page.getByRole("heading", { name: "한국센터금거래소 시세표" })).toBeVisible();
   await expect(page.getByTestId("market-source-line").first()).toBeVisible();
   await expect(page.getByText("국제 금속 차트 열기").first()).toBeVisible();
   await expect(page.getByRole("heading", { name: "국내 뉴스" })).toBeVisible();
@@ -180,6 +184,12 @@ test("desktop home keeps campaign slider and streamlined navigation", async ({ p
   expect(Math.round(pricePanelBox!.x + pricePanelBox!.width)).toBeLessThanOrEqual(Math.round(viewportWidth * 0.55));
   expect(Math.round(pricePanelBox!.y + pricePanelBox!.height)).toBeLessThanOrEqual(900);
 
+  await page.getByLabel("시세표 닫기").click();
+  await expect(page.getByTestId("home-price-lineup-panel")).toBeHidden();
+  await expect(page.getByTestId("home-price-lineup-restore")).toBeVisible();
+  await page.getByTestId("home-price-lineup-restore").click();
+  await expect(page.getByTestId("home-price-lineup-panel")).toBeVisible();
+
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
 });
@@ -188,7 +198,7 @@ test("services route preserves high-risk business wording", async ({ page }) => 
   await page.setViewportSize({ width: 390, height: 1800 });
   await page.goto("/services", { waitUntil: "domcontentloaded" });
 
-  await expect(page.getByRole("heading", { name: "취급 품목, 당일 기준, 실물 확인 순서로 봅니다." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "품목 확인, 고시 기준, 실물 확인" })).toBeVisible();
   await expect(page.getByAltText("장갑을 착용한 금거래소 상담 데스크")).toBeVisible();
   await expect(page.getByText("취급 품목", { exact: true })).toBeVisible();
   await expect(page.getByText("당일 기준", { exact: true })).toBeVisible();
@@ -295,31 +305,107 @@ test("product quick links sync same-route category query", async ({ page }) => {
 });
 
 test("public typography stays within the KCG route scale", async ({ page }) => {
-  const routes = ["/", "/prices", "/products", "/services", "/company", "/about", "/announcements"];
+  const collectTypographyOutliers = async (path: string, viewport: string) =>
+    page.evaluate(
+      ({ path, viewport }) => {
+        const elements = Array.from(
+          document.querySelectorAll<HTMLElement>(
+            "main h1, main h2, main h3, main p, main li, main a, main button, main summary, main label, main th, main td",
+          ),
+        );
+
+        return elements
+          .map((element) => {
+            const style = window.getComputedStyle(element);
+            const rect = element.getBoundingClientRect();
+            const text = (element.textContent || "").replace(/\s+/g, " ").trim();
+            const isVisible =
+              text.length > 0 &&
+              style.display !== "none" &&
+              style.visibility !== "hidden" &&
+              Number(style.opacity) !== 0 &&
+              rect.width > 1 &&
+              rect.height > 1;
+
+            if (!isVisible) return null;
+
+            const tag = element.tagName.toLowerCase();
+            const className = element.className.toString();
+            const inPriceLineup = Boolean(element.closest('[data-testid="home-price-lineup-panel"]'));
+            const fontSize = Number.parseFloat(style.fontSize);
+            const lineHeight = Number.parseFloat(style.lineHeight);
+            const letterSpacing = Number.parseFloat(style.letterSpacing);
+            const lineRatio = Number.isFinite(lineHeight) && fontSize > 0 ? lineHeight / fontSize : null;
+            const allowsSmallLabel =
+              className.includes("kcg-data-label") ||
+              className.includes("kcg-fine-label") ||
+              className.includes("kcg-caption") ||
+              tag === "th";
+            const numericLike = /^[0-9,]+(?:개|건|점)?$/.test(text);
+            const priceLike = numericLike || /[0-9,]+원|USD\/KRW|T\.oz|[0-9]{1,3}\.[0-9]/.test(text);
+            const issues: string[] = [];
+
+            if (fontSize < 10.5 && !allowsSmallLabel) issues.push(`too-small:${fontSize.toFixed(1)}`);
+            if (tag === "h1" && fontSize > 46) issues.push(`h1-too-large:${fontSize.toFixed(1)}`);
+            if (tag === "h2" && fontSize > 40) issues.push(`h2-too-large:${fontSize.toFixed(1)}`);
+            if (tag === "h3" && fontSize > 32) issues.push(`h3-too-large:${fontSize.toFixed(1)}`);
+            if ((tag === "p" || tag === "li" || tag === "summary") && fontSize > 22 && !priceLike && !inPriceLineup) {
+              issues.push(`body-too-large:${fontSize.toFixed(1)}`);
+            }
+            if (Number.isFinite(letterSpacing) && letterSpacing > 4.4) {
+              issues.push(`letter-spacing-too-wide:${letterSpacing.toFixed(1)}`);
+            }
+            if (Number.isFinite(letterSpacing) && letterSpacing < -1.8) {
+              issues.push(`letter-spacing-too-tight:${letterSpacing.toFixed(1)}`);
+            }
+            if ((tag === "p" || tag === "li" || tag === "summary") && lineRatio !== null && lineRatio < 1.25) {
+              issues.push(`line-height-too-tight:${lineRatio.toFixed(2)}`);
+            }
+
+            if (issues.length === 0) return null;
+
+            return {
+              path,
+              viewport,
+              tag,
+              text: text.slice(0, 72),
+              className: className.slice(0, 100),
+              issues,
+            };
+          })
+          .filter(Boolean)
+          .slice(0, 12);
+      },
+      { path, viewport },
+    );
+
+  const routes = ["/", "/prices", "/products", "/services", "/company", "/about", "/announcements", "/admin/login"];
+  const adminRoutes = ["/admin", "/admin/prices", "/admin/products"];
 
   for (const path of routes) {
     await page.setViewportSize({ width: 390, height: 1200 });
     await page.goto(path, { waitUntil: "domcontentloaded" });
-    const mobileSizes = await page.evaluate(() => {
-      const heading = document.querySelector("main h1, main h2");
-      const paragraph = document.querySelector("main p");
-      return {
-        heading: heading ? Number.parseFloat(window.getComputedStyle(heading).fontSize) : 0,
-        paragraph: paragraph ? Number.parseFloat(window.getComputedStyle(paragraph).fontSize) : 0,
-      };
-    });
-    expect(mobileSizes.heading, `${path} mobile heading`).toBeGreaterThanOrEqual(21);
-    expect(mobileSizes.heading, `${path} mobile heading`).toBeLessThanOrEqual(34);
-    expect(mobileSizes.paragraph, `${path} mobile paragraph`).toBeGreaterThanOrEqual(10);
+    expect(await collectTypographyOutliers(path, "mobile")).toEqual([]);
+    await expectNoHorizontalOverflow(page);
 
     await page.setViewportSize({ width: 1440, height: 1200 });
     await page.goto(path, { waitUntil: "domcontentloaded" });
-    const desktopHeading = await page.evaluate(() => {
-      const heading = document.querySelector("main h1, main h2");
-      return heading ? Number.parseFloat(window.getComputedStyle(heading).fontSize) : 0;
-    });
-    expect(desktopHeading, `${path} desktop heading`).toBeGreaterThanOrEqual(24);
-    expect(desktopHeading, `${path} desktop heading`).toBeLessThanOrEqual(44);
+    expect(await collectTypographyOutliers(path, "desktop")).toEqual([]);
+    await expectNoHorizontalOverflow(page);
+  }
+
+  if (adminPassword) {
+    await page.setViewportSize({ width: 1440, height: 1200 });
+    await page.goto("/admin/login", { waitUntil: "domcontentloaded" });
+    await page.getByLabel("관리자 비밀번호").fill(adminPassword);
+    await page.getByRole("button", { name: "관리자 페이지로 이동" }).click();
+    await expect(page).toHaveURL(/\/admin/);
+
+    for (const path of adminRoutes) {
+      await page.goto(path, { waitUntil: "domcontentloaded" });
+      expect(await collectTypographyOutliers(path, "admin-desktop")).toEqual([]);
+      await expectNoHorizontalOverflow(page);
+    }
   }
 });
 
@@ -491,7 +577,7 @@ test("admin launch dashboard separates pre-launch work from public-launch approv
   await expectNoVisibleElementEscapesViewport(page);
 });
 
-test("admin prices exposes auto-fill draft workflow and compact posted-price editor", async ({ page }) => {
+test("admin prices exposes automatic price operation and compact manual editor", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   await page.goto("/admin/prices", { waitUntil: "domcontentloaded" });
   await expect(page).toHaveURL(/\/admin\/login\?next=%2Fadmin%2Fprices/);
@@ -504,23 +590,36 @@ test("admin prices exposes auto-fill draft workflow and compact posted-price edi
 
   await expect(page.getByRole("heading", { name: "오늘 시세 관리" })).toBeVisible();
   await expect(page.getByTestId("admin-price-mode-switch")).toBeVisible();
-  await expect(page.getByRole("button", { name: "자동시세 ON" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "자동시세 OFF" })).toBeVisible();
+  const modeToggle = page.getByTestId("admin-price-mode-toggle");
+  await expect(modeToggle).toBeVisible();
+  await expect(modeToggle).toContainText("자동시세 OFF");
   await expect(page.getByText("대표가 직접 넣는")).toHaveCount(0);
+  await expect(page.getByText("현재 공개 시세")).toBeVisible();
+  await expect(page.getByText("다음 확인 예정")).toBeVisible();
 
-  await page.getByRole("button", { name: "자동시세 ON" }).click();
-  await expect(page.getByTestId("admin-price-auto-panel")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "자동시세 초안" })).toBeVisible();
+  await modeToggle.click();
+  const autoPanel = page.getByTestId("admin-price-auto-panel");
+  await expect(autoPanel).toBeVisible();
+  await expect(modeToggle).toHaveAttribute("aria-pressed", "true");
+  await expect(modeToggle).toContainText("자동시세 ON");
+  await expect(page.getByRole("heading", { name: "현재 자동 운영 중" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "자동 계산 공식" })).toBeVisible();
   await expect(page.getByText("국제 금 3.75g 환산가").first()).toBeVisible();
-  await expect(page.getByRole("button", { name: "초안 생성" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "지금 자동 확인" })).toBeVisible();
+  await expect(autoPanel.getByText("자동 게시 허용 변동폭").first()).toBeVisible();
+  await expect(autoPanel.getByText("최소 반영 금액").first()).toBeVisible();
+  await expect(autoPanel.getByText("영업시간만 반영").first()).toBeVisible();
+  await expect(autoPanel.getByText("계산 기준 세부 설정")).toBeVisible();
+  await expect(page.getByText("선택한 모드 저장")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "한국금거래소 참고 보기" })).toBeVisible();
   await expect(page.getByRole("link", { name: "삼성금거래소 참고 보기" })).toBeVisible();
   await expect(page.getByRole("link", { name: "GBK 참고 보기" })).toBeVisible();
   await expect(page.getByTestId("admin-price-editor")).toHaveCount(0);
 
-  await page.getByRole("button", { name: "자동시세 OFF" }).click();
+  await modeToggle.click();
   const editor = page.getByTestId("admin-price-editor");
+  await expect(modeToggle).toHaveAttribute("aria-pressed", "false");
+  await expect(modeToggle).toContainText("자동시세 OFF");
   await expect(editor.getByRole("columnheader", { name: "품목" })).toBeVisible();
   await expect(editor.getByRole("columnheader", { name: "현재 공개가" })).toBeVisible();
   await expect(editor.getByRole("columnheader", { name: "새 입력값" })).toBeVisible();

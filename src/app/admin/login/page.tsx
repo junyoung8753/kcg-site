@@ -17,10 +17,10 @@ export default async function AdminLoginPage({
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#151618] px-5 py-16 text-white">
       <div className="w-full max-w-xl rounded-[2.4rem] border border-white/10 bg-white/6 p-8 shadow-2xl backdrop-blur-xl sm:p-10">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-[var(--color-gold-soft)]">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-gold-soft)]">
           Admin Login
         </p>
-        <h1 className="mt-4 font-display text-4xl">관리자 로그인</h1>
+        <h1 className="mt-4 font-display text-3xl">관리자 로그인</h1>
         <p className="mt-4 text-sm leading-8 text-white/72">
           시세 수정, 공지 작성, 추후 상품 등록 확장을 위한 관리자 진입 페이지입니다.
         </p>

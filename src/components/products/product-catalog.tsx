@@ -121,7 +121,7 @@ function ProductPromoCard({
       />
       <span className="absolute inset-0 bg-gradient-to-br from-black/82 via-black/48 to-black/16" />
       <span className={`relative z-10 flex h-full min-h-[inherit] flex-col justify-end ${rail ? "p-3" : "p-4"}`}>
-        <span className={`${rail ? "text-sm" : "text-base"} font-bold tracking-[-0.03em] text-white`}>
+        <span className={`${rail ? "text-sm" : "text-base"} font-bold tracking-[-0.022em] text-white`}>
           {banner.title}
         </span>
         <span className={`${rail ? "mt-1 line-clamp-2 text-[11px] leading-4" : "mt-2 text-xs leading-5"} text-white/72`}>
@@ -175,7 +175,7 @@ function ProductQuickRail({ onInternalNavigate }: { onInternalNavigate: (href: s
       ))}
       <a
         href="#top"
-        className="flex h-12 items-center justify-center bg-[#e6e6e6] text-xs font-black tracking-[0.18em] text-[#555]"
+        className="flex h-12 items-center justify-center bg-[#e6e6e6] text-xs font-black tracking-[0.12em] text-[#555]"
       >
         TOP
       </a>
@@ -357,15 +357,15 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
                           </span>
                         ) : null}
                       </div>
-                      <h3 className="mt-4 text-xl font-semibold tracking-[-0.03em] text-[#15191b]">
+                      <h3 className="kcg-card-title mt-4 text-[#15191b]">
                         {product.name}
                       </h3>
-                      <p className="mt-3 line-clamp-2 min-h-[3rem] text-sm leading-6 text-[#687171]">
+                      <p className="mt-3 line-clamp-2 min-h-[2.9rem] text-sm leading-[1.55] text-[#687171]">
                         {product.shortDescription}
                       </p>
                       <div className="mt-4 border-t border-[#e4ebe9] pt-4">
-                        <p className="text-xs font-bold tracking-[0.18em] text-[#9a8a00]">현재 고시가 기준</p>
-                        <p className="mt-2 text-xl font-bold tracking-[-0.04em] text-[#15191b]">{price.main}</p>
+                        <p className="kcg-data-label text-[#9a8a00]">현재 고시가 기준</p>
+                        <p className="kcg-price-primary mt-2 text-lg font-bold text-[#15191b]">{price.main}</p>
                         <p className="mt-1 text-sm leading-6 text-[#687171]">{price.detail}</p>
                       </div>
                     </div>

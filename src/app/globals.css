@@ -4,20 +4,16 @@
   --background: #f7fbf8;
   --foreground: #171717;
   --font-body:
-    var(--font-ibm-plex-sans-kr),
-    var(--font-inter),
+    var(--font-pretendard),
     "Pretendard Variable",
     "Pretendard",
-    "IBM Plex Sans KR",
     "Apple SD Gothic Neo",
     "Malgun Gothic",
     sans-serif;
   --font-display:
-    var(--font-ibm-plex-sans-kr),
-    var(--font-inter),
+    var(--font-pretendard),
     "Pretendard Variable",
     "Pretendard",
-    "IBM Plex Sans KR",
     "Apple SD Gothic Neo",
     "Malgun Gothic",
     sans-serif;
@@ -56,7 +52,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-body), sans-serif;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.006em;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -73,7 +69,7 @@ a {
 
 .font-display {
   font-family: var(--font-display), sans-serif;
-  letter-spacing: -0.032em;
+  letter-spacing: -0.018em;
 }
 
 .section-shell {
@@ -81,47 +77,65 @@ a {
 }
 
 .kcg-eyebrow {
-  font-size: clamp(0.68rem, 0.64rem + 0.14vw, 0.76rem);
+  font-size: clamp(0.72rem, 0.68rem + 0.11vw, 0.78rem);
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   line-height: 1.35;
   text-transform: uppercase;
 }
 
 .kcg-page-title {
-  font-size: clamp(1.95rem, 1.53rem + 1.5vw, 2.7rem);
+  font-size: clamp(1.9rem, 1.5rem + 1.24vw, 2.55rem);
   font-weight: 600;
-  letter-spacing: -0.038em;
-  line-height: 1.12;
+  letter-spacing: -0.024em;
+  line-height: 1.16;
   word-break: keep-all;
 }
 
 .kcg-section-title {
-  font-size: clamp(1.55rem, 1.28rem + 0.86vw, 2.12rem);
+  font-size: clamp(1.5rem, 1.22rem + 0.72vw, 2rem);
   font-weight: 600;
-  letter-spacing: -0.034em;
-  line-height: 1.2;
+  letter-spacing: -0.022em;
+  line-height: 1.24;
   word-break: keep-all;
 }
 
 .kcg-card-title {
-  font-size: clamp(1.08rem, 1rem + 0.22vw, 1.24rem);
+  font-size: clamp(1.05rem, 1rem + 0.18vw, 1.18rem);
   font-weight: 700;
-  letter-spacing: -0.026em;
-  line-height: 1.25;
+  letter-spacing: -0.018em;
+  line-height: 1.32;
   word-break: keep-all;
 }
 
 .kcg-body-copy {
-  font-size: clamp(0.94rem, 0.9rem + 0.16vw, 1rem);
-  line-height: 1.72;
+  font-size: clamp(0.94rem, 0.9rem + 0.12vw, 1rem);
+  line-height: 1.66;
 }
 
 .kcg-fine-label {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   line-height: 1.35;
+}
+
+.kcg-caption {
+  font-size: clamp(0.75rem, 0.72rem + 0.08vw, 0.82rem);
+  line-height: 1.58;
+}
+
+.kcg-price-primary {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
+}
+
+.kcg-data-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  line-height: 1.35;
+  text-transform: uppercase;
 }
 
 .thin-panel {

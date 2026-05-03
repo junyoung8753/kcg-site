@@ -21,8 +21,14 @@ export default async function AdminPage() {
   const stats = [
     { label: "오늘 고시 시각", value: announcedAt },
     { label: "저장 방식", value: isSupabaseConfigured() ? "Supabase" : "Demo" },
-    { label: "자동입력 상태", value: autoSettings.isEnabled ? `${autoSettings.intervalHours}시간 초안` : "꺼짐" },
-    { label: "최근 자동 초안", value: autoSuggestion?.status === "draft" ? "검토 대기" : "없음" },
+    {
+      label: "자동시세 상태",
+      value:
+        autoSettings.isEnabled && autoSettings.mode === "auto_publish"
+          ? `${autoSettings.checkIntervalMinutes}분 확인`
+          : "직접 입력",
+    },
+    { label: "검토 대기", value: autoSuggestion?.status === "draft" ? "있음" : "없음" },
     { label: "상품 공개 수", value: `${visibleProducts}/${products.length}건` },
     { label: "오픈 점수", value: `${launchReadiness.score}점` },
   ];
@@ -30,12 +36,12 @@ export default async function AdminPage() {
   return (
     <div className="space-y-8">
       <section className="rounded-[2.4rem] border border-white/10 bg-white/5 p-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-[var(--color-gold-soft)]">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-gold-soft)]">
           Admin Dashboard
         </p>
-        <h2 className="mt-4 font-display text-4xl">오늘 운영 상태</h2>
+        <h2 className="mt-4 font-display text-3xl">오늘 운영 상태</h2>
         <p className="mt-4 max-w-3xl text-sm leading-8 text-white/72">
-          시세, 자동입력 초안, 상품 공개 상태, 공지 {announcements.length}건, 오픈 점검을 먼저 확인합니다.
+          시세 자동운영, 상품 공개 상태, 공지 {announcements.length}건, 오픈 점검을 먼저 확인합니다.
         </p>
       </section>
 
@@ -79,7 +85,7 @@ export default async function AdminPage() {
             href={item.href}
             className="rounded-[2rem] border border-white/10 bg-white/5 p-6 transition hover:border-[var(--color-gold-soft)] hover:bg-white/8"
           >
-            <h3 className="font-display text-2xl text-white">{item.title}</h3>
+            <h3 className="font-display text-xl text-white">{item.title}</h3>
             <p className="mt-4 text-sm leading-8 text-white/68">{item.body}</p>
           </Link>
         ))}

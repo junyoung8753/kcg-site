@@ -11,9 +11,10 @@ function getStatusMessage(status?: string | string[]) {
   if (status === "error") return "저장 중 오류가 발생했습니다.";
   if (status === "auto-settings-saved") return "자동입력 설정이 저장되었습니다.";
   if (status === "auto-schema") return "자동입력 테이블이 아직 Supabase에 적용되지 않았습니다.";
-  if (status === "auto-draft") return "자동입력 초안이 생성되었습니다.";
-  if (status === "auto-applied") return "자동입력 초안이 공개 시세에 적용되었습니다.";
-  if (status === "auto-rejected") return "자동입력 초안을 폐기했습니다.";
+  if (status === "auto-held") return "자동 계산 결과를 검토 대기로 남겼습니다.";
+  if (status === "auto-disabled") return "자동시세가 꺼져 있어 공개 시세를 바꾸지 않았습니다.";
+  if (status === "auto-applied") return "자동 계산 결과가 공개 시세에 반영되었습니다.";
+  if (status === "auto-rejected") return "검토 대기 항목을 폐기했습니다.";
   if (status === "auto-error") return "자동입력 처리 중 오류가 발생했습니다.";
   return null;
 }
@@ -41,12 +42,12 @@ export default async function AdminPricesPage({
     <div className="space-y-5">
       <section className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--color-gold-soft)]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-gold-soft)]">
             Price Desk
           </p>
-          <h2 className="mt-2 font-display text-3xl sm:text-4xl">오늘 시세 관리</h2>
+          <h2 className="mt-2 font-display text-3xl">오늘 시세 관리</h2>
           <p className="mt-2 text-sm leading-7 text-white/62">
-            자동 초안 또는 직접 입력 중 한 가지 방식으로 회사 고시가를 관리합니다.
+            자동시세 ON이면 산식과 안전 기준을 통과한 계산값이 공개 시세에 반영됩니다.
           </p>
         </div>
         <a

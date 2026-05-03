@@ -39,7 +39,7 @@ export default function AboutPage() {
               본사·매장 위치와 거래 전 준비 항목
             </h1>
             <p className="kcg-body-copy mt-4 max-w-2xl text-[#687171]">
-              본사와 매장을 구분해 확인하고, 거래 전 필요한 항목만 먼저 봅니다.
+              위치, 전화, 준비 항목만 먼저 확인합니다.
             </p>
             <div className="mt-6 grid gap-px overflow-hidden border border-[#dfe6e3] bg-[#dfe6e3] sm:grid-cols-3">
               {quickChecks.map(([label, body]) => (
@@ -65,7 +65,7 @@ export default function AboutPage() {
             {[headOffice, store].map((location) => (
               <article key={location.label} className="bg-white px-5 py-5">
                 <p className="kcg-fine-label text-[#9a8a00]">{location.label}</p>
-                <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-[#15191b]">{location.title}</h3>
+                <h3 className="mt-3 text-xl font-semibold tracking-[-0.022em] text-[#15191b]">{location.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-[#687171]">{location.address}</p>
                 <p className="mt-2 text-sm font-semibold text-[#15191b]">{location.phone}</p>
                 <div className="mt-5 flex flex-wrap gap-2">
@@ -97,7 +97,7 @@ export default function AboutPage() {
           <div>
             <p className="kcg-eyebrow text-[#9a8a00]">TRADE READY</p>
             <h2 className="kcg-section-title mt-3 text-[#15191b]">
-              거래 전 준비 항목을 확인하면 현장 안내가 빨라집니다.
+              거래 전 준비 항목
             </h2>
           </div>
           <div className="overflow-hidden border border-[#dfe6e4] bg-white">
@@ -118,7 +118,7 @@ export default function AboutPage() {
               본사 전화 {siteConfig.contact.phone}
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#687171]">
-              품목, 예상 중량, 수량을 알려주시면 상담 가능 범위와 본사·매장 동선을 확인해 드립니다.
+              품목, 예상 중량, 수량을 먼저 확인합니다.
             </p>
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">

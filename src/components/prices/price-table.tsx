@@ -22,7 +22,7 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
           <article key={price.id} className="border-b border-[var(--color-line)] bg-white/72 px-5 py-5 last:border-b-0">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-base font-semibold tracking-[-0.03em] text-[var(--color-ink)]">
+                <p className="text-base font-semibold tracking-[-0.022em] text-[var(--color-ink)]">
                   {getPriceReferenceLabel(price.category)}
                 </p>
                 <span className="mt-2 inline-flex rounded-full border border-[var(--color-line-strong)] px-3 py-1 text-[11px] font-semibold tracking-[0.08em] text-[var(--color-muted)]">
@@ -33,7 +33,7 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
                 <p className="text-[11px] font-semibold tracking-[0.08em] text-[var(--color-muted)]">
                   고시가 / {price.unit} 기준
                 </p>
-                <p className="mt-1 text-xl font-semibold tracking-[-0.05em] text-[var(--color-ink)]">
+                <p className="kcg-price-primary mt-1 text-lg font-semibold text-[var(--color-ink)]">
                   {formatWon(price.value)}
                 </p>
               </div>
@@ -53,7 +53,7 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
       <div className="hidden overflow-x-auto md:block">
         <table className="min-w-full border-collapse">
           <thead>
-            <tr className="border-b border-[var(--color-line)] bg-[rgba(255,255,255,0.7)] text-left text-xs uppercase tracking-[0.24em] text-[var(--color-muted)]">
+            <tr className="border-b border-[var(--color-line)] bg-[rgba(255,255,255,0.7)] text-left text-xs uppercase tracking-[0.12em] text-[var(--color-muted)]">
               <th className="px-5 py-4">종류</th>
               <th className="px-5 py-4">거래 기준</th>
               <th className="px-5 py-4">{postedPriceLabel}</th>
@@ -79,7 +79,7 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
                     {getPriceTradeGuide(price.category)}
                   </span>
                 </td>
-                <td className="px-5 py-5 align-top text-lg font-semibold text-[var(--color-ink)]">
+                <td className="kcg-price-primary px-5 py-5 align-top text-lg font-semibold text-[var(--color-ink)]">
                   <p>{formatWon(price.value)}</p>
                   {!hasOneUnit ? (
                     <p className="mt-1 text-xs font-medium text-[var(--color-muted)]">{price.unit} 기준</p>

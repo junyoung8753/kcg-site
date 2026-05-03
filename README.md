@@ -1,6 +1,17 @@
 # 한국센터금거래소 사이트
 
+Canonical path: `C:\Users\junyo\Documents\Codex\projects\kcg-site`
+
+Related File-Hub index: `C:\Users\junyo\Documents\File-Hub\_Active\KCG`
+
 서울 종로구 돈화문로6가길 12 골든타워 303호에 위치한 `(주)한국센터금거래소`의 단일 공개 후보 사이트입니다. 현재 사이트의 기준 표면은 `/` 하나이며, 과거 비교용 라우트는 유지하지 않습니다.
+
+## Codex 시작 순서
+
+1. `AGENTS.md`를 먼저 읽습니다.
+2. `docs/setup/CURRENT_HANDOFF.md`와 `docs/setup/OPEN_TASKS.md`에서 현재 작업 상태를 확인합니다.
+3. 공개 사이트에 들어가면 안 되는 원본, 고객자료, 계약/계정/비밀번호 관련 파일은 File-Hub 또는 별도 보안 위치에 두고 Git에 넣지 않습니다.
+4. UI나 배포 관련 변경을 완료했다고 말하기 전에는 브라우저 검증, 빌드, launch guardrail을 확인합니다.
 
 ## 제품 방향
 

@@ -132,7 +132,7 @@ export async function FinalHome() {
             <div className="mt-5 space-y-4">
               {homeHighlights.map((item, index) => (
                 <div key={item.title} className={index > 0 ? "border-t border-[#e4ebe9] pt-4" : ""}>
-                  <p className="text-base font-bold tracking-[-0.03em] text-[#15191b]">{item.title}</p>
+                  <p className="text-base font-bold tracking-[-0.022em] text-[#15191b]">{item.title}</p>
                   <p className="mt-2 text-sm leading-6 text-[#67706f]">{item.description}</p>
                 </div>
               ))}

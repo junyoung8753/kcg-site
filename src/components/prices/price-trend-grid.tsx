@@ -101,15 +101,15 @@ export function PriceTrendGrid({
                   className={cn(
                     "mt-2 font-semibold",
                     variant === "dark"
-                      ? "text-2xl text-white"
-                      : "text-2xl text-[var(--color-ink)]",
+                      ? "kcg-price-primary text-xl text-white"
+                      : "kcg-price-primary text-xl text-[var(--color-ink)]",
                   )}
                 >
                   {formatWon(price.value)}
                 </p>
               </div>
               <div className="text-right">
-                <p className={cn("text-xs tracking-[0.2em]", textMuted)}>최근 7일</p>
+                <p className={cn("kcg-data-label", textMuted)}>최근 7일</p>
                 <p className={cn("mt-2 text-sm font-semibold", tone)}>
                   {summary.delta > 0 ? "▲" : summary.delta < 0 ? "▼" : "•"}{" "}
                   {Math.abs(summary.percent).toFixed(1)}%

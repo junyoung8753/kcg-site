@@ -21,10 +21,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <header className="border-b border-white/10">
         <div className="section-shell flex flex-wrap items-center justify-between gap-4 py-5">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-[var(--color-gold-soft)]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-gold-soft)]">
               Admin Console
             </p>
-            <h1 className="font-display text-3xl">한국센터금거래소 관리자</h1>
+            <h1 className="font-display text-2xl">한국센터금거래소 관리자</h1>
           </div>
           <form action={logoutAction}>
             <button className="rounded-full border border-white/14 px-5 py-2.5 text-sm font-semibold transition hover:border-[var(--color-gold-soft)] hover:bg-white/6">

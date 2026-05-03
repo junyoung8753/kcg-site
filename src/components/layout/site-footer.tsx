@@ -40,7 +40,7 @@ export function SiteFooter() {
         </div>
 
         <div className="min-w-0">
-          <h3 className="text-sm font-semibold tracking-[0.18em] text-[#15191b]">사이트 메뉴</h3>
+          <h3 className="kcg-data-label text-[#15191b]">사이트 메뉴</h3>
           <div className="mt-4 grid grid-cols-2 gap-3 text-sm font-medium text-[#687171]">
             {siteNavigation.map((item) => (
               <Link key={item.href} href={item.href} className="hover:text-[#15191b]">
@@ -69,7 +69,7 @@ export function SiteFooter() {
         </div>
 
         <div className="min-w-0 space-y-2 text-sm leading-7 text-[#687171]">
-          <h3 className="text-sm font-semibold tracking-[0.18em] text-[#15191b]">
+          <h3 className="kcg-data-label text-[#15191b]">
             {getLegalInfoHeading()}
           </h3>
           {siteConfig.company.isLegalInfoConfirmed ? (

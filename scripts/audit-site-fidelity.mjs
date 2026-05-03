@@ -7,6 +7,14 @@ const siteUrl = process.env.SITE_AUDIT_URL || "";
 const failures = [];
 const passes = [];
 const skips = [];
+const joinEndpointParts = (...parts) => parts.join("");
+const blockedCompetitorEndpoints = [
+  "koreagoldx.co.kr",
+  "chart.gold-you.com",
+  joinEndpointParts("ssg", "gold", ".cafe24", "api", ".com"),
+  "irena111.cafe24.com",
+  "kaggold.com/index.grp_ajax2.php",
+];
 
 function readText(relativePath) {
   const absolutePath = resolve(rootDir, relativePath);
@@ -263,6 +271,8 @@ expectFile("docs/setup/PRODUCT_OPERATIONS_CHECKLIST.md", { minBytes: 2_000 });
 expectFile("docs/setup/LAUNCH_BRIEFING.md", { minBytes: 2_000 });
 expectFile("docs/brand/campaign-image-prompts.md", { minBytes: 1_000 });
 expectFile("docs/brand/image-review-2026-05-03.md", { minBytes: 2_000 });
+expectFile("docs/brand/font-license.md", { minBytes: 800 });
+expectFile("src/app/fonts/PretendardVariable.woff2", { minBytes: 1_500_000 });
 expectFile("scripts/render-open-tasks-dashboard.mjs", { minBytes: 5_000 });
 expectFile("scripts/check-external-services.mjs", { minBytes: 2_000 });
 expectFile("docs/research/gold-exchange-benchmark-2026-04-25.md", { minBytes: 3_000 });
@@ -305,6 +315,9 @@ expectText("src/components/market/price-lineup.tsx", [
   "kcg-full-bleed-campaign",
   'data-testid="home-campaign-visual"',
   'data-testid="home-price-lineup-panel"',
+  'data-testid="home-price-lineup-restore"',
+  'aria-label="시세표 닫기"',
+  "시세표 보기",
   'sizes="100vw"',
   'const wrapperLayoutClass = "relative flex flex-col lg:block"',
   "lg:absolute lg:bottom-0 lg:left-[clamp(7rem,12vw,17rem)] lg:top-0 lg:order-none",
@@ -335,13 +348,38 @@ expectNoText("src/components/market/price-lineup.tsx", [
   "activeSlide.body",
 ]);
 expectText("src/app/globals.css", [
+  "--font-pretendard",
   "kcg-hero-copy-in",
   ".kcg-hero-copy",
   ".kcg-hero-heading",
+  ".kcg-price-primary",
+  ".kcg-data-label",
+  ".kcg-caption",
   "word-break: keep-all",
   "scroll-padding-bottom: calc(6.25rem + env(safe-area-inset-bottom))",
 ]);
 expectText("src/app/(site)/layout.tsx", ["pb-[calc(6.25rem+env(safe-area-inset-bottom))]"]);
+[
+  "src/app/globals.css",
+  "src/components/market/price-lineup.tsx",
+  "src/components/products/product-catalog.tsx",
+  "src/components/layout/site-header.tsx",
+  "src/components/prices/price-table.tsx",
+  "src/app/(site)/prices/page.tsx",
+  "src/app/(site)/products/page.tsx",
+  "src/app/(site)/services/page.tsx",
+  "src/app/(site)/company/page.tsx",
+  "src/app/(site)/about/page.tsx",
+  "src/app/admin/layout.tsx",
+  "src/app/admin/page.tsx",
+  "src/app/admin/login/page.tsx",
+  "src/app/admin/prices/page.tsx",
+].forEach((relativePath) =>
+  expectNoRegex(relativePath, [
+    /tracking-\[-0\.(03|04|05|06|07)em\]/,
+    /tracking-\[0\.(22|24|28|34)em\]/,
+  ]),
+);
 expectText("src/components/market/market-dashboard.tsx", [
   'data-testid="market-dashboard"',
   'data-testid="market-source-line"',
@@ -408,7 +446,7 @@ expectText("src/components/prices/price-context-guide.tsx", [
 expectText("tests/site-fidelity.spec.ts", [
   "expectNoVisibleElementEscapesViewport",
   "expectMobileBottomBarDoesNotCover",
-  "admin prices exposes auto-fill draft workflow",
+  "admin prices exposes automatic price operation",
   "admin products uses a compact list-and-editor management surface",
   "product quick links sync same-route category query",
   "고시가 / 3.75g 기준",
@@ -434,7 +472,7 @@ expectText("src/lib/price-auto.ts", [
   "buildPriceUpdatesFromSuggestion",
   "roundToUnit",
   "goldSellPremiumRate",
-  "maxAutoChangePercent",
+  "maxAutoPublishChangePercent",
 ]);
 expectNoText("src/lib/price-auto.ts", [
   "Math.random",
@@ -449,11 +487,24 @@ expectText("src/actions/price-actions.ts", [
   "rejectPriceAutoSuggestionAction",
   "buildPriceWarnings",
 ]);
+expectText("src/app/admin/prices/price-mode-workspace.tsx", [
+  "자동시세 계산값 반영",
+  "계산값 반영",
+  "드래프트 폐기",
+]);
+expectNoText("src/app/admin/prices/price-mode-workspace.tsx", ["{needsReview ? ("]);
 expectText("src/app/api/admin/price-auto-refresh/route.ts", [
   "CRON_SECRET",
-  "PRICE_AUTOFILL_ALLOW_EMERGENCY_PUBLISH",
-  "buildPriceAutoSuggestionInput",
+  "runPriceAutoRefresh",
+]);
+expectText("src/lib/price-auto-runner.ts", [
   "auto-fill-disabled",
+  "not-due",
+  "outside-business-hours",
+  "small-change",
+  "needs-review",
+  "data-not-safe",
+  "isKoreaBusinessTime",
 ]);
 expectText("src/app/api/admin/price-auto-apply/route.ts", [
   "verifyAdminSession",
@@ -461,13 +512,7 @@ expectText("src/app/api/admin/price-auto-apply/route.ts", [
   "buildPriceUpdatesFromSuggestion",
 ]);
 expectText("vercel.json", ["/api/admin/price-auto-refresh", "0 0 * * *"]);
-expectNoText("src/lib/market-data.ts", [
-  "koreagoldx.co.kr",
-  "chart.gold-you.com",
-  "ssggold.cafe24api.com",
-  "irena111.cafe24.com",
-  "kaggold.com/index.grp_ajax2.php",
-]);
+expectNoText("src/lib/market-data.ts", blockedCompetitorEndpoints);
 
 expectText("src/components/layout/site-header.tsx", [
   "siteConfig.familyLinks",
@@ -504,6 +549,8 @@ expectNoText("src/lib/launch-readiness.ts", ["Gabia", "Whois DNS"]);
 expectText("src/app/robots.ts", ["canExposeToSearch"]);
 expectText("src/app/sitemap.ts", ["canExposeToSearch"]);
 expectText("src/app/layout.tsx", [
+  "next/font/local",
+  "PretendardVariable.woff2",
   "canExposeToSearch",
   "summary_large_image",
   "kcg-home-product-keyvisual-20260503.webp",
@@ -511,6 +558,7 @@ expectText("src/app/layout.tsx", [
   "JewelryStore",
   "sameAs",
 ]);
+expectNoText("src/app/layout.tsx", ["next/font/google", "IBM_Plex_Sans_KR", "Inter({"]);
 expectText("src/app/api/health/route.ts", ["launchReadiness", "getSearchExposureStatus"]);
 expectText("src/lib/auth/password.ts", ["missing-env", "return false"]);
 expectNoText("src/lib/auth/password.ts", ["adminPreviewPassword", "0000"]);
@@ -546,12 +594,12 @@ expectText("src/app/admin/launch/page.tsx", [
 expectText("src/app/admin/layout.tsx", ["/admin/launch", "오픈 점검"]);
 expectText("src/app/admin/page.tsx", [
   "오늘 운영 상태",
-  "자동입력 상태",
-  "최근 자동 초안",
+  "자동시세 상태",
+  "검토 대기",
   "상품 공개 수",
 ]);
 expectText("src/app/admin/prices/page.tsx", [
-  "자동 초안 또는 직접 입력 중 한 가지 방식",
+  "자동시세 ON이면 산식과 안전 기준",
   "AdminPricesWorkspace",
 ]);
 expectText("src/app/admin/prices/price-mode-workspace.tsx", [
@@ -561,12 +609,24 @@ expectText("src/app/admin/prices/price-mode-workspace.tsx", [
   "data-testid=\"admin-price-auto-panel\"",
   "자동 계산 공식",
   "국제 금 3.75g 환산가",
-  "초안 적용 전에는 홈, 시세",
+  "자동 게시 허용 변동폭",
+  "최소 반영 금액",
+  "지금 자동 확인",
+  "계산 기준 세부 설정",
+  "버튼을 누르면 바로 저장됩니다",
+  "검토 후 반영",
 ]);
 expectNoText("src/app/admin/prices/price-mode-workspace.tsx", [
   "대표가 직접 넣는",
   "자동입력 사용",
+  "선택한 모드 저장",
+  "Formula",
+  "Auto Run",
+  "Manual",
   "type=\"checkbox\" defaultChecked={settings.isEnabled}",
+  "최대 자동 변동률",
+  "세부 설정 수정",
+  "초안 적용",
 ]);
 expectText("src/components/layout/site-footer.tsx", [
   "getBusinessRegistrationDisplay",
@@ -575,14 +635,14 @@ expectText("src/components/layout/site-footer.tsx", [
 expectText("src/app/(site)/about/page.tsx", [
   "siteConfig.locations",
   "/campaign/kcg-visit-transaction-guide-20260503.webp",
-  "거래 전 준비 항목을 확인하면 현장 안내가 빨라집니다.",
-  "본사와 매장을 구분해 확인",
+  "위치, 전화, 준비 항목만 먼저 확인합니다.",
+  "거래 전 준비 항목",
   "본사 전화",
 ]);
 
 expectText("src/app/(site)/services/page.tsx", [
   "/campaign/kcg-home-inspection-action-20260503.webp",
-  "취급 품목, 당일 기준, 실물 확인 순서로 봅니다.",
+  "품목 확인, 고시 기준, 실물 확인",
   "serviceFaqs",
   "거래 기준",
   "필요한 항목만 빠르게 확인합니다.",
@@ -592,8 +652,8 @@ expectText("src/app/(site)/services/page.tsx", [
 expectText("src/app/(site)/products/page.tsx", [
   "상품/매입",
   "/products/kcg-product-gold-silver-catalog-20260503.webp",
-  "골드바, 실버바, 순금제품, 고금 매입을 바로 고릅니다.",
-  "현재 고시가 기준 참고가와 상품 정보를 바로 확인",
+  "탭에서 품목을 고르고 기준가를 확인합니다.",
+  "골드바, 실버바, 순금제품, 고금 매입 항목을 바로 볼 수 있습니다.",
   "ProductCatalog",
 ]);
 expectText("src/app/(site)/products/[slug]/page.tsx", [
@@ -774,7 +834,11 @@ expectText("supabase/schema.sql", [
   "price_auto_settings",
   "price_auto_suggestions",
   "gold_sell_premium_rate",
-  "max_auto_change_percent",
+  "max_auto_publish_change_percent",
+  "min_apply_change_won",
+  "check_interval_minutes",
+  "when interval_hours = 2 then 120",
+  "business_hours_only",
   "price_basis",
   "weight_grams",
   "making_fee",
@@ -1023,7 +1087,7 @@ if (siteUrl) {
     "국제 금속 차트 열기",
   ]);
   await expectUrl("/services", [
-    "취급 품목, 당일 기준, 실물 확인 순서로 봅니다.",
+    "품목 확인, 고시 기준, 실물 확인",
     "매입 가능 품목",
     "자주 묻는 기준",
   ]);
@@ -1048,7 +1112,7 @@ if (siteUrl) {
     "본사 전화",
     "네이버 지도",
     "카카오맵",
-    "거래 전 준비 항목을 확인하면 현장 안내가 빨라집니다.",
+    "위치, 전화, 준비 항목만 먼저 확인합니다.",
     "사업자등록번호",
     "매장",
   ]);

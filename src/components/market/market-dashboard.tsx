@@ -83,7 +83,7 @@ function SpotTable({ data }: { data: MarketDashboardData }) {
           className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,0.8fr)] items-center border-t border-[#e4ebe9] px-5 py-4 text-sm"
         >
           <div>
-            <p className="font-bold tracking-[-0.03em] text-[#15191b]">{spot.label.replace("국제 ", "")}</p>
+            <p className="font-bold tracking-[-0.022em] text-[#15191b]">{spot.label.replace("국제 ", "")}</p>
             <p className="mt-1 text-xs font-medium text-[#7d8585]">USD/T.oz</p>
           </div>
           <p className="text-right font-semibold tabular-nums text-[#15191b]">{formatUsd(spot.price)}</p>
@@ -131,7 +131,7 @@ function ConversionTable({
           className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] items-center border-t border-[#e4ebe9] px-5 py-4 text-sm"
         >
           <div>
-            <p className="font-bold tracking-[-0.03em] text-[#15191b]">{label}</p>
+            <p className="font-bold tracking-[-0.022em] text-[#15191b]">{label}</p>
             <p className="mt-1 text-xs text-[#7d8585]">{domestic ? `1g ${formatWon(domestic.krwPerGram)}` : "준비 중"}</p>
           </div>
           <p className="text-right font-semibold tabular-nums text-[#15191b]">

@@ -62,10 +62,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           </div>
           <div className="flex flex-col justify-center border-y border-[#dfe6e4] py-8">
             <div className="flex flex-wrap gap-2">
-              <span className="rounded-full border border-[#dfe6e4] bg-white px-3 py-1.5 text-xs font-bold tracking-[0.14em] text-[#8a7600]">
+              <span className="rounded-full border border-[#dfe6e4] bg-white px-3 py-1.5 text-xs font-bold tracking-[0.11em] text-[#8a7600]">
                 {getProductCategoryLabel(product.category)}
               </span>
-              <span className="rounded-full bg-white px-3 py-1.5 text-xs font-bold tracking-[0.14em] text-[#687171]">
+              <span className="rounded-full bg-white px-3 py-1.5 text-xs font-bold tracking-[0.11em] text-[#687171]">
                 {getProductStatusLabel(product.status)}
               </span>
             </div>
@@ -76,8 +76,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
             <div className="mt-7 grid gap-px overflow-hidden border border-[#dfe6e4] bg-[#dfe6e4] sm:grid-cols-2">
               <div className="bg-white px-5 py-5">
-                <p className="text-xs font-bold tracking-[0.18em] text-[#9a8a00]">가격 안내</p>
-                <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-[#15191b]">
+                <p className="kcg-data-label text-[#9a8a00]">가격 안내</p>
+                <p className="kcg-price-primary mt-2 text-xl font-semibold text-[#15191b]">
                   {price.main}
                 </p>
                 <p className="mt-2 text-sm leading-6 text-[#687171]">
@@ -86,7 +86,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 <p className="mt-2 text-xs leading-5 text-[#8a9291]">{price.footnote}</p>
               </div>
               <div className="bg-white px-5 py-5">
-                <p className="text-xs font-bold tracking-[0.18em] text-[#9a8a00]">상담 기준</p>
+                <p className="kcg-data-label text-[#9a8a00]">상담 기준</p>
                 <p className="mt-2 text-sm leading-7 text-[#687171]">
                   {product.publicNote || "중량, 수량, 재고와 고시 시세를 확인한 뒤 상담 기준을 안내합니다."}
                 </p>

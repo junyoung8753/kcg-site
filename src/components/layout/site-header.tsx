@@ -28,17 +28,17 @@ export function SiteHeader() {
             />
           </span>
           <span className="min-w-0 sm:hidden">
-            <span className="block max-w-[7.8rem] text-[10px] font-semibold uppercase leading-[1.25] tracking-[0.2em] text-[#af8400]">
+            <span className="block max-w-[7.8rem] text-[10px] font-semibold uppercase leading-[1.25] tracking-[0.14em] text-[#af8400]">
               KOREA CENTER GOLD
             </span>
-            <span className="block max-w-[8.8rem] text-[1.08rem] font-semibold leading-[1.12] tracking-[-0.045em] text-[#15191b]">
+            <span className="block max-w-[8.8rem] text-[1.06rem] font-semibold leading-[1.14] tracking-[-0.02em] text-[#15191b]">
               <span className="block">(주)한국센터</span>
               <span className="block">금거래소</span>
             </span>
           </span>
         </Link>
 
-        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-5 text-[0.98rem] font-semibold tracking-[-0.035em] text-[#121517] lg:flex xl:gap-7">
+        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-5 text-[0.98rem] font-semibold tracking-[-0.018em] text-[#121517] lg:flex xl:gap-7">
           {siteNavigation.map((item) => (
             <Link
               key={item.href}

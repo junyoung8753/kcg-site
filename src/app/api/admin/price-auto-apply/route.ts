@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, error: "draft-not-found" }, { status: 404 });
   }
 
-  const changedBy = body.changedBy || "자동입력 초안 적용";
+  const changedBy = body.changedBy || "자동시세 검토 후 반영";
   const updates = buildPriceUpdatesFromSuggestion(prices, suggestion, changedBy);
   await repository.updatePrices(updates);
   await repository.updatePriceAutoSuggestionStatus(suggestion.id, "applied", changedBy);

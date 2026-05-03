@@ -51,14 +51,14 @@ export default async function PricesPage() {
               ].map(([label, title, body]) => (
                 <div key={label} className="bg-white px-5 py-4">
                   <p className="kcg-fine-label text-[#9a8a00]">{label}</p>
-                  <p className="mt-2 text-sm font-bold leading-6 tracking-[-0.03em] text-[#15191b]">{title || body}</p>
+                  <p className="mt-2 text-sm font-bold leading-6 tracking-[-0.022em] text-[#15191b]">{title || body}</p>
                 </div>
               ))}
             </div>
           </div>
           <div className="border border-[#dfe6e4] bg-white px-5 py-4 lg:w-72">
-            <p className="text-xs font-semibold tracking-[0.2em] text-[#8b9292]">고시 시각</p>
-            <p className="mt-2 text-lg font-bold tracking-[-0.04em] text-[#15191b]">
+            <p className="kcg-data-label text-[#8b9292]">고시 시각</p>
+            <p className="mt-2 text-base font-bold tracking-[-0.018em] text-[#15191b]">
               {announcementDisplay.valueLabel}
             </p>
           </div>

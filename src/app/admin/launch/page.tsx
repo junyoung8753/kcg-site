@@ -34,12 +34,12 @@ export default function AdminLaunchPage() {
   return (
     <div className="space-y-8">
       <section className="rounded-[2.4rem] border border-white/10 bg-white/5 p-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-[var(--color-gold-soft)]">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-gold-soft)]">
           Launch Readiness
         </p>
         <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
-            <h2 className="font-display text-4xl">오픈 전 점검판</h2>
+            <h2 className="font-display text-3xl">오픈 전 점검판</h2>
             <p className="mt-4 max-w-3xl text-sm leading-8 text-white/72">
               도메인, 사업자 표시, 관리자 인증, 저장소, 검색 노출처럼 실제 공개 전에 놓치면 안 되는
               항목만 모았습니다. 임시값은 화면에 보이더라도 이 점검판에서 오픈 차단으로 표시됩니다.
@@ -48,7 +48,7 @@ export default function AdminLaunchPage() {
           <div className="rounded-[1.8rem] border border-white/10 bg-black/18 px-6 py-5 text-right">
             <p className="text-sm text-white/58">점검 점수</p>
             <p className="mt-2 text-5xl font-semibold text-white">{readiness.score}</p>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/58">
+            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-white/58">
               {readiness.status}
             </p>
           </div>
@@ -57,10 +57,10 @@ export default function AdminLaunchPage() {
 
       <section className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--color-gold-soft)]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-gold-soft)]">
             Safe Pre-Launch
           </p>
-          <h3 className="mt-3 font-display text-2xl text-white">지금 미리 가능한 준비</h3>
+          <h3 className="mt-3 font-display text-xl text-white">지금 미리 가능한 준비</h3>
           <ul className="mt-5 grid gap-3 text-sm leading-7 text-white/70">
             {preLaunchTasks.map((task) => (
               <li key={task} className="rounded-[1rem] border border-white/8 bg-black/12 px-4 py-3">
@@ -70,10 +70,10 @@ export default function AdminLaunchPage() {
           </ul>
         </div>
         <div className="rounded-[1.8rem] border border-red-300/20 bg-red-300/8 p-6">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-red-100/80">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-red-100/80">
             Public Launch Approval
           </p>
-          <h3 className="mt-3 font-display text-2xl text-white">공개 직전 별도 승인 필요</h3>
+          <h3 className="mt-3 font-display text-xl text-white">공개 직전 별도 승인 필요</h3>
           <ul className="mt-5 grid gap-3 text-sm leading-7 text-red-50/76">
             {publicLaunchTasks.map((task) => (
               <li key={task} className="rounded-[1rem] border border-red-200/12 bg-black/12 px-4 py-3">
@@ -90,15 +90,15 @@ export default function AdminLaunchPage() {
       <section className="grid gap-4 lg:grid-cols-3">
         <div className="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
           <p className="text-sm text-white/58">오픈 차단</p>
-          <p className="mt-3 text-3xl font-semibold text-white">{readiness.blockers.length}개</p>
+          <p className="mt-3 text-2xl font-semibold text-white">{readiness.blockers.length}개</p>
         </div>
         <div className="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
           <p className="text-sm text-white/58">확인 필요</p>
-          <p className="mt-3 text-3xl font-semibold text-white">{readiness.warnings.length}개</p>
+          <p className="mt-3 text-2xl font-semibold text-white">{readiness.warnings.length}개</p>
         </div>
         <div className="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
           <p className="text-sm text-white/58">현재 상태</p>
-          <p className="mt-3 text-3xl font-semibold text-white">
+          <p className="mt-3 text-2xl font-semibold text-white">
             {readiness.status === "blocked"
               ? "차단"
               : readiness.status === "review-needed"
@@ -113,7 +113,7 @@ export default function AdminLaunchPage() {
           <article key={item.key} className="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
-                <h3 className="font-display text-2xl text-white">{item.title}</h3>
+                <h3 className="font-display text-xl text-white">{item.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-white/70">{item.summary}</p>
               </div>
               <span

@@ -31,7 +31,8 @@ create table if not exists price_auto_settings (
   is_enabled boolean not null default false,
   source text not null default 'gold-api' check (source in ('gold-api', 'metals-dev')),
   interval_hours integer not null default 2 check (interval_hours in (1, 2)),
-  mode text not null default 'draft' check (mode in ('draft', 'emergency_publish')),
+  check_interval_minutes integer not null default 60 check (check_interval_minutes in (30, 60, 120)),
+  mode text not null default 'manual_review' check (mode in ('manual_review', 'auto_publish')),
   rounding_unit integer not null default 100,
   gold_sell_premium_rate numeric not null default 0.135,
   gold_buy_discount_rate numeric not null default 0.05,
@@ -42,6 +43,11 @@ create table if not exists price_auto_settings (
   silver_sell_premium_rate numeric not null default 0.08,
   silver_buy_discount_rate numeric not null default 0.11,
   max_auto_change_percent numeric not null default 0.15,
+  min_apply_change_won integer not null default 500,
+  max_auto_publish_change_percent numeric not null default 0.05,
+  business_hours_only boolean not null default true,
+  last_checked_at timestamptz,
+  last_auto_applied_at timestamptz,
   updated_by text not null default '관리자',
   updated_at timestamptz not null default now()
 );
@@ -116,6 +122,34 @@ alter table products add column if not exists price_note text;
 alter table products add column if not exists public_note text;
 alter table products add column if not exists created_at timestamptz not null default now();
 alter table products add column if not exists updated_at timestamptz not null default now();
+
+alter table price_auto_settings add column if not exists check_interval_minutes integer not null default 60;
+alter table price_auto_settings add column if not exists min_apply_change_won integer not null default 500;
+alter table price_auto_settings add column if not exists max_auto_publish_change_percent numeric not null default 0.05;
+alter table price_auto_settings add column if not exists business_hours_only boolean not null default true;
+alter table price_auto_settings add column if not exists last_checked_at timestamptz;
+alter table price_auto_settings add column if not exists last_auto_applied_at timestamptz;
+
+alter table price_auto_settings drop constraint if exists price_auto_settings_mode_check;
+update price_auto_settings
+set mode = case
+  when mode = 'emergency_publish' then 'auto_publish'
+  when mode = 'draft' then 'manual_review'
+  else mode
+end
+where mode in ('draft', 'emergency_publish');
+alter table price_auto_settings alter column mode set default 'manual_review';
+alter table price_auto_settings add constraint price_auto_settings_mode_check check (mode in ('manual_review', 'auto_publish'));
+
+alter table price_auto_settings drop constraint if exists price_auto_settings_check_interval_minutes_check;
+update price_auto_settings
+set check_interval_minutes = case
+  when check_interval_minutes = 30 then 30
+  when check_interval_minutes = 120 then 120
+  when interval_hours = 2 then 120
+  else 60
+end;
+alter table price_auto_settings add constraint price_auto_settings_check_interval_minutes_check check (check_interval_minutes in (30, 60, 120));
 
 alter table products drop constraint if exists products_status_check;
 

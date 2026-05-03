@@ -320,7 +320,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
   return (
     <div className="space-y-6">
       <section className="rounded-[2.2rem] border border-white/10 bg-white/5 p-8">
-        <h2 className="font-display text-4xl">상품 관리</h2>
+        <h2 className="font-display text-3xl">상품 관리</h2>
         <p className="mt-4 max-w-3xl text-sm leading-8 text-white/72">
           목록에서 상태와 가격 기준을 먼저 확인하고, 수정할 상품만 펼쳐서 편집합니다.
         </p>
@@ -349,7 +349,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
 
       {missingCategories.length ? (
         <section className="space-y-5">
-          <h3 className="font-display text-2xl text-white">비어 있는 카테고리 추가</h3>
+          <h3 className="font-display text-xl text-white">비어 있는 카테고리 추가</h3>
           {missingCategories.map((category) => productForm(blankProduct(category)))}
         </section>
       ) : null}

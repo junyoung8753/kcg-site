@@ -41,7 +41,7 @@ export default function ServicesPage() {
           <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-6 lg:py-7">
             <p className="kcg-eyebrow text-[#9a8a00]">SERVICE FLOW</p>
             <h1 className="kcg-page-title mt-3 text-[#15191b]">
-              취급 품목, 당일 기준, 실물 확인 순서로 봅니다.
+              품목 확인, 고시 기준, 실물 확인
             </h1>
             <div className="mt-6 grid gap-px overflow-hidden border border-[#dfe6e3] bg-[#dfe6e3] sm:grid-cols-3">
               {flowSteps.map(([number, title, body]) => (
@@ -70,7 +70,7 @@ export default function ServicesPage() {
                 key={label}
                 className="grid gap-3 border-b border-[#e4ebe9] px-5 py-4 text-sm last:border-b-0 sm:grid-cols-[11rem_1fr]"
               >
-                <p className="font-bold tracking-[-0.03em] text-[#15191b]">{label}</p>
+                <p className="font-bold tracking-[-0.022em] text-[#15191b]">{label}</p>
                 <p className="leading-6 text-[#687171]">{value}</p>
               </div>
             ))}
@@ -89,7 +89,7 @@ export default function ServicesPage() {
           <div className="divide-y divide-[var(--color-line)]">
             {serviceFaqs.map((item) => (
               <details key={item.question} className="group py-5 first:pt-0 last:pb-0">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-lg font-semibold tracking-[-0.04em] text-[#15191b] marker:hidden">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-base font-semibold tracking-[-0.018em] text-[#15191b] marker:hidden">
                   <span>{item.question}</span>
                   <span className="shrink-0 text-xl font-light text-[#9a8a00] transition group-open:rotate-45">+</span>
                 </summary>

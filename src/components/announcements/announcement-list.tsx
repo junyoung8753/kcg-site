@@ -26,7 +26,7 @@ export function AnnouncementList({
         >
           <div className="flex flex-wrap items-start gap-3 sm:block">
             {item.isPinned ? (
-              <span className="inline-flex rounded-full border border-[rgba(178,149,94,0.28)] bg-[#fff7d6] px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-gold)]">
+              <span className="inline-flex rounded-full border border-[rgba(178,149,94,0.28)] bg-[#fff7d6] px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-gold)]">
                 중요
               </span>
             ) : null}
@@ -35,7 +35,7 @@ export function AnnouncementList({
             </span>
           </div>
           <div>
-            <h3 className="text-[1.18rem] font-semibold tracking-[-0.03em] text-[var(--color-ink)]">
+            <h3 className="kcg-card-title text-[var(--color-ink)]">
               {item.title}
             </h3>
             <p className="mt-3 text-sm leading-7 text-[var(--color-muted)]">

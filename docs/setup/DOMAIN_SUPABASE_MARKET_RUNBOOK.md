@@ -169,8 +169,8 @@ Behavior:
 
 - If `METALS_DEV_API_KEY` is empty, the site tries Gold API free current prices.
 - If Gold API fails, the site falls back to checked-in seed market data.
-- Automatic data must always show source attribution and reference-only wording.
-- External market data must never overwrite KCG company posted prices.
+- Automatic public market data must always show source attribution and reference-only wording.
+- External market data must not overwrite KCG company posted prices except through the authenticated admin auto-publish workflow, which records a suggestion and price-history entry.
 
 TradingView chart widget:
 

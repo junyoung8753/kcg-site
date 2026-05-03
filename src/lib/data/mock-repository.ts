@@ -41,6 +41,10 @@ export class MockRepository implements SiteRepository {
     return demoResult;
   }
 
+  async updatePriceAutoRunState() {
+    return demoResult;
+  }
+
   async getLatestPriceAutoSuggestion() {
     return null;
   }
@@ -57,7 +61,7 @@ export class MockRepository implements SiteRepository {
       items: input.items,
       warnings: [
         ...input.warnings,
-        "Supabase 미연결 상태에서는 자동입력 초안을 저장할 수 없습니다.",
+        "Supabase 미연결 상태에서는 자동시세 검토 기록을 저장할 수 없습니다.",
       ],
       appliedAt: null,
       appliedBy: null,

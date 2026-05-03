@@ -42,10 +42,10 @@ export default async function ProductsPage() {
             <div>
               <p className="kcg-eyebrow text-[#9a8a00]">KCG CATEGORY</p>
               <h2 className="kcg-section-title mt-3 max-w-3xl text-[#15191b]">
-                골드바, 실버바, 순금제품, 고금 매입을 바로 고릅니다.
+                탭에서 품목을 고르고 기준가를 확인합니다.
               </h2>
               <p className="kcg-body-copy mt-4 max-w-2xl text-[#687171]">
-                탭에서 품목을 고르면 현재 고시가 기준 참고가와 상품 정보를 바로 확인할 수 있습니다.
+                골드바, 실버바, 순금제품, 고금 매입 항목을 바로 볼 수 있습니다.
               </p>
             </div>
           </div>

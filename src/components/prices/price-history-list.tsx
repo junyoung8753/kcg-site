@@ -10,10 +10,10 @@ export function PriceHistoryList({ history }: PriceHistoryListProps) {
     <div className="border-y border-[var(--color-line)] py-6 sm:py-8">
       <div className="flex items-center justify-between gap-4 border-b border-[var(--color-line)] pb-5">
         <div>
-          <p className="text-xs font-semibold tracking-[0.28em] text-[var(--color-muted)]">
+          <p className="kcg-data-label text-[var(--color-muted)]">
             시세 조정 이력
           </p>
-          <h3 className="mt-2 font-display text-2xl font-semibold">최근 조정 이력</h3>
+          <h3 className="mt-2 font-display text-xl font-semibold">최근 조정 이력</h3>
         </div>
         <p className="text-sm text-[var(--color-muted)]">{history.length}건 표시</p>
       </div>

@@ -42,7 +42,7 @@ export default async function AdminAnnouncementsPage({
   return (
     <div className="space-y-6">
       <section className="rounded-[2.2rem] border border-white/10 bg-white/5 p-8">
-        <h2 className="font-display text-4xl">공지 관리</h2>
+        <h2 className="font-display text-3xl">공지 관리</h2>
         <p className="mt-4 max-w-3xl text-sm leading-8 text-white/72">
           새 공지를 작성하고, 기존 공지는 필요한 항목만 펼쳐 수정합니다.
         </p>

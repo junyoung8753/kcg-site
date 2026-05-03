@@ -70,7 +70,7 @@ export function PurchaseGuide({ showExtendedRows = false }: { showExtendedRows?:
                 key={row.item}
                 className="grid gap-4 border-t border-[#e4ebe9] px-5 py-5 text-sm leading-6 text-[#687171] sm:grid-cols-[0.92fr_0.9fr_1.18fr]"
               >
-                <p className="font-bold tracking-[-0.03em] text-[#15191b]">{row.item}</p>
+                <p className="font-bold tracking-[-0.022em] text-[#15191b]">{row.item}</p>
                 <p>{row.standard}</p>
                 <p>{row.check}</p>
               </div>

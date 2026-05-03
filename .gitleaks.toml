@@ -1,0 +1,12 @@
+title = "KCG site gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Generated local build, deployment, and research artifacts are not source inputs."
+paths = [
+  '''(^|[\\/])\.next([\\/]|$)''',
+  '''(^|[\\/])\.vercel([\\/]|$)''',
+  '''(^|[\\/])output([\\/]|$)''',
+]

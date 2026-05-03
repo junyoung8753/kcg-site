@@ -54,7 +54,7 @@ export function PageIntro({
               <p className="kcg-fine-label text-[#8e9696]">{asideLabel}</p>
             ) : null}
             {asideTitle ? (
-              <p className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#15191b]">{asideTitle}</p>
+              <p className="mt-2 text-lg font-semibold tracking-[-0.022em] text-[#15191b]">{asideTitle}</p>
             ) : null}
             {asideBody ? <div className="mt-3 text-sm leading-7 text-[#687171]">{asideBody}</div> : null}
             {asideAction ? <div className="mt-4">{asideAction}</div> : null}

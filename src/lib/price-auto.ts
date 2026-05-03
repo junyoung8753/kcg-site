@@ -18,8 +18,9 @@ export function getDefaultPriceAutoSettings(
     id: "default",
     isEnabled: false,
     source: "gold-api",
-    intervalHours: 2,
-    mode: "draft",
+    intervalHours: 1,
+    checkIntervalMinutes: 60,
+    mode: "manual_review",
     roundingUnit: DEFAULT_ROUNDING_UNIT,
     goldSellPremiumRate: 0.135,
     goldBuyDiscountRate: 0.05,
@@ -29,7 +30,11 @@ export function getDefaultPriceAutoSettings(
     platinumBuyDiscountRate: 0.1,
     silverSellPremiumRate: 0.08,
     silverBuyDiscountRate: 0.11,
-    maxAutoChangePercent: 0.15,
+    minApplyChangeWon: 500,
+    maxAutoPublishChangePercent: 0.05,
+    businessHoursOnly: true,
+    lastCheckedAt: null,
+    lastAutoAppliedAt: null,
     updatedBy: "관리자",
     updatedAt: new Date().toISOString(),
     schemaReady: false,
@@ -64,7 +69,7 @@ function buildItem(
     difference,
     changePercent,
     note,
-    needsReview: Math.abs(changePercent) >= settings.maxAutoChangePercent,
+    needsReview: Math.abs(changePercent) >= settings.maxAutoPublishChangePercent,
   };
 }
 

@@ -13,7 +13,7 @@ const port = process.env.SITE_SCREENSHOT_PORT || "3038";
 const baseURL = externalBaseURL || `http://127.0.0.1:${port}`;
 const screenshotDir = resolve(rootDir, "output", "screenshots");
 const includeAdminScreenshots = process.env.KCG_INCLUDE_ADMIN_SCREENSHOTS === "1";
-const adminScreenshotFiles = ["admin-launch-mobile.png", "admin-launch-desktop.png"];
+const adminScreenshotFiles = ["admin-launch-mobile.png", "admin-launch-desktop.png", "admin-prices-auto-desktop.png"];
 const adminPassword =
   process.env.KCG_SCREENSHOT_ADMIN_PASSWORD ||
   process.env.KCG_TEST_ADMIN_PASSWORD ||
@@ -132,6 +132,27 @@ async function captureAdminLaunch(page, viewport, filename) {
   await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: true });
 }
 
+async function captureAdminPricesAuto(page, viewport, filename) {
+  await page.setViewportSize(viewport);
+  await page.goto(new URL("/admin/prices", baseURL).href, { waitUntil: "domcontentloaded" });
+
+  if (page.url().includes("/admin/login")) {
+    await page.getByLabel("관리자 비밀번호").fill(adminPassword);
+    await page.getByRole("button", { name: "관리자 페이지로 이동" }).click();
+    await page.waitForURL(/\/admin\/prices/);
+    await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => {});
+  }
+
+  await page.getByTestId("admin-price-mode-toggle").click();
+  await page.waitForFunction(() => {
+    return document
+      .querySelector('[data-testid="admin-price-mode-toggle"]')
+      ?.getAttribute("aria-pressed") === "true";
+  });
+  await page.getByTestId("admin-price-auto-panel").waitFor({ state: "visible", timeout: 5_000 });
+  await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: true });
+}
+
 function removeSkippedAdminScreenshots() {
   for (const filename of adminScreenshotFiles) {
     rmSync(resolve(screenshotDir, filename), { force: true });
@@ -160,13 +181,16 @@ try {
   await capture(page, "/prices", { width: 390, height: 1800 }, "prices-mobile.png", "품목별 회사 고시 시세 상세");
   await capture(page, "/products", { width: 390, height: 1800 }, "products-mobile.png", "상품/매입");
   await capture(page, "/products", { width: 1440, height: 1800 }, "products-desktop.png", "상품/매입");
-  await capture(page, "/services", { width: 390, height: 1800 }, "services-mobile.png", "취급 품목, 당일 기준");
+  await capture(page, "/services", { width: 390, height: 1800 }, "services-mobile.png", "품목 확인, 고시 기준");
   await capture(page, "/company", { width: 390, height: 1800 }, "company-mobile.png", "사업자등록번호");
   await capture(page, "/about", { width: 390, height: 1800 }, "about-mobile.png", "사업자등록번호");
 
   if (includeAdminScreenshots) {
     await captureAdminLaunch(page, { width: 390, height: 1800 }, "admin-launch-mobile.png");
     await captureAdminLaunch(page, { width: 1440, height: 1600 }, "admin-launch-desktop.png");
+    if (!externalBaseURL) {
+      await captureAdminPricesAuto(page, { width: 1440, height: 1800 }, "admin-prices-auto-desktop.png");
+    }
   } else {
     console.log("Skipped admin launch screenshots. Set KCG_INCLUDE_ADMIN_SCREENSHOTS=1 for local evidence.");
   }

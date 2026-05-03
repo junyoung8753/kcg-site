@@ -26,7 +26,7 @@ export function PriceContextGuide() {
               key={item}
               className="grid gap-2 border-t border-[#e4ebe9] px-5 py-4 text-sm leading-6 text-[#687171] first:border-t-0 sm:grid-cols-[0.8fr_0.8fr_1.2fr]"
             >
-              <p className="font-bold tracking-[-0.03em] text-[#15191b]">{item}</p>
+              <p className="font-bold tracking-[-0.022em] text-[#15191b]">{item}</p>
               <p>{priceLine}</p>
               <p>{prepare}</p>
             </div>

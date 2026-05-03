@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getRepository } from "@/lib/data";
-import {
-  buildPriceAutoSuggestionInput,
-  buildPriceUpdatesFromSuggestion,
-} from "@/lib/price-auto";
+import { runPriceAutoRefresh } from "@/lib/price-auto-runner";
 
 export const dynamic = "force-dynamic";
 
@@ -31,64 +28,14 @@ export async function POST(request: NextRequest) {
   }
 
   const repository = getRepository();
-  const [prices, settings] = await Promise.all([
-    repository.getPrices(),
-    repository.getPriceAutoSettings(),
-  ]);
-
-  if (!settings.isEnabled) {
-    return NextResponse.json({ ok: true, skipped: "auto-fill-disabled" });
-  }
-
-  const input = await buildPriceAutoSuggestionInput(prices, settings);
-  const suggestion = await repository.createPriceAutoSuggestion(input);
-
-  if (suggestion.id === "schema-not-ready") {
-    return NextResponse.json(
-      {
-        ok: false,
-        error: "schema-not-ready",
-        warnings: suggestion.warnings,
-      },
-      { status: 503 },
-    );
-  }
-
-  const canEmergencyPublish =
-    settings.mode === "emergency_publish" &&
-    process.env.PRICE_AUTOFILL_ALLOW_EMERGENCY_PUBLISH === "1" &&
-    suggestion.items.every((item) => !item.needsReview) &&
-    suggestion.warnings.length === 0;
-
-  if (canEmergencyPublish) {
-    const updates = buildPriceUpdatesFromSuggestion(
-      prices,
-      suggestion,
-      "자동입력 비상 게시",
-    );
-    await repository.updatePrices(updates);
-    await repository.updatePriceAutoSuggestionStatus(
-      suggestion.id,
-      "applied",
-      "자동입력 비상 게시",
-    );
-    revalidatePriceSurfaces();
-    return NextResponse.json({
-      ok: true,
-      mode: "emergency_publish",
-      applied: updates.length,
-      suggestionId: suggestion.id,
-    });
-  }
-
+  const result = await runPriceAutoRefresh(repository, { changedBy: "자동시세" });
   revalidatePriceSurfaces();
-  return NextResponse.json({
-    ok: true,
-    mode: "draft",
-    items: suggestion.items.length,
-    warnings: suggestion.warnings,
-    suggestionId: suggestion.id,
-  });
+
+  if (result.status === "schema-not-ready") {
+    return NextResponse.json(result, { status: 503 });
+  }
+
+  return NextResponse.json(result);
 }
 
 export async function GET(request: NextRequest) {

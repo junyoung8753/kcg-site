@@ -3,6 +3,7 @@ import type { RepositoryMutationResult } from "@/types/admin";
 import type {
   PriceAutoSettings,
   PriceAutoSettingsInput,
+  PriceAutoRunStateInput,
   PriceAutoSuggestion,
   PriceAutoSuggestionInput,
   PriceAutoSuggestionStatus,
@@ -17,6 +18,7 @@ export interface SiteRepository {
   getPriceHistory(limit?: number): Promise<PriceHistoryEntry[]>;
   getPriceAutoSettings(): Promise<PriceAutoSettings>;
   updatePriceAutoSettings(input: PriceAutoSettingsInput): Promise<RepositoryMutationResult>;
+  updatePriceAutoRunState(input: PriceAutoRunStateInput): Promise<RepositoryMutationResult>;
   getLatestPriceAutoSuggestion(): Promise<PriceAutoSuggestion | null>;
   createPriceAutoSuggestion(input: PriceAutoSuggestionInput): Promise<PriceAutoSuggestion>;
   updatePriceAutoSuggestionStatus(

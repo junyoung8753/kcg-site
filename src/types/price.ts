@@ -65,7 +65,7 @@ export interface PriceSanityWarning {
 }
 
 export type PriceAutoSource = "gold-api" | "metals-dev";
-export type PriceAutoMode = "draft" | "emergency_publish";
+export type PriceAutoMode = "manual_review" | "auto_publish";
 export type PriceAutoSuggestionStatus = "draft" | "applied" | "rejected" | "expired";
 
 export interface PriceAutoSettings {
@@ -73,6 +73,7 @@ export interface PriceAutoSettings {
   isEnabled: boolean;
   source: PriceAutoSource;
   intervalHours: 1 | 2;
+  checkIntervalMinutes: 30 | 60 | 120;
   mode: PriceAutoMode;
   roundingUnit: number;
   goldSellPremiumRate: number;
@@ -83,7 +84,11 @@ export interface PriceAutoSettings {
   platinumBuyDiscountRate: number;
   silverSellPremiumRate: number;
   silverBuyDiscountRate: number;
-  maxAutoChangePercent: number;
+  minApplyChangeWon: number;
+  maxAutoPublishChangePercent: number;
+  businessHoursOnly: boolean;
+  lastCheckedAt: string | null;
+  lastAutoAppliedAt: string | null;
   updatedBy: string;
   updatedAt: string;
   schemaReady: boolean;
@@ -93,6 +98,7 @@ export interface PriceAutoSettingsInput {
   isEnabled: boolean;
   source: PriceAutoSource;
   intervalHours: 1 | 2;
+  checkIntervalMinutes: 30 | 60 | 120;
   mode: PriceAutoMode;
   roundingUnit: number;
   goldSellPremiumRate: number;
@@ -103,8 +109,15 @@ export interface PriceAutoSettingsInput {
   platinumBuyDiscountRate: number;
   silverSellPremiumRate: number;
   silverBuyDiscountRate: number;
-  maxAutoChangePercent: number;
+  minApplyChangeWon: number;
+  maxAutoPublishChangePercent: number;
+  businessHoursOnly: boolean;
   updatedBy: string;
+}
+
+export interface PriceAutoRunStateInput {
+  lastCheckedAt?: string | null;
+  lastAutoAppliedAt?: string | null;
 }
 
 export interface PriceAutoSuggestionItem {

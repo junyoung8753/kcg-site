@@ -74,22 +74,22 @@ If a source offers an official API, use the official API instead of scraping.
 
 ## Admin Posted-Price Auto-Fill Boundary
 
-The admin auto-fill feature is a draft generator for KCG-owned posted prices. It must not scrape, copy, proxy, cache, or slightly modify competitor posted prices.
+The admin auto-fill feature is a KCG-owned posted-price automation workflow. It must not scrape, copy, proxy, cache, or slightly modify competitor posted prices.
 
 Allowed behavior:
 
 - Fetch market reference values from allowed providers such as Gold API, or Metals.Dev when a KCG-owned API key is configured.
 - Convert international reference values to KRW and 3.75g using deterministic KCG settings such as rounding unit, spread, premium, discount, and purity conversion factors.
-- Save the result as a reviewable admin draft first.
-- Apply a draft to company posted prices only when an administrator explicitly approves it, except for a separately locked emergency-publish mode.
-- Store the applied change in price history with a clear changed-by label such as `자동입력 초안 적용`.
+- In `manual_review` mode, save the result as a reviewable admin draft first.
+- In `auto_publish` mode, automatically apply only when the data source is usable, the configured check interval is due, the change is above the minimum apply amount, and every item stays below the configured auto-publish change threshold.
+- Store every applied change in price history with a clear changed-by label such as `자동시세: Gold API`.
 - Show competitor sites only as outbound reference links for a human operator.
 
 Blocked behavior:
 
 - Do not fetch or scrape 한국금거래소, 삼성금거래소, GBK, or other competitor price tables for automatic KCG price entry.
 - Do not use random offsets such as `Math.random()` or arbitrary `±10원` changes to disguise copied competitor data.
-- Do not let external reference data overwrite company posted prices without a saved suggestion/apply record.
+- Do not let external reference data overwrite company posted prices without a saved suggestion/apply record and price-history record.
 - Do not present Gold API, Metals.Dev, TradingView, KRX, or competitor values as KCG company posted prices.
 
 ## Charts
