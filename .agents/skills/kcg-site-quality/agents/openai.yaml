@@ -1,0 +1,4 @@
+interface:
+  display_name: "KCG Site Quality"
+  short_description: "Run KCG site quality workflow and evidence checks."
+  default_prompt: "Use the KCG site quality workflow for this KCG site task."

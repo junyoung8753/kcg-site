@@ -1,6 +1,6 @@
 # KCG Design Review Checklist
 
-Last updated: 2026-04-27 KST.
+Last updated: 2026-05-04 KST.
 
 Use this checklist before and after non-trivial KCG frontend, route, product catalog, price desk, campaign image, form, chart, or visual polish work. It complements `product-experience-rubric.md` and `ai-site-production-playbook.md`; it does not replace launch, legal, pricing, data-source, or credential safeguards.
 
@@ -24,6 +24,7 @@ Use this checklist before and after non-trivial KCG frontend, route, product cat
 ## 3. Visual And UX Checks
 
 - First viewport: KCG brand, company posted prices or the route's main user job, and phone/visit path are visible without feeling like a generic SaaS page.
+- Persistent UI: sticky header and mobile bottom CTA must not cover first-viewport decision content or keyboard-focus targets.
 - Campaign imagery: use real-feeling KCG campaign/product/store signal; do not use abstract decoration as the main proof of business.
 - Layout: price tables, consultation lists, and product records are dense but readable. Avoid nested cards, decorative section cards, and old comparison/option surfaces.
 - Typography: headings fit the container, price numbers scan quickly, Korean copy keeps natural line breaks, and letter spacing remains neutral.
@@ -42,8 +43,9 @@ Use this checklist before and after non-trivial KCG frontend, route, product cat
 
 ## 5. Evidence And Verification
 
-- For code changes, run the KCG command set from `AGENTS.md` unless the change is truly docs-only.
-- For visual changes, run `npm run screenshot:site` and inspect at least `home-mobile.png` and `home-desktop.png`; inspect the changed route screenshots when available.
+- For code changes, run the KCG command set from `AGENTS.md` unless the change is truly docs-only. Use `npm run qa:site` when the task claims launch-candidate quality or rendered route completeness.
+- For visual changes, run `npm run screenshot:site` and inspect at least `home-mobile.png`, `home-desktop.png`, `home-mobile-viewport.png`, and `home-desktop-viewport.png`; inspect changed route screenshots and viewport screenshots when available.
+- Rendered audit claims require `npm run audit:rendered` or `npm run qa:site`, ending with `0 skipped` checks.
 - Admin-only screenshots are local evidence, not public CI artifacts. Use `KCG_INCLUDE_ADMIN_SCREENSHOTS=1` only for deliberate local launch-readiness inspection, then rerun the default screenshot command before public artifact upload.
 - Use `codex review --uncommitted` for meaningful working-tree changes before committing or handing off.
 - Record unresolved launch blockers in `docs/setup/OPEN_TASKS.md` rather than leaving them only in chat.

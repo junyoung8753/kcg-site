@@ -16,6 +16,9 @@ The missed campaign slider and mobile CTA defects were not caused by a build pro
 - The home campaign slider was allowed to become a right-side half-width surface when the price table panel was open, even though the intended design was a full-bleed exchange-site banner with the price table overlaid or separated without shrinking the image.
 - Product tabs were allowed to behave like route refreshes, so category changes could wait for App Router RSC prefetch/fetch work and eager image loading even though all product data was already on the page.
 - Public route typography drifted because many headings used one-off arbitrary font sizes and aggressive negative letter spacing instead of a KCG scale.
+- Full-page screenshots can show sticky headers or fixed mobile CTAs in the middle of a long stitched image, which makes manual review noisy and can hide actual first-viewport composition problems.
+- Product image checks can prove that assets load while still missing the higher launch-quality question: whether the catalog looks real, varied, and credible enough for a physical gold exchange.
+- Source audit pass and rendered UX pass can be confused. A source audit without `SITE_AUDIT_URL` is useful, but it does not prove live route text, redirects, fixed UI, or first viewport behavior.
 
 ## Root Cause
 
@@ -26,9 +29,15 @@ The deeper root cause is process design: AI agents can produce plausible results
 ## Controls
 
 - `npm run audit:site` checks source files, campaign assets, CTA labels, business wording, single-site discipline, and optional rendered-route content.
+- `npm run audit:rendered` starts or uses a rendered site and runs the same audit with `SITE_AUDIT_URL`, failing unless the audit completes with `0 skipped` checks.
+- `npm run qa:site` is the preferred full local quality gate after meaningful KCG work: lint, typecheck, source audit, build, rendered audit, Playwright, screenshots, and npm audit.
 - `npm run test:site` opens the built site in Chromium and verifies mobile/desktop conversion UI, campaign image loading, service wording, route content, horizontal overflow, and visible element protrusion beyond the mobile viewport.
+- Playwright fixed-UI checks verify that sticky header and mobile bottom contact bar do not cover first-viewport decision content.
 - Desktop home checks must verify that the campaign image spans the viewport width and that the visible price table does not sit over the first campaign visual in a way that makes the banner read as a partial-width column.
-- `npm run screenshot:site` captures local built-site screenshots into `output/screenshots` so manual inspection is not accidentally performed against a protected login page.
+- `npm run screenshot:site` captures local built-site full-page and first-viewport screenshots into `output/screenshots` so manual inspection is not accidentally performed against a protected login page or a misleading stitched full-page artifact.
+- `code_review.md` records the KCG-specific review stance for price hierarchy, mobile first viewport, source boundaries, launch gates, and screenshot evidence.
+- `.agents/skills/kcg-site-quality/SKILL.md` packages the repeatable KCG site workflow so future work starts from current handoff, official docs, one-command QA, and rendered evidence.
+- `docs/quality/official-docs-index.md` records the official documentation sources to re-check before changing Codex, Next.js, Tailwind, Playwright, Vercel, Supabase, or market-data behavior.
 - `docs/quality/product-experience-rubric.md` records the KCG-specific product intent, design direction, UX priorities, and high-risk content rules that should guide future UI decisions.
 - `docs/quality/ai-site-production-playbook.md` records how to prompt and run AI site-building work for KCG: context pack first, product surface and user moment second, KCG constraints always, then acceptance criteria, browser evidence, scoring, and durable guardrails.
 - GitHub Actions `Site Quality` runs the same local quality gates on `main` pushes and pull requests without deploying to production.
@@ -47,7 +56,7 @@ The deeper root cause is process design: AI agents can produce plausible results
 2. Load the KCG AI site production playbook so the prompt shape includes product surface, context of use, KCG constraints, acceptance criteria, and browser evidence.
 3. Update or add deterministic checks before claiming completion.
 4. Run static checks, build, browser checks, and route checks.
-5. Run `npm run screenshot:site` and inspect at least one mobile screenshot and one desktop screenshot when the UI changes.
+5. Run `npm run screenshot:site` and inspect at least one mobile screenshot, one desktop screenshot, and the relevant viewport capture when the UI changes.
 6. If a miss is found, add the smallest durable guardrail that would have caught it.
 
 ## Required Flow For Competitor Benchmark Work

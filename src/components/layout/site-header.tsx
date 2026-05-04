@@ -4,7 +4,7 @@ import { siteConfig, siteNavigation } from "@/lib/site-config";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-[#dce6e3] bg-white/96 backdrop-blur">
+    <header data-testid="site-header" className="sticky top-0 z-40 border-b border-[#dce6e3] bg-white/96 backdrop-blur">
       <div className="section-shell flex min-h-[4.65rem] items-center justify-between gap-4 py-3 xl:gap-7">
         <Link href="/" className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4 xl:max-w-[27rem]">
           <span className="relative h-[2.7rem] w-[2.7rem] shrink-0 sm:hidden">

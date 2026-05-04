@@ -40,6 +40,10 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 - `docs/quality/ai-site-production-playbook.md` records the KCG AI site-building workflow: context pack, product surface, KCG constraints, acceptance criteria, browser evidence, score, and durable guardrail.
 - `docs/quality/design-review-checklist.md` is the task-level design QA checklist for visual thesis, product surface, responsive/accessibility checks, evidence, and scoring.
 - `docs/quality/data-source-compliance.md` records the source-attribution and licensing rules for Gold API, Metals.Dev, Google News RSS-style headlines, paid news API candidates, charts, calculators, forms, and competitor references.
+- `docs/quality/official-docs-index.md` records the official OpenAI/Codex, Next.js, Tailwind, Playwright, Vercel, Supabase, and market-data docs to re-check before changing fast-moving site-production behavior.
+- `code_review.md` is the KCG-specific Codex review checklist for price hierarchy, mobile first viewport, consultation conversion, source boundaries, launch gates, and screenshot evidence.
+- `.agents/skills/kcg-site-quality/SKILL.md` is the repo-local skill for KCG site quality, launch-readiness, rendered audit, and screenshot QA work.
+- `npm run qa:site` is the full local KCG quality gate. It runs source audit and rendered audit; rendered audit must finish with `0 skipped` checks before claiming rendered-route completeness.
 - `docs/setup/OPEN_TASKS.md` is the active KCG task ledger. Use it to separate Codex-doable work, blocked work, and junyoung-only public-launch actions. Run `npm run tasks:dashboard` to render the local browser dashboard at `output/kcg-open-tasks.html`.
 - `npm run check:external` is the quick reconnect/status check for the stable URL, robots/noindex posture, empty pre-launch sitemap, and Cafe24 DNS A-record state. It does not read or store secrets.
 - `docs/research/gold-exchange-deep-audit-2026-04-27.md` records the deeper competitor benchmark pass across home, subpages, price wording, forms, tables, and network/API/chart behavior. Do not treat a home-screen-only review as sufficient for benchmark-driven work.
@@ -129,6 +133,8 @@ Supabase production data status as of 2026-04-29 KST: project `ehmsqlfxxydnebzjf
 
 2026-05-03 KST image refresh pass: six new text-free generated assets were created with the built-in image tool, source originals were copied from `C:\Users\junyo\.codex\generated_images` to File-Hub, and optimized public `.webp` assets were committed for site use. Home, social preview, services, about/company, product promo rail, product fallbacks, mock products, and Supabase seed references were updated. `kcg-silver-gift-20260427-v2.jpg` is intentionally retained for silver-bar cards to avoid showing the same gold/silver image twice in the home category grid. After junyoung pointed out that this still repeated too much of the gold-bar/gloves/envelope/scale formula, a second non-applied selection set was created under `public/image-options/2026-05-03/diverse-banner-directions` with eight genuinely different banner directions: 제품 미니멀, 매장 분위기, 금고/보관 신뢰감, 종로형 매장 외부, 금속 매크로, 그래픽 포스터형, 상담 테이블, and 실버 중심 대비. Review notes are in `docs/brand/image-review-2026-05-03.md`; source PNGs are preserved outside the repo at `C:\Users\junyo\Documents\File-Hub\30_Media\Images\AI generated\KCG\2026-05-03-image-refresh` and `C:\Users\junyo\Documents\File-Hub\30_Media\Images\AI generated\KCG\2026-05-03-diverse-banner-directions`. Verification passed: `npm run audit:site`, `npm run lint`, `npm run typecheck`, `npm run tasks:dashboard`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm audit --audit-level=moderate`, and `git diff --check` with line-ending warnings only. Mobile and desktop screenshots were visually inspected for home, products, services, and company.
 
+2026-05-04 KST Codex quality-environment pass: KCG site work now has a repo-local `kcg-site-quality` skill, KCG-specific `code_review.md`, official-docs index, `npm run audit:rendered`, `npm run qa:site`, rendered-audit helper, one-command QA helper, viewport screenshots, and a fixed-header/mobile bottom CTA first-viewport guard. `scripts/capture-site-screenshots.mjs` now writes `home-mobile-viewport.png`, `home-desktop-viewport.png`, `prices-mobile-viewport.png`, `products-mobile-viewport.png`, and `services-mobile-viewport.png` in addition to the existing full-page artifacts. A weekly Codex app automation named `KCG site quality weekly` runs in a worktree and is read/check/report-only: it must not edit files, deploy, remove noindex, read secrets, change admin credentials, or enable search exposure. Verification passed: parser checks, skill validation with UTF-8 mode, `npm run audit:site`, `npm run qa:site` with rendered audit `896 checks, 0 skipped`, Playwright `18 passed`, screenshot regeneration, and `npm audit --audit-level=moderate`. Viewport screenshots for home mobile/desktop, prices mobile, products mobile, and services mobile were visually inspected; the first-viewport chrome guard showed no sticky header or mobile bottom CTA coverage of key decision content.
+
 2026-05-03 KST local Claude/VS Code cleanup: the untracked project helper files `.claude/settings.json`, `.vscode/settings.json`, and `kcg-site.code-workspace` were backed up to `C:\Users\junyo\Documents\Codex\system-setup-backups\2026-05-03-035755-kcg-project-claude-vscode-cleanup` and cleaned so this repo no longer recommends the VS Code Claude extension or sets `claudeCode.preferredLocation`. Claude CLI project permissions are kept for occasional use but are read/test-heavy by default; git writes, Supabase, Vercel env/deploy/alias/logs, and publishing commands are ask-gated. The JSON files parse successfully. `CLAUDE.md` remains as a thin `@AGENTS.md` bridge for CLI use.
 
 Local no-secret transfer backup: `C:\Users\junyo\Documents\File-Hub\90_Backups\kcg-site\kcg-site-workingtree-20260428-210137.zip`. It was created from the current working tree and excludes `.git`, `.env*`, `.vercel`, `.next`, `node_modules`, `output`, and Supabase CLI temp metadata.
@@ -169,7 +175,13 @@ Local no-secret transfer backup: `C:\Users\junyo\Documents\File-Hub\90_Backups\k
    ```
 
 3. Make focused changes that improve price clarity, consultation conversion, source safety, launch readiness, or mobile readability.
-4. Then run:
+4. For full launch-candidate confidence, run:
+
+   ```powershell
+   npm run qa:site
+   ```
+
+5. For narrower code changes, run:
 
    ```powershell
    npm run lint
@@ -180,13 +192,13 @@ Local no-secret transfer backup: `C:\Users\junyo\Documents\File-Hub\90_Backups\k
    npm audit --audit-level=moderate
    ```
 
-5. For visual changes, also run:
+6. For visual changes, also run:
 
    ```powershell
    npm run screenshot:site
    ```
 
-6. Inspect at least one mobile screenshot of `/` before claiming visual completion.
+7. Inspect at least one mobile screenshot of `/` and the relevant `*-viewport.png` first-viewport screenshot before claiming visual completion.
 
 ## Backup Before Switching Or Launch
 

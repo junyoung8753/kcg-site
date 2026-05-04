@@ -265,6 +265,9 @@ expectFile("docs/quality/product-experience-rubric.md", { minBytes: 3_000 });
 expectFile("docs/quality/ai-site-production-playbook.md", { minBytes: 4_000 });
 expectFile("docs/quality/data-source-compliance.md", { minBytes: 4_000 });
 expectFile("docs/quality/design-review-checklist.md", { minBytes: 3_000 });
+expectFile("docs/quality/official-docs-index.md", { minBytes: 2_000 });
+expectFile("code_review.md", { minBytes: 1_500 });
+expectFile(".agents/skills/kcg-site-quality/SKILL.md", { minBytes: 1_500 });
 expectFile("docs/setup/OPEN_TASKS.md", { minBytes: 2_000 });
 expectFile("docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md", { minBytes: 4_000 });
 expectFile("docs/setup/PRODUCT_OPERATIONS_CHECKLIST.md", { minBytes: 2_000 });
@@ -275,6 +278,8 @@ expectFile("docs/brand/font-license.md", { minBytes: 800 });
 expectFile("src/app/fonts/PretendardVariable.woff2", { minBytes: 1_500_000 });
 expectFile("scripts/render-open-tasks-dashboard.mjs", { minBytes: 5_000 });
 expectFile("scripts/check-external-services.mjs", { minBytes: 2_000 });
+expectFile("scripts/run-rendered-site-audit.mjs", { minBytes: 2_000 });
+expectFile("scripts/run-site-qa.mjs", { minBytes: 1_000 });
 expectFile("docs/research/gold-exchange-benchmark-2026-04-25.md", { minBytes: 3_000 });
 expectFile("docs/research/gold-exchange-deep-audit-2026-04-27.md", { minBytes: 6_000 });
 expectMissing("src/app/(site)/option-1/page.tsx");
@@ -288,6 +293,8 @@ expectMissing("public/services/KakaoTalk_20260207_230604937.jpg");
 
 expectText("package.json", [
   "\"check:external\": \"node scripts/check-external-services.mjs\"",
+  "\"audit:rendered\": \"node scripts/run-rendered-site-audit.mjs\"",
+  "\"qa:site\": \"node scripts/run-site-qa.mjs\"",
 ]);
 
 expectText("scripts/check-external-services.mjs", [
@@ -300,6 +307,11 @@ expectText("scripts/check-external-services.mjs", [
 expectText("scripts/capture-site-screenshots.mjs", [
   "products-mobile.png",
   "products-desktop.png",
+  "home-mobile-viewport.png",
+  "home-desktop-viewport.png",
+  "prices-mobile-viewport.png",
+  "products-mobile-viewport.png",
+  "services-mobile-viewport.png",
 ]);
 
 expectText("src/components/market/price-lineup.tsx", [
@@ -852,6 +864,8 @@ expectText("supabase/schema.sql", [
 
 expectText("AGENTS.md", [
   "npm run test:site",
+  "npm run qa:site",
+  "docs/quality/official-docs-index.md",
   "docs/quality/agent-quality-system.md",
   "BEGIN: FRONTEND_DESIGN_QUALITY_ADDON",
   "docs/quality/product-experience-rubric.md",
@@ -865,13 +879,26 @@ expectTextCount("AGENTS.md", "END: FRONTEND_DESIGN_QUALITY_ADDON", 1);
 expectText("package.json", [
   '"name": "korea-center-gold-exchange-site"',
   '"test:site": "playwright test"',
+  '"audit:rendered": "node scripts/run-rendered-site-audit.mjs"',
   '"tasks:dashboard": "node scripts/render-open-tasks-dashboard.mjs"',
   '"screenshot:site": "node scripts/capture-site-screenshots.mjs"',
+  '"qa:site": "node scripts/run-site-qa.mjs"',
 ]);
 expectText("playwright.config.ts", ["nextEnv.loadEnvConfig(process.cwd())", "process.env.SITE_AUDIT_URL"]);
-expectText("tests/site-fidelity.spec.ts", ["/admin/launch", "공개 직전 별도 승인 필요"]);
+expectText("tests/site-fidelity.spec.ts", [
+  "/admin/launch",
+  "공개 직전 별도 승인 필요",
+  "persistent chrome does not cover first-viewport decision content",
+  "site-header",
+]);
+expectText("src/components/layout/site-header.tsx", ['data-testid="site-header"']);
 expectText("scripts/capture-site-screenshots.mjs", [
   "/admin/launch",
+  "home-mobile-viewport.png",
+  "home-desktop-viewport.png",
+  "prices-mobile-viewport.png",
+  "products-mobile-viewport.png",
+  "services-mobile-viewport.png",
   "admin-launch-mobile.png",
   "admin-launch-desktop.png",
   "KCG_INCLUDE_ADMIN_SCREENSHOTS",
@@ -888,8 +915,31 @@ expectText("docs/quality/agent-quality-system.md", [
   "Product tabs were allowed to behave like route refreshes",
   "Product/category tabs that filter already-loaded data must be tested as local interactions.",
   "Public route typography should stay inside the KCG scale.",
+  "Full-page screenshots can show sticky headers or fixed mobile CTAs",
+  "npm run audit:rendered",
+  "npm run qa:site",
   "docs/quality/product-experience-rubric.md",
   "docs/quality/ai-site-production-playbook.md",
+]);
+expectText("docs/quality/official-docs-index.md", [
+  "OpenAI Codex AGENTS.md guidance",
+  "Next.js App Router",
+  "Playwright screenshots and visual comparisons",
+  "Tailwind CSS v4 theme variables",
+  "Vercel environment variables",
+  "Supabase docs",
+]);
+expectText(".agents/skills/kcg-site-quality/SKILL.md", [
+  "description: Use when working in the KCG site repo",
+  "npm run qa:site",
+  "0 skipped",
+  "Do not change production deploys",
+]);
+expectText("code_review.md", [
+  "Price-first hierarchy",
+  "Mobile first viewport",
+  "Rendered audit must complete with `0 skipped`",
+  "Do not request broad refactors",
 ]);
 expectText("docs/quality/data-source-compliance.md", [
   "Gold API",

@@ -74,6 +74,47 @@ async function expectMobileBottomBarDoesNotCover(locator: Locator) {
   expect(overlap).toBe(false);
 }
 
+async function expectPersistentChromeDoesNotCover(locator: Locator) {
+  await expect(locator).toBeVisible();
+
+  const overlaps = await locator.evaluate((element) => {
+    const targetRect = element.getBoundingClientRect();
+    const chromeIds = ["site-header", "mobile-contact-bar"];
+
+    return chromeIds
+      .map((testId) => {
+        const chrome = document.querySelector<HTMLElement>(`[data-testid="${testId}"]`);
+        if (!chrome) return null;
+
+        const style = window.getComputedStyle(chrome);
+        const chromeRect = chrome.getBoundingClientRect();
+        const isVisible =
+          style.display !== "none" &&
+          style.visibility !== "hidden" &&
+          Number(style.opacity) !== 0 &&
+          chromeRect.width > 1 &&
+          chromeRect.height > 1;
+
+        if (!isVisible) return null;
+
+        const horizontalOverlap = Math.max(
+          0,
+          Math.min(targetRect.right, chromeRect.right) - Math.max(targetRect.left, chromeRect.left),
+        );
+        const verticalOverlap = Math.max(
+          0,
+          Math.min(targetRect.bottom, chromeRect.bottom) - Math.max(targetRect.top, chromeRect.top),
+        );
+        const overlapArea = horizontalOverlap * verticalOverlap;
+
+        return overlapArea > 4 ? testId : null;
+      })
+      .filter(Boolean);
+  });
+
+  expect(overlaps).toEqual([]);
+}
+
 async function expectMarketDashboardCompact(page: Page) {
   const dashboard = page.getByTestId("market-dashboard");
   await expect(dashboard.getByRole("heading", { name: "국제 현재가" })).toBeVisible();
@@ -192,6 +233,43 @@ test("desktop home keeps campaign slider and streamlined navigation", async ({ p
 
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
+});
+
+test("persistent chrome does not cover first-viewport decision content", async ({ page }) => {
+  const cases: Array<{ path: string; viewport: { width: number; height: number }; target: () => Locator }> = [
+    {
+      path: "/",
+      viewport: { width: 390, height: 844 },
+      target: () => page.getByRole("heading", { name: "한국센터금거래소 시세표" }),
+    },
+    {
+      path: "/",
+      viewport: { width: 1440, height: 900 },
+      target: () => page.getByTestId("home-price-lineup-panel"),
+    },
+    {
+      path: "/prices",
+      viewport: { width: 390, height: 844 },
+      target: () => page.getByRole("heading", { name: "품목별로 볼 기준만 확인합니다." }),
+    },
+    {
+      path: "/products",
+      viewport: { width: 390, height: 844 },
+      target: () => page.getByRole("heading", { name: "상품/매입" }),
+    },
+    {
+      path: "/services",
+      viewport: { width: 390, height: 844 },
+      target: () => page.getByRole("heading", { name: "품목 확인, 고시 기준, 실물 확인" }),
+    },
+  ];
+
+  for (const item of cases) {
+    await page.setViewportSize(item.viewport);
+    await page.goto(item.path, { waitUntil: "domcontentloaded" });
+    await expectPersistentChromeDoesNotCover(item.target());
+    await expectNoHorizontalOverflow(page);
+  }
 });
 
 test("services route preserves high-risk business wording", async ({ page }) => {

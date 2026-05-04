@@ -101,7 +101,16 @@ async function primeLazyImagesForScreenshot(page) {
   await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => {});
 }
 
-async function capture(page, route, viewport, filename, expectedText) {
+async function resetScrollForScreenshot(page) {
+  await page.evaluate(async () => {
+    window.scrollTo({ left: 0, top: 0, behavior: "instant" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    await new Promise((resolve) => setTimeout(resolve, 240));
+  });
+}
+
+async function capture(page, route, viewport, filename, expectedText, options = {}) {
   await page.setViewportSize(viewport);
   await page.goto(new URL(route, baseURL).href, { waitUntil: "domcontentloaded" });
   await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => {});
@@ -109,8 +118,12 @@ async function capture(page, route, viewport, filename, expectedText) {
   if (!bodyText.includes(expectedText)) {
     throw new Error(`Refusing to capture ${route}; missing expected text: ${expectedText}`);
   }
-  await primeLazyImagesForScreenshot(page);
-  await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: true });
+  if (options.primeImages ?? (options.fullPage ?? true)) {
+    await primeLazyImagesForScreenshot(page);
+  } else {
+    await resetScrollForScreenshot(page);
+  }
+  await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: options.fullPage ?? true });
 }
 
 async function captureAdminLaunch(page, viewport, filename) {
@@ -175,6 +188,39 @@ try {
 
   browser = await chromium.launch();
   const page = await browser.newPage({ deviceScaleFactor: 1 });
+
+  await capture(page, "/", { width: 390, height: 844 }, "home-mobile-viewport.png", "한국센터금거래소 시세표", {
+    fullPage: false,
+    primeImages: false,
+  });
+  await capture(page, "/", { width: 1440, height: 900 }, "home-desktop-viewport.png", "한국센터금거래소 시세표", {
+    fullPage: false,
+    primeImages: false,
+  });
+  await capture(
+    page,
+    "/prices",
+    { width: 390, height: 844 },
+    "prices-mobile-viewport.png",
+    "품목별 회사 고시 시세 상세",
+    { fullPage: false, primeImages: false },
+  );
+  await capture(
+    page,
+    "/products",
+    { width: 390, height: 844 },
+    "products-mobile-viewport.png",
+    "상품/매입",
+    { fullPage: false, primeImages: false },
+  );
+  await capture(
+    page,
+    "/services",
+    { width: 390, height: 844 },
+    "services-mobile-viewport.png",
+    "품목 확인, 고시 기준",
+    { fullPage: false, primeImages: false },
+  );
 
   await capture(page, "/", { width: 390, height: 1800 }, "home-mobile.png", "한국센터금거래소 시세표");
   await capture(page, "/", { width: 1440, height: 1800 }, "home-desktop.png", "한국센터금거래소 시세표");

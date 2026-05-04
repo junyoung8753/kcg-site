@@ -11,6 +11,8 @@
 - Current default continuation is local-first. Read `docs/setup/CLOUD_ONLY_WORKFLOW.md` only when the user explicitly asks to use Codex Cloud or wants to avoid computer-specific setup.
 - For local, cloud, or cross-computer continuation, follow `docs/setup/continue-anywhere.md` and use `scripts/check-continuation.ps1` for repeatable setup checks.
 - For Codex Cloud Playwright work, ensure the environment setup has run `npx playwright install --with-deps chromium`. A missing Linux library error such as `libatk-1.0.so.0` is an environment/setup issue, not a reason to remove fonts, images, routes, or visual QA logic.
+- For KCG site quality work, follow this operating path: read `docs/setup/CURRENT_HANDOFF.md`, use the repo-local `kcg-site-quality` skill when available, consult `docs/quality/official-docs-index.md` for fast-moving official docs, run `npm run qa:site` for the full local quality gate, then inspect the generated full-page and viewport screenshots.
+- For KCG code reviews, use `code_review.md` so findings stay focused on price hierarchy, mobile first viewport, consultation conversion, source boundaries, launch gates, and screenshot evidence.
 - Use Korean UI/copy by default. Preserve exact business facts unless the user provides updated source documents.
 - Treat prices, trading language, legal business information, admin authentication, and production deployment as high-risk. Do not invent official prices, business registration numbers, compliance claims, or live trading/payment behavior.
 - Keep the company posted price table separate from automatic market-reference data. External APIs must not overwrite company prices.
@@ -27,6 +29,7 @@
   - `npm audit --audit-level=moderate`
 - For visual or route changes, also verify at least `/`, `/prices`, `/announcements`, `/services`, `/about`, `/admin/login`, and `/api/health` with browser screenshots or equivalent route checks. `npm run test:site` covers the default local browser path after `npm run build`.
 - For visual route work, explicitly verify campaign assets, mobile header CTA/menu, mobile bottom CTA, service wording, and mobile price-table readability. Use `npm run audit:site`, `npm run test:site`, `npm run screenshot:site`, and at least one manually inspected mobile screenshot of `/`.
+- For final launch-candidate confidence, prefer `npm run qa:site`; it includes rendered audit with `0 skipped` route checks and refreshed screenshots.
 - Do not make visual QA code changes just to bypass a Cloud environment restriction. If Google Fonts, Playwright browser downloads, npm audit endpoints, or external fetches are blocked, report the environment/network issue and fix the Cloud setup or run the verification locally instead of removing design assets, fonts, images, or routes.
 - When a user points out a miss, update the smallest relevant executable guardrail first, then fix similar cases. Keep `docs/quality/agent-quality-system.md` aligned with meaningful process changes.
 - If a deployment is needed, prefer a preview deployment first. Use production deployment or alias changes only when the user clearly asks for the live URL to change.
