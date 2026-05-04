@@ -14,32 +14,8 @@ export default function CompanyPage() {
   return (
     <>
       <section className="bg-[#f7faf8]">
-        <div className="section-shell grid gap-6 py-6 sm:py-8 lg:grid-cols-[0.58fr_0.42fr] lg:items-stretch">
-          <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-6 lg:py-7">
-            <div>
-              <p className="kcg-eyebrow text-[#9a8a00]">COMPANY</p>
-              <h1 className="kcg-page-title mt-3 max-w-3xl text-[#15191b]">
-                {siteConfig.company.legalBusinessName}
-              </h1>
-              <div className="mt-5 grid gap-px overflow-hidden border border-[#dbe4e0] bg-[#dbe4e0] sm:grid-cols-2">
-                {[
-                  ["대표이사", siteConfig.company.representative],
-                  ["사업자등록번호", siteConfig.company.businessRegistrationNumber],
-                  ["본사", siteConfig.locations.headOffice.address],
-                  ["매장", siteConfig.locations.store.address],
-                  ["본사 전화", siteConfig.contact.phone],
-                  ["이메일", siteConfig.contact.email],
-                ].map(([label, value]) => (
-                  <div key={label} className="bg-white px-5 py-4">
-                    <p className="kcg-fine-label text-[#8b9292]">{label}</p>
-                    <p className="mt-2 break-keep text-sm font-semibold leading-6 text-[#15191b]">{value}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="relative min-h-[13rem] overflow-hidden border border-[#dde5e2] bg-[#151518] sm:min-h-[20rem]">
+        <div className="section-shell grid gap-6 py-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
+          <div className="relative min-h-[13rem] overflow-hidden border border-[#dde5e2] bg-[#151518] sm:min-h-[17rem] lg:min-h-[18rem]">
             <Image
               src="/campaign/kcg-visit-transaction-guide-20260503.webp"
               alt="한국센터금거래소 회사소개 상담 데스크 이미지"
@@ -60,6 +36,30 @@ export default function CompanyPage() {
                 <span className="kcg-fine-label text-white/78">
                   KOREA CENTER GOLD EXCHANGE
                 </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-6 lg:py-7">
+            <div>
+              <p className="kcg-eyebrow text-[#9a8a00]">COMPANY</p>
+              <h1 className="kcg-page-title mt-3 max-w-3xl text-[#15191b]">
+                {siteConfig.company.legalBusinessName}
+              </h1>
+              <div className="mt-5 grid gap-px overflow-hidden border border-[#dbe4e0] bg-[#dbe4e0] sm:grid-cols-2">
+                {[
+                  ["대표이사", siteConfig.company.representative],
+                  ["사업자등록번호", siteConfig.company.businessRegistrationNumber],
+                  ["본사", siteConfig.locations.headOffice.address],
+                  ["매장", siteConfig.locations.store.address],
+                  ["본사 전화", siteConfig.contact.phone],
+                  ["이메일", siteConfig.contact.email],
+                ].map(([label, value]) => (
+                  <div key={label} className="bg-white px-5 py-4">
+                    <p className="kcg-fine-label text-[#8b9292]">{label}</p>
+                    <p className="mt-2 break-keep text-sm font-semibold leading-6 text-[#15191b]">{value}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

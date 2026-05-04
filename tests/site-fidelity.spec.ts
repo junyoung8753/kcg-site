@@ -128,6 +128,27 @@ async function expectMarketDashboardCompact(page: Page) {
   await expect(dashboard).not.toContainText("무료 모드에서는 현재가 중심");
 }
 
+async function expectTradingViewWidgetRendered(page: Page, widget: Locator) {
+  await expect(widget).toBeVisible();
+  await expect(widget.locator("iframe")).toHaveCount(1, { timeout: 10000 });
+  const widgetHeight = await widget.evaluate((element) => Math.round(element.getBoundingClientRect().height));
+  expect(widgetHeight).toBeGreaterThanOrEqual(390);
+
+  await expect
+    .poll(
+      async () => {
+        const frame = page.frames().find((candidate) => candidate.url().includes("tradingview-widget.com/embed-widget"));
+        if (!frame) return false;
+
+        const bodyText = await frame.locator("body").innerText({ timeout: 1_000 }).catch(() => "");
+        const canvasCount = await frame.locator("canvas").count().catch(() => 0);
+        return canvasCount > 0 && bodyText.includes("Gold") && bodyText.includes("Silver");
+      },
+      { timeout: 20_000 },
+    )
+    .toBe(true);
+}
+
 async function expectCampaignImagesLoaded(page: Page) {
   for (const [index, alt] of campaignAlts.entries()) {
     const image = page.getByAltText(alt);
@@ -197,7 +218,7 @@ test("desktop home keeps campaign slider and streamlined navigation", async ({ p
   await expect(campaignVisual).not.toContainText("방문 상담");
   await expect(page.getByTestId("tradingview-market-widget")).toHaveCount(0);
   await page.getByText("국제 금속 차트 열기").first().click();
-  await expect(page.getByTestId("tradingview-market-widget")).toBeVisible();
+  await expectTradingViewWidgetRendered(page, page.getByTestId("tradingview-market-widget"));
 
   await expectCampaignImagesLoaded(page);
   const heroImageWidth = await page.getByAltText(campaignAlts[0]).evaluate((node) => {
@@ -331,6 +352,19 @@ test("mobile products route exposes a consultation catalog without checkout", as
   await expect(page.locator("main")).not.toContainText("바로 구매");
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
+});
+
+test("mobile products route reaches catalog controls in the first viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/products", { waitUntil: "domcontentloaded" });
+
+  await expect(page.getByRole("heading", { name: "상품/매입" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "전체" })).toBeVisible();
+  await expect(page.getByTestId("product-count")).toContainText(/상품 \d+개/);
+
+  const productCountBox = await page.getByTestId("product-count").boundingBox();
+  expect(productCountBox?.y ?? 9999).toBeLessThan(844);
+  await expectNoHorizontalOverflow(page);
 });
 
 test("products tabs filter locally without RSC refetch or detail prefetch", async ({ page }) => {
@@ -568,7 +602,7 @@ test("prices market reference stays compact in the two-column desktop layout", a
   await page.goto("/prices", { waitUntil: "domcontentloaded" });
 
   await expectMarketDashboardCompact(page);
-  await expect(page.getByTestId("tradingview-market-widget")).toBeVisible();
+  await expectTradingViewWidgetRendered(page, page.getByTestId("tradingview-market-widget"));
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
 });

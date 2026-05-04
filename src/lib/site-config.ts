@@ -24,6 +24,9 @@ export const siteConfig = {
     storePhone: "02-747-1806",
     email: "kcgoldx@gmail.com",
     kakaoChannel: "@koreacentergold",
+    kakaoChannelUrl: null,
+    kakaoChatUrl: null,
+    naverTalkTalkUrl: null,
     address: headOfficeAddress,
     businessHours: "평일 09:00 - 18:30",
     parkingNote:
@@ -121,6 +124,43 @@ export const companyStory = {
     "KCG골드바, KCG실버바, 지금, 지은 도매",
   ],
 } as const;
+
+export type OptionalContactLink = {
+  label: string;
+  href: string;
+  description: string;
+};
+
+export function getOptionalContactLinks(): OptionalContactLink[] {
+  const contact: ContactInfo = siteConfig.contact;
+  const links: OptionalContactLink[] = [];
+
+  if (contact.kakaoChatUrl) {
+    links.push({
+      label: "카카오톡 문의",
+      href: contact.kakaoChatUrl,
+      description: "KCG 공식 카카오톡 채널 1:1 문의로 연결합니다.",
+    });
+  }
+
+  if (contact.kakaoChannelUrl) {
+    links.push({
+      label: "카카오톡 채널",
+      href: contact.kakaoChannelUrl,
+      description: "KCG 공식 카카오톡 채널 홈으로 이동합니다.",
+    });
+  }
+
+  if (contact.naverTalkTalkUrl) {
+    links.push({
+      label: "네이버 톡톡",
+      href: contact.naverTalkTalkUrl,
+      description: "네이버 톡톡 문의로 연결합니다.",
+    });
+  }
+
+  return links;
+}
 
 export const homeHighlights = [
   {

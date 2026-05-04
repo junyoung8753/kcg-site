@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { siteConfig, visitChecklist } from "@/lib/site-config";
+import { getOptionalContactLinks, siteConfig, visitChecklist } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "매장안내",
@@ -17,6 +17,7 @@ const quickChecks = [
 
 export default function AboutPage() {
   const { headOffice, store } = siteConfig.locations;
+  const optionalContactLinks = getOptionalContactLinks();
 
   return (
     <>
@@ -134,6 +135,17 @@ export default function AboutPage() {
             >
               회사 정보
             </Link>
+            {optionalContactLinks.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-11 items-center justify-center rounded-full border border-[#d8dfdc] bg-white px-5 text-sm font-semibold text-[#171717]"
+              >
+                {item.label}
+              </a>
+            ))}
           </div>
         </div>
       </section>

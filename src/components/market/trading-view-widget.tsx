@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const tradingViewConfig = {
   symbols: [
@@ -41,15 +41,19 @@ const tradingViewConfig = {
 
 export function TradingViewMarketWidget() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [widgetState, setWidgetState] = useState<"loading" | "ready" | "failed">("loading");
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
+    setWidgetState("loading");
     container.innerHTML = "";
 
     const widget = document.createElement("div");
     widget.className = "tradingview-widget-container__widget";
+    widget.style.height = "100%";
+    widget.style.width = "100%";
 
     const script = document.createElement("script");
     script.type = "text/javascript";
@@ -60,7 +64,27 @@ export function TradingViewMarketWidget() {
     container.appendChild(widget);
     container.appendChild(script);
 
+    let hasSettled = false;
+    const markReady = () => {
+      hasSettled = true;
+      setWidgetState("ready");
+    };
+    const markFailed = () => {
+      if (hasSettled) return;
+      setWidgetState("failed");
+    };
+
+    const observer = new MutationObserver(() => {
+      const iframe = container.querySelector("iframe");
+      if (!iframe) return;
+      iframe.addEventListener("load", markReady, { once: true });
+    });
+    observer.observe(container, { childList: true, subtree: true });
+    const timeout = window.setTimeout(markFailed, 15_000);
+
     return () => {
+      observer.disconnect();
+      window.clearTimeout(timeout);
       container.innerHTML = "";
     };
   }, []);
@@ -81,12 +105,34 @@ export function TradingViewMarketWidget() {
           TradingView 제공
         </a>
       </div>
-      <div className="min-h-[26rem] overflow-hidden border border-[#e4ebe9] bg-[#fbfdfc]">
-        <div ref={containerRef} data-testid="tradingview-market-widget" className="tradingview-widget-container h-[26rem] w-full">
+      <div className="relative h-[26rem] min-h-[26rem] overflow-hidden border border-[#e4ebe9] bg-[#fbfdfc]">
+        <div ref={containerRef} data-testid="tradingview-market-widget" className="tradingview-widget-container h-full w-full">
           <div className="flex h-full items-center justify-center px-5 text-center text-sm leading-6 text-[#687171]">
             TradingView 공식 위젯을 불러오는 중입니다.
           </div>
         </div>
+        {widgetState !== "ready" ? (
+          <div
+            data-testid="tradingview-loading-state"
+            className="absolute inset-0 flex items-center justify-center bg-[#fbfdfc]/95 px-6 text-center text-sm leading-6 text-[#687171]"
+          >
+            {widgetState === "failed" ? (
+              <span>
+                TradingView 차트를 불러오지 못했습니다.{" "}
+                <a
+                  href="https://www.tradingview.com/symbols/TVC-GOLD/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-[#15191b] underline underline-offset-4"
+                >
+                  TradingView에서 보기
+                </a>
+              </span>
+            ) : (
+              <span>TradingView 공식 차트를 불러오는 중입니다.</span>
+            )}
+          </div>
+        ) : null}
       </div>
       <p className="mt-4 text-xs leading-6 text-[#7d8685]">
         차트는 TradingView 공식 위젯으로 표시합니다. KCG 회사 고시 시세나 상품 참고가는 이 위젯 데이터를 저장하거나

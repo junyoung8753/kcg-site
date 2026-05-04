@@ -1,6 +1,6 @@
 # KCG Open Tasks
 
-Last updated: 2026-05-04 KST.
+Last updated: 2026-05-05 KST.
 
 This is the active task ledger for the KCG launch candidate on `codex/kcg-launch-readiness-catalog-20260427`.
 
@@ -13,6 +13,7 @@ Do not record passwords, tokens, cookies, recovery codes, real account credentia
 - Owners: `codex`, `junyoung`, or `shared`.
 - Move tasks to `done` only when the acceptance criteria and verification note are true.
 - Keep production deploys, stable alias changes, `kcgold.co.kr` DNS cutover, robots/noindex release, and search indexing blocked until junyoung gives explicit public-launch approval.
+- For meaningful site/admin/QA changes, update `docs/setup/CHANGELOG.md`, `docs/setup/CURRENT_HANDOFF.md`, and the package version before claiming the work is traceable.
 
 ## Active Tasks
 
@@ -64,6 +65,8 @@ Do not record passwords, tokens, cookies, recovery codes, real account credentia
 | KCG-TODO-044 | P0 | done | shared | Apply the latest auto-publish Supabase columns to the production database. | Junyoung completed Supabase CLI login, the repo was linked to project `ehmsqlfxxydnebzjfarr`, `supabase/schema.sql` was applied through `npx supabase db query --linked -f supabase/schema.sql`, and row-level verification confirms the default settings row is present. | Completed 2026-05-04 KST: `price_auto_settings` default row has `is_enabled=false`, `mode=manual_review`, `source=gold-api`, `check_interval_minutes=60`, `min_apply_change_won=500`, `max_auto_publish_change_percent=0.05`, and `business_hours_only=true`; `price_auto_suggestions` exists and contains rows. Automatic posting remains off until an operator turns it on in `/admin/prices`. |
 | KCG-TODO-045 | P1 | done | codex | Refresh KCG banner/product imagery and organize old/new candidates for selection. | Home, service, company, catalog, product fallback, mock data, seed data, and social image references use the 2026-05-03 text-free commercial image set where stronger than the old repeated desk assets; old/current and new candidates are grouped under `public/image-options/2026-05-03`; docs record the selection rationale and remaining real-photo risk. | Passed: `npm run audit:site`, `npm run lint`, `npm run typecheck`, `npm run tasks:dashboard`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm audit --audit-level=moderate`, `git diff --check`; visual check of home/products/services/company screenshots |
 | KCG-TODO-046 | P1 | done | codex | Add the KCG Codex quality environment: repo-local skill, review checklist, official-docs index, one-command QA, rendered audit, viewport screenshots, and fixed-UI guardrails. | `npm run qa:site` passes; rendered audit ends with `0 skipped`; screenshot output includes full-page and viewport artifacts; `KCG site quality weekly` automation exists without production deploy/search/secret permissions. | Completed 2026-05-04 KST: parser checks passed; `npm run qa:site` passed with rendered audit `896 checks, 0 skipped`, Playwright `18 passed`, screenshot artifacts regenerated, and `npm audit --audit-level=moderate` found 0 vulnerabilities. |
+| KCG-TODO-047 | P1 | done | codex | Add traceable versioning and Proactive Launch Steward Review guardrails. | KCG has a changelog, package version, handoff version snapshot, proactive review checklist, and audit guardrails so future work records version/deploy/rollback status without junyoung having to invent the process each time. | Passed 2026-05-05 KST: `npm run audit:site`; `npm run qa:site` with rendered audit `927 checks, 0 skipped`, Playwright `19 passed`, screenshots, and npm audit `0 vulnerabilities`; `git diff --check` had line-ending warnings only. |
+| KCG-TODO-048 | P1 | done | codex | Improve release trace reporting, market table readability, company hero consistency, TradingView chart height, and future Kakao inquiry readiness. | `npm run release:trace` reports version/branch/HEAD/deploy/rollback state; market reference rows are more readable; `/company` uses the same image-left compact visual header as other route tabs; TradingView widget gets a defined 26rem container height and rendered chart-content checks; optional Kakao/Naver inquiry URLs can be enabled from `siteConfig` without unfinished public buttons. | Passed 2026-05-05 KST: `npm run release:trace`, `npm run audit:site`, `npm run lint`, `npm run typecheck`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm run qa:site` with rendered audit `957 checks, 0 skipped` and Playwright `19 passed`, `npm run tasks:dashboard`, `npm audit --audit-level=moderate`, and `git diff --check` with line-ending warnings only. |
 
 ## Review Policy
 

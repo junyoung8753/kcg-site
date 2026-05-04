@@ -3,6 +3,9 @@ export interface ContactInfo {
   storePhone?: string;
   email?: string;
   kakaoChannel: string;
+  kakaoChannelUrl?: string | null;
+  kakaoChatUrl?: string | null;
+  naverTalkTalkUrl?: string | null;
   address: string;
   businessHours: string;
   parkingNote: string;

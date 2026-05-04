@@ -149,6 +149,47 @@ function expectTextOrder(relativePath, firstPattern, secondPattern) {
   record(passes, "text order", `${relativePath} -> ${firstPattern} before ${secondPattern}`);
 }
 
+function expectLatestChangelogVersionMatchesPackage() {
+  const packageText = readText("package.json");
+  const changelogText = readText("docs/setup/CHANGELOG.md");
+
+  if (packageText === null) {
+    record(failures, "missing file", "package.json");
+    return;
+  }
+
+  if (changelogText === null) {
+    record(failures, "missing file", "docs/setup/CHANGELOG.md");
+    return;
+  }
+
+  let packageVersion = "";
+  try {
+    packageVersion = JSON.parse(packageText).version;
+  } catch (error) {
+    record(failures, "package version", `package.json could not be parsed: ${error.message}`);
+    return;
+  }
+
+  const latestChangelogMatch = changelogText.match(/^## v(\d+\.\d+\.\d+)\b/m);
+  if (!latestChangelogMatch) {
+    record(failures, "changelog version", "docs/setup/CHANGELOG.md has no latest ## vX.Y.Z entry");
+    return;
+  }
+
+  const changelogVersion = latestChangelogMatch[1];
+  if (packageVersion !== changelogVersion) {
+    record(
+      failures,
+      "version mismatch",
+      `package.json version ${packageVersion} does not match changelog latest v${changelogVersion}`,
+    );
+    return;
+  }
+
+  record(passes, "version traceability", `package.json ${packageVersion} matches CHANGELOG v${changelogVersion}`);
+}
+
 async function expectUrl(pathname, patterns = []) {
   const url = new URL(pathname, siteUrl);
   const response = await fetch(url);
@@ -265,13 +306,17 @@ expectFile("docs/quality/product-experience-rubric.md", { minBytes: 3_000 });
 expectFile("docs/quality/ai-site-production-playbook.md", { minBytes: 4_000 });
 expectFile("docs/quality/data-source-compliance.md", { minBytes: 4_000 });
 expectFile("docs/quality/design-review-checklist.md", { minBytes: 3_000 });
+expectFile("docs/quality/kcg-10000-point-qa-scorecard.md", { minBytes: 2_000 });
 expectFile("docs/quality/official-docs-index.md", { minBytes: 2_000 });
 expectFile("code_review.md", { minBytes: 1_500 });
 expectFile(".agents/skills/kcg-site-quality/SKILL.md", { minBytes: 1_500 });
 expectFile("docs/setup/OPEN_TASKS.md", { minBytes: 2_000 });
+expectFile("docs/setup/CHANGELOG.md", { minBytes: 1_500 });
+expectFile("docs/setup/CONTACT_CHANNELS_RUNBOOK.md", { minBytes: 1_000 });
 expectFile("docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md", { minBytes: 4_000 });
 expectFile("docs/setup/PRODUCT_OPERATIONS_CHECKLIST.md", { minBytes: 2_000 });
 expectFile("docs/setup/LAUNCH_BRIEFING.md", { minBytes: 2_000 });
+expectFile("docs/setup/QA_REPORT_2026-05-05.md", { minBytes: 1_500 });
 expectFile("docs/brand/campaign-image-prompts.md", { minBytes: 1_000 });
 expectFile("docs/brand/image-review-2026-05-03.md", { minBytes: 2_000 });
 expectFile("docs/brand/font-license.md", { minBytes: 800 });
@@ -295,6 +340,24 @@ expectText("package.json", [
   "\"check:external\": \"node scripts/check-external-services.mjs\"",
   "\"audit:rendered\": \"node scripts/run-rendered-site-audit.mjs\"",
   "\"qa:site\": \"node scripts/run-site-qa.mjs\"",
+  "\"release:trace\": \"node scripts/report-release-trace.mjs\"",
+]);
+expectLatestChangelogVersionMatchesPackage();
+expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.1 - Release trace, market readability, and contact readiness",
+  "Deploy Status",
+  "Verification",
+  "Rollback Hint",
+  "Remaining User-only",
+  "TradingView",
+  "카카오톡 문의",
+  "v0.2.1 전으로 되돌려줘",
+]);
+expectText("scripts/report-release-trace.mjs", [
+  "KCG release trace",
+  "Deploy Status",
+  "Rollback Hint",
+  "version mismatch",
 ]);
 
 expectText("scripts/check-external-services.mjs", [
@@ -418,7 +481,17 @@ expectText("src/components/market/trading-view-widget.tsx", [
   "TradingView 제공",
   "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js",
   "data-testid=\"tradingview-market-widget\"",
+  "data-testid=\"tradingview-loading-state\"",
+  "widget.style.height = \"100%\"",
+  "h-[26rem] min-h-[26rem]",
+  "TradingView 차트를 불러오지 못했습니다.",
   "이 위젯 데이터를 저장하거나",
+]);
+expectText("scripts/capture-site-screenshots.mjs", [
+  "waitForTradingViewIfPresent",
+  "hideFixedChromeForFullPageScreenshot",
+  "tradingview-market-widget",
+  "tradingview-loading-state",
 ]);
 expectNoText("src/components/market/market-dashboard.tsx", [
   "min-w-[40rem]",
@@ -920,6 +993,15 @@ expectText("docs/quality/agent-quality-system.md", [
   "npm run qa:site",
   "docs/quality/product-experience-rubric.md",
   "docs/quality/ai-site-production-playbook.md",
+  "Proactive Launch Steward Review",
+  "Adaptive Expert Panel",
+  "Role Discovery Pass",
+  "Deployment/status owner",
+  "Rollback operator",
+  "디자이너",
+  "웹설계 전문가",
+  "금거래소 베테랑 직원",
+  "docs/setup/CHANGELOG.md",
 ]);
 expectText("docs/quality/official-docs-index.md", [
   "OpenAI Codex AGENTS.md guidance",
@@ -930,10 +1012,12 @@ expectText("docs/quality/official-docs-index.md", [
   "Supabase docs",
 ]);
 expectText(".agents/skills/kcg-site-quality/SKILL.md", [
-  "description: Use when working in the KCG site repo",
+  "description: Use in the KCG site repo",
   "npm run qa:site",
   "0 skipped",
   "Do not change production deploys",
+  "Proactive Launch Steward Review",
+  "docs/setup/CHANGELOG.md",
 ]);
 expectText("code_review.md", [
   "Price-first hierarchy",
@@ -979,6 +1063,13 @@ expectText("docs/quality/design-review-checklist.md", [
   "KCG_INCLUDE_ADMIN_SCREENSHOTS",
   "codex review --uncommitted",
   "Score out of 100",
+  "docs/setup/CHANGELOG.md",
+  "Adaptive Expert Panel",
+  "Role Discovery Pass",
+  "디자이너",
+  "웹설계 전문가",
+  "금거래소 베테랑 직원",
+  "Proactive Completion Questions",
 ]);
 expectText("docs/quality/ai-site-production-playbook.md", [
   "Context Pack",
@@ -995,6 +1086,9 @@ expectText("docs/quality/ai-site-production-playbook.md", [
   "Do not scrape, republish, or chart third-party data",
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
+  "Current KCG site version: `v0.2.1`",
+  "Reflection status: local reflected",
+  "docs/setup/CHANGELOG.md",
   "docs/quality/ai-site-production-playbook.md",
   "docs/quality/data-source-compliance.md",
   "docs/quality/design-review-checklist.md",
@@ -1040,6 +1134,7 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "DOMAIN_SUPABASE_MARKET_RUNBOOK.md",
   "campaign-image-prompts.md",
   "KCG-TODO-045",
+  "KCG-TODO-048",
   "tasks:dashboard",
   "user-only",
   "codex",
@@ -1050,6 +1145,12 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "codex review --base main",
   "kcgold.co.kr",
   "Do not record passwords",
+]);
+expectText("docs/setup/CONTACT_CHANNELS_RUNBOOK.md", [
+  "KCG Contact Channels Runbook",
+  "카카오톡 문의",
+  "kakaoChatUrl",
+  "developers.kakao.com",
 ]);
 expectNoText("docs/setup/OPEN_TASKS.md", ["Gabia", "Whois DNS"]);
 expectText("docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md", [
@@ -1073,6 +1174,19 @@ expectText("docs/setup/LAUNCH_BRIEFING.md", [
   "Search exposure is still blocked",
   "Metals.Dev is not mandatory now",
   "Do not treat domain connection or production deployment as public launch approval",
+]);
+expectText("docs/quality/kcg-10000-point-qa-scorecard.md", [
+  "KCG 10000-Point QA Scorecard",
+  "Public Site: 10000 Points",
+  "Admin Console: 10000 Points",
+  "Overall Launch Candidate Score",
+]);
+expectText("docs/setup/QA_REPORT_2026-05-05.md", [
+  "KCG QA Report - 2026-05-05",
+  "Public site",
+  "Admin console",
+  "Weighted launch candidate",
+  "Issues Found And Fixed In This Pass",
 ]);
 expectText("docs/brand/campaign-image-prompts.md", [
   "Source Folder",

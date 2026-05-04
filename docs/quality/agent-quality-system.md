@@ -19,12 +19,15 @@ The missed campaign slider and mobile CTA defects were not caused by a build pro
 - Full-page screenshots can show sticky headers or fixed mobile CTAs in the middle of a long stitched image, which makes manual review noisy and can hide actual first-viewport composition problems.
 - Product image checks can prove that assets load while still missing the higher launch-quality question: whether the catalog looks real, varied, and credible enough for a physical gold exchange.
 - Source audit pass and rendered UX pass can be confused. A source audit without `SITE_AUDIT_URL` is useful, but it does not prove live route text, redirects, fixed UI, or first viewport behavior.
+- Change traceability was treated as a separate documentation task instead of part of completion. That left version, commit/push/deploy state, rollback wording, and management-facing change rationale to be discovered only after junyoung asked.
 
 ## Root Cause
 
 The root cause is a verification gap: vague quality goals were not translated into deterministic acceptance checks before implementation.
 
 The deeper root cause is process design: AI agents can produce plausible results, so the repo must define observable pass/fail gates for the exact user outcome. Human instructions like "do it perfectly" are not enough unless the important parts become code, tests, screenshots, or deployment checks.
+
+For KCG specifically, the deepest failure was scope narrowing. A site task was treated as "finish the requested screen or feature" rather than "operate a launch candidate that a customer, administrator, boss, deployer, future worker, and rollback operator can understand." That missed operational artifacts that were not visible in screenshots, especially change history and deployment state.
 
 ## Controls
 
@@ -40,6 +43,8 @@ The deeper root cause is process design: AI agents can produce plausible results
 - `docs/quality/official-docs-index.md` records the official documentation sources to re-check before changing Codex, Next.js, Tailwind, Playwright, Vercel, Supabase, or market-data behavior.
 - `docs/quality/product-experience-rubric.md` records the KCG-specific product intent, design direction, UX priorities, and high-risk content rules that should guide future UI decisions.
 - `docs/quality/ai-site-production-playbook.md` records how to prompt and run AI site-building work for KCG: context pack first, product surface and user moment second, KCG constraints always, then acceptance criteria, browser evidence, scoring, and durable guardrails.
+- `docs/setup/CHANGELOG.md` records version, date, commit, deploy status, verification, rollback hint, and remaining user-only work for meaningful KCG changes.
+- `docs/setup/CURRENT_HANDOFF.md` must name the current KCG version, latest change, local check URL, and reflection status so local/commit/push/deploy states are not blurred.
 - GitHub Actions `Site Quality` runs the same local quality gates on `main` pushes and pull requests without deploying to production.
 - `npm run lint`, `npm run typecheck`, `npm run build`, and `npm audit --audit-level=moderate` remain mandatory after code changes.
 - Preview deployments are intentionally open for ordinary browser review while noindex/robots search-blocking remains active. If deployment protection is re-enabled, test protected previews with `vercel curl`.
@@ -49,6 +54,34 @@ The deeper root cause is process design: AI agents can produce plausible results
 - Benchmark-driven work must inspect more than the first screen. The minimum useful pass records site map, price labels, product/service/detail pages, branch/contact/FAQ/policy pages, forms, script/network/API sources, and explicit KCG use/do-not-use decisions.
 - Product/category tabs that filter already-loaded data must be tested as local interactions. `npm run test:site` should fail if tab clicks trigger `/products?...&_rsc=` route fetches or product-detail RSC prefetches.
 - Public route typography should stay inside the KCG scale. Rendered tests check representative mobile and desktop heading sizes so future copy/layout work does not reintroduce oversized hero text or unreadably tiny labels.
+
+## Proactive Launch Steward Review
+
+After every meaningful KCG site, admin, QA, release, or handoff task, Codex must run a short steward review before final reporting. This is not an invitation for broad refactors. It is a forced pass to catch operational needs that screenshots and tests do not reveal.
+
+Use an Adaptive Expert Panel instead of a long fixed checklist. The goal is to
+select the roles that match the task, not to perform role-play theater.
+
+Run a Role Discovery Pass:
+
+1. Classify the task surface: visual/UI, UX/IA, content/copy, gold-exchange domain, admin ops, pricing/source/compliance, deploy/release, SEO/search, performance/mobile, data/API, handoff/rollback.
+2. Always include the core roles: customer, administrator, deployment/status owner, future worker, and rollback operator.
+3. Add triggered roles when the task surface justifies them: 디자이너, UX/IA, 웹설계 전문가, mobile/accessibility, SEO/search, 금거래소 베테랑 직원, store consultation staff, price-table operator, legal/compliance, performance, data/API, and content/brand.
+4. Use a role budget: small copy/style tasks use core plus 1-2 triggered roles; meaningful site/admin tasks use core plus 3-5 triggered roles; launch/deep QA may use up to 12 roles.
+5. Refresh evidence only when needed. Use KCG local playbooks first; use official or primary sources for current law, platform, API, search, or deployment questions; treat community material as weak signal only.
+
+Core review perspectives:
+
+- Customer: can a visitor understand price, product/매입 scope, phone path, and location without reading long explanations?
+- Administrator: can the operator tell what to update today and what is automatic, manual, pending, or blocked?
+- 대표/상사: is there a one-line reason for the change and a score/evidence summary that can be briefed upward?
+- Deployment/status owner: is it clear whether the change is local only, committed, pushed, preview-deployed, production-deployed, or search-indexed?
+- Future worker: is the current version, branch, handoff, and next task obvious without reading chat history?
+- Rollback operator: is there a rollback phrase, commit/version reference, or clear changed-file scope?
+- Legal/operations: are price claims, source attribution, noindex/search state, and checkout/trading/payment boundaries still safe?
+- Performance/mobile: does the real mobile and desktop surface stay fast, readable, and free of fixed-UI collisions?
+
+Required output: record selected expert perspectives and at least one proactive improvement candidate in the final answer or in `docs/setup/OPEN_TASKS.md`. If there is no useful candidate, say `추가 후보 없음` with the evidence that supports that decision.
 
 ## Required Flow For Visual Or Launch-Candidate Work
 

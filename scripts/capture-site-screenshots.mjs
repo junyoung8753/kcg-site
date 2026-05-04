@@ -13,7 +13,13 @@ const port = process.env.SITE_SCREENSHOT_PORT || "3038";
 const baseURL = externalBaseURL || `http://127.0.0.1:${port}`;
 const screenshotDir = resolve(rootDir, "output", "screenshots");
 const includeAdminScreenshots = process.env.KCG_INCLUDE_ADMIN_SCREENSHOTS === "1";
-const adminScreenshotFiles = ["admin-launch-mobile.png", "admin-launch-desktop.png", "admin-prices-auto-desktop.png"];
+const adminScreenshotFiles = [
+  "admin-home-desktop.png",
+  "admin-launch-mobile.png",
+  "admin-launch-desktop.png",
+  "admin-prices-auto-desktop.png",
+  "admin-products-desktop.png",
+];
 const adminPassword =
   process.env.KCG_SCREENSHOT_ADMIN_PASSWORD ||
   process.env.KCG_TEST_ADMIN_PASSWORD ||
@@ -110,6 +116,37 @@ async function resetScrollForScreenshot(page) {
   });
 }
 
+async function waitForTradingViewIfPresent(page, options = {}) {
+  const widget = page.getByTestId("tradingview-market-widget");
+  if ((await widget.count()) === 0) return false;
+
+  if (options.scrollIntoView) {
+    await widget.scrollIntoViewIfNeeded({ timeout: 3_000 }).catch(() => {});
+  }
+  await widget.locator("iframe").first().waitFor({ timeout: 20_000 });
+  await page
+    .waitForFunction(() => {
+      const iframe = document.querySelector('[data-testid="tradingview-market-widget"] iframe');
+      if (!iframe) return false;
+      const loadingState = document.querySelector('[data-testid="tradingview-loading-state"]');
+      return !loadingState;
+    }, { timeout: 20_000 })
+    .catch(() => {});
+  await page.waitForTimeout(2_000);
+  return true;
+}
+
+async function hideFixedChromeForFullPageScreenshot(page) {
+  await page.addStyleTag({
+    content: `
+      [data-testid="site-header"],
+      [data-testid="mobile-contact-bar"] {
+        visibility: hidden !important;
+      }
+    `,
+  });
+}
+
 async function capture(page, route, viewport, filename, expectedText, options = {}) {
   await page.setViewportSize(viewport);
   await page.goto(new URL(route, baseURL).href, { waitUntil: "domcontentloaded" });
@@ -123,7 +160,15 @@ async function capture(page, route, viewport, filename, expectedText, options = 
   } else {
     await resetScrollForScreenshot(page);
   }
-  await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: options.fullPage ?? true });
+  const isFullPageCapture = options.fullPage ?? true;
+  const primedTradingView = await waitForTradingViewIfPresent(page, { scrollIntoView: isFullPageCapture });
+  if (isFullPageCapture && !primedTradingView) {
+    await resetScrollForScreenshot(page);
+  }
+  if (isFullPageCapture) {
+    await hideFixedChromeForFullPageScreenshot(page);
+  }
+  await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: isFullPageCapture });
 }
 
 async function captureAdminLaunch(page, viewport, filename) {
@@ -163,6 +208,25 @@ async function captureAdminPricesAuto(page, viewport, filename) {
       ?.getAttribute("aria-pressed") === "true";
   });
   await page.getByTestId("admin-price-auto-panel").waitFor({ state: "visible", timeout: 5_000 });
+  await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: true });
+}
+
+async function captureAdminRoute(page, route, viewport, filename, expectedText) {
+  await page.setViewportSize(viewport);
+  await page.goto(new URL(route, baseURL).href, { waitUntil: "domcontentloaded" });
+
+  if (page.url().includes("/admin/login")) {
+    await page.getByLabel("관리자 비밀번호").fill(adminPassword);
+    await page.getByRole("button", { name: "관리자 페이지로 이동" }).click();
+    await page.waitForURL(new RegExp(route.replace(/\//g, "\\/")));
+    await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => {});
+  }
+
+  const bodyText = await page.locator("body").innerText();
+  if (!bodyText.includes(expectedText)) {
+    throw new Error(`Refusing to capture ${route}; missing expected text: ${expectedText}`);
+  }
+
   await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: true });
 }
 
@@ -232,10 +296,18 @@ try {
   await capture(page, "/about", { width: 390, height: 1800 }, "about-mobile.png", "사업자등록번호");
 
   if (includeAdminScreenshots) {
+    await captureAdminRoute(page, "/admin", { width: 1440, height: 1600 }, "admin-home-desktop.png", "오늘 운영 상태");
     await captureAdminLaunch(page, { width: 390, height: 1800 }, "admin-launch-mobile.png");
     await captureAdminLaunch(page, { width: 1440, height: 1600 }, "admin-launch-desktop.png");
     if (!externalBaseURL) {
       await captureAdminPricesAuto(page, { width: 1440, height: 1800 }, "admin-prices-auto-desktop.png");
+      await captureAdminRoute(
+        page,
+        "/admin/products",
+        { width: 1440, height: 1800 },
+        "admin-products-desktop.png",
+        "상품 관리",
+      );
     }
   } else {
     console.log("Skipped admin launch screenshots. Set KCG_INCLUDE_ADMIN_SCREENSHOTS=1 for local evidence.");

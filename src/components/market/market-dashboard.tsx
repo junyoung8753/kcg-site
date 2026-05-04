@@ -72,7 +72,7 @@ function SpotTable({ data }: { data: MarketDashboardData }) {
 
   return (
     <div className="overflow-hidden border border-[#dfe6e4] bg-white">
-      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,0.8fr)] bg-[#f7fbfa] px-5 py-3 text-xs font-bold tracking-[0.14em] text-[#697171]">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,0.8fr)] bg-[#f7fbfa] px-5 py-3 text-[0.8rem] font-bold tracking-[0.12em] text-[#697171]">
         <p>국제 현재가</p>
         <p className="text-right">가격</p>
         <p className="text-right">{hasChangeData ? "전일" : "상태"}</p>
@@ -80,19 +80,19 @@ function SpotTable({ data }: { data: MarketDashboardData }) {
       {data.spots.map((spot) => (
         <div
           key={spot.metal}
-          className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,0.8fr)] items-center border-t border-[#e4ebe9] px-5 py-4 text-sm"
+          className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,0.8fr)] items-center border-t border-[#e4ebe9] px-5 py-4 text-[0.95rem] sm:text-base"
         >
           <div>
             <p className="font-bold tracking-[-0.022em] text-[#15191b]">{spot.label.replace("국제 ", "")}</p>
-            <p className="mt-1 text-xs font-medium text-[#7d8585]">USD/T.oz</p>
+            <p className="mt-1 text-[0.8rem] font-medium text-[#7d8585]">USD/T.oz</p>
           </div>
-          <p className="text-right font-semibold tabular-nums text-[#15191b]">{formatUsd(spot.price)}</p>
+          <p className="text-right text-lg font-bold tabular-nums text-[#15191b]">{formatUsd(spot.price)}</p>
           {hasChangeData ? (
-            <p className={`text-right text-xs font-semibold ${getToneClass(spot.changePercent)}`}>
+            <p className={`text-right text-sm font-semibold ${getToneClass(spot.changePercent)}`}>
               {formatSignedPercent(spot.changePercent)}
             </p>
           ) : (
-            <p className="text-right text-xs font-semibold text-[#8a9292]">현재가</p>
+            <p className="text-right text-sm font-semibold text-[#8a9292]">현재가</p>
           )}
         </div>
       ))}
@@ -121,20 +121,20 @@ function ConversionTable({
 
   return (
     <div className="overflow-hidden border border-[#dfe6e4] bg-white">
-      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] bg-[#f7fbfa] px-5 py-3 text-xs font-bold tracking-[0.14em] text-[#697171]">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] bg-[#f7fbfa] px-5 py-3 text-[0.8rem] font-bold tracking-[0.12em] text-[#697171]">
         <p>국내 환산</p>
         <p className="text-right">3.75g</p>
       </div>
       {rows.map(([label, domestic]) => (
         <div
           key={label}
-          className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] items-center border-t border-[#e4ebe9] px-5 py-4 text-sm"
+          className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] items-center border-t border-[#e4ebe9] px-5 py-4 text-[0.95rem] sm:text-base"
         >
           <div>
             <p className="font-bold tracking-[-0.022em] text-[#15191b]">{label}</p>
-            <p className="mt-1 text-xs text-[#7d8585]">{domestic ? `1g ${formatWon(domestic.krwPerGram)}` : "준비 중"}</p>
+            <p className="mt-1 text-[0.8rem] text-[#7d8585]">{domestic ? `1g ${formatWon(domestic.krwPerGram)}` : "준비 중"}</p>
           </div>
-          <p className="text-right font-semibold tabular-nums text-[#15191b]">
+          <p className="text-right text-lg font-bold tabular-nums text-[#15191b]">
             {domestic ? formatWon(domestic.krwPerDon) : "-"}
           </p>
         </div>

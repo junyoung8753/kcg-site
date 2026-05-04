@@ -234,8 +234,9 @@ function ModeSwitch({
             </button>
           </form>
           <p className="text-xs leading-5 text-white/45">
-            현재 저장 상태: {savedIsAutoOn ? "자동시세 ON" : "직접 입력"} ·{" "}
-            {canPersist ? "버튼을 누르면 바로 저장됩니다." : "저장소 미연결: 화면 전환만 미리 볼 수 있습니다."}
+            저장된 운영 상태: {savedIsAutoOn ? "자동시세 ON" : "자동시세 OFF"} · 화면 상태:{" "}
+            {isAutoOn ? "자동시세 ON" : "직접 입력"} ·{" "}
+            {canPersist ? "버튼을 누르면 바로 저장됩니다." : "저장소 미연결: 화면 전환만 미리 봅니다."}
           </p>
         </div>
       </div>

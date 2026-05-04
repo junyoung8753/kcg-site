@@ -1,6 +1,6 @@
 {
   "name": "korea-center-gold-exchange-site",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -14,7 +14,8 @@
     "tasks:dashboard": "node scripts/render-open-tasks-dashboard.mjs",
     "test:site": "playwright test",
     "screenshot:site": "node scripts/capture-site-screenshots.mjs",
-    "qa:site": "node scripts/run-site-qa.mjs"
+    "qa:site": "node scripts/run-site-qa.mjs",
+    "release:trace": "node scripts/report-release-trace.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",

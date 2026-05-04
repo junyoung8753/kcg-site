@@ -1,12 +1,22 @@
 # Current KCG Handoff
 
-Last updated: 2026-05-04 KST.
+Last updated: 2026-05-05 KST.
 
 This file is the short, durable context for a new Codex chat, another PC, or a future Codex Cloud task. Read it before continuing KCG site work.
 
 Junyoung's current preferred workflow is local-first. Codex Cloud is not the default right now because it has been inconvenient and unreliable for current KCG work. Keep Cloud docs as a future option and use `docs/setup/CLOUD_ONLY_WORKFLOW.md` only when junyoung explicitly asks for Codex Cloud or wants to avoid computer-specific setup.
 
 If the old KCG project chat disappears from the Codex app UI, do not treat that as lost project state. Continue from this repo and read `docs/setup/MISSING_CHAT_RECOVERY.md` for the recovered local session file, E: backup locations, and no-secret backup path.
+
+## Current Version Snapshot
+
+- Current KCG site version: `v0.2.1`
+- Latest change: `Release trace, market readability, TradingView height fix, company hero consistency, and contact-channel readiness`
+- Local check URL: `http://127.0.0.1:3300`
+- Reflection status: local reflected; commit, push, and production deployment are pending unless the current git state says otherwise.
+- Latest local QA: `npm run qa:site` passed on 2026-05-05 KST with rendered audit `957 checks, 0 skipped`, Playwright `19 passed`, screenshots, and npm audit `0 vulnerabilities`.
+- Change ledger: `docs/setup/CHANGELOG.md`
+- Rollback phrase: `v0.2.1 전으로 되돌려줘`
 
 ## Current Source Of Truth
 

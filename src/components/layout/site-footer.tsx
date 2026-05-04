@@ -5,9 +5,11 @@ import {
   getLegalInfoHeading,
   getLegalPlaceholderNotice,
 } from "@/lib/legal-info";
-import { siteConfig, siteNavigation } from "@/lib/site-config";
+import { getOptionalContactLinks, siteConfig, siteNavigation } from "@/lib/site-config";
 
 export function SiteFooter() {
+  const optionalContactLinks = getOptionalContactLinks();
+
   return (
     <footer className="border-t border-[#dfe7e5] bg-white">
       <div className="section-shell grid gap-8 py-10 lg:grid-cols-[1fr_0.7fr_1.25fr]">
@@ -65,6 +67,17 @@ export function SiteFooter() {
             >
               매장 지도
             </a>
+            {optionalContactLinks.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex rounded-full border border-[#d7e0dd] px-3 py-1.5 text-xs font-semibold text-[#171717]"
+              >
+                {item.label}
+              </a>
+            ))}
           </div>
         </div>
 

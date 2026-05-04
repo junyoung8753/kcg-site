@@ -273,7 +273,7 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
   }
 
   return (
-    <section className="section-shell py-8 sm:py-10">
+    <section className="section-shell py-4 sm:py-10">
       <div className="grid grid-cols-2 overflow-hidden border border-[#d8dfdd] bg-white sm:grid-cols-3 xl:grid-cols-6">
         {productCatalogTabs.map((tab) => {
           const isActive = tab.slug === selectedCategory;
@@ -298,19 +298,19 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
 
       <ProductQuickRail onInternalNavigate={handleProductPromoNavigate} />
 
-      <div className="mt-6">
+      <div className="mt-4 sm:mt-6">
         <div>
-          <div className="flex flex-col gap-4 border-y border-[#d8dfdd] py-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-3 border-y border-[#d8dfdd] py-3 md:flex-row md:items-center md:justify-between md:py-4">
             <p data-testid="product-count" className="text-sm font-semibold text-[#15191b]">
               상품 <span className="text-[#ff6a00]">{visibleProducts.length}</span>개
             </p>
-            <div className="flex flex-wrap items-center gap-2 text-sm">
+            <div className="flex flex-wrap items-center gap-1.5 text-sm md:gap-2">
               {sortOptions.map((option) => (
                 <button
                   key={option.key}
                   type="button"
                   onClick={() => updateQuery("sort", option.key)}
-                  className={`px-3 py-2 font-semibold ${
+                  className={`px-2.5 py-1.5 font-semibold md:px-3 md:py-2 ${
                     selectedSort === option.key ? "text-[#ff6a00]" : "text-[#15191b] hover:text-[#8a7600]"
                   }`}
                 >
@@ -321,14 +321,14 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
                 aria-label="목록 개수"
                 value="20"
                 onChange={() => undefined}
-                className="ml-0 h-10 border border-[#d8dfdd] bg-white px-3 text-sm text-[#687171] md:ml-4"
+                className="ml-0 h-9 border border-[#d8dfdd] bg-white px-3 text-sm text-[#687171] md:ml-4 md:h-10"
               >
                 <option value="20">20개씩보기</option>
               </select>
             </div>
           </div>
 
-          <div className="mt-7 grid gap-y-9 gap-x-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-5 grid gap-y-8 gap-x-6 sm:mt-7 sm:grid-cols-2 lg:grid-cols-3">
             {visibleProducts.map((product, index) => {
               const imageSrc = getProductImageSrc(product);
               const price = getProductPriceDisplay(product, prices);

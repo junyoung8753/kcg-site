@@ -1,6 +1,6 @@
 # KCG Design Review Checklist
 
-Last updated: 2026-05-04 KST.
+Last updated: 2026-05-05 KST.
 
 Use this checklist before and after non-trivial KCG frontend, route, product catalog, price desk, campaign image, form, chart, or visual polish work. It complements `product-experience-rubric.md` and `ai-site-production-playbook.md`; it does not replace launch, legal, pricing, data-source, or credential safeguards.
 
@@ -49,6 +49,9 @@ Use this checklist before and after non-trivial KCG frontend, route, product cat
 - Admin-only screenshots are local evidence, not public CI artifacts. Use `KCG_INCLUDE_ADMIN_SCREENSHOTS=1` only for deliberate local launch-readiness inspection, then rerun the default screenshot command before public artifact upload.
 - Use `codex review --uncommitted` for meaningful working-tree changes before committing or handing off.
 - Record unresolved launch blockers in `docs/setup/OPEN_TASKS.md` rather than leaving them only in chat.
+- For meaningful site/admin/QA changes, update `docs/setup/CHANGELOG.md` with version, date, deploy status, verification, rollback hint, and remaining user-only work.
+- Final reports must distinguish local reflection, commit, push, preview deploy, production deploy, and search-index state. Do not let "done" hide where the change actually exists.
+- Before finalizing, ask: "Will a future worker know what changed, why, how to verify it, and how to ask for rollback one month later?"
 
 ## 6. Score Before Finalizing
 
@@ -65,3 +68,16 @@ Score out of 100 before claiming a frontend/design task is complete:
 | Evidence | 10 | Are tests, route checks, screenshots, and review results sufficient for the risk of the change? |
 
 Target: `95+` for preview-ready work, `85-94` for locally usable work with known gaps, and below `85` means continue improving before presenting as complete.
+
+## 7. Proactive Completion Questions
+
+- Run the Role Discovery Pass before finalizing meaningful site, admin, QA, release, or handoff work.
+- What task surface is this: visual/UI, UX/IA, content/copy, gold-exchange domain, admin ops, pricing/source/compliance, deploy/release, SEO/search, performance/mobile, data/API, or handoff/rollback?
+- Which Adaptive Expert Panel roles were selected, and why? Include core roles plus triggered roles such as 디자이너, 웹설계 전문가, 금거래소 베테랑 직원, price-table operator, or legal/compliance when the task surface justifies them.
+- Which high-risk roles were excluded, and why is that acceptable for this change?
+- Did any selected role require fresh official, primary, or local-source evidence?
+- What did junyoung not explicitly ask for that is still needed to operate, brief, deploy, or roll back this change?
+- Does this change need a version bump, changelog entry, handoff note, task ledger update, screenshot evidence, or review command?
+- Is there a one-line management summary for why this change improves KCG?
+- Are the local/commit/push/deploy states explicit?
+- Is there at least one proactive improvement candidate recorded, or a reasoned `추가 후보 없음`?
