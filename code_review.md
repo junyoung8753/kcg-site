@@ -4,6 +4,7 @@ Use this file when reviewing KCG site changes. Findings come first, ordered by u
 
 ## Priority Review Areas
 
+- Project-room environment changes: if the diff touches `AGENTS.md`, repo-local skills, review checklists, official-doc indexes, or QA command docs, verify that it improves Codex working setup without turning automation into scheduled site QA or artifact polishing.
 - Price-first hierarchy: company posted prices must remain the primary surface, with buy/sell labels, posted time, and on-site confirmation caveats close to the numbers.
 - Consultation conversion: phone, visit, product inquiry, and location actions should be visible near the user decision point. Do not add checkout, cart, online payment, live trading, guaranteed quote, or investment behavior.
 - Mobile first viewport: the KCG brand, route purpose, and next action must be visible at 390px without sticky header or mobile bottom CTA covering key content.

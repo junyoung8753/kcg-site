@@ -1,4 +1,4 @@
 interface:
   display_name: "KCG Site Quality"
-  short_description: "Run KCG site quality workflow and evidence checks."
-  default_prompt: "Use the KCG site quality workflow for this KCG site task."
+  short_description: "KCG site project-room environment and website workflow."
+  default_prompt: "Use the KCG site quality workflow, first classifying whether the task is project-room environment upkeep or user-requested website artifact work."

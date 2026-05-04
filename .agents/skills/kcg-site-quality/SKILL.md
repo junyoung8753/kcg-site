@@ -1,13 +1,26 @@
 ---
 name: kcg-site-quality
-description: Use when working in the KCG site repo on website quality, homepage/price/products/services UI, launch readiness, screenshot QA, rendered route checks, product catalog polish, or prompts like "KCG 사이트 품질", "상품/시세/홈/서비스 화면 개선", "launch readiness", or "screenshot QA".
+description: Use in the KCG site repo for either project-room environment setup/latest-guidance checks or user-requested website artifact work such as homepage/price/products/services UI, launch readiness, screenshot QA, rendered route checks, and product catalog polish.
 ---
 
 # KCG Site Quality
 
 ## Overview
 
-Apply the KCG site workflow for high-quality, consultation-first gold-exchange site work. Keep the output public-safe, price-first, mobile-readable, and backed by rendered evidence.
+Apply the KCG site workflow for high-quality, consultation-first gold-exchange
+site work. First decide whether the task is project-room environment upkeep or
+actual site artifact work.
+
+## Modes
+
+- Project-room environment mode: maintain Codex-facing setup only. Check
+  `AGENTS.md`, `code_review.md`, this skill, official-doc/source references,
+  expert-role coverage, tool/plugin routing, QA command catalog, and handoff
+  order. Do not run recurring site verification, review screenshot artifacts as
+  recurring product review, hunt UI defects, edit source/content/assets,
+  deploy, or change launch/search/secret state.
+- Site artifact mode: use this only when junyoung asks to change or review the
+  site itself. Then the rendered/browser/screenshot evidence rules below apply.
 
 ## Required Context
 
@@ -16,15 +29,27 @@ Apply the KCG site workflow for high-quality, consultation-first gold-exchange s
 - For fast-moving framework, deployment, browser QA, or Codex workflow changes, use `docs/quality/official-docs-index.md` and verify against official sources.
 - Use `docs/setup/OPEN_TASKS.md` to record blockers and launch-quality work that remains.
 
+## Expert Role Model
+
+Keep the project room ready to support these perspectives when site work is
+requested: frontend engineering, UX/UI, design system, Korean content and
+marketing, SEO/search-launch gates, performance, accessibility,
+deployment/analytics, source attribution, and minimal essential safety
+boundaries. Add durable guidance only when it removes repeated ambiguity or a
+real verification risk.
+
 ## Workflow
 
-1. Define the KCG user job: fast price check, sell-side consultation, product/bar inquiry, location visit prep, admin launch readiness, or source-safe market context.
-2. Preserve KCG boundaries: company posted prices are primary, market references are secondary, and checkout/cart/payment/live-trading behavior is out of scope without explicit approval.
-3. For visual work, state a compact visual thesis, content plan, and interaction/QA thesis before editing.
-4. Implement the smallest complete change using existing routes, components, data contracts, and scripts first.
-5. Add or update an executable guardrail when the work fixes a repeated miss or a rendered bug that source checks would not catch.
-6. Verify with the narrowest reliable commands, then use `npm run qa:site` for full launch-candidate confidence.
-7. Inspect screenshot artifacts before claiming visual completion, especially the viewport captures that avoid full-page sticky/fixed UI artifacts.
+1. Classify the task as project-room environment upkeep or site artifact work.
+2. In environment mode, report only setup gaps and make only small reversible
+   Codex-facing docs/skill/source-index corrections when clearly justified.
+3. In site artifact mode, define the KCG user job: fast price check, sell-side consultation, product/bar inquiry, location visit prep, admin launch readiness, or source-safe market context.
+4. Preserve KCG boundaries: company posted prices are primary, market references are secondary, and checkout/cart/payment/live-trading behavior is out of scope without explicit approval.
+5. For visual work, state a compact visual thesis, content plan, and interaction/QA thesis before editing.
+6. Implement the smallest complete change using existing routes, components, data contracts, and scripts first.
+7. Add or update an executable guardrail when the work fixes a repeated miss or a rendered bug that source checks would not catch.
+8. Verify with the narrowest reliable commands, then use `npm run qa:site` for full launch-candidate confidence.
+9. Inspect screenshot artifacts before claiming visual completion, especially the viewport captures that avoid full-page sticky/fixed UI artifacts.
 
 ## Evidence Bar
 
