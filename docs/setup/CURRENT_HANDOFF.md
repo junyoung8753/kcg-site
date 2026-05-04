@@ -13,7 +13,7 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 - Current KCG site version: `v0.2.1`
 - Latest change: `Release trace, market readability, TradingView height fix, company hero consistency, and contact-channel readiness`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: local reflected; commit, push, and production deployment are pending unless the current git state says otherwise.
+- Reflection status: local reflected and production refreshed for `v0.2.1`; confirm current commit/push state with `git status --short --branch` before editing.
 - Latest local QA: `npm run qa:site` passed on 2026-05-05 KST with rendered audit `957 checks, 0 skipped`, Playwright `19 passed`, screenshots, and npm audit `0 vulnerabilities`.
 - Change ledger: `docs/setup/CHANGELOG.md`
 - Rollback phrase: `v0.2.1 전으로 되돌려줘`
@@ -95,7 +95,7 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 - Junyoung has approved refreshing `https://kcg-confirm-preview.vercel.app` with the validated image/UI work in this task.
 - This is not approval for robots/noindex release or search indexing. Cafe24 DNS changes require junyoung to complete the registrar login/MFA step directly.
 - Do not perform production deploys beyond an explicitly approved stable review refresh, and do not treat a Vercel deploy as public launch approval.
-- Last stable review refresh: 2026-04-30 22:49 KST, Vercel deployment `dpl_CCZFgUuN8LK5xbHynJ8gSLH8w1AX`, aliased to `https://kcg-confirm-preview.vercel.app`, `https://kcgold.co.kr`, and `https://www.kcgold.co.kr`.
+- Last stable review refresh: 2026-05-05 KST, refreshed after `v0.2.1` QA and aliased to `https://kcg-confirm-preview.vercel.app`, `https://kcgold.co.kr`, and `https://www.kcgold.co.kr`. Use `npx vercel inspect https://kcgold.co.kr/` for the current deployment id.
 - Production admin access was reset on 2026-04-28 KST for pre-launch editing. `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` are set only in Vercel production env; no secret value is stored in this repo. Rotate the admin password to a stronger final value before public launch/search exposure.
 - Previous post-deploy verification passed on `https://kcg-confirm-preview.vercel.app`: rendered audit, Playwright tests, `/robots.txt` `Disallow: /`, empty pre-launch sitemap, noindex, and `/api/health` launch-readiness blockers all behaved as expected. Re-verify after each stable refresh.
 

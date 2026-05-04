@@ -12,7 +12,7 @@ Versioning rule before public launch: `0.x.x`.
 
 - Date: `2026-05-05 KST`
 - Commit: `pending`
-- Deploy Status: local reflected on `http://127.0.0.1:3300`; production domains are not refreshed with this version yet.
+- Deploy Status: local reflected on `http://127.0.0.1:3300`; production domains `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` were refreshed with this version on 2026-05-05 KST after QA.
 - Summary: Added a release trace report command, improved market-reference table readability, made `/company` align with the compact image-left route pattern, fixed the TradingView widget height collapse, and prepared optional `카카오톡 문의`/Naver inquiry links without showing unfinished public buttons.
 - Changed:
   - `npm run release:trace` reports current version, branch, HEAD, working-tree state, deploy status, and rollback hint.
