@@ -43,6 +43,7 @@ For KCG specifically, the deepest failure was scope narrowing. A site task was t
 - `docs/quality/official-docs-index.md` records the official documentation sources to re-check before changing Codex, Next.js, Tailwind, Playwright, Vercel, Supabase, or market-data behavior.
 - `docs/quality/product-experience-rubric.md` records the KCG-specific product intent, design direction, UX priorities, and high-risk content rules that should guide future UI decisions.
 - `docs/quality/ai-site-production-playbook.md` records how to prompt and run AI site-building work for KCG: context pack first, product surface and user moment second, KCG constraints always, then acceptance criteria, browser evidence, scoring, and durable guardrails.
+- `docs/quality/operations-product-audit-checklist.md` separates Technical QA, Product / Operations QA, and Business / Conversion QA. It also records Main Price Disclosure Priority, Existing API Integration Audit, Image / Visual Asset Audit, placeholder policy, and a finding template for real gold-exchange workflows.
 - `docs/setup/CHANGELOG.md` records version, date, commit, deploy status, verification, rollback hint, and remaining user-only work for meaningful KCG changes.
 - `docs/setup/CURRENT_HANDOFF.md` must name the current KCG version, latest change, local check URL, and reflection status so local/commit/push/deploy states are not blurred.
 - GitHub Actions `Site Quality` runs the same local quality gates on `main` pushes and pull requests without deploying to production.
@@ -84,6 +85,14 @@ Core review perspectives:
 ### Gold Exchange Operations Product Audit Pass
 
 For meaningful admin, price, product/매입, service, customer-response, or launch-readiness work, run this operational pass before deciding that visual polish or technical QA is enough. This pass is not permission to add ERP, POS, accounting, customer-data, checkout, live-trading, or payment behavior. It is a way to detect where real gold-exchange staff would fall back to Excel, KakaoTalk, phone notes, or manual ledgers.
+
+Use `docs/quality/operations-product-audit-checklist.md` as the reusable checklist and finding template. Already-connected APIs are current-site audit scope, not deferred P2 backlog. P2 is for new APIs, paid upgrades, advanced automation, and external data expansion.
+
+Always protect these KCG-specific product rules:
+
+- Main Price Disclosure Priority: the homepage must make KCG company posted prices or a clear price-check path visible immediately; API/international/chart references must not outrank the company price table.
+- Existing API Integration Audit: current API data must have source hierarchy, update time, stale/failure fallback, and customer wording that prevents reference values from reading as final quotes.
+- Image / Visual Asset Audit: separate real product photos from placeholder/generated assets, track replacement when real KCG product photos arrive, and do not let decorative images push the price table below the customer decision surface.
 
 Select only the roles relevant to the task:
 

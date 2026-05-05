@@ -26,6 +26,8 @@ actual site artifact work.
 
 - Read `AGENTS.md` and `docs/setup/CURRENT_HANDOFF.md` first.
 - For UI/route/product/price work, read `docs/quality/product-experience-rubric.md`, `docs/quality/design-review-checklist.md`, `docs/quality/ai-site-production-playbook.md`, and `docs/quality/data-source-compliance.md`.
+- For admin, price, product/매입, API, image, launch-readiness, or workflow QA, also read `docs/quality/operations-product-audit-checklist.md`.
+- For work that touches existing market/news/chart/storage/cron integrations, also read `docs/quality/existing-api-integration-audit-2026-05-05.md` before treating API behavior as known.
 - For fast-moving framework, deployment, browser QA, or Codex workflow changes, use `docs/quality/official-docs-index.md` and verify against official sources.
 - Use `docs/setup/OPEN_TASKS.md` to record blockers and launch-quality work that remains.
 
@@ -44,6 +46,7 @@ roles when site work is requested.
   work, include the Gold Exchange Operations Product Audit Pass from
   `docs/quality/agent-quality-system.md` so operational staff needs are checked
   before visual polish is treated as complete.
+- Use `docs/quality/operations-product-audit-checklist.md` when the task touches Main Price Disclosure Priority, Existing API Integration Audit, Image / Visual Asset Audit, placeholder-vs-real product photo policy, or infographic opportunities.
 - Do not run every role every time. Use a Role Discovery Pass to choose the
   smallest useful set, record excluded high-risk roles when relevant, and add
   durable guidance only when it removes repeated ambiguity or a real
@@ -56,13 +59,16 @@ roles when site work is requested.
    Codex-facing docs/skill/source-index corrections when clearly justified.
 3. In site artifact mode, define the KCG user job: fast price check, sell-side consultation, product/bar inquiry, location visit prep, admin launch readiness, or source-safe market context.
 4. Preserve KCG boundaries: company posted prices are primary, market references are secondary, and checkout/cart/payment/live-trading behavior is out of scope without explicit approval.
-5. For visual work, state a compact visual thesis, content plan, and interaction/QA thesis before editing.
-6. Implement the smallest complete change using existing routes, components, data contracts, and scripts first.
-7. Add or update an executable guardrail when the work fixes a repeated miss or a rendered bug that source checks would not catch.
-8. Verify with the narrowest reliable commands, then use `npm run qa:site` for full launch-candidate confidence.
-9. Inspect screenshot artifacts before claiming visual completion, especially the viewport captures that avoid full-page sticky/fixed UI artifacts.
-10. For meaningful site/admin/QA changes, update `docs/setup/CHANGELOG.md`, `docs/setup/CURRENT_HANDOFF.md`, and `docs/setup/OPEN_TASKS.md` so the version, reflection status, rollback hint, and remaining user-only work are traceable.
-11. Run the Role Discovery Pass and Proactive Launch Steward Review from `docs/quality/agent-quality-system.md` before the final answer. For operational surfaces, include the selected Gold Exchange Operations Product Audit roles. Record the selected expert perspectives, at least one proactive improvement candidate, or explicitly state `추가 후보 없음` with evidence.
+5. Treat already-connected APIs as current-site QA scope. New API additions, paid upgrades, advanced automation, and external data expansion are later P2 decisions.
+6. Keep homepage price disclosure first: KCG posted prices or a clear price-check path must outrank campaign images, charts, and API reference surfaces.
+7. Classify image assets as real photo, generated/placeholder, stock, logo, or internal document before using them for customer decision surfaces.
+8. For visual work, state a compact visual thesis, content plan, and interaction/QA thesis before editing.
+9. Implement the smallest complete change using existing routes, components, data contracts, and scripts first.
+10. Add or update an executable guardrail when the work fixes a repeated miss or a rendered bug that source checks would not catch.
+11. Verify with the narrowest reliable commands, then use `npm run qa:site` for full launch-candidate confidence.
+12. Inspect screenshot artifacts before claiming visual completion, especially the viewport captures that avoid full-page sticky/fixed UI artifacts.
+13. For meaningful site/admin/QA changes, update `docs/setup/CHANGELOG.md`, `docs/setup/CURRENT_HANDOFF.md`, and `docs/setup/OPEN_TASKS.md` so the version, reflection status, rollback hint, and remaining user-only work are traceable.
+14. Run the Role Discovery Pass and Proactive Launch Steward Review from `docs/quality/agent-quality-system.md` before the final answer. For operational surfaces, include the selected Gold Exchange Operations Product Audit roles. Record the selected expert perspectives, at least one proactive improvement candidate, or explicitly state `추가 후보 없음` with evidence.
 
 ## Evidence Bar
 

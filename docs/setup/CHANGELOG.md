@@ -8,6 +8,62 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.5 - Existing API integration audit
+
+- Date: `2026-05-05 KST`
+- Commit: local working tree only until explicitly committed; work-before HEAD `b3e444f`
+- Deploy Status: local docs/control-plane reflected only. No production deploy, no Vercel alias change, no `kcgold.co.kr` runtime change, no GitHub push.
+- 사람이 읽는 요약: 실제 사이트 화면과 API 작동 방식은 바꾸지 않고, 이미 붙어 있는 Gold API, Metals.Dev 후보 경로, Google News RSS, TradingView, Supabase, Vercel Cron 자동시세 흐름을 현재 사이트 QA 범위로 정리한 버전입니다.
+- Summary: Added a dedicated audit of already-connected API/data surfaces so future QA does not mistakenly treat existing data integrations as optional later work.
+- Changed:
+  - Added `docs/quality/existing-api-integration-audit-2026-05-05.md` with the current API/data inventory, source hierarchy, fallback behavior, and P0/P1/P2 classification.
+  - Marked `KCG-TODO-053` done because existing API behavior is now inventoried and linked from the working task ledger.
+  - Updated `CURRENT_HANDOFF.md` and `PROJECT_STATUS_FOR_BEGINNER.md` so the current version, actual-site reflection status, and API-audit scope are clear.
+  - Updated `audit:site` guardrails so the API audit document, source-of-truth price rule, current surfaces, and blocked competitor scraping rule remain present.
+  - Updated package version trace to `0.2.5` without dependency changes.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀐 것: 없음
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 기존 API 연동 감사 문서, API 위계/장애/fallback 기준, handoff/status/task trace
+  - 배포된 것: 없음
+  - 아직 배포 안 된 것: `v0.2.5` 문서/기준 변경
+  - 고객에게 보여줘도 되는 것: 기존 배포 사이트 상태
+  - 아직 내부 기준/계획일 뿐인 것: `v0.2.5` API 감리 기준과 TODO 정리
+- Verification:
+  - Required before completion: `npm run lint`, `npm run audit:site`, `npm run release:trace`, `npm run tasks:dashboard`, `git diff --check`, `git diff --name-only`, `git status --short --branch`.
+- Rollback Hint: `v0.2.5 전으로 되돌려줘`
+- Remaining User-only:
+  - Decide whether to pay for Metals.Dev, Vercel Pro, or an external scheduler later.
+  - Confirm final product photos, operating product list, 공임/margin, and which items show reference price versus inquiry.
+  - Approve robots/noindex release and search indexing only when the site is ready for public discovery.
+
+## v0.2.4 - Operations product-audit checklist and beginner status guide
+
+- Date: `2026-05-05 KST`
+- Commit: local working tree only until explicitly committed; work-before HEAD `b3e444f`
+- Deploy Status: local docs/control-plane reflected only. No production deploy, no Vercel alias change, no `kcgold.co.kr` runtime change, no GitHub push.
+- 사람이 읽는 요약: 실제 사이트 화면은 바꾸지 않고, 금거래소 운영자/직원/고객 관점으로 QA하는 기준과 초보자용 현재 상태 문서를 추가한 버전입니다.
+- Summary: Added reusable operations-product audit criteria, corrected existing API priority, made homepage price disclosure a first-class QA rule, documented image/placeholder policy, and added a beginner-friendly project status guide.
+- Changed:
+  - Added `docs/quality/operations-product-audit-checklist.md` for technical QA, product/operations QA, business/conversion QA, existing API audit, main price disclosure priority, and image/placeholder strategy.
+  - Added `docs/setup/PROJECT_STATUS_FOR_BEGINNER.md` so junyoung can see the current version, branch, rollback point, actual-site reflection status, risk labels, and copy-paste Codex request phrases.
+  - Updated `CURRENT_HANDOFF.md`, `OPEN_TASKS.md`, `code_review.md`, and the repo-local KCG quality skill to point future QA toward operations-product audit, not only visual/technical QA.
+  - Updated `audit:site` guardrails so the new checklist, beginner status guide, v0.2.4 trace, and image/API/price-disclosure criteria remain present.
+  - Updated package version trace to `0.2.4` without dependency changes.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀐 것: 없음
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 운영 감리 기준, 기존 API 감사 기준, 메인 시세고지 우선 기준, 이미지/placeholder 기준, 초보자용 상태 문서
+  - 배포된 것: 없음
+  - 아직 배포 안 된 것: `v0.2.4` 문서/기준 변경
+  - 고객에게 보여줘도 되는 것: 기존 배포 사이트 상태
+  - 아직 내부 기준/계획일 뿐인 것: `v0.2.4` 감리 기준과 TODO
+- Verification:
+  - Required before completion: `npm run lint`, `npm run audit:site`, `npm run release:trace`, `npm run tasks:dashboard`, `git diff --check`, `git diff --name-only`, `git status --short --branch`.
+- Rollback Hint: `v0.2.4 전으로 되돌려줘`
+- Remaining User-only:
+  - Provide real KCG-designed gold-bar/product photos when available.
+  - Confirm final product weights, margins, commissions, and public sales policy.
+  - Approve any public search indexing, paid API plan, payment feature, or production-risk setting change.
+
 ## v0.2.3 - Operations product-audit QA pass
 
 - Date: `2026-05-05 KST`

@@ -369,10 +369,13 @@ expectFile("docs/quality/product-experience-rubric.md", { minBytes: 3_000 });
 expectFile("docs/quality/ai-site-production-playbook.md", { minBytes: 4_000 });
 expectFile("docs/quality/data-source-compliance.md", { minBytes: 4_000 });
 expectFile("docs/quality/design-review-checklist.md", { minBytes: 3_000 });
+expectFile("docs/quality/operations-product-audit-checklist.md", { minBytes: 4_000 });
+expectFile("docs/quality/existing-api-integration-audit-2026-05-05.md", { minBytes: 4_000 });
 expectFile("docs/quality/kcg-10000-point-qa-scorecard.md", { minBytes: 2_000 });
 expectFile("docs/quality/official-docs-index.md", { minBytes: 2_000 });
 expectFile("code_review.md", { minBytes: 1_500 });
 expectFile(".agents/skills/kcg-site-quality/SKILL.md", { minBytes: 1_500 });
+expectFile("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", { minBytes: 3_000 });
 expectFile("docs/setup/OPEN_TASKS.md", { minBytes: 2_000 });
 expectFile("docs/setup/CHANGELOG.md", { minBytes: 1_500 });
 expectFile("docs/setup/CONTACT_CHANNELS_RUNBOOK.md", { minBytes: 1_000 });
@@ -410,6 +413,14 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.5 - Existing API integration audit",
+  "이미 붙어 있는 Gold API",
+  "실제 사이트 화면이 바뀐 것: 없음",
+  "v0.2.5 전으로 되돌려줘",
+  "## v0.2.4 - Operations product-audit checklist and beginner status guide",
+  "사람이 읽는 요약",
+  "실제 사이트 화면이 바뀐 것: 없음",
+  "v0.2.4 전으로 되돌려줘",
   "## v0.2.2 - Expert panel deep QA and admin evidence hardening",
   "Admin screenshot evidence can now be refreshed independently",
   "Vercel Hobby Cron is limited to once-daily automatic checks",
@@ -422,6 +433,78 @@ expectText("docs/setup/CHANGELOG.md", [
   "TradingView",
   "카카오톡 문의",
   "v0.2.1 전으로 되돌려줘",
+]);
+expectText("docs/setup/CURRENT_HANDOFF.md", [
+  "PROJECT_STATUS_FOR_BEGINNER.md",
+  "Current KCG site version: `v0.2.5`",
+  "Existing API integration audit",
+  "existing-api-integration-audit-2026-05-05.md",
+  "실제 사이트 화면이 바뀐 것: 없음",
+  "backup/pre-v0.2.4-operations-product-audit",
+]);
+expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
+  "지금 내가 보면 되는 것",
+  "v0.2.5",
+  "기존 API 연동 감사 문서",
+  "실제 사이트 화면이 바뀐 것: 없음",
+  "backup/pre-v0.2.4-operations-product-audit",
+  "LOW",
+  "MEDIUM",
+  "HIGH",
+  "FORBIDDEN",
+  "그대로 복사해서 Codex에게 말하면 되는 문장",
+  "push 하지 않음",
+  "deploy 하지 않음",
+]);
+expectText("docs/quality/operations-product-audit-checklist.md", [
+  "Technical QA",
+  "Product / Operations QA",
+  "Business / Conversion QA",
+  "Main Price Disclosure Priority",
+  "Existing API Integration Audit",
+  "Image / Visual Asset Audit",
+  "Placeholder Vs Real Product Photo Policy",
+  "Infographic Opportunity Review",
+  "고객이 보는 첫 화면 영향",
+]);
+expectText("docs/quality/existing-api-integration-audit-2026-05-05.md", [
+  "KCG company posted prices remain the source of truth",
+  "Gold API",
+  "Metals.Dev",
+  "Google News RSS-style feed",
+  "TradingView official widget",
+  "Supabase storage",
+  "Vercel Cron / auto-price refresh",
+  "Existing API integration is a current-site QA scope",
+  "P0 Audit Findings",
+  "P1 Operational QA Checks",
+  "P2 Or Blocked Items",
+  "Competitor sites must remain human-reference/benchmark sources only",
+]);
+expectText("docs/quality/agent-quality-system.md", [
+  "operations-product-audit-checklist.md",
+  "Main Price Disclosure Priority",
+  "Existing API Integration Audit",
+  "Image / Visual Asset Audit",
+]);
+expectText(".agents/skills/kcg-site-quality/SKILL.md", [
+  "operations-product-audit-checklist.md",
+  "existing-api-integration-audit-2026-05-05.md",
+  "Main Price Disclosure Priority",
+  "Existing API Integration Audit",
+  "Image / Visual Asset Audit",
+]);
+expectText("code_review.md", [
+  "Main price disclosure",
+  "Existing API integration",
+  "Image / visual asset strategy",
+]);
+expectText("docs/setup/OPEN_TASKS.md", [
+  "Risk Labels",
+  "KCG-TODO-052",
+  "KCG-TODO-053",
+  "existing-api-integration-audit-2026-05-05.md",
+  "실제 제품 사진",
 ]);
 expectText("scripts/report-release-trace.mjs", [
   "KCG release trace",
@@ -1164,7 +1247,7 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: local reflected",
+  "Reflection status: local docs/control-plane reflected",
   "docs/setup/CHANGELOG.md",
   "docs/quality/ai-site-production-playbook.md",
   "docs/quality/data-source-compliance.md",

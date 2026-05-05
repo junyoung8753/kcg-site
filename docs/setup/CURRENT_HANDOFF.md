@@ -4,19 +4,32 @@ Last updated: 2026-05-05 KST.
 
 This file is the short, durable context for a new Codex chat, another PC, or a future Codex Cloud task. Read it before continuing KCG site work.
 
+## Beginner Start Here
+
+- 초보자는 먼저 `docs/setup/PROJECT_STATUS_FOR_BEGINNER.md`를 보면 된다. 이 문서는 현재 버전, 작업 브랜치, 백업 기준, 실제 사이트 반영 여부, 쉬운 Codex 요청 문장을 1-2분 안에 읽을 수 있게 정리한다.
+- `branch` = 작업 줄기, `HEAD` = 현재 코드 기준점, `rollback` = 이전 상태로 되돌리기, `backup branch` = 되돌리기용 책갈피, `dirty state` = 아직 정리되지 않은 변경사항.
+- 이번 `v0.2.5`는 실제 고객 화면을 바꾸는 작업이 아니라 이미 연동된 API/데이터 흐름을 현재 사이트 QA 범위로 정리한 문서 보강 작업이다.
+- 되돌릴 때는 "v0.2.5 기존 API 감사 문서 보강만 되돌리는 계획을 먼저 보여줘" 또는 "backup/pre-v0.2.4-operations-product-audit 기준으로 전체 되돌리는 계획을 보여줘"라고 말하면 된다.
+
 Junyoung's current preferred workflow is local-first. Codex Cloud is not the default right now because it has been inconvenient and unreliable for current KCG work. Keep Cloud docs as a future option and use `docs/setup/CLOUD_ONLY_WORKFLOW.md` only when junyoung explicitly asks for Codex Cloud or wants to avoid computer-specific setup.
 
 If the old KCG project chat disappears from the Codex app UI, do not treat that as lost project state. Continue from this repo and read `docs/setup/MISSING_CHAT_RECOVERY.md` for the recovered local session file, E: backup locations, and no-secret backup path.
 
 ## Current Version Snapshot
 
-- Current KCG site version: `v0.2.3`
-- Latest change: `Operations product-audit QA pass`
+- Current KCG site version: `v0.2.5`
+- Latest change: `Existing API integration audit`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: local reflected for `v0.2.3`; production domains were not refreshed for this docs/skill QA-system patch. Confirm current commit/push/deploy state with `git status --short --branch`, `npm run release:trace`, and `npx vercel inspect https://kcgold.co.kr/` before editing.
-- Latest local QA: `v0.2.3` passed `npm run qa:site` on 2026-05-05 KST with rendered audit `981 checks, 0 skipped`, Playwright `19 passed`, public screenshots, admin screenshots through `npm run screenshot:admin`, and npm audit `0 vulnerabilities`.
+- Reflection status: local docs/control-plane reflected for `v0.2.5`; actual public site UI, `src` runtime behavior, `public` assets, API logic, Supabase schema, Vercel settings, production deploy, and GitHub push were not changed by this version. Confirm current commit/push/deploy state with `git status --short --branch`, `npm run release:trace`, and `npx vercel inspect https://kcgold.co.kr/` before editing.
+- 실제 사이트 화면이 바뀐 것: 없음
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 운영 감리 기준, 기존 API 감사 기준, 메인 시세고지 우선 기준, 이미지/placeholder 기준, 초보자용 상태 문서, 기존 API 연동 감사 문서
+- 배포된 것: 없음
+- 아직 배포 안 된 것: `v0.2.5` 문서/기준 변경
+- 고객에게 보여줘도 되는 것: 기존 배포 사이트 상태
+- 아직 내부 기준/계획일 뿐인 것: `v0.2.5` 감리 기준과 TODO
+- Latest local QA: runtime/site QA remains `v0.2.3` `npm run qa:site` on 2026-05-05 KST with rendered audit `981 checks, 0 skipped`, Playwright `19 passed`, public screenshots, admin screenshots through `npm run screenshot:admin`, and npm audit `0 vulnerabilities`. `v0.2.4` and `v0.2.5` are docs/control-plane only and are verified with lint/audit/release/tasks/diff checks.
 - Change ledger: `docs/setup/CHANGELOG.md`
-- Rollback phrase: `v0.2.3 전으로 되돌려줘`
+- Rollback phrase: `v0.2.5 전으로 되돌려줘`
 
 ## Current Source Of Truth
 
@@ -50,6 +63,7 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 - `docs/quality/ai-site-production-playbook.md` records the KCG AI site-building workflow: context pack, product surface, KCG constraints, acceptance criteria, browser evidence, score, and durable guardrail.
 - `docs/quality/design-review-checklist.md` is the task-level design QA checklist for visual thesis, product surface, responsive/accessibility checks, evidence, and scoring.
 - `docs/quality/data-source-compliance.md` records the source-attribution and licensing rules for Gold API, Metals.Dev, Google News RSS-style headlines, paid news API candidates, charts, calculators, forms, and competitor references.
+- `docs/quality/existing-api-integration-audit-2026-05-05.md` records the current API/data inventory: Gold API, optional Metals.Dev path, Google News RSS-style headlines, TradingView official widget, Supabase storage, Vercel Cron auto-price endpoint, and external status-check scripts. It classifies already-connected API behavior as P0/P1 current-site QA and keeps new/paid/advanced external integrations in P2 or blocked scope.
 - `docs/quality/official-docs-index.md` records the official OpenAI/Codex, Next.js, Tailwind, Playwright, Vercel, Supabase, and market-data docs to re-check before changing fast-moving site-production behavior.
 - `code_review.md` is the KCG-specific Codex review checklist for price hierarchy, mobile first viewport, consultation conversion, source boundaries, launch gates, and screenshot evidence.
 - `.agents/skills/kcg-site-quality/SKILL.md` is the repo-local skill for both KCG site project-room environment upkeep and user-requested site artifact work. It must first distinguish setup/latest-guidance work from actual rendered site work.

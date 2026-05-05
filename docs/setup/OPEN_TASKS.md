@@ -15,6 +15,20 @@ Do not record passwords, tokens, cookies, recovery codes, real account credentia
 - Keep production deploys, stable alias changes, `kcgold.co.kr` DNS cutover, robots/noindex release, and search indexing blocked until junyoung gives explicit public-launch approval.
 - For meaningful site/admin/QA changes, update `docs/setup/CHANGELOG.md`, `docs/setup/CURRENT_HANDOFF.md`, and the package version before claiming the work is traceable.
 
+## Risk Labels
+
+| 위험도 | 뜻 |
+| --- | --- |
+| LOW | 문서 수정, 체크리스트 수정, 설명 보강 |
+| MEDIUM | UI 문구 수정, 이미지 교체, 작은 화면 구성 수정 |
+| HIGH | API 로직, 시세 계산, 관리자 기능, 고객 데이터, 배포 설정 |
+| FORBIDDEN | 결제, 실시간 거래, 개인정보 과수집, 법률/세무 자동판단, 경쟁사 시세 수집 |
+
+Future tasks should be easy to classify in this shape:
+
+| 작업 | 위험도 | 누가 결정 | 실제 사이트 영향 | 되돌리기 쉬움 |
+| --- | --- | --- | --- | --- |
+
 ## Active Tasks
 
 | ID | Priority | Status | Owner | Task | Acceptance Criteria | Verification |
@@ -70,6 +84,10 @@ Do not record passwords, tokens, cookies, recovery codes, real account credentia
 | KCG-TODO-049 | P1 | done | codex | Add dedicated admin screenshot QA and v0.2.2 expert-panel evidence hardening. | Admin screenshots can be refreshed with `npm run screenshot:admin`; source audit requires the command, helper script, v0.2.2 changelog, and updated handoff. | This pass updates `package.json`, screenshot helpers, `audit:site`, changelog, handoff, QA report, and product/auto-price operations docs. |
 | KCG-TODO-050 | P2 | done | codex | Document automatic-price scheduler choices for company reporting. | A no-secret brief explains Gold API/KCG formula flow, Vercel Hobby once-daily cron posture, Vercel Pro/external scheduler options, and user-only payment/approval decisions. | `docs/setup/AUTO_PRICE_OPERATIONS_BRIEF.md`; `npm run audit:site` guardrail. |
 | KCG-TODO-051 | P1 | done | codex | Add a reusable gold-exchange operations product-audit pass. | KCG quality guidance now forces admin, price, product/매입, service, customer-response, and launch-readiness work to check actual staff/customer workflows before treating technical QA or visual polish as complete. | Passed 2026-05-05 KST: `npm run audit:site` and `git diff --check` completed; diff-check reported only existing LF-to-CRLF working-copy warnings. |
+| KCG-TODO-052 | P1 | done | codex | Add v0.2.4 operations-product checklist and beginner status guide. | `operations-product-audit-checklist.md` separates technical, operations, and conversion QA; beginner status doc explains current version, branch, backup, actual-site reflection, risk labels, and copy-paste Codex requests. | `npm run audit:site`, `npm run release:trace`, `npm run tasks:dashboard` |
+| KCG-TODO-053 | P0 | done | codex | Audit already-connected API behavior as part of current site QA. | Existing API surfaces are inventoried; company posted price vs API reference hierarchy, stale/failure/rate-limit fallback, update time display, and tests/error states are documented before the next serious launch-readiness claim. | Completed 2026-05-05 KST: `docs/quality/existing-api-integration-audit-2026-05-05.md` inventories Gold API, Metals.Dev, Google News RSS, TradingView, Supabase, Vercel Cron auto-price refresh, and external status scripts; package/changelog/handoff/status/audit guardrails updated. |
+| KCG-TODO-054 | P1 | todo | shared | Replace placeholder catalog/product images after real KCG-designed gold-bar/product photos arrive. | Current placeholder/generated/representative images are listed with usage locations, and actual product photos replace customer decision-making product images without pushing the homepage price table down. 실제 제품 사진이 도착하면 이 항목을 먼저 재검토한다. | Image asset audit, `/products` desktop/mobile screenshots, `npm run screenshot:site` |
+| KCG-TODO-055 | P2 | todo | codex | Prepare infographic candidates for price-table reading, old-gold buying flow, and visit preparation. | Candidate infographic briefs define purpose, route, ratio, text/alt coverage, forbidden claims, and whether a real photo or placeholder is required before implementation. | Future content/design brief before image generation or UI change |
 
 ## Review Policy
 
