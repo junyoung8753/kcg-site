@@ -11,8 +11,8 @@ Versioning rule before public launch: `0.x.x`.
 ## v0.2.8 - Admin mode persistence and operational readability
 
 - Date: `2026-05-05 KST`
-- Commit: pending until final verification; work-before HEAD `0510b76`.
-- Deploy Status: this version changes the real admin UI and is intended for `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` production refresh after verification. Search indexing/noindex release is not included.
+- Commit: `408aa97` (`v0.2.8: Fix admin mode persistence and dashboard UX`).
+- Deploy Status: committed, pushed, and production deployed to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` on 2026-05-05 KST. Use `npx vercel inspect https://kcgold.co.kr/` for the current deployment id. Search indexing/noindex release is not included.
 - 사람이 읽는 요약: 자동시세 ON을 눌러도 다시 OFF로 저장될 수 있던 원인을 고치고, `/admin` 첫 화면을 “오늘 먼저 확인할 것” 중심의 실무형 대시보드로 다시 정리한 버전입니다.
 - Summary: Fixes the admin automatic-price mode submission race and improves dashboard readability around daily operator tasks, status cards, and source-of-truth guidance.
 - Changed:
@@ -23,9 +23,9 @@ Versioning rule before public launch: `0.x.x`.
   - Updated admin screenshot/audit/test expectations for the new dashboard and settings wording.
 - 실제 사이트 반영 여부:
   - 실제 사이트 화면이 바뀐 것: 관리자 대시보드 실무형 재구성, 자동시세 ON/OFF 저장 버그 수정, `/admin/prices` 경고/설정 문구 가독성 개선
-  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: `v0.2.8` changelog/handoff/status trace
-  - 배포된 것: 최종 검증 후 production deploy 대상
-  - 아직 배포 안 된 것: 커밋/배포 전 로컬 working tree 상태에서는 `v0.2.8` 변경 전체
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: `v0.2.8` changelog/handoff/status trace only
+  - 배포된 것: 관리자 대시보드 실무형 재구성, 자동시세 ON/OFF 저장 버그 수정, `/admin/prices` 경고/설정 문구 개선
+  - 아직 배포 안 된 것: 없음. 단, 검색 노출/noindex 해제와 실제 상품 운영자료 확정은 별도 승인 전까지 제외.
   - 고객에게 보여줘도 되는 것: 공개 고객 화면은 기존 방향 유지. 관리자 화면은 로그인 사용자만 확인.
   - 아직 내부 기준/계획일 뿐인 것: Vercel Pro/external scheduler 결제, 실제 자동 실행 빈도 상향, 최종 상품 사진/공임/판매정책
 - QA Score:
@@ -33,7 +33,8 @@ Versioning rule before public launch: `0.x.x`.
   - Admin console target: `9460 / 10000`
   - Operations readiness target: `9120 / 10000`
 - Verification:
-  - Required before completion: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:admin`, `npm run screenshot:site`, `npm run qa:site`, `npm audit --audit-level=moderate`, `git diff --check`.
+  - Passed before deploy: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:admin`, `npm run screenshot:site`, `npm run qa:site`, `npm audit --audit-level=moderate`, `git diff --check`.
+  - Passed after deploy: `npx vercel inspect https://kcgold.co.kr/`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site`, and `npm run check:external -- --strict-domain`.
 - Rollback Hint: `v0.2.8 전으로 되돌려줘`
 - Remaining User-only:
   - Decide whether to pay for Vercel Pro or connect an external scheduler if automatic checks must run more than once per day.

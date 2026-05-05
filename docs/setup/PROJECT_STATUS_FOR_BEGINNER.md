@@ -29,9 +29,9 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 ## 실제 사이트 반영 여부
 
 - 실제 사이트 화면이 바뀐 것: 관리자 대시보드 실무형 재구성, 자동시세 ON/OFF 저장 버그 수정, `/admin/prices` 경고/설정 문구 가독성 개선
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.8 changelog/handoff/status trace
-- 배포된 것: 이 문서 기준으로는 아직 최종 확인 필요. 실제 배포 여부는 Codex 최종 보고와 `npx vercel inspect https://kcgold.co.kr/`로 확인한다.
-- 아직 배포 안 된 것: 커밋/배포 전 working tree에 남아 있는 `v0.2.8` 변경
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.8 changelog/handoff/status trace only
+- 배포된 것: `v0.2.8` 관리자 대시보드, 자동시세 ON/OFF 저장 버그 수정, `/admin/prices` 가독성 개선. 최신 배포 ID는 `npx vercel inspect https://kcgold.co.kr/`로 확인한다.
+- 아직 배포 안 된 것: 없음. 단, 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정은 아직 별도 작업.
 - 내가 고객에게 보여줘도 되는 것: 공개 고객 화면은 기존 방향 유지. 관리자 라이트 UX는 로그인 사용자만 확인.
 - 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
 - 이번 작업에서 건드린 범위: 관리자 대시보드, 자동시세 관리자 UX bug fix, QA/상태 문서, `package.json`, `package-lock.json`
