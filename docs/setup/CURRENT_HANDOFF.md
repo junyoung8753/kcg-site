@@ -20,14 +20,14 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 - Current KCG site version: `v0.2.10`
 - Latest change: `Visual guidance refresh and infographic FAQ polish`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: `v0.2.10` is local source/UI/assets work, committed locally after verification but not pushed or deployed. Confirm current state with `git status --short --branch`, `npm run release:trace`, and required validation commands before handoff.
+- Reflection status: `v0.2.10` includes real public source/UI/assets changes committed, pushed, and production deployed on 2026-05-06 KST. Vercel deployment id: `dpl_2YX967sa6B8Wx6nXhr1vJy25CFp1`. Confirm current state with `git status --short --branch`, `npm run release:trace`, and required validation commands before handoff.
 - 실제 사이트 화면이 바뀌는 것: 홈 캐러셀, 상품/매입 이미지, `/prices` 시세표 보는 법, 홈/서비스 고금 매입 절차, `/about` 방문 준비물, `/company` 상담 이미지, 서비스 FAQ.
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: live production domains remain on the last deployed `v0.2.9` until junyoung explicitly asks for deployment.
-- 배포된 것: 없음 in `v0.2.10`; v0.2.9 remains the last deployed production/stable version.
-- 아직 배포 안 된 것: `v0.2.10` visual/guidance refresh 전체, 검색 노출/noindex 해제, 실제 상품 운영자료 확정, Vercel Pro 또는 외부 scheduler 결정.
-- 고객에게 보여줘도 되는 것: verification screenshots after local QA; live `kcgold.co.kr` still has search blocked and remains on the previous deployment until deployment approval.
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음. `v0.2.10`은 live domains까지 반영됨.
+- 배포된 것: `v0.2.10` visual/guidance refresh 전체 to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app`.
+- 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 운영자료 확정, Vercel Pro 또는 외부 scheduler 결정.
+- 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` review site. Search exposure remains blocked.
 - 아직 내부 기준/계획일 뿐인 것: real product/store/staff photography replacement, final product prices/공임/판매정책, final admin secret rotation, search launch approval.
-- Latest QA: `v0.2.10` local verification passed on 2026-05-06 KST: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site` (`20 passed`), `npm run screenshot:site`, `npm run qa:site` (rendered audit `1116 checks, 0 skipped`, Playwright `20 passed`, npm audit `0 vulnerabilities`), `npm audit --audit-level=moderate`, and `git diff --check` with line-ending warnings only. Screenshots directly inspected: `home-mobile-viewport.png`, `home-desktop-viewport.png`, `prices-mobile.png`, `products-mobile.png`, `services-mobile.png`, and `about-mobile.png`. After any future deployment verify with `npx vercel inspect https://kcgold.co.kr/`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site`, and `npm run check:external -- --strict-domain`.
+- Latest QA: `v0.2.10` local verification passed on 2026-05-06 KST: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site` (`20 passed`), `npm run screenshot:site`, `npm run qa:site` (rendered audit `1116 checks, 0 skipped`, Playwright `20 passed`, npm audit `0 vulnerabilities`), `npm audit --audit-level=moderate`, and `git diff --check` with line-ending warnings only. Screenshots directly inspected: `home-mobile-viewport.png`, `home-desktop-viewport.png`, `prices-mobile.png`, `products-mobile.png`, `services-mobile.png`, and `about-mobile.png`. Post-deploy verification passed: `npx vercel inspect https://kcgold.co.kr/` (`dpl_2YX967sa6B8Wx6nXhr1vJy25CFp1` ready), `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`1116 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`20 passed`), and `npm run check:external -- --strict-domain` with indexing disabled, robots blocked, empty pre-launch sitemap, and correct Cafe24 DNS.
 - Change ledger: `docs/setup/CHANGELOG.md`
 - Broader rollback bookmark: `backup/pre-v0.2.4-operations-product-audit`
 - Rollback phrase: `v0.2.10 전으로 되돌려줘`
@@ -42,6 +42,7 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 - Continue KCG work on `codex/kcg-launch-readiness-catalog-20260427`. Do not switch to `main` for the current production candidate until this branch is intentionally reviewed and merged.
 - Repository visibility decision as of 2026-04-27 KST: keep `junyoung8753/kcg-site` public for now. Revisit before adding private production data, confidential business copy, customer material, or admin-sensitive details.
 - Stable review domain: `https://kcg-confirm-preview.vercel.app`
+- Junyoung stated on 2026-05-06 KST that KCG site changes should be deployed by default so he can review live and roll back if needed. Continue to push/deploy completed, verified KCG site changes unless a higher-risk boundary applies. This does not approve robots/noindex release, search indexing, payments, checkout/cart, live trading, secret changes, or irreversible infrastructure changes.
 - The historical source site exists in the company Codex environment. Do not treat the stable review URL as an older source to restore unless junyoung explicitly asks.
 - Company scope confirmed by junyoung on 2026-04-27 KST: KCG handles 순금·고금 매입, 순금/골드바 판매, B2C 전화 문의·거래 상담, and B2B 대량·기업 상담. Treat the site as a consultation-first gold exchange, not a checkout mall or securities/trading service.
 - Current image source folder: `C:\Users\junyo\Documents\File-Hub\30_Media\Images`. Use only approved brand/AI assets from this folder; do not copy contract, address, signature, or other private document photos into the repo.

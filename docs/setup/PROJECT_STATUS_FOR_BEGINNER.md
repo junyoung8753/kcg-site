@@ -28,14 +28,15 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## 실제 사이트 반영 여부
 
-- 실제 사이트 화면이 바뀌는 것: 배포하면 홈 캐러셀, 상품/매입 이미지, `/prices` 시세표 보는 법, 홈/서비스 고금 매입 절차, `/about` 방문 준비물, `/company` 상담 이미지, 서비스 FAQ가 바뀜
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음. `v0.2.10`은 로컬 소스/UI/이미지 변경이며 production 배포 전까지 live `kcgold.co.kr`에는 반영되지 않음.
-- 배포된 것: `v0.2.10`은 아직 없음. 최신 live/stable 배포는 `v0.2.9`이고, 최신 배포 ID는 `npx vercel inspect https://kcgold.co.kr/`로 확인한다.
-- 아직 배포 안 된 것: `v0.2.10` 비주얼/인포그래픽/FAQ 보강 전체, 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, Vercel Pro 또는 외부 scheduler 결정은 아직 별도 작업.
-- 내가 고객에게 보여줘도 되는 것: 로컬 검증 스크린샷 또는 배포 승인 후 preview/live 화면. 현재 live `kcgold.co.kr`은 아직 v0.2.9이며 검색 노출은 차단.
+- 실제 사이트 화면이 바뀐 것: 홈 캐러셀, 상품/매입 이미지, `/prices` 시세표 보는 법, 홈/서비스 고금 매입 절차, `/about` 방문 준비물, `/company` 상담 이미지, 서비스 FAQ가 live에 반영됨
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음. `v0.2.10` 코드/이미지/문서 변경은 production 배포까지 완료됨.
+- 배포된 것: `v0.2.10` 비주얼/인포그래픽/FAQ 보강 전체. Vercel deployment id는 `dpl_2YX967sa6B8Wx6nXhr1vJy25CFp1`.
+- 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, Vercel Pro 또는 외부 scheduler 결정은 아직 별도 작업.
+- 내가 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` 검토 화면. 검색 노출은 아직 차단.
 - 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
 - 이번 작업에서 건드린 범위: 홈/가격/상품/서비스/회사/매장 이미지와 안내 UI, FAQ/방문 준비물 문구, 상품 이미지 매핑, mock/seed 이미지 참조, QA/상태 문서, `package.json`, `package-lock.json`
 - 절대 건드리지 않은 범위: 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, Vercel env/secret
+- 배포 기본값: 2026-05-06 KST 기준 junyoung은 KCG 사이트 변경을 완료·검증하면 live 배포까지 진행하라고 지시했다. 단, 검색 노출/noindex 해제, 결제/장바구니/실시간 거래, secret/env 변경, 되돌리기 어려운 인프라 변경은 여전히 별도 승인 대상이다.
 
 ## Easy Words
 
@@ -53,7 +54,7 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 | 구분 | 이름 | 쉬운 설명 | 내가 봐야 하는 경우 |
 |---|---|---|---|
-| 현재 작업 버전 | `v0.2.10` | 차콜 가격 데스크, 인물 상담, 종로 매장 무드, 고금 매입 절차 이미지와 시세표/방문/매입 안내를 보강한 버전 | 이번 변경 확인 |
+| 현재 작업 버전 | `v0.2.10` | 차콜 가격 데스크, 인물 상담, 종로 매장 무드, 고금 매입 절차 이미지와 시세표/방문/매입 안내를 보강하고 production 배포한 버전 | 이번 변경 확인 |
 | 이전 버전 | `v0.2.9` | 메뉴 순서, TradingView 표시, 시세 이력 보관, 24시간 자동시세 guard를 운영형 QA 기준으로 보강한 버전 | 비교/이전 상태 확인 |
 | 백업 브랜치 | `backup/pre-v0.2.4-operations-product-audit` | `v0.2.4`와 `v0.2.5` 문서 보강 전으로 돌아가는 책갈피 | 크게 되돌릴 때 |
 | 현재 작업 브랜치 | `codex/kcg-launch-readiness-catalog-20260427` | 지금 Codex가 작업 중인 줄기 | 상태 확인 |

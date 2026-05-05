@@ -472,7 +472,7 @@ expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
   "v0.2.10",
   "시세표 보는 법",
-  "실제 사이트 화면이 바뀌는 것: 배포하면 홈 캐러셀",
+  "실제 사이트 화면이 바뀐 것: 홈 캐러셀",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",
   "MEDIUM",
@@ -1333,7 +1333,8 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.10` is local source/UI/assets work",
+  "Reflection status: `v0.2.10` includes real public source/UI/assets changes",
+  "dpl_2YX967sa6B8Wx6nXhr1vJy25CFp1",
   "docs/setup/CHANGELOG.md",
   "docs/quality/ai-site-production-playbook.md",
   "docs/quality/data-source-compliance.md",
