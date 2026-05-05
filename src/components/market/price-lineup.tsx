@@ -219,6 +219,7 @@ export function PriceLineup({
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [isSlidePaused, setIsSlidePaused] = useState(false);
   const [isLineupOpen, setIsLineupOpen] = useState(true);
+  const [isHydrated, setIsHydrated] = useState(false);
   const priceByCategory = new Map(prices.map((price) => [price.category, price]));
   const style = lineupStyle;
   const wrapperHeightClass = "lg:min-h-[38.5rem]";
@@ -245,6 +246,11 @@ export function PriceLineup({
         maximumFractionDigits: 2,
       }).format(krwRate)}원`
     : "자동 참고";
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setIsHydrated(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     if (visualMode !== "campaign") return;
@@ -313,7 +319,7 @@ export function PriceLineup({
                   <p className={cn("text-right text-[0.72rem] sm:text-[0.86rem]", style.dateText)}>
                     {announcedDateLabel}
                   </p>
-                  {visualMode === "campaign" ? (
+                  {visualMode === "campaign" && isHydrated ? (
                     <button
                       type="button"
                       onClick={() => setIsLineupOpen(false)}

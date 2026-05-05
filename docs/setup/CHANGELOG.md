@@ -11,7 +11,7 @@ Versioning rule before public launch: `0.x.x`.
 ## v0.2.6 - Expert panel deep QA public and admin polish
 
 - Date: `2026-05-05 KST`
-- Commit: local working tree until this version is committed; work-before HEAD `c161f74`
+- Commit: committed after final verification; exact hash is available from `git log -1 --oneline`. Work-before HEAD `c161f74`.
 - Deploy Status: this version contains real public/admin UI changes and is intended for `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` production refresh after verification. Search indexing/noindex release is not included.
 - 사람이 읽는 요약: 전문가 패널 QA에서 실제로 보인 화면 문제를 줄인 버전입니다. 홈 시세표가 한 화면 안에 더 안정적으로 들어오고, 국제 현재가 표 글자가 더 읽히며, 모바일 상품/서비스 첫 화면이 덜 늘어지고, 관리자 가격 화면의 현재 공개가 라벨이 `순금 살 때/팔 때`처럼 바로 구분됩니다.
 - Summary: Applied focused P1 fixes from the customer/operator/admin/mobile QA pass without changing launch/search, payment, trading, competitor scraping, or secret state.
@@ -22,8 +22,9 @@ Versioning rule before public launch: `0.x.x`.
   - Compressed the mobile `/services` first viewport and made the three-step transaction flow visible without excessive scrolling.
   - Clarified `/admin/prices` current public price snapshot labels: `순금 살 때`, `순금 팔 때`, `18K 팔 때`, `14K 팔 때`, `백금 살 때/팔 때`, `은 살 때/팔 때`.
   - Reworded `/admin` storage status from `Demo` to `미리보기 저장` and formatted the posted-time display consistently.
+  - Made the mobile home price-panel close button hydration-safe so the first tap does not get lost on the production domain.
 - 실제 사이트 반영 여부:
-  - 실제 사이트 화면이 바뀐 것: 홈 시세표 크기/간격, 국제 현재가 표 가독성, 모바일 상품/서비스 첫 화면, 관리자 가격/대시보드 라벨
+  - 실제 사이트 화면이 바뀐 것: 홈 시세표 크기/간격과 닫기/복구 안정성, 국제 현재가 표 가독성, 모바일 상품/서비스 첫 화면, 관리자 가격/대시보드 라벨
   - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.6 QA 점수표와 handoff/status trace
   - 배포된 것: 최종 검증 후 production deploy 대상. 실제 deployment id는 최종 보고와 `npx vercel inspect https://kcgold.co.kr/`로 확인한다.
   - 아직 배포 안 된 것: 커밋/배포 전 로컬 working tree 상태에서는 v0.2.6 변경 전체

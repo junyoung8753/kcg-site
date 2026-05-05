@@ -574,6 +574,7 @@ expectText("src/components/market/price-lineup.tsx", [
   'data-testid="home-price-lineup-panel"',
   'data-testid="home-price-lineup-restore"',
   'aria-label="시세표 닫기"',
+  "isHydrated",
   "시세표 보기",
   'sizes="100vw"',
   'const wrapperLayoutClass = "relative flex flex-col lg:block"',
