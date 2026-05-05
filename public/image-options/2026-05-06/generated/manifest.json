@@ -1,0 +1,74 @@
+[
+  {
+    "role": "home-price-desk",
+    "generatedSource": "C:\\Users\\junyo\\.codex\\generated_images\\019df8a5-6d0f-7a91-8df3-e25406ad17ab\\ig_002e0d6c968012cd0169fa0bed5ac88191b8da62e3d4d5eb90.png",
+    "preservedOriginal": "public/image-options/2026-05-06/generated/originals/kcg-home-price-desk-20260506.png",
+    "publicAsset": "public/campaign/kcg-home-price-desk-20260506.webp",
+    "width": 1600,
+    "height": 900,
+    "bytes": 88386
+  },
+  {
+    "role": "home-human-consultation",
+    "generatedSource": "C:\\Users\\junyo\\.codex\\generated_images\\019df8a5-6d0f-7a91-8df3-e25406ad17ab\\ig_002e0d6c968012cd0169fa0c30b7fc8191aa92addbb40978c7.png",
+    "preservedOriginal": "public/image-options/2026-05-06/generated/originals/kcg-home-human-consultation-20260506.png",
+    "publicAsset": "public/campaign/kcg-home-human-consultation-20260506.webp",
+    "width": 1600,
+    "height": 900,
+    "bytes": 62976
+  },
+  {
+    "role": "home-seoul-retail",
+    "generatedSource": "C:\\Users\\junyo\\.codex\\generated_images\\019df8a5-6d0f-7a91-8df3-e25406ad17ab\\ig_002e0d6c968012cd0169fa0c6d2074819185d49da5a749c05f.png",
+    "preservedOriginal": "public/image-options/2026-05-06/generated/originals/kcg-home-seoul-retail-20260506.png",
+    "publicAsset": "public/campaign/kcg-home-seoul-retail-20260506.webp",
+    "width": 1600,
+    "height": 900,
+    "bytes": 121434
+  },
+  {
+    "role": "price-guide-visual",
+    "generatedSource": "C:\\Users\\junyo\\.codex\\generated_images\\019df8a5-6d0f-7a91-8df3-e25406ad17ab\\ig_002e0d6c968012cd0169fa0caf29748191bad988bbfae8226c.png",
+    "preservedOriginal": "public/image-options/2026-05-06/generated/originals/kcg-price-guide-visual-20260506.png",
+    "publicAsset": "public/campaign/kcg-price-guide-visual-20260506.webp",
+    "width": 1600,
+    "height": 900,
+    "bytes": 61738
+  },
+  {
+    "role": "old-gold-process",
+    "generatedSource": "C:\\Users\\junyo\\.codex\\generated_images\\019df8a5-6d0f-7a91-8df3-e25406ad17ab\\ig_002e0d6c968012cd0169fa0d202f788191b4579651c1de3111.png",
+    "preservedOriginal": "public/image-options/2026-05-06/generated/originals/kcg-old-gold-process-20260506.png",
+    "publicAsset": "public/campaign/kcg-old-gold-process-20260506.webp",
+    "width": 1600,
+    "height": 900,
+    "bytes": 94268
+  },
+  {
+    "role": "product-minimal-bars",
+    "generatedSource": "C:\\Users\\junyo\\.codex\\generated_images\\019df8a5-6d0f-7a91-8df3-e25406ad17ab\\ig_002e0d6c968012cd0169fa0d6b46348191bcf4bc060fef510b.png",
+    "preservedOriginal": "public/image-options/2026-05-06/generated/originals/kcg-product-minimal-bars-20260506.png",
+    "publicAsset": "public/products/kcg-product-minimal-bars-20260506.webp",
+    "width": 1200,
+    "height": 900,
+    "bytes": 106148
+  },
+  {
+    "role": "product-pure-gold-gifts",
+    "generatedSource": "C:\\Users\\junyo\\.codex\\generated_images\\019df8a5-6d0f-7a91-8df3-e25406ad17ab\\ig_002e0d6c968012cd0169fa0dbd151881918b353922bc0178ce.png",
+    "preservedOriginal": "public/image-options/2026-05-06/generated/originals/kcg-product-pure-gold-gifts-20260506.png",
+    "publicAsset": "public/products/kcg-product-pure-gold-gifts-20260506.webp",
+    "width": 1200,
+    "height": 900,
+    "bytes": 80360
+  },
+  {
+    "role": "product-corporate-consulting",
+    "generatedSource": "C:\\Users\\junyo\\.codex\\generated_images\\019df8a5-6d0f-7a91-8df3-e25406ad17ab\\ig_002e0d6c968012cd0169fa0e072efc8191a5e6f625fa18d2a7.png",
+    "preservedOriginal": "public/image-options/2026-05-06/generated/originals/kcg-product-corporate-consulting-20260506.png",
+    "publicAsset": "public/products/kcg-product-corporate-consulting-20260506.webp",
+    "width": 1200,
+    "height": 900,
+    "bytes": 50576
+  }
+]

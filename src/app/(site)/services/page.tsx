@@ -22,6 +22,14 @@ const serviceRows = [
   ["거래 전 준비", "신분증, 보증서·영수증, 예상 중량, 수량, 제품 상태"],
 ] as const;
 
+const buyingProcessSteps = [
+  ["01", "방문 상담", "전화로 품목과 방문 가능 시간을 먼저 맞춥니다."],
+  ["02", "품목 확인", "순금, 18K, 14K, 백금, 은, 골드바 여부를 구분합니다."],
+  ["03", "함량·중량 확인", "순도, 실중량, 부속, 파손 상태를 현장에서 확인합니다."],
+  ["04", "매입가 안내", "당일 회사 고시 시세와 확인 결과를 기준으로 안내합니다."],
+  ["05", "고객 결정", "안내 조건을 확인한 뒤 진행 여부를 결정합니다."],
+] as const;
+
 export default function ServicesPage() {
   return (
     <>
@@ -29,8 +37,8 @@ export default function ServicesPage() {
         <div className="section-shell grid gap-4 py-4 sm:gap-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
           <div className="relative min-h-[10rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:min-h-[17rem] lg:min-h-[18rem]">
             <Image
-              src="/campaign/kcg-home-inspection-action-20260503.webp"
-              alt="장갑을 착용한 금거래소 상담 데스크"
+              src="/campaign/kcg-old-gold-process-20260506.webp"
+              alt="고금과 주얼리 매입 절차 상담 데스크"
               fill
               className="object-cover"
               sizes="(min-width: 1024px) 42vw, 100vw"
@@ -72,6 +80,29 @@ export default function ServicesPage() {
               >
                 <p className="font-bold tracking-[-0.022em] text-[#15191b]">{label}</p>
                 <p className="leading-6 text-[#687171]">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#111416] py-10 text-white sm:py-12">
+        <div className="section-shell grid gap-8 lg:grid-cols-[0.36fr_0.64fr]">
+          <div>
+            <p className="kcg-eyebrow text-[#ffcc00]">BUYING PROCESS</p>
+            <h2 className="kcg-section-title mt-3">
+              고금 매입 절차
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-white/68">
+              화면의 가격만으로 확정하지 않고, 실물 확인 후 최종 조건을 안내합니다.
+            </p>
+          </div>
+          <div className="grid gap-px overflow-hidden border border-white/14 bg-white/14 sm:grid-cols-2 xl:grid-cols-5">
+            {buyingProcessSteps.map(([number, title, body]) => (
+              <div key={title} className="bg-[#191d1f] px-5 py-5">
+                <p className="kcg-fine-label text-[#ffcc00]">{number}</p>
+                <h3 className="mt-3 text-base font-bold tracking-[-0.022em]">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-white/66">{body}</p>
               </div>
             ))}
           </div>

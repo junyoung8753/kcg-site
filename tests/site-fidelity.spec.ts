@@ -1,10 +1,10 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const campaignAlts = [
-  "한국센터금거래소 골드바와 실버바 상담 키비주얼",
-  "한국센터금거래소 금괴 확인 상담 장면",
-  "한국센터금거래소 거래 준비 상담 데스크",
-  "골드바와 실버바 키비주얼 배너",
+  "한국센터금거래소 가격 데스크와 골드바 실버바 상담 이미지",
+  "한국센터금거래소 상담원과 고객 상담 장면",
+  "종로 귀금속 매장 분위기 이미지",
+  "고금 주얼리 매입 절차 상담 이미지",
 ];
 const explicitAdminPassword = process.env.KCG_TEST_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
 const auditUrl = process.env.SITE_AUDIT_URL;
@@ -303,15 +303,17 @@ test("services route preserves high-risk business wording", async ({ page }) => 
   await page.goto("/services", { waitUntil: "domcontentloaded" });
 
   await expect(page.getByRole("heading", { name: "품목 확인, 고시 기준, 실물 확인" })).toBeVisible();
-  await expect(page.getByAltText("장갑을 착용한 금거래소 상담 데스크")).toBeVisible();
+  await expect(page.getByAltText("고금과 주얼리 매입 절차 상담 데스크")).toBeVisible();
   await expect(page.getByText("취급 품목", { exact: true })).toBeVisible();
   await expect(page.getByText("당일 기준", { exact: true })).toBeVisible();
   await expect(page.getByText("실물 확인", { exact: true })).toBeVisible();
   await expect(page.getByText("거래 기준")).toBeVisible();
   await expect(page.getByText("매입 가능 품목")).toBeVisible();
   await expect(page.getByText("판매·수급 품목")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "고금 매입 절차" })).toBeVisible();
   await expect(page.getByText("고금매입은 시세표의 어느 금액을 보면 되나요?")).toBeVisible();
   await expect(page.getByText("전화로 금액을 확정받을 수 있나요?")).toBeVisible();
+  await expect(page.getByText("자동 참고시세와 회사 게시 시세는 무엇이 다른가요?")).toBeVisible();
   await expect(page.getByRole("link", { name: "상품/매입 보기" })).toBeVisible();
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
@@ -342,10 +344,10 @@ test("mobile products route exposes a consultation catalog without checkout", as
   const productImageSources = await page.locator("main img[alt$='이미지']").evaluateAll((images) =>
     images.map((image) => (image instanceof HTMLImageElement ? image.currentSrc || image.src : "")),
   );
-  expect(productImageSources.some((src) => src.includes("kcg-product-gold-silver-catalog-20260503"))).toBe(true);
-  expect(productImageSources.some((src) => src.includes("kcg-product-jewelry-buying-20260503"))).toBe(true);
-  expect(productImageSources.some((src) => src.includes("kcg-product-b2b-consulting-20260503"))).toBe(true);
-  expect(productImageSources.some((src) => src.includes("kcg-home-product-keyvisual-20260503"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-product-minimal-bars-20260506"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-old-gold-process-20260506"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-product-corporate-consulting-20260506"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-home-price-desk-20260506"))).toBe(true);
   expect(new Set(productImageSources).size).toBeGreaterThanOrEqual(6);
   await expect(page.locator("main")).not.toContainText("방문 상담");
   await expect(page.locator("main")).not.toContainText("관리자에서");
@@ -539,7 +541,7 @@ test("company route uses approved company copy without internal strategy notes",
   await expect(main).toContainText("국내최대 랩그로운 도매법인");
   await expect(main).not.toContainText("전문 품목");
   await expect(main).not.toContainText("온라인 소비자 고금 정상매입 및 골드바, 실버바 및 제품판매");
-  await expect(page.getByAltText("한국센터금거래소 회사소개 상담 데스크 이미지")).toBeVisible();
+  await expect(page.getByAltText("한국센터금거래소 회사소개 상담 장면 이미지")).toBeVisible();
   await expect(main).not.toContainText("잠언");
   await expect(main).not.toContainText("할리스");
   await expect(main).not.toContainText("공식 인증센터 10군데");
@@ -591,6 +593,8 @@ test("mobile prices puts consultation actions before the company price columns",
   await expect(page.getByText("법인·대량")).toBeVisible();
   await expect(page.getByText("내가 팔 때").first()).toBeVisible();
   await expect(page.getByText("신분증, 보증서·영수증, 제품 상태")).toBeVisible();
+  await expect(page.getByText("살 때·팔 때 분리", { exact: true })).toBeVisible();
+  await expect(page.getByText("현장 확정", { exact: true })).toBeVisible();
   expect(mainText.split("USD/KRW").length - 1).toBeGreaterThanOrEqual(1);
   expect(mainText.split("업데이트").length - 1).toBeLessThanOrEqual(1);
   expect(mainText.split("3.75g 자동 환산").length - 1).toBe(0);

@@ -1,6 +1,6 @@
 # Current KCG Handoff
 
-Last updated: 2026-05-05 KST.
+Last updated: 2026-05-06 KST.
 
 This file is the short, durable context for a new Codex chat, another PC, or a future Codex Cloud task. Read it before continuing KCG site work.
 
@@ -8,8 +8,8 @@ This file is the short, durable context for a new Codex chat, another PC, or a f
 
 - 초보자는 먼저 `docs/setup/PROJECT_STATUS_FOR_BEGINNER.md`를 보면 된다. 이 문서는 현재 버전, 작업 브랜치, 백업 기준, 실제 사이트 반영 여부, 쉬운 Codex 요청 문장을 1-2분 안에 읽을 수 있게 정리한다.
 - `branch` = 작업 줄기, `HEAD` = 현재 코드 기준점, `rollback` = 이전 상태로 되돌리기, `backup branch` = 되돌리기용 책갈피, `dirty state` = 아직 정리되지 않은 변경사항.
-- 이번 `v0.2.9`는 운영형 QA에서 놓친 GNB 순서, TradingView 실제 가시성, 시세 이력 empty state, 24시간 수동 미등록 자동시세 guard를 보강하는 작업이다.
-- 되돌릴 때는 "v0.2.9 운영형 QA 보강만 되돌리는 계획을 먼저 보여줘" 또는 "v0.2.8 관리자 토글 버그 수정과 대시보드 재정리까지만 되돌리는 계획을 보여줘"라고 말하면 된다.
+- 이번 `v0.2.10`은 공개 런칭 전 시각 품질과 고객 안내를 보강하는 작업이다. 차콜 가격 데스크, 인물 상담, 종로 매장 무드, 고금 매입 절차, 순금 선물, 기업 상담 이미지를 새로 생성해 적용하고, 시세표 보는 법/고금 매입 절차/방문 준비물 인포그래픽과 FAQ를 보강한다.
+- 되돌릴 때는 "v0.2.10 전으로 되돌려줘" 또는 "v0.2.9 운영형 QA 보강만 되돌리는 계획을 먼저 보여줘"라고 말하면 된다.
 
 Junyoung's current preferred workflow is local-first. Codex Cloud is not the default right now because it has been inconvenient and unreliable for current KCG work. Keep Cloud docs as a future option and use `docs/setup/CLOUD_ONLY_WORKFLOW.md` only when junyoung explicitly asks for Codex Cloud or wants to avoid computer-specific setup.
 
@@ -17,20 +17,20 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 
 ## Current Version Snapshot
 
-- Current KCG site version: `v0.2.9`
-- Latest change: `Operations QA guard, TradingView visibility, and price history storage`
+- Current KCG site version: `v0.2.10`
+- Latest change: `Visual guidance refresh and infographic FAQ polish`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: `v0.2.9` includes real public/admin/data-model source changes and has been committed, pushed, and production deployed after the full verification gate. Confirm the current state with `git status --short --branch`, `npm run release:trace`, and `npx vercel inspect https://kcgold.co.kr/` before editing.
-- 실제 사이트 화면이 바뀐 것: GNB에서 `매장안내`가 `회사소개`보다 앞에 오며, TradingView 차트 버튼/ready/fallback, 관리자 시세 이력/24시간 guard 표시가 바뀜
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음. v0.2.9 source/schema/docs 변경은 production 배포까지 완료됨.
-- 배포된 것: v0.2.9 운영형 QA 보강 전체. Use `npx vercel inspect https://kcgold.co.kr/` for the current deployment id.
-- 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 운영자료 확정, Vercel Pro 또는 외부 scheduler 결정은 별도 승인 전까지 제외.
-- 고객에게 보여줘도 되는 것: `kcgold.co.kr` 검토용 사이트. 검색 노출은 여전히 차단.
-- 아직 내부 기준/계획일 뿐인 것: retention cleanup policy, 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
-- Latest QA: `v0.2.9` completed local verification with `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm run screenshot:admin`, `npm run qa:site`, `npm audit --audit-level=moderate`, and `git diff --check`; after deployment verify with `npx vercel inspect https://kcgold.co.kr/`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site`, and `npm run check:external -- --strict-domain`.
+- Reflection status: `v0.2.10` is local source/UI/assets work, committed locally after verification but not pushed or deployed. Confirm current state with `git status --short --branch`, `npm run release:trace`, and required validation commands before handoff.
+- 실제 사이트 화면이 바뀌는 것: 홈 캐러셀, 상품/매입 이미지, `/prices` 시세표 보는 법, 홈/서비스 고금 매입 절차, `/about` 방문 준비물, `/company` 상담 이미지, 서비스 FAQ.
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: live production domains remain on the last deployed `v0.2.9` until junyoung explicitly asks for deployment.
+- 배포된 것: 없음 in `v0.2.10`; v0.2.9 remains the last deployed production/stable version.
+- 아직 배포 안 된 것: `v0.2.10` visual/guidance refresh 전체, 검색 노출/noindex 해제, 실제 상품 운영자료 확정, Vercel Pro 또는 외부 scheduler 결정.
+- 고객에게 보여줘도 되는 것: verification screenshots after local QA; live `kcgold.co.kr` still has search blocked and remains on the previous deployment until deployment approval.
+- 아직 내부 기준/계획일 뿐인 것: real product/store/staff photography replacement, final product prices/공임/판매정책, final admin secret rotation, search launch approval.
+- Latest QA: `v0.2.10` local verification passed on 2026-05-06 KST: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site` (`20 passed`), `npm run screenshot:site`, `npm run qa:site` (rendered audit `1116 checks, 0 skipped`, Playwright `20 passed`, npm audit `0 vulnerabilities`), `npm audit --audit-level=moderate`, and `git diff --check` with line-ending warnings only. Screenshots directly inspected: `home-mobile-viewport.png`, `home-desktop-viewport.png`, `prices-mobile.png`, `products-mobile.png`, `services-mobile.png`, and `about-mobile.png`. After any future deployment verify with `npx vercel inspect https://kcgold.co.kr/`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site`, and `npm run check:external -- --strict-domain`.
 - Change ledger: `docs/setup/CHANGELOG.md`
 - Broader rollback bookmark: `backup/pre-v0.2.4-operations-product-audit`
-- Rollback phrase: `v0.2.9 전으로 되돌려줘`
+- Rollback phrase: `v0.2.10 전으로 되돌려줘`
 
 ## Current Source Of Truth
 
@@ -76,7 +76,7 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 - `/option-1` and `/option-2` have been removed from the app. The audit and Playwright tests now expect those routes to return 404.
 - The old source comparison script has been removed from the default workflow because the repo is now the accepted baseline.
 - The home campaign slider must remain a full-bleed visual surface. On desktop, the company price table belongs as a left-side overlay on top of the full-width campaign image, with a visible left image margin and a narrower dark lineup-panel ratio inspired by major Korean gold-exchange sites. The image must still span the viewport and must not shrink into a right-side half-width banner. On mobile/tablet, preserve price readability over strict overlay behavior.
-- The current public image set uses 2026-04-27, 2026-04-30, and 2026-05-03 assets under `public/campaign`, `public/products`, `public/company`, and `public/services`. Public UI references optimized `.webp` versions for large generated assets while source originals stay in File-Hub and repo review folders keep optimized candidates/contact sheets. The home carousel now starts with `kcg-home-product-keyvisual-20260503.webp`, then uses `kcg-home-inspection-action-20260503.webp`, `kcg-visit-transaction-guide-20260503.webp`, and the existing `kcg-hero-metal-bars.jpg`. Product/catalog surfaces use `kcg-product-gold-silver-catalog-20260503.webp`, `kcg-product-jewelry-buying-20260503.webp`, and `kcg-product-b2b-consulting-20260503.webp` to reduce repeated desk imagery; silver-bar cards intentionally retain `kcg-silver-gift-20260427-v2.jpg` so gold and silver categories do not show identical images. Existing 2026-04-27/2026-04-30 images remain available for comparison under `public/image-options/2026-05-03/existing-current`; optimized candidates, contact sheets, manifests, and selection notes are under `public/image-options/2026-05-03`. The retired `kcg-main-commerce-banner-20260427-v2.jpg` direction stays out because it looked like a generated poster rather than a controlled KCG campaign surface.
+- The current public image set uses 2026-04-27, 2026-04-30, 2026-05-03, and 2026-05-06 assets under `public/campaign`, `public/products`, `public/company`, and `public/services`. Public UI references optimized `.webp` versions for generated assets while source originals stay in File-Hub and repo review folders keep candidates/contact sheets. The home carousel now starts with `kcg-home-price-desk-20260506.webp`, then uses `kcg-home-human-consultation-20260506.webp`, `kcg-home-seoul-retail-20260506.webp`, and `kcg-old-gold-process-20260506.webp`. Product/catalog surfaces use `kcg-product-minimal-bars-20260506.webp`, `kcg-product-pure-gold-gifts-20260506.webp`, `kcg-old-gold-process-20260506.webp`, and `kcg-product-corporate-consulting-20260506.webp`; silver-bar cards intentionally retain `kcg-silver-gift-20260427-v2.jpg` for category contrast. Existing 2026-04-27/2026-04-30/2026-05-03 images remain available for comparison under `public/image-options/2026-05-03`; the new v0.2.10 originals, optimized WebPs, contact sheet, and manifest are under `public/image-options/2026-05-06/generated`. File-Hub preserved source originals are under `C:\Users\junyo\Documents\File-Hub\30_Media\Images\AI generated\KCG\2026-05-06-visual-guidance-refresh`.
 - Competitor sites may be used for structure, hierarchy, category grouping, CTA placement, and visual grammar. Do not copy competitor-owned images, prices, slogans, detailed copy, logos, staff/model photos, internal API endpoints, or scraped data into KCG.
 - `/products` is now the public consultation catalog surface. It is intentionally not a checkout/cart mall: price wording, product photos, display order, visibility, and consultation notes can be managed through the product model/admin flow, while public copy keeps phone inquiry and trade consultation as the conversion path.
 - The baseline product catalog now uses a tabbed `상품/매입` structure: `전체`, `골드바`, `실버바`, `순금제품`, `고금·주얼리 매입`, and `B2B·기업`. Product cards may show current posted-price reference calculations, but they must remain inquiry-first and must not behave like checkout, payment, live trading, or guaranteed quote flow.

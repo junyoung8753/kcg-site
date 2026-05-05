@@ -33,25 +33,25 @@ const promoBanners = [
     title: "오늘 고시 시세",
     body: "살 때·팔 때 기준을 먼저 확인하세요.",
     href: "/prices",
-    image: "/campaign/kcg-home-product-keyvisual-20260503.webp",
+    image: "/campaign/kcg-home-price-desk-20260506.webp",
   },
   {
     title: "고금·주얼리 매입",
     body: "순금, 18K, 14K 기준가를 확인합니다.",
     href: "/products?category=jewelry",
-    image: "/products/kcg-product-jewelry-buying-20260503.webp",
+    image: "/campaign/kcg-old-gold-process-20260506.webp",
   },
   {
     title: "기업체 기념품·대량 상담",
     body: "수량, 납기, 예산 기준으로 상담합니다.",
     href: "/products?category=b2b",
-    image: "/products/kcg-product-b2b-consulting-20260503.webp",
+    image: "/products/kcg-product-corporate-consulting-20260506.webp",
   },
   {
     title: "KC 랩그로운 다이아몬드",
     body: "관계 법인 다이아몬드 상품 안내",
     href: "https://www.kcdia.co.kr/",
-    image: "/products/kcg-product-jewelry-buying-20260503.webp",
+    image: "/products/kcg-product-pure-gold-gifts-20260506.webp",
     external: true,
   },
   {
@@ -65,7 +65,7 @@ const promoBanners = [
     title: "KCG 네이버 블로그",
     body: "금값 정보와 KCG 소식",
     href: "https://m.blog.naver.com/kcgoldx?tab=1",
-    image: "/campaign/kcg-visit-transaction-guide-20260503.webp",
+    image: "/campaign/kcg-home-seoul-retail-20260506.webp",
     external: true,
   },
 ] as const;
@@ -89,8 +89,8 @@ function getProductImagePositionClass(product: Product) {
   if (product.slug === "kcg-silver-bar-1kg") return "object-[52%_50%]";
   if (product.slug === "pure-gold-card-1g") return "object-[48%_52%]";
   if (product.slug === "platinum-silver-buying") return "object-[48%_58%]";
-  if (product.category === "pure_gold") return "object-[76%_50%]";
-  if (product.category === "custom_order") return "object-[42%_58%]";
+  if (product.category === "pure_gold") return "object-[48%_50%]";
+  if (product.category === "custom_order") return "object-[52%_54%]";
   return "object-center";
 }
 

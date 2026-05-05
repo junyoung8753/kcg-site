@@ -1,6 +1,6 @@
 # KCG Project Status For Beginner
 
-Last updated: 2026-05-05 KST.
+Last updated: 2026-05-06 KST.
 
 This file is for junyoung when Git, branch, version, handoff, changelog, rollback, and open tasks feel confusing. It explains the current KCG site status in plain language.
 
@@ -19,22 +19,22 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## Current Snapshot
 
-- 현재 공식 작업 버전: `v0.2.9`
+- 현재 공식 작업 버전: `v0.2.10`
 - 현재 작업 브랜치: `codex/kcg-launch-readiness-catalog-20260427`
-- 이번 작업 버전: `v0.2.9`
-- 직전 버전: `v0.2.8`
-- 작업 전 HEAD: `db14f20`
+- 이번 작업 버전: `v0.2.10`
+- 직전 버전: `v0.2.9`
+- 작업 전 HEAD: `a7ae2f6`
 - 백업 브랜치: `backup/pre-v0.2.4-operations-product-audit` (`v0.2.4`와 `v0.2.5` 문서 보강 전으로 크게 돌아가는 책갈피)
 
 ## 실제 사이트 반영 여부
 
-- 실제 사이트 화면이 바뀐 것: 메뉴 순서에서 `매장안내`가 `회사소개`보다 앞에 오고, TradingView 차트 버튼/표시 상태와 관리자 시세 이력/24시간 guard 표시가 바뀜
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음. v0.2.9 코드/schema/문서 변경은 production 배포까지 완료됨.
-- 배포된 것: v0.2.9 운영형 QA 보강 전체. 최신 배포 ID는 `npx vercel inspect https://kcgold.co.kr/`로 확인한다.
-- 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, Vercel Pro 또는 외부 scheduler 결정은 아직 별도 작업.
-- 내가 고객에게 보여줘도 되는 것: `kcgold.co.kr` 검토용 공개 화면. 검색 노출은 아직 차단.
+- 실제 사이트 화면이 바뀌는 것: 배포하면 홈 캐러셀, 상품/매입 이미지, `/prices` 시세표 보는 법, 홈/서비스 고금 매입 절차, `/about` 방문 준비물, `/company` 상담 이미지, 서비스 FAQ가 바뀜
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음. `v0.2.10`은 로컬 소스/UI/이미지 변경이며 production 배포 전까지 live `kcgold.co.kr`에는 반영되지 않음.
+- 배포된 것: `v0.2.10`은 아직 없음. 최신 live/stable 배포는 `v0.2.9`이고, 최신 배포 ID는 `npx vercel inspect https://kcgold.co.kr/`로 확인한다.
+- 아직 배포 안 된 것: `v0.2.10` 비주얼/인포그래픽/FAQ 보강 전체, 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, Vercel Pro 또는 외부 scheduler 결정은 아직 별도 작업.
+- 내가 고객에게 보여줘도 되는 것: 로컬 검증 스크린샷 또는 배포 승인 후 preview/live 화면. 현재 live `kcgold.co.kr`은 아직 v0.2.9이며 검색 노출은 차단.
 - 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
-- 이번 작업에서 건드린 범위: GNB 순서, TradingView disclosure/widget readiness, 시세 이력/일별 스냅샷 schema, 자동시세 24시간 guard, 관리자 시세 이력 표시, QA/상태 문서, `package.json`, `package-lock.json`
+- 이번 작업에서 건드린 범위: 홈/가격/상품/서비스/회사/매장 이미지와 안내 UI, FAQ/방문 준비물 문구, 상품 이미지 매핑, mock/seed 이미지 참조, QA/상태 문서, `package.json`, `package-lock.json`
 - 절대 건드리지 않은 범위: 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, Vercel env/secret
 
 ## Easy Words
@@ -53,8 +53,8 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 | 구분 | 이름 | 쉬운 설명 | 내가 봐야 하는 경우 |
 |---|---|---|---|
-| 현재 작업 버전 | `v0.2.9` | 메뉴 순서, TradingView 표시, 시세 이력 보관, 24시간 자동시세 guard를 운영형 QA 기준으로 보강한 버전 | 이번 변경 확인 |
-| 이전 버전 | `v0.2.8` | 자동시세 ON/OFF 저장 버그를 고치고 관리자 첫 화면을 실무형으로 다시 정리한 버전 | 비교/이전 상태 확인 |
+| 현재 작업 버전 | `v0.2.10` | 차콜 가격 데스크, 인물 상담, 종로 매장 무드, 고금 매입 절차 이미지와 시세표/방문/매입 안내를 보강한 버전 | 이번 변경 확인 |
+| 이전 버전 | `v0.2.9` | 메뉴 순서, TradingView 표시, 시세 이력 보관, 24시간 자동시세 guard를 운영형 QA 기준으로 보강한 버전 | 비교/이전 상태 확인 |
 | 백업 브랜치 | `backup/pre-v0.2.4-operations-product-audit` | `v0.2.4`와 `v0.2.5` 문서 보강 전으로 돌아가는 책갈피 | 크게 되돌릴 때 |
 | 현재 작업 브랜치 | `codex/kcg-launch-readiness-catalog-20260427` | 지금 Codex가 작업 중인 줄기 | 상태 확인 |
 | handoff | `CURRENT_HANDOFF.md` | 다음 작업자에게 넘기는 현재 상태 메모 | 이어서 작업할 때 |
@@ -88,6 +88,7 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## 되돌리기 요청 문장
 
+- "v0.2.10 비주얼/인포그래픽 보강만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.9 운영형 QA 보강만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.8 관리자 토글 버그 수정과 대시보드 재정리만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.7 관리자 라이트 테마와 자동시세 UX 개선만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
@@ -119,10 +120,11 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## 하지 말아야 할 것
 
-- push 하지 않음 = GitHub 원격 저장소에 올리지 않음
-- deploy 하지 않음 = 실제 사이트에 공개 반영하지 않음
-- `src` 수정 없음 = 사이트 기능 코드는 건드리지 않음
-- `public` 수정 없음 = 고객에게 보이는 이미지/파일은 바꾸지 않음
+- 별도 승인 전 push 하지 않음 = GitHub 원격 저장소에 올리지 않음
+- 별도 승인 전 deploy 하지 않음 = 실제 사이트에 공개 반영하지 않음
+- 별도 승인 전 검색 노출/noindex 해제하지 않음
+- 결제/장바구니/실시간 거래 추가 없음
+- 경쟁사 이미지/카피/가격/API 데이터 사용 없음
 - API 로직 수정 없음 = 시세나 데이터 가져오는 작동 방식은 바꾸지 않음
 - Supabase schema 수정 없음 = 데이터베이스 구조는 건드리지 않음
 - Vercel 설정 수정 없음 = 실제 배포/도메인/환경 설정은 건드리지 않음

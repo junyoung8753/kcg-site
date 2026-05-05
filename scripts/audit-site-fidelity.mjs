@@ -325,9 +325,11 @@ async function expectUrlStatus(pathname, expectedStatus) {
   "public/campaign/kcg-visit-desk-20260427.jpg",
   "public/campaign/kcg-advisor-counter-20260430.png",
   "public/campaign/kcg-advisor-counter-20260430.webp",
-  "public/campaign/kcg-home-product-keyvisual-20260503.webp",
-  "public/campaign/kcg-home-inspection-action-20260503.webp",
-  "public/campaign/kcg-visit-transaction-guide-20260503.webp",
+  "public/campaign/kcg-home-price-desk-20260506.webp",
+  "public/campaign/kcg-home-human-consultation-20260506.webp",
+  "public/campaign/kcg-home-seoul-retail-20260506.webp",
+  "public/campaign/kcg-price-guide-visual-20260506.webp",
+  "public/campaign/kcg-old-gold-process-20260506.webp",
   "public/company/kcg-company-heritage-20260430.png",
   "public/company/kcg-company-heritage-20260430.webp",
   "public/products/kcg-gold-bar-catalog-20260427-v2.jpg",
@@ -339,30 +341,34 @@ async function expectUrlStatus(pathname, expectedStatus) {
   "public/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
   "public/products/kcg-b2b-gift-packaging-20260430.png",
   "public/products/kcg-b2b-gift-packaging-20260430.webp",
-  "public/products/kcg-product-gold-silver-catalog-20260503.webp",
-  "public/products/kcg-product-jewelry-buying-20260503.webp",
-  "public/products/kcg-product-b2b-consulting-20260503.webp",
+  "public/products/kcg-product-minimal-bars-20260506.webp",
+  "public/products/kcg-product-pure-gold-gifts-20260506.webp",
+  "public/products/kcg-product-corporate-consulting-20260506.webp",
   "public/products/kcg-buying-process-20260427-v2.jpg",
   "public/services/kcg-service-counter-20260427.jpg",
   "public/brand/kcg-logo.png",
   "public/brand/kcg-lockup.png",
   "public/image-options/2026-05-03/existing-current-contact-sheet.jpg",
   "public/image-options/2026-05-03/new-candidates-contact-sheet.jpg",
+  "public/image-options/2026-05-06/generated/contact-sheet.jpg",
 ].forEach((relativePath) => expectFile(relativePath, { minBytes: 10_000 }));
+expectFile("public/image-options/2026-05-06/generated/manifest.json", { minBytes: 1_000 });
 
 [
   "public/campaign/kcg-brand-gold-bars-20260427-v4.webp",
   "public/campaign/kcg-main-desk-photo-20260427-v3.webp",
   "public/campaign/kcg-advisor-counter-20260430.webp",
-  "public/campaign/kcg-home-product-keyvisual-20260503.webp",
-  "public/campaign/kcg-home-inspection-action-20260503.webp",
-  "public/campaign/kcg-visit-transaction-guide-20260503.webp",
+  "public/campaign/kcg-home-price-desk-20260506.webp",
+  "public/campaign/kcg-home-human-consultation-20260506.webp",
+  "public/campaign/kcg-home-seoul-retail-20260506.webp",
+  "public/campaign/kcg-price-guide-visual-20260506.webp",
+  "public/campaign/kcg-old-gold-process-20260506.webp",
   "public/company/kcg-company-heritage-20260430.webp",
   "public/products/kcg-jewelry-buying-tray-20260430.webp",
   "public/products/kcg-b2b-gift-packaging-20260430.webp",
-  "public/products/kcg-product-gold-silver-catalog-20260503.webp",
-  "public/products/kcg-product-jewelry-buying-20260503.webp",
-  "public/products/kcg-product-b2b-consulting-20260503.webp",
+  "public/products/kcg-product-minimal-bars-20260506.webp",
+  "public/products/kcg-product-pure-gold-gifts-20260506.webp",
+  "public/products/kcg-product-corporate-consulting-20260506.webp",
 ].forEach((relativePath) => expectFileSizeAtMost(relativePath, { maxBytes: 300_000 }));
 
 expectFile("docs/quality/product-experience-rubric.md", { minBytes: 3_000 });
@@ -413,6 +419,11 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.10 - Visual guidance refresh and infographic FAQ polish",
+  "Graphite Desk",
+  "kcg-home-price-desk-20260506.webp",
+  "시세표 보는 법",
+  "v0.2.10 전으로 되돌려줘",
   "## v0.2.9 - Operations QA guard, TradingView visibility, and price history storage",
   "24시간 이상 수동 시세 등록",
   "price_daily_snapshots",
@@ -451,17 +462,17 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.9`",
-  "Operations QA guard, TradingView visibility, and price history storage",
+  "Current KCG site version: `v0.2.10`",
+  "Visual guidance refresh and infographic FAQ polish",
   "existing-api-integration-audit-2026-05-05.md",
-  "실제 사이트 화면이 바뀐 것: GNB에서 `매장안내`가 `회사소개`보다 앞에 오며",
+  "실제 사이트 화면이 바뀌는 것: 홈 캐러셀",
   "backup/pre-v0.2.4-operations-product-audit",
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
-  "v0.2.9",
-  "TradingView 표시",
-  "실제 사이트 화면이 바뀐 것: 메뉴 순서",
+  "v0.2.10",
+  "시세표 보는 법",
+  "실제 사이트 화면이 바뀌는 것: 배포하면 홈 캐러셀",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",
   "MEDIUM",
@@ -542,6 +553,8 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "Risk Labels",
   "KCG-TODO-052",
   "KCG-TODO-053",
+  "KCG-TODO-055",
+  "KCG-TODO-060",
   "existing-api-integration-audit-2026-05-05.md",
   "실제 제품 사진",
 ]);
@@ -576,14 +589,14 @@ expectText("scripts/capture-admin-screenshots.mjs", [
 ]);
 
 expectText("src/components/market/price-lineup.tsx", [
-  "/campaign/kcg-home-product-keyvisual-20260503.webp",
-  "/campaign/kcg-home-inspection-action-20260503.webp",
-  "/campaign/kcg-visit-transaction-guide-20260503.webp",
-  "/campaign/kcg-hero-metal-bars.jpg",
-  "한국센터금거래소 골드바와 실버바 상담 키비주얼",
-  "한국센터금거래소 금괴 확인 상담 장면",
-  "한국센터금거래소 거래 준비 상담 데스크",
-  "골드바와 실버바 키비주얼 배너",
+  "/campaign/kcg-home-price-desk-20260506.webp",
+  "/campaign/kcg-home-human-consultation-20260506.webp",
+  "/campaign/kcg-home-seoul-retail-20260506.webp",
+  "/campaign/kcg-old-gold-process-20260506.webp",
+  "한국센터금거래소 가격 데스크와 골드바 실버바 상담 이미지",
+  "한국센터금거래소 상담원과 고객 상담 장면",
+  "종로 귀금속 매장 분위기 이미지",
+  "고금 주얼리 매입 절차 상담 이미지",
   "siteConfig.englishName",
   "kcg-full-bleed-campaign",
   'data-testid="home-campaign-visual"',
@@ -737,8 +750,8 @@ expectText("tests/site-fidelity.spec.ts", [
   "품목별로 볼 기준만 확인합니다.",
   "USD/KRW",
   "단위: 3.75g",
-  "한국센터금거래소 금괴 확인 상담 장면",
-  "한국센터금거래소 골드바와 실버바 상담 키비주얼",
+  "한국센터금거래소 상담원과 고객 상담 장면",
+  "한국센터금거래소 가격 데스크와 골드바 실버바 상담 이미지",
   "const explicitAdminPassword = process.env.KCG_TEST_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD",
   'const adminPassword = explicitAdminPassword || (isExternalAuditUrl ? undefined : "0000")',
 ]);
@@ -841,7 +854,7 @@ expectText("src/app/layout.tsx", [
   "PretendardVariable.woff2",
   "canExposeToSearch",
   "summary_large_image",
-  "kcg-home-product-keyvisual-20260503.webp",
+  "kcg-home-price-desk-20260506.webp",
   "application/ld+json",
   "JewelryStore",
   "sameAs",
@@ -865,7 +878,7 @@ expectNoText("src/lib/site-config.ts", ["adminPreviewPassword"]);
   "src/mock/products.ts",
   "supabase/seed.sql",
 ].forEach((relativePath) =>
-  expectNoText(relativePath, ["방문 상담", "B2C 방문 상담", "순금·골드바 방문 상담"]),
+  expectNoText(relativePath, ["B2C 방문 상담", "순금·골드바 방문 상담"]),
 );
 expectText("src/app/admin/login/page.tsx", ["missing-env", "ADMIN_PASSWORD"]);
 expectNoText("src/app/admin/login/page.tsx", ["preview-default", "adminPreviewPassword"]);
@@ -939,14 +952,15 @@ expectText("src/components/layout/site-footer.tsx", [
 ]);
 expectText("src/app/(site)/about/page.tsx", [
   "siteConfig.locations",
-  "/campaign/kcg-visit-transaction-guide-20260503.webp",
+  "/campaign/kcg-home-seoul-retail-20260506.webp",
   "위치, 전화, 준비 항목만 먼저 확인합니다.",
   "거래 전 준비 항목",
+  "visitPrepCards",
   "본사 전화",
 ]);
 
 expectText("src/app/(site)/services/page.tsx", [
-  "/campaign/kcg-home-inspection-action-20260503.webp",
+  "/campaign/kcg-old-gold-process-20260506.webp",
   "품목 확인, 고시 기준, 실물 확인",
   "serviceFaqs",
   "거래 기준",
@@ -956,7 +970,7 @@ expectText("src/app/(site)/services/page.tsx", [
 ]);
 expectText("src/app/(site)/products/page.tsx", [
   "상품/매입",
-  "/products/kcg-product-gold-silver-catalog-20260503.webp",
+  "/products/kcg-product-minimal-bars-20260506.webp",
   "탭에서 품목을 고르고 기준가를 확인합니다.",
   "골드바, 실버바, 순금제품, 고금 매입 항목을 바로 볼 수 있습니다.",
   "ProductCatalog",
@@ -967,8 +981,8 @@ expectText("src/app/(site)/products/[slug]/page.tsx", [
   "전화 문의",
 ]);
 expectText("src/app/(site)/company/page.tsx", [
-  "/campaign/kcg-visit-transaction-guide-20260503.webp",
-  "한국센터금거래소 회사소개 상담 데스크 이미지",
+  "/campaign/kcg-home-human-consultation-20260506.webp",
+  "한국센터금거래소 회사소개 상담 장면 이미지",
 ]);
 expectNoText("src/app/(site)/company/page.tsx", [
   "const businessScopes",
@@ -1042,8 +1056,8 @@ expectText("src/components/products/product-catalog.tsx", [
   "2xl:block",
   "KC 랩그로운 다이아몬드",
   "getProductImageSrc",
-  "kcg-product-jewelry-buying-20260503.webp",
-  "kcg-product-b2b-consulting-20260503.webp",
+  "kcg-old-gold-process-20260506.webp",
+  "kcg-product-corporate-consulting-20260506.webp",
 ]);
 expectText("src/lib/product-presenter.ts", [
   "전체",
@@ -1055,10 +1069,11 @@ expectText("src/lib/product-presenter.ts", [
   "productCatalogTabs",
   "if (imageUrl?.startsWith(\"/\"))",
   "legacyProductImageReplacements",
-  "kcg-product-gold-silver-catalog-20260503.webp",
+  "kcg-product-minimal-bars-20260506.webp",
   "kcg-silver-gift-20260427-v2.jpg",
-  "kcg-product-jewelry-buying-20260503.webp",
-  "kcg-product-b2b-consulting-20260503.webp",
+  "kcg-product-pure-gold-gifts-20260506.webp",
+  "kcg-old-gold-process-20260506.webp",
+  "kcg-product-corporate-consulting-20260506.webp",
 ]);
 expectNoText("src/lib/product-presenter.ts", ["!defaultProductImages.has(imageUrl)"]);
 expectNoText("src/components/products/product-catalog.tsx", [
@@ -1088,11 +1103,11 @@ expectNoText("src/components/products/product-catalog.tsx", [
   expectNoText(relativePath, ["사진과 가격 문구", "등록해 운영", "관리자에서"]),
 );
 expectText("src/lib/product-presenter.ts", [
-  "/products/kcg-product-gold-silver-catalog-20260503.webp",
+  "/products/kcg-product-minimal-bars-20260506.webp",
   "/products/kcg-silver-gift-20260427-v2.jpg",
-  "/products/kcg-product-jewelry-buying-20260503.webp",
-  "/campaign/kcg-visit-transaction-guide-20260503.webp",
-  "/products/kcg-product-b2b-consulting-20260503.webp",
+  "/products/kcg-product-pure-gold-gifts-20260506.webp",
+  "/campaign/kcg-old-gold-process-20260506.webp",
+  "/products/kcg-product-corporate-consulting-20260506.webp",
 ]);
 
 expectText("src/mock/products.ts", [
@@ -1104,10 +1119,11 @@ expectText("src/mock/products.ts", [
   "기업 기념품 제작",
   "현재 고시가 기준 참고가",
   "custom_order",
-  "/products/kcg-product-gold-silver-catalog-20260503.webp",
+  "/products/kcg-product-minimal-bars-20260506.webp",
   "/products/kcg-silver-gift-20260427-v2.jpg",
-  "/products/kcg-product-jewelry-buying-20260503.webp",
-  "/products/kcg-product-b2b-consulting-20260503.webp",
+  "/products/kcg-product-pure-gold-gifts-20260506.webp",
+  "/campaign/kcg-old-gold-process-20260506.webp",
+  "/products/kcg-product-corporate-consulting-20260506.webp",
 ]);
 expectText("supabase/seed.sql", [
   "KCG 골드바 1g",
@@ -1116,11 +1132,11 @@ expectText("supabase/seed.sql", [
   "순금 돌반지 3.75g",
   "18K 주얼리 매입",
   "귀금속 매입 절차 안내",
-  "/products/kcg-product-gold-silver-catalog-20260503.webp",
+  "/products/kcg-product-minimal-bars-20260506.webp",
   "/products/kcg-silver-gift-20260427-v2.jpg",
-  "/products/kcg-product-jewelry-buying-20260503.webp",
-  "/products/kcg-product-b2b-consulting-20260503.webp",
-  "/campaign/kcg-visit-transaction-guide-20260503.webp",
+  "/products/kcg-product-pure-gold-gifts-20260506.webp",
+  "/products/kcg-product-corporate-consulting-20260506.webp",
+  "/campaign/kcg-old-gold-process-20260506.webp",
 ]);
 expectText("src/types/product.ts", ["displayOrder", "priceLabel", "ProductUpsertInput", "ProductPriceBasis", "pure_gold"]);
 expectText("src/actions/product-actions.ts", ["upsertProductAction", "revalidatePath(\"/products\")", "priceBasis", "weightGrams"]);
@@ -1317,7 +1333,7 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.9` includes real public/admin/data-model source changes",
+  "Reflection status: `v0.2.10` is local source/UI/assets work",
   "docs/setup/CHANGELOG.md",
   "docs/quality/ai-site-production-playbook.md",
   "docs/quality/data-source-compliance.md",
@@ -1335,10 +1351,10 @@ expectText("docs/setup/CURRENT_HANDOFF.md", [
   "Repository visibility decision as of 2026-04-27 KST",
   "Do not perform production deploys beyond an explicitly approved stable review refresh",
   "Current image source folder",
-  "kcg-home-product-keyvisual-20260503.webp",
-  "kcg-product-jewelry-buying-20260503.webp",
+  "kcg-home-price-desk-20260506.webp",
+  "kcg-old-gold-process-20260506.webp",
   "505-88-03567",
-  "The home carousel now starts with `kcg-home-product-keyvisual-20260503.webp`",
+  "The home carousel now starts with `kcg-home-price-desk-20260506.webp`",
   "Stable Review Deploy Boundary",
 ]);
 expectNoText("docs/setup/CURRENT_HANDOFF.md", ["Gabia", "Whois DNS"]);
@@ -1368,6 +1384,7 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-049",
   "KCG-TODO-050",
   "KCG-TODO-059",
+  "KCG-TODO-060",
   "tasks:dashboard",
   "user-only",
   "codex",
@@ -1436,7 +1453,7 @@ expectText("docs/brand/campaign-image-prompts.md", [
   "Source Folder",
   "KakaoTalk_20260427_125126082_01.png",
   "ChatGPT Image 2026년 4월 27일 오후 01_02_09.png",
-  "kcg-home-product-keyvisual-20260503.webp",
+  "kcg-home-price-desk-20260506.webp",
   "public/image-options/2026-05-03",
   "contact sheets",
   "optimized `.webp` versions",

@@ -35,6 +35,30 @@ KCG should read as a practical Korean gold-exchange counter with large real-feel
 | Jewelry buying and diamond-family promo | `public/products/kcg-product-jewelry-buying-20260503.webp` | Cleaner tray/scale image for jewelry and adjacent diamond inquiry contexts. |
 | B2B/corporate consultation | `public/products/kcg-product-b2b-consulting-20260503.webp` | Distinguishes bulk/corporate consultation from general jewelry and gold-bar images. |
 
+## 2026-05-06 v0.2.10 Follow-up
+
+Junyoung approved a broader visual lane for the final pre-launch pass: Korean text, the real KCG logo, temporary price text, and AI-generated non-real people/faces are allowed, while competitor material, fake logos, fake certificates, fake appraisal/guarantee documents, and real-person likenesses remain banned. The implementation keeps exact logo, CTA, and business-critical price/guidance copy in HTML/UI layers where possible so generated images do not become the source of truth.
+
+The chosen direction is `Graphite Desk + Seoul Retail + Human Consultation`: charcoal/silver/white surfaces with gold accents, stronger product scale, more retail context, and selective human consultation scenes.
+
+| Role | Applied Asset | Why |
+| --- | --- | --- |
+| Home first slide and social image | `public/campaign/kcg-home-price-desk-20260506.webp` | Moves the first impression toward a darker price desk with metal products and a screen-like price context without making the image itself a price source. |
+| Home consultation slide | `public/campaign/kcg-home-human-consultation-20260506.webp` | Adds a human 상담 flow without using identifiable staff/customer photography or fake logo signage. |
+| Seoul retail / visit mood | `public/campaign/kcg-home-seoul-retail-20260506.webp` | Adds Jongno-inspired retail presence without competitor signs or invented KCG storefront branding. |
+| Price-table guide visual | `public/campaign/kcg-price-guide-visual-20260506.webp` | Supports the `/prices` 시세표 보는 법 guide while the actual instructional text remains DOM copy. |
+| Old-gold process | `public/campaign/kcg-old-gold-process-20260506.webp` | Replaces repetitive white-glove imagery with a clearer sorting/tray 상담 scene and no certificate/appraisal-document claim. |
+| Gold/silver product surface | `public/products/kcg-product-minimal-bars-20260506.webp` | Provides a sharper graphite/ceramic product table for gold-bar and main catalog surfaces. |
+| Pure-gold gifts | `public/products/kcg-product-pure-gold-gifts-20260506.webp` | Separates 순금제품 from generic bullion imagery without turning it into a holiday ad. |
+| Corporate consulting | `public/products/kcg-product-corporate-consulting-20260506.webp` | Gives B2B consultation its own meeting-table visual without fake contracts, seals, or certificates. |
+
+New source and review storage:
+
+- Source originals: `C:\Users\junyo\Documents\File-Hub\30_Media\Images\AI generated\KCG\2026-05-06-visual-guidance-refresh`
+- Repo review folder: `public/image-options/2026-05-06/generated`
+- Review contact sheet: `public/image-options/2026-05-06/generated/contact-sheet.jpg`
+- Machine-readable manifest: `public/image-options/2026-05-06/generated/manifest.json`
+
 ## Selection Folder
 
 Use this folder when junyoung wants to choose a different visual direction:
@@ -66,7 +90,8 @@ Use `contact-sheet.jpg` in that folder for quick comparison. Source PNGs are pre
 
 ## Guardrails
 
-- Do not use AI-generated fake KCG logo text, fake certificates, price boards, personal documents, competitor marks, or recognizable faces.
+- Do not use AI-generated fake KCG logo text, fake certificates, fake appraisal/guarantee documents, personal documents, competitor marks, or recognizable real-person faces.
+- AI-generated generic 상담원/고객 faces and hands are allowed only when they do not resemble a real person, employee, celebrity, or customer testimonial.
 - Keep exact copy, price labels, legal facts, and brand marks in HTML/CSS or real uploaded assets, not inside generated images.
 - Keep source PNGs and review copies for later choice, but public UI should use optimized `.webp` variants.
 - Prefer real KCG-approved photography once junyoung supplies store/product photos; AI images are still concept/commercial assets, not verified real inventory photos.

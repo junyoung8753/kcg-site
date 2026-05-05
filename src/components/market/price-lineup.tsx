@@ -78,24 +78,24 @@ const rows: LineupRow[] = [
 
 const campaignSlides = [
   {
-    image: "/campaign/kcg-home-product-keyvisual-20260503.webp",
-    alt: "한국센터금거래소 골드바와 실버바 상담 키비주얼",
-    objectPosition: "68% center",
-  },
-  {
-    image: "/campaign/kcg-home-inspection-action-20260503.webp",
-    alt: "한국센터금거래소 금괴 확인 상담 장면",
+    image: "/campaign/kcg-home-price-desk-20260506.webp",
+    alt: "한국센터금거래소 가격 데스크와 골드바 실버바 상담 이미지",
     objectPosition: "64% center",
   },
   {
-    image: "/campaign/kcg-visit-transaction-guide-20260503.webp",
-    alt: "한국센터금거래소 거래 준비 상담 데스크",
+    image: "/campaign/kcg-home-human-consultation-20260506.webp",
+    alt: "한국센터금거래소 상담원과 고객 상담 장면",
     objectPosition: "58% center",
   },
   {
-    image: "/campaign/kcg-hero-metal-bars.jpg",
-    alt: "골드바와 실버바 키비주얼 배너",
-    objectPosition: "center center",
+    image: "/campaign/kcg-home-seoul-retail-20260506.webp",
+    alt: "종로 귀금속 매장 분위기 이미지",
+    objectPosition: "50% center",
+  },
+  {
+    image: "/campaign/kcg-old-gold-process-20260506.webp",
+    alt: "고금 주얼리 매입 절차 상담 이미지",
+    objectPosition: "52% center",
   },
 ] as const;
 

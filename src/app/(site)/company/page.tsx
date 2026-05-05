@@ -17,8 +17,8 @@ export default function CompanyPage() {
         <div className="section-shell grid gap-6 py-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
           <div className="relative min-h-[13rem] overflow-hidden border border-[#dde5e2] bg-[#151518] sm:min-h-[17rem] lg:min-h-[18rem]">
             <Image
-              src="/campaign/kcg-visit-transaction-guide-20260503.webp"
-              alt="한국센터금거래소 회사소개 상담 데스크 이미지"
+              src="/campaign/kcg-home-human-consultation-20260506.webp"
+              alt="한국센터금거래소 회사소개 상담 장면 이미지"
               fill
               priority
               className="object-cover"

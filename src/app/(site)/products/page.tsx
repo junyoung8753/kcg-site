@@ -23,8 +23,8 @@ export default async function ProductsPage() {
         <div className="section-shell grid gap-3 py-3 sm:gap-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
           <div className="relative min-h-[8.8rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:min-h-[17rem] lg:min-h-[18rem]">
             <Image
-              src="/products/kcg-product-gold-silver-catalog-20260503.webp"
-              alt="한국센터금거래소 골드바와 실버바 상품 안내"
+              src="/products/kcg-product-minimal-bars-20260506.webp"
+              alt="한국센터금거래소 골드바와 실버바 상품 이미지"
               fill
               priority
               className="object-cover"

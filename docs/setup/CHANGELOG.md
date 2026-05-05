@@ -8,6 +8,51 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.10 - Visual guidance refresh and infographic FAQ polish
+
+- Date: `2026-05-06 KST`
+- Commit: local implementation commit `Release v0.2.10 visual guidance refresh` in the current branch after verification; not pushed. Work-before HEAD was `a7ae2f6`.
+- Deploy Status: local source/UI/assets updated only. No GitHub push, no Vercel deploy, no production alias change, and no robots/noindex/search release in this pass.
+- Design Direction: `Graphite Desk + Seoul Retail + Human Consultation`.
+- 사람이 읽는 요약: 반복되던 베이지 상담 데스크·금괴 이미지에서 벗어나기 위해 차콜 가격 데스크, 인물 상담, 종로 매장 무드, 고금 매입 절차, 순금 선물, 기업 상담 이미지를 새로 생성해 사이트에 연결했습니다. 시세표 보는 법, 고금 매입 절차, 방문 준비물도 실제 DOM 텍스트 인포그래픽으로 보강해 전화 전 헷갈릴 질문을 줄였습니다.
+- Summary: Replaces repeated placeholder visual language with new generated WebP assets, updates home/product/service/about/company image usage, adds price-table reading and old-gold/visit-prep guidance blocks, and expands customer FAQ copy while preserving company posted-price hierarchy and launch/search blocking.
+- Changed:
+  - Added generated source originals under `public/image-options/2026-05-06/generated/originals`, optimized public WebP assets under `public/campaign` and `public/products`, and a review contact sheet/manifest.
+  - Applied `public/campaign/kcg-home-price-desk-20260506.webp` as the home first slide and social preview base image.
+  - Updated the home carousel to use price-desk, human consultation, Seoul retail, and old-gold process visuals.
+  - Updated product/category image mapping across public UI, mock data, and Supabase seed references.
+  - Added HTML/CSS guidance blocks for `시세표 보는 법`, `고금 매입 절차`, and `방문 준비물`.
+  - Expanded FAQ copy for homepage price vs final consultation price, photo-only estimates, visit timing, preparation items, and automatic reference vs company posted prices.
+  - Updated Playwright/source-audit expectations for the new assets and guidance copy.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: home carousel images, `/prices` guidance, home old-gold buying guide, `/services` hero/process/FAQ, `/about` visit-prep guidance, `/company` hero image, `/products` hero/cards/quick rail images.
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: production deployment and live domains remain on the previous deployed version until an explicit deploy request.
+  - 배포된 것: 없음. This is local working-tree work until committed/pushed/deployed separately.
+  - 아직 배포 안 된 것: `v0.2.10` source/UI/assets 전체, 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정.
+  - 고객에게 보여줘도 되는 것: local validated screenshots after verification; live `kcgold.co.kr` still reflects the last deployed version until deployment.
+  - 아직 내부 기준/계획일 뿐인 것: final real product/store photography, final product prices/photos, final admin secret rotation, search launch approval.
+- QA Score:
+  - Public site target: `9500 / 10000`
+  - Admin console target: `9520 / 10000` unchanged unless verification finds regressions
+  - Operations readiness target: `9320 / 10000`
+- Verification:
+  - Passed: `npm run lint`
+  - Passed: `npm run typecheck`
+  - Passed: `npm run audit:site` (`1059 checks, 1 skipped` without `SITE_AUDIT_URL`; final `npm run qa:site` rendered audit covered local routes with `1116 checks, 0 skipped`)
+  - Passed: `npm run build`
+  - Passed: `npm run test:site` (`20 passed`)
+  - Passed: `npm run screenshot:site`
+  - Passed: `npm run qa:site`
+  - Passed: `npm audit --audit-level=moderate` (`0 vulnerabilities`)
+  - Passed: `git diff --check` with line-ending warnings only.
+  - Visually inspected: `home-mobile-viewport.png`, `home-desktop-viewport.png`, `prices-mobile.png`, `products-mobile.png`, `services-mobile.png`, and `about-mobile.png`.
+- Rollback Hint: `v0.2.10 전으로 되돌려줘`
+- Remaining User-only:
+  - Provide real KCG product/store/staff photos if generated placeholders should be replaced before public search launch.
+  - Confirm final product list, real product photos, weights, 공임/margin, and which items show reference price versus inquiry.
+  - Rotate the final production admin password before public search launch.
+  - Approve robots/noindex release and search indexing only when final public launch is ready.
+
 ## v0.2.9 - Operations QA guard, TradingView visibility, and price history storage
 
 - Date: `2026-05-05 KST`

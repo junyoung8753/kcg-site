@@ -15,6 +15,13 @@ const quickChecks = [
   ["준비 자료", "신분증, 보증서·영수증, 포장 상태, 법인·상속 관련 서류"],
 ] as const;
 
+const visitPrepCards = [
+  ["신분증", "실물 매입 상담 시 본인 확인을 위해 지참해 주세요."],
+  ["매입 품목", "순금·18K·14K·백금·은·골드바 등 품목과 예상 중량을 확인해 주세요."],
+  ["보유 자료", "보증서, 영수증, 케이스가 있으면 함께 가져오시면 상담이 수월합니다."],
+  ["법인·대리", "법인 보유분, 상속 정리, 대리 방문은 전화로 필요 서류를 먼저 확인해 주세요."],
+] as const;
+
 export default function AboutPage() {
   const { headOffice, store } = siteConfig.locations;
   const optionalContactLinks = getOptionalContactLinks();
@@ -25,8 +32,8 @@ export default function AboutPage() {
         <div className="section-shell grid gap-6 py-6 sm:py-8 lg:grid-cols-[0.44fr_0.56fr] lg:items-stretch">
           <div className="relative min-h-[13rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:min-h-[17rem] lg:min-h-[18rem]">
             <Image
-              src="/campaign/kcg-visit-transaction-guide-20260503.webp"
-              alt="한국센터금거래소 거래 확인 데스크"
+              src="/campaign/kcg-home-seoul-retail-20260506.webp"
+              alt="종로 귀금속 매장 방문 분위기 이미지"
               fill
               priority
               className="object-cover"
@@ -100,13 +107,26 @@ export default function AboutPage() {
             <h2 className="kcg-section-title mt-3 text-[#15191b]">
               거래 전 준비 항목
             </h2>
+            <p className="mt-4 text-sm leading-7 text-[#687171]">
+              전화 전 이 항목만 확인하면 주소, 준비물, 서류 질문을 줄일 수 있습니다.
+            </p>
           </div>
-          <div className="overflow-hidden border border-[#dfe6e4] bg-white">
-            {visitChecklist.map((item) => (
-              <p key={item} className="border-b border-[#e4ebe9] px-5 py-4 text-sm leading-7 text-[#687171] last:border-b-0">
-                {item}
-              </p>
-            ))}
+          <div className="grid gap-5">
+            <div className="grid gap-px overflow-hidden border border-[#dfe6e4] bg-[#dfe6e4] sm:grid-cols-2">
+              {visitPrepCards.map(([title, body]) => (
+                <div key={title} className="bg-white px-5 py-5">
+                  <p className="kcg-fine-label text-[#9a8a00]">{title}</p>
+                  <p className="mt-3 text-sm leading-7 text-[#687171]">{body}</p>
+                </div>
+              ))}
+            </div>
+            <div className="overflow-hidden border border-[#dfe6e4] bg-white">
+              {visitChecklist.map((item) => (
+                <p key={item} className="border-b border-[#e4ebe9] px-5 py-4 text-sm leading-7 text-[#687171] last:border-b-0">
+                  {item}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       </section>
