@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getRepository } from "@/lib/data";
+import { dateTimeLocalKoreaToIso } from "@/lib/format";
 import {
   buildPriceUpdatesFromSuggestion,
 } from "@/lib/price-auto";
@@ -107,7 +108,7 @@ export async function updatePricesAction(formData: FormData) {
   }
 
   const ids = formData.getAll("priceIds").map(String);
-  const announcedAt = ensureString(formData.get("announcedAt"));
+  const announcedAt = dateTimeLocalKoreaToIso(ensureString(formData.get("announcedAt")));
   const changedBy = ensureString(formData.get("changedBy"), "관리자");
 
   const payload = ids.map((id) => ({

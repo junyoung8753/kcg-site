@@ -4,6 +4,8 @@ import { formatDateTimeKorean } from "@/lib/format";
 import { getLaunchReadiness } from "@/lib/launch-readiness";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 function statusBadgeClass(tone: "ok" | "warn" | "neutral") {
   if (tone === "ok") return "border-emerald-200 bg-emerald-50 text-emerald-800";
   if (tone === "warn") return "border-[#d9ad00]/35 bg-[#fff8dc] text-[#725100]";

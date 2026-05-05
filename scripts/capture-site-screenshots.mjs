@@ -21,6 +21,7 @@ const adminScreenshotFiles = [
   "admin-prices-manual-desktop.png",
   "admin-prices-auto-desktop.png",
   "admin-prices-auto-mobile.png",
+  "admin-announcements-desktop.png",
   "admin-products-desktop.png",
 ];
 const adminPassword =
@@ -254,6 +255,12 @@ async function captureAdminRoute(page, route, viewport, filename, expectedText) 
     throw new Error(`Refusing to capture ${route}; missing expected text: ${expectedText}`);
   }
 
+  if (route === "/admin/announcements") {
+    const firstAnnouncement = page.locator("details").first();
+    await firstAnnouncement.locator("summary").click();
+    await firstAnnouncement.getByRole("button", { name: "삭제" }).waitFor({ state: "visible", timeout: 5_000 });
+  }
+
   await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: true });
 }
 
@@ -332,6 +339,13 @@ try {
       await captureAdminPricesManual(page, { width: 1440, height: 1800 }, "admin-prices-manual-desktop.png");
       await captureAdminPricesAuto(page, { width: 1440, height: 1800 }, "admin-prices-auto-desktop.png");
       await captureAdminPricesAuto(page, { width: 390, height: 1800 }, "admin-prices-auto-mobile.png");
+      await captureAdminRoute(
+        page,
+        "/admin/announcements",
+        { width: 1440, height: 1800 },
+        "admin-announcements-desktop.png",
+        "공지 관리",
+      );
       await captureAdminRoute(
         page,
         "/admin/products",

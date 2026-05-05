@@ -8,8 +8,8 @@ This file is the short, durable context for a new Codex chat, another PC, or a f
 
 - 초보자는 먼저 `docs/setup/PROJECT_STATUS_FOR_BEGINNER.md`를 보면 된다. 이 문서는 현재 버전, 작업 브랜치, 백업 기준, 실제 사이트 반영 여부, 쉬운 Codex 요청 문장을 1-2분 안에 읽을 수 있게 정리한다.
 - `branch` = 작업 줄기, `HEAD` = 현재 코드 기준점, `rollback` = 이전 상태로 되돌리기, `backup branch` = 되돌리기용 책갈피, `dirty state` = 아직 정리되지 않은 변경사항.
-- 이번 `v0.2.10`은 공개 런칭 전 시각 품질과 고객 안내를 보강하는 작업이다. 차콜 가격 데스크, 인물 상담, 종로 매장 무드, 고금 매입 절차, 순금 선물, 기업 상담 이미지를 새로 생성해 적용하고, 시세표 보는 법/고금 매입 절차/방문 준비물 인포그래픽과 FAQ를 보강한다.
-- 되돌릴 때는 "v0.2.10 전으로 되돌려줘" 또는 "v0.2.9 운영형 QA 보강만 되돌리는 계획을 먼저 보여줘"라고 말하면 된다.
+- 이번 `v0.2.11`은 운영 콘솔의 공개 승인 가독성 버그와 시세 관리 시간 표기 혼선을 고치는 작업이다. `고시 기준`은 고객 화면에 표시되는 회사 고시 시각이고, `관리자 저장`은 운영자가 마지막으로 저장한 시각이라는 점을 화면에서 분리한다.
+- 되돌릴 때는 "v0.2.11 전으로 되돌려줘" 또는 "v0.2.10 비주얼/인포그래픽 보강만 되돌리는 계획을 먼저 보여줘"라고 말하면 된다.
 
 Junyoung's current preferred workflow is local-first. Codex Cloud is not the default right now because it has been inconvenient and unreliable for current KCG work. Keep Cloud docs as a future option and use `docs/setup/CLOUD_ONLY_WORKFLOW.md` only when junyoung explicitly asks for Codex Cloud or wants to avoid computer-specific setup.
 
@@ -17,20 +17,20 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 
 ## Current Version Snapshot
 
-- Current KCG site version: `v0.2.10`
-- Latest change: `Visual guidance refresh and infographic FAQ polish`
+- Current KCG site version: `v0.2.11`
+- Latest change: `Admin launch readability and price-time clarity`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: `v0.2.10` includes real public source/UI/assets changes committed, pushed, and production deployed on 2026-05-06 KST. Vercel deployment id: `dpl_2YX967sa6B8Wx6nXhr1vJy25CFp1`. Confirm current state with `git status --short --branch`, `npm run release:trace`, and required validation commands before handoff.
-- 실제 사이트 화면이 바뀌는 것: 홈 캐러셀, 상품/매입 이미지, `/prices` 시세표 보는 법, 홈/서비스 고금 매입 절차, `/about` 방문 준비물, `/company` 상담 이미지, 서비스 FAQ.
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음. `v0.2.10`은 live domains까지 반영됨.
-- 배포된 것: `v0.2.10` visual/guidance refresh 전체 to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app`.
+- Reflection status: `v0.2.11` is an admin/UI bugfix for launch approval contrast, announcement delete-button contrast, price-time labeling, KST datetime handling, and dynamic runtime rendering for admin status screens. Confirm current state with `git status --short --branch`, `npm run release:trace`, and required validation commands before handoff.
+- 실제 사이트 화면이 바뀌는 것: `/admin/launch` 공개 승인 항목 가독성, `/admin/announcements` 삭제 버튼 가독성, `/admin/prices` 시간 라벨과 기준 시각 입력.
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음.
+- 배포된 것: pending for `v0.2.11` until validation, commit, push, and production deploy finish.
 - 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 운영자료 확정, Vercel Pro 또는 외부 scheduler 결정.
 - 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` review site. Search exposure remains blocked.
 - 아직 내부 기준/계획일 뿐인 것: real product/store/staff photography replacement, final product prices/공임/판매정책, final admin secret rotation, search launch approval.
-- Latest QA: `v0.2.10` local verification passed on 2026-05-06 KST: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site` (`20 passed`), `npm run screenshot:site`, `npm run qa:site` (rendered audit `1116 checks, 0 skipped`, Playwright `20 passed`, npm audit `0 vulnerabilities`), `npm audit --audit-level=moderate`, and `git diff --check` with line-ending warnings only. Screenshots directly inspected: `home-mobile-viewport.png`, `home-desktop-viewport.png`, `prices-mobile.png`, `products-mobile.png`, `services-mobile.png`, and `about-mobile.png`. Post-deploy verification passed: `npx vercel inspect https://kcgold.co.kr/` (`dpl_2YX967sa6B8Wx6nXhr1vJy25CFp1` ready), `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`1116 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`20 passed`), and `npm run check:external -- --strict-domain` with indexing disabled, robots blocked, empty pre-launch sitemap, and correct Cafe24 DNS.
+- Latest QA: local `v0.2.11` validation passed with `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, targeted admin Playwright regression checks, full `npm run test:site` (`21 passed`), `npm run screenshot:admin`, `npm run qa:site` (rendered audit `1136 checks, 0 skipped`; Playwright `21 passed`), `npm audit --audit-level=moderate`, and `git diff --check` with line-ending warnings only. The issue investigation confirmed one real admin contrast bug, one admin timestamp-label UX bug, and one admin status static-rendering risk. Direct Supabase history read showed manual price history at `2026-05-05 10:01 UTC` (`2026-05-05 19:01 KST`), matching the user-reported `마지막 저장`; subsequent direct row reads temporarily hit Supabase pooler `ECIRCUITBREAKER`, so do not ask for DB passwords and retry later only if row-level data is still needed.
 - Change ledger: `docs/setup/CHANGELOG.md`
 - Broader rollback bookmark: `backup/pre-v0.2.4-operations-product-audit`
-- Rollback phrase: `v0.2.10 전으로 되돌려줘`
+- Rollback phrase: `v0.2.11 전으로 되돌려줘`
 
 ## Current Source Of Truth
 
@@ -110,9 +110,9 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 
 ## Stable Review Deploy Boundary
 
-- Junyoung has approved refreshing `https://kcg-confirm-preview.vercel.app` with the validated image/UI work in this task.
-- This is not approval for robots/noindex release or search indexing. Cafe24 DNS changes require junyoung to complete the registrar login/MFA step directly.
-- Do not perform production deploys beyond an explicitly approved stable review refresh, and do not treat a Vercel deploy as public launch approval.
+- Junyoung has approved deploying completed, verified KCG site changes by default so he can review live and request rollback if needed.
+- This is not approval for robots/noindex release, search indexing, payment/trading behavior, secret/env changes, or hard-to-reverse infrastructure changes. Cafe24 DNS/account login/MFA steps remain human-only.
+- Treat a Vercel deploy as review publication only; do not treat it as public search-launch approval.
 - Last stable review refresh: 2026-05-05 KST, refreshed after `v0.2.2` expert-panel QA/admin evidence hardening and aliased to `https://kcg-confirm-preview.vercel.app`, `https://kcgold.co.kr`, and `https://www.kcgold.co.kr`. Use `npx vercel inspect https://kcgold.co.kr/` for the current deployment id.
 - Production admin access was reset on 2026-04-28 KST for pre-launch editing. `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` are set only in Vercel production env; no secret value is stored in this repo. Rotate the admin password to a stronger final value before public launch/search exposure.
 - Previous post-deploy verification passed on `https://kcg-confirm-preview.vercel.app`: rendered audit, Playwright tests, `/robots.txt` `Disallow: /`, empty pre-launch sitemap, noindex, and `/api/health` launch-readiness blockers all behaved as expected. Re-verify after each stable refresh.
@@ -296,6 +296,6 @@ This finds or creates `Documents\Codex\projects\kcg-site`, pulls the latest `mai
 - Do not store `_vercel_jwt` or `_vercel_jwe` URLs.
 - Do not commit `.env*`, `.vercel`, Supabase service role keys, admin passwords, cookies, tokens, or local Vercel settings.
 - Keep search blocking/noindex until public launch approval.
-- Do not perform production deploys beyond an explicitly approved stable review refresh, stable alias changes outside `https://kcg-confirm-preview.vercel.app`, `kcgold.co.kr` DNS cutover, or robots/noindex removal until explicit public-launch approval.
+- Deploy completed, verified KCG site changes by default for live review, but do not change search/noindex, payment/trading behavior, secrets/env, or hard-to-reverse infrastructure without explicit approval.
 - Keep company posted prices separate from automatic market-reference data.
 - Keep `/` as the single public home surface.

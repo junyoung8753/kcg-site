@@ -8,6 +8,54 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.11 - Admin launch readability and price-time clarity
+
+- Date: `2026-05-06 KST`
+- Commit: final v0.2.11 commit is recorded by Git after this verification pass.
+- Deploy Status: local validation passed; production deploy and live checks are performed after commit/push. Search indexing/noindex release is not included.
+- 사람이 읽는 요약: 운영 콘솔의 `공개 직전 별도 승인 필요` 영역에서 승인 항목 글씨가 배경과 너무 비슷해 보이지 않던 문제를 고쳤습니다. 시세 관리 화면은 `고시 기준`, `관리자 저장`, `예약 실행`, `다음 계산 가능`을 분리해 보여주며, 기준 시각 입력은 한국시간 기준으로 표시·저장되도록 정리했습니다.
+- Summary: Fixes admin launch contrast, separates posted-price basis time from admin save time, clarifies automatic-price scheduling labels, converts `datetime-local` input values to KST-aware ISO timestamps, and adds Playwright contrast/time-label guardrails.
+- Changed:
+  - Rebuilt `/admin/launch` approval cards with light-console-safe colors and a deterministic contrast guard.
+  - Fixed the same light-theme red text risk on `/admin/launch` status badges and `/admin/announcements` delete buttons.
+  - Changed `/admin/prices` operation summary from ambiguous `마지막 저장`/`다음 확인 예정` wording to `고시 기준`, `관리자 저장`, `예약 실행`, and `다음 계산 가능`.
+  - Added an explanatory admin notice that customer-visible `기준` and operator save time can be different values.
+  - Fixed price manual-entry datetime handling so the input displays Korea time and stores a KST-aware ISO timestamp.
+  - Added a `현재 시각 입력` control and defaulted the manual price basis field to the current KST time when the editor opens.
+  - Forced `/admin` and `/admin/launch` to render dynamically so runtime readiness, storage, and auth posture are not treated as static build-time screens.
+  - Updated admin screenshot capture so `/admin/announcements` evidence opens the first notice and shows the delete action.
+  - Added Playwright checks for admin launch text contrast and admin price-time labels.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/admin/launch` 승인 항목 가독성, `/admin/announcements` 삭제 버튼 가독성, `/admin/prices` 운영 요약 시간 라벨, `/admin/prices` 기준 시각 입력 동작.
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음.
+  - 배포된 것: pending.
+  - 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, Vercel Pro 또는 외부 scheduler 결정.
+  - 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` review site after deploy.
+  - 아직 내부 기준/계획일 뿐인 것: final real product/store photography, final product prices/photos, final admin secret rotation, search launch approval.
+- Root Cause:
+  - `/admin/launch` still used dark-theme red utility classes after the admin console moved to a light theme; normal visibility checks passed because the text existed, but contrast was poor.
+  - `/admin/prices` displayed `prices.updated_at` as `마지막 저장` and `prices.announced_at` as `기준` without explaining that they are separate timestamps.
+  - Automatic-price summary displayed the internal due interval as `다음 확인 예정`, which looked like an exact external cron schedule even though the checked-in Vercel Hobby cron is still once daily.
+  - `/admin` and `/admin/launch` were static-rendered admin pages even though their content depends on runtime storage/auth/domain/noindex posture; during local QA this also exposed a stale `next start`/`.next` CSS artifact risk, so admin status pages now opt into dynamic rendering.
+- Verification:
+  - Passed: `npm run lint`
+  - Passed: `npm run typecheck`
+  - Passed: `npm run audit:site` (`1079 checks, 1 skipped`; local source audit)
+  - Passed: `npm run build` (`/admin` and `/admin/launch` now build as dynamic routes)
+  - Passed: targeted Playwright admin regression check (`admin launch`, `admin announcements`, `admin prices`: `3 passed`)
+  - Passed: `npm run test:site` (`21 passed`)
+  - Passed: `npm run screenshot:admin`
+  - Passed: `npm run qa:site` (rendered audit `1136 checks, 0 skipped`; Playwright `21 passed`)
+  - Passed: `npm audit --audit-level=moderate` (`0 vulnerabilities`)
+  - Passed: `git diff --check` with line-ending warnings only.
+  - Visually inspected: `admin-launch-mobile.png`, `admin-launch-desktop.png`, `admin-prices-manual-desktop.png`, `admin-prices-auto-mobile.png`, and `admin-announcements-desktop.png`.
+  - Live deploy/external checks are performed after commit and push.
+- Rollback Hint: `v0.2.11 전으로 되돌려줘`
+- Remaining User-only:
+  - If the current production 고시 기준 시각 should be changed immediately, an operator must confirm the posted prices and save once in `/admin/prices`; Codex did not silently mutate production price data.
+  - Rotate the final production admin password before public search launch.
+  - Approve robots/noindex release and search indexing only when final public launch is ready.
+
 ## v0.2.10 - Visual guidance refresh and infographic FAQ polish
 
 - Date: `2026-05-06 KST`

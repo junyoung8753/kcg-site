@@ -419,6 +419,11 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.11 - Admin launch readability and price-time clarity",
+  "고시 기준",
+  "관리자 저장",
+  "다음 계산 가능",
+  "v0.2.11 전으로 되돌려줘",
   "## v0.2.10 - Visual guidance refresh and infographic FAQ polish",
   "Graphite Desk",
   "kcg-home-price-desk-20260506.webp",
@@ -462,17 +467,17 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.10`",
-  "Visual guidance refresh and infographic FAQ polish",
+  "Current KCG site version: `v0.2.11`",
+  "Admin launch readability and price-time clarity",
   "existing-api-integration-audit-2026-05-05.md",
-  "실제 사이트 화면이 바뀌는 것: 홈 캐러셀",
+  "실제 사이트 화면이 바뀌는 것: `/admin/launch`",
   "backup/pre-v0.2.4-operations-product-audit",
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
-  "v0.2.10",
-  "시세표 보는 법",
-  "실제 사이트 화면이 바뀐 것: 홈 캐러셀",
+  "v0.2.11",
+  "운영 콘솔",
+  "실제 사이트 화면이 바뀐 것: `/admin/launch`",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",
   "MEDIUM",
@@ -495,13 +500,22 @@ expectText("src/app/admin/prices/price-mode-workspace.tsx", [
   "순금 팔 때",
   "백금 살 때",
   "은 팔 때",
+  "고시 기준",
+  "관리자 저장",
+  "다음 계산 가능",
+  "formatDateTimeLocalKorean",
 ]);
 expectText("src/app/admin/page.tsx", [
+  "dynamic = \"force-dynamic\"",
   "미리보기 저장",
   "formatDateTimeKorean",
   "오늘 먼저 확인할 것",
   "헷갈리면 이것만 기준",
   "공개 시세 보기",
+]);
+expectText("src/app/admin/announcements/page.tsx", [
+  "bg-[#fff0ed]",
+  "text-[#8a2c20]",
 ]);
 expectText("src/components/market/market-dashboard.tsx", [
   "text-xl font-bold tabular-nums",
@@ -883,10 +897,13 @@ expectNoText("src/lib/site-config.ts", ["adminPreviewPassword"]);
 expectText("src/app/admin/login/page.tsx", ["missing-env", "ADMIN_PASSWORD"]);
 expectNoText("src/app/admin/login/page.tsx", ["preview-default", "adminPreviewPassword"]);
 expectText("src/app/admin/launch/page.tsx", [
+  "dynamic = \"force-dynamic\"",
   "오픈 전 점검판",
   "임시값은 화면에 보이더라도",
   "지금 미리 가능한 준비",
   "공개 직전 별도 승인 필요",
+  "data-testid=\"admin-public-launch-approval\"",
+  "text-[#5f2721]",
   "Cafe24 도메인 연결 절차",
   "KRX 데이터는 승인·계약 범위 확인 전 production 미사용",
   "Production 배포 승인",
@@ -1202,7 +1219,9 @@ expectText("package.json", [
 expectText("playwright.config.ts", ["nextEnv.loadEnvConfig(process.cwd())", "process.env.SITE_AUDIT_URL"]);
 expectText("tests/site-fidelity.spec.ts", [
   "/admin/launch",
+  "/admin/announcements",
   "공개 직전 별도 승인 필요",
+  "expectReadableTextContrast",
   "persistent chrome does not cover first-viewport decision content",
   "site-header",
 ]);
@@ -1219,6 +1238,7 @@ expectText("scripts/capture-site-screenshots.mjs", [
   "admin-prices-manual-desktop.png",
   "admin-prices-auto-desktop.png",
   "admin-prices-auto-mobile.png",
+  "admin-announcements-desktop.png",
   "KCG_INCLUDE_ADMIN_SCREENSHOTS",
   "nextEnv.loadEnvConfig(rootDir)",
   "primeLazyImagesForScreenshot",
@@ -1333,8 +1353,8 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.10` includes real public source/UI/assets changes",
-  "dpl_2YX967sa6B8Wx6nXhr1vJy25CFp1",
+  "Reflection status: `v0.2.11` is an admin/UI bugfix",
+  "price-time labeling",
   "docs/setup/CHANGELOG.md",
   "docs/quality/ai-site-production-playbook.md",
   "docs/quality/data-source-compliance.md",
@@ -1350,7 +1370,7 @@ expectText("docs/setup/CURRENT_HANDOFF.md", [
   "Do not restore old option routes",
   "Public Launch Terms",
   "Repository visibility decision as of 2026-04-27 KST",
-  "Do not perform production deploys beyond an explicitly approved stable review refresh",
+  "Junyoung has approved deploying completed, verified KCG site changes by default",
   "Current image source folder",
   "kcg-home-price-desk-20260506.webp",
   "kcg-old-gold-process-20260506.webp",
@@ -1386,6 +1406,7 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-050",
   "KCG-TODO-059",
   "KCG-TODO-060",
+  "KCG-TODO-061",
   "tasks:dashboard",
   "user-only",
   "codex",

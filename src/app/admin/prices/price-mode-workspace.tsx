@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   applyPriceAutoSuggestionAction,
   generatePriceAutoSuggestionAction,
@@ -9,7 +9,7 @@ import {
   updatePricesAction,
 } from "@/actions/price-actions";
 import { AdminSubmitButton } from "@/components/admin/admin-submit-button";
-import { formatDateTimeKorean } from "@/lib/format";
+import { formatDateTimeKorean, formatDateTimeLocalKorean } from "@/lib/format";
 import type {
   PriceAutoSettings,
   PriceAutoSuggestion,
@@ -76,6 +76,17 @@ function getLatestUpdate(prices: PriceRecord[]) {
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
   );
   return sorted[0]?.updatedAt ?? prices[0]?.announcedAt ?? new Date().toISOString();
+}
+
+function getPostedBasisAt(prices: PriceRecord[]) {
+  return prices[0]?.announcedAt ?? new Date().toISOString();
+}
+
+function getHoursBetween(laterValue: string, earlierValue: string) {
+  const later = new Date(laterValue);
+  const earlier = new Date(earlierValue);
+  if (Number.isNaN(later.getTime()) || Number.isNaN(earlier.getTime())) return 0;
+  return Math.abs(later.getTime() - earlier.getTime()) / 1000 / 60 / 60;
 }
 
 function getElapsedHoursLabel(value: string | null) {
@@ -176,6 +187,12 @@ function getNextCheckLabel(settings: PriceAutoSettings, isAutoOn: boolean) {
   return formatDateTimeKorean(addMinutes(base, settings.checkIntervalMinutes).toISOString());
 }
 
+function getScheduledRunLabel(settings: PriceAutoSettings, isAutoOn: boolean) {
+  if (!isAutoOn) return "자동시세 OFF";
+  if (!settings.isEnabled || settings.mode !== "auto_publish") return "저장 후 활성화";
+  return "매일 오전 9:00";
+}
+
 function HiddenAutoSettingsFields({
   settings,
   enabled,
@@ -253,26 +270,45 @@ function OperationSummary({
   isAutoOn: boolean;
 }) {
   const latestUpdate = getLatestUpdate(prices);
+  const postedBasisAt = getPostedBasisAt(prices);
+  const basisDiffersFromSave = getHoursBetween(latestUpdate, postedBasisAt) >= 1;
   const draftCount = suggestion?.status === "draft" ? suggestion.items.length : 0;
   const stats = [
     { label: "운영 상태", value: isAutoOn ? "자동시세 ON" : "직접 입력" },
-    { label: "마지막 저장", value: formatDateTimeKorean(latestUpdate) },
+    { label: "고시 기준", value: formatDateTimeKorean(postedBasisAt) },
+    { label: "관리자 저장", value: formatDateTimeKorean(latestUpdate) },
     { label: "최근 자동 반영", value: settings.lastAutoAppliedAt ? formatDateTimeKorean(settings.lastAutoAppliedAt) : "아직 없음" },
     { label: "마지막 수동 등록", value: getElapsedHoursLabel(freshness.latestManualChangedAt) },
     { label: "24시간 guard", value: getStaleGuardLabel(settings, freshness) },
-    { label: "다음 확인 예정", value: getNextCheckLabel(settings, isAutoOn) },
+    { label: "예약 실행", value: getScheduledRunLabel(settings, isAutoOn) },
+    { label: "다음 계산 가능", value: getNextCheckLabel(settings, isAutoOn) },
     { label: "검토 대기", value: draftCount ? `${draftCount}개 항목` : "없음" },
   ];
 
   return (
     <section className="admin-panel p-4 sm:p-5">
-      <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-7">
+      <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-8">
         {stats.map((item) => (
           <div key={item.label} className="rounded-xl border border-[var(--admin-line)] bg-[#fbfdfb] px-4 py-3">
             <p className="text-xs font-bold text-[var(--admin-muted)]">{item.label}</p>
             <p className="mt-1 text-base font-bold text-[var(--admin-ink)]">{item.value}</p>
           </div>
         ))}
+      </div>
+      <div
+        className={[
+          "mt-3 rounded-xl border px-4 py-3 text-sm leading-7",
+          basisDiffersFromSave
+            ? "border-[#d9ad00]/35 bg-[#fff8dc] text-[#6f4b00]"
+            : "border-[var(--admin-line)] bg-[#fbfdfb] text-[var(--admin-muted)]",
+        ].join(" ")}
+        data-testid="admin-price-time-explainer"
+      >
+        <b className={basisDiffersFromSave ? "text-[#5b3f00]" : "text-[var(--admin-ink)]"}>
+          시간 표기 기준:
+        </b>{" "}
+        고객 화면의 `기준`은 회사 고시 시각이고, `관리자 저장`은 운영 콘솔에서 마지막으로 저장된 시각입니다.
+        두 시각이 다르면 가격 저장은 되었지만 고객에게 보이는 고시 기준 시각은 별도 입력값으로 유지된 상태입니다.
       </div>
     </section>
   );
@@ -812,7 +848,9 @@ function PriceEditor({
   statusMessage?: string | null;
   warnings?: string[];
 }) {
-  const announcedAt = prices[0]?.announcedAt ?? new Date().toISOString();
+  const currentAnnouncedAt = prices[0]?.announcedAt ?? new Date().toISOString();
+  const announcedAtInputRef = useRef<HTMLInputElement>(null);
+  const defaultAnnouncedAt = formatDateTimeLocalKorean(new Date());
 
   return (
     <form
@@ -832,11 +870,28 @@ function PriceEditor({
           <label className="text-sm font-semibold text-[var(--admin-muted)]">
             기준 시각
             <input
+              ref={announcedAtInputRef}
               name="announcedAt"
               type="datetime-local"
-              defaultValue={announcedAt.slice(0, 16)}
+              defaultValue={defaultAnnouncedAt}
+              suppressHydrationWarning
               className="admin-input mt-2"
             />
+            <button
+              type="button"
+              onClick={() => {
+                if (announcedAtInputRef.current) {
+                  announcedAtInputRef.current.value = formatDateTimeLocalKorean(new Date());
+                }
+              }}
+              className="mt-2 rounded-full border border-[var(--admin-line-strong)] bg-white px-3 py-1.5 text-xs font-bold text-[var(--admin-ink)] transition hover:border-[#d9ad00] hover:bg-[#fff9df]"
+            >
+              현재 시각 입력
+            </button>
+            <span className="mt-1 block text-xs leading-5 text-[var(--admin-muted)]">
+              저장하면 고객 화면의 기준 시각이 이 값으로 바뀝니다. 현재 공개 기준은{" "}
+              {formatDateTimeKorean(currentAnnouncedAt)}입니다.
+            </span>
           </label>
           <label className="text-sm font-semibold text-[var(--admin-muted)]">
             변경자

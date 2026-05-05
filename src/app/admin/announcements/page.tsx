@@ -235,7 +235,7 @@ export default async function AdminAnnouncementsPage({
               <input type="hidden" name="id" value={item.id} />
               <AdminSubmitButton
                 pendingLabel="삭제 중..."
-                className="rounded-full border border-red-300/20 px-4 py-2 text-sm font-medium text-red-100 transition hover:bg-red-500/10"
+                className="rounded-full border border-[#efc7bf] bg-[#fff0ed] px-4 py-2 text-sm font-bold text-[#8a2c20] transition hover:bg-[#ffe7e1]"
               >
                 삭제
               </AdminSubmitButton>

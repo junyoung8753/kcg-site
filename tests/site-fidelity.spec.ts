@@ -55,6 +55,232 @@ async function expectNoVisibleElementEscapesViewport(page: Page) {
   expect(escapes).toEqual([]);
 }
 
+async function expectReadableTextContrast(locator: Locator, minimumRatio = 4.5) {
+  const contrast = await locator.evaluate((element) => {
+    type Rgb = { r: number; g: number; b: number; a: number };
+
+    function clamp(value: number, min = 0, max = 255) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function tokenize(value: string) {
+      return value
+        .trim()
+        .replace(/\//g, " ")
+        .split(/[,\s]+/)
+        .filter(Boolean);
+    }
+
+    function parseChannel(token: string, percentScale = 255) {
+      return token.endsWith("%")
+        ? (Number.parseFloat(token) / 100) * percentScale
+        : Number.parseFloat(token);
+    }
+
+    function parseAlpha(token?: string) {
+      if (!token) return 1;
+      return token.endsWith("%") ? Number.parseFloat(token) / 100 : Number.parseFloat(token);
+    }
+
+    function parseRgb(value: string): Rgb | null {
+      const match = value.match(/rgba?\(([^)]+)\)/i);
+      if (!match) return null;
+      const parts = tokenize(match[1]);
+      const rgb = {
+        r: parseChannel(parts[0] ?? "0"),
+        g: parseChannel(parts[1] ?? "0"),
+        b: parseChannel(parts[2] ?? "0"),
+        a: parseAlpha(parts[3]),
+      };
+      if ([rgb.r, rgb.g, rgb.b, rgb.a].some((part) => Number.isNaN(part))) return null;
+      return rgb;
+    }
+
+    function parseHex(value: string): Rgb | null {
+      const match = value.trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+      if (!match) return null;
+      const raw = match[1].length === 3
+        ? match[1].split("").map((digit) => digit + digit).join("")
+        : match[1];
+      return {
+        r: Number.parseInt(raw.slice(0, 2), 16),
+        g: Number.parseInt(raw.slice(2, 4), 16),
+        b: Number.parseInt(raw.slice(4, 6), 16),
+        a: 1,
+      };
+    }
+
+    function gammaEncode(value: number) {
+      return value <= 0.0031308
+        ? 12.92 * value
+        : 1.055 * value ** (1 / 2.4) - 0.055;
+    }
+
+    function xyzToRgb(x: number, y: number, z: number): Rgb {
+      const r = 3.2404542 * x - 1.5371385 * y - 0.4985314 * z;
+      const g = -0.969266 * x + 1.8760108 * y + 0.041556 * z;
+      const b = 0.0556434 * x - 0.2040259 * y + 1.0572252 * z;
+      return {
+        r: clamp(gammaEncode(r) * 255),
+        g: clamp(gammaEncode(g) * 255),
+        b: clamp(gammaEncode(b) * 255),
+        a: 1,
+      };
+    }
+
+    function labToRgb(l: number, a: number, b: number): Rgb {
+      const fy = (l + 16) / 116;
+      const fx = fy + a / 500;
+      const fz = fy - b / 200;
+      const epsilon = 216 / 24389;
+      const kappa = 24389 / 27;
+      const pivot = (value: number) => {
+        const cubed = value ** 3;
+        return cubed > epsilon ? cubed : (116 * value - 16) / kappa;
+      };
+
+      const xD50 = 0.96422 * pivot(fx);
+      const yD50 = pivot(fy);
+      const zD50 = 0.82521 * pivot(fz);
+
+      const xD65 = 0.9555766 * xD50 - 0.0230393 * yD50 + 0.0631636 * zD50;
+      const yD65 = -0.0282895 * xD50 + 1.0099416 * yD50 + 0.0210077 * zD50;
+      const zD65 = 0.0122982 * xD50 - 0.020483 * yD50 + 1.3299098 * zD50;
+
+      return xyzToRgb(xD65, yD65, zD65);
+    }
+
+    function parseLab(value: string): Rgb | null {
+      const match = value.match(/^lab\(([^)]+)\)$/i);
+      if (!match) return null;
+      const parts = tokenize(match[1]);
+      const lightness = parseChannel(parts[0] ?? "0", 100);
+      const a = Number.parseFloat(parts[1] ?? "0");
+      const b = Number.parseFloat(parts[2] ?? "0");
+      const alpha = parseAlpha(parts[3]);
+      if ([lightness, a, b, alpha].some((part) => Number.isNaN(part))) return null;
+      return { ...labToRgb(lightness, a, b), a: alpha };
+    }
+
+    function parseLch(value: string): Rgb | null {
+      const match = value.match(/^lch\(([^)]+)\)$/i);
+      if (!match) return null;
+      const parts = tokenize(match[1]);
+      const lightness = parseChannel(parts[0] ?? "0", 100);
+      const chroma = Number.parseFloat(parts[1] ?? "0");
+      const hue = (Number.parseFloat(parts[2] ?? "0") * Math.PI) / 180;
+      const alpha = parseAlpha(parts[3]);
+      if ([lightness, chroma, hue, alpha].some((part) => Number.isNaN(part))) return null;
+      return { ...labToRgb(lightness, chroma * Math.cos(hue), chroma * Math.sin(hue)), a: alpha };
+    }
+
+    function oklabToRgb(lightness: number, a: number, b: number): Rgb {
+      const l = (lightness + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+      const m = (lightness - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+      const s = (lightness - 0.0894841775 * a - 1.291485548 * b) ** 3;
+      return {
+        r: clamp(gammaEncode(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s) * 255),
+        g: clamp(gammaEncode(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s) * 255),
+        b: clamp(gammaEncode(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s) * 255),
+        a: 1,
+      };
+    }
+
+    function parseOklab(value: string): Rgb | null {
+      const match = value.match(/^oklab\(([^)]+)\)$/i);
+      if (!match) return null;
+      const parts = tokenize(match[1]);
+      const lightness = parseChannel(parts[0] ?? "0", 1);
+      const a = Number.parseFloat(parts[1] ?? "0");
+      const b = Number.parseFloat(parts[2] ?? "0");
+      const alpha = parseAlpha(parts[3]);
+      if ([lightness, a, b, alpha].some((part) => Number.isNaN(part))) return null;
+      return { ...oklabToRgb(lightness, a, b), a: alpha };
+    }
+
+    function parseOklch(value: string): Rgb | null {
+      const match = value.match(/^oklch\(([^)]+)\)$/i);
+      if (!match) return null;
+      const parts = tokenize(match[1]);
+      const lightness = parseChannel(parts[0] ?? "0", 1);
+      const chroma = Number.parseFloat(parts[1] ?? "0");
+      const hue = (Number.parseFloat(parts[2] ?? "0") * Math.PI) / 180;
+      const alpha = parseAlpha(parts[3]);
+      if ([lightness, chroma, hue, alpha].some((part) => Number.isNaN(part))) return null;
+      return { ...oklabToRgb(lightness, chroma * Math.cos(hue), chroma * Math.sin(hue)), a: alpha };
+    }
+
+    function parseSrgbColorFunction(value: string): Rgb | null {
+      const match = value.match(/^color\(\s*(?:srgb|display-p3)\s+([^)]+)\)$/i);
+      if (!match) return null;
+      const parts = tokenize(match[1]);
+      const toChannel = (token: string) => {
+        if (token.endsWith("%")) return (Number.parseFloat(token) / 100) * 255;
+        const parsed = Number.parseFloat(token);
+        return parsed <= 1 ? parsed * 255 : parsed;
+      };
+      const rgb = {
+        r: toChannel(parts[0] ?? "0"),
+        g: toChannel(parts[1] ?? "0"),
+        b: toChannel(parts[2] ?? "0"),
+        a: parseAlpha(parts[3]),
+      };
+      if ([rgb.r, rgb.g, rgb.b, rgb.a].some((part) => Number.isNaN(part))) return null;
+      return rgb;
+    }
+
+    function parseCssColor(value: string): Rgb | null {
+      if (value === "transparent") return { r: 0, g: 0, b: 0, a: 0 };
+      return (
+        parseRgb(value) ??
+        parseHex(value) ??
+        parseLab(value) ??
+        parseLch(value) ??
+        parseOklab(value) ??
+        parseOklch(value) ??
+        parseSrgbColorFunction(value)
+      );
+    }
+
+    function relativeLuminance(channel: number) {
+      const value = channel / 255;
+      return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+    }
+
+    function contrastRatio(foreground: Rgb, background: Rgb) {
+      const fg =
+        0.2126 * relativeLuminance(foreground.r) +
+        0.7152 * relativeLuminance(foreground.g) +
+        0.0722 * relativeLuminance(foreground.b);
+      const bg =
+        0.2126 * relativeLuminance(background.r) +
+        0.7152 * relativeLuminance(background.g) +
+        0.0722 * relativeLuminance(background.b);
+      return (Math.max(fg, bg) + 0.05) / (Math.min(fg, bg) + 0.05);
+    }
+
+    const style = window.getComputedStyle(element);
+    const color = parseCssColor(style.color);
+    let background = parseCssColor(style.backgroundColor);
+    let backgroundText = style.backgroundColor;
+    let current: Element | null = element.parentElement;
+
+    while ((!background || background.a === 0) && current) {
+      backgroundText = window.getComputedStyle(current).backgroundColor;
+      background = parseCssColor(backgroundText);
+      current = current.parentElement;
+    }
+
+    return {
+      background: backgroundText,
+      color: style.color,
+      ratio: color && background ? contrastRatio(color, background) : 0,
+    };
+  });
+
+  expect(contrast.ratio, JSON.stringify(contrast)).toBeGreaterThanOrEqual(minimumRatio);
+}
+
 async function expectMobileBottomBarDoesNotCover(locator: Locator) {
   await locator.scrollIntoViewIfNeeded();
   await expect(locator).toBeVisible();
@@ -693,6 +919,10 @@ test("admin launch dashboard separates pre-launch work from public-launch approv
   await expect(page.getByRole("heading", { name: "공개 직전 별도 승인 필요" })).toBeVisible();
   await expect(page.getByText("Production 배포 승인")).toBeVisible();
   await expect(page.getByText("robots/noindex 해제와 검색 색인 승인")).toBeVisible();
+  const publicLaunchPanel = page.getByTestId("admin-public-launch-approval");
+  await expectReadableTextContrast(publicLaunchPanel.getByRole("heading", { name: "공개 직전 별도 승인 필요" }));
+  await expectReadableTextContrast(publicLaunchPanel.getByText("Production 배포 승인"));
+  await expectReadableTextContrast(publicLaunchPanel.getByText("robots/noindex 해제와 검색 색인 승인"));
 
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
@@ -723,6 +953,27 @@ test("admin dashboard prioritizes daily operator tasks", async ({ page }) => {
   await expectNoVisibleElementEscapesViewport(page);
 });
 
+test("admin announcements actions stay readable in the light console", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await page.goto("/admin/announcements", { waitUntil: "domcontentloaded" });
+  await expect(page).toHaveURL(/\/admin\/login\?next=%2Fadmin%2Fannouncements/);
+
+  if (!adminPassword) return;
+
+  await page.getByLabel("관리자 비밀번호").fill(adminPassword);
+  await page.getByRole("button", { name: "관리자 페이지로 이동" }).click();
+  await expect(page).toHaveURL(/\/admin\/announcements/);
+
+  await expect(page.getByRole("heading", { name: "공지 관리" })).toBeVisible();
+  const firstAnnouncement = page.locator("details").first();
+  await firstAnnouncement.locator("summary").click();
+  const deleteButton = firstAnnouncement.getByRole("button", { name: "삭제" });
+  await expect(deleteButton).toBeVisible();
+  await expectReadableTextContrast(deleteButton);
+  await expectNoHorizontalOverflow(page);
+  await expectNoVisibleElementEscapesViewport(page);
+});
+
 test("admin prices exposes automatic price operation and compact manual editor", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   await page.goto("/admin/prices", { waitUntil: "domcontentloaded" });
@@ -742,7 +993,11 @@ test("admin prices exposes automatic price operation and compact manual editor",
   await expect(page.getByText("대표가 직접 넣는")).toHaveCount(0);
   await expect(page.locator(".admin-light")).toBeVisible();
   await expect(page.getByText("현재 공개 시세")).toBeVisible();
-  await expect(page.getByText("다음 확인 예정")).toBeVisible();
+  await expect(page.getByText("고시 기준", { exact: true })).toBeVisible();
+  await expect(page.getByText("관리자 저장", { exact: true })).toBeVisible();
+  await expect(page.getByText("예약 실행", { exact: true })).toBeVisible();
+  await expect(page.getByText("다음 계산 가능", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("admin-price-time-explainer")).toBeVisible();
   await expect(page.getByText("마지막 수동 등록")).toBeVisible();
   await expect(page.getByText("24시간 guard")).toBeVisible();
 
