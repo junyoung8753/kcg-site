@@ -32,6 +32,30 @@ export interface PriceHistoryEntry {
   changedAt: string;
   changedBy: string;
   note: string | null;
+  changeOrigin: PriceHistoryOrigin;
+  source: string | null;
+  metadata: Record<string, unknown>;
+}
+
+export type PriceHistoryOrigin = "manual" | "auto" | "system";
+
+export interface PriceDailySnapshot {
+  id: string;
+  snapshotDate: string;
+  priceId: string;
+  category: PriceCategory;
+  label: string;
+  value: number;
+  announcedAt: string;
+  source: string;
+  createdAt: string;
+}
+
+export interface PriceFreshness {
+  latestManualChangedAt: string | null;
+  latestAnyChangedAt: string | null;
+  historyCount: number;
+  dailySnapshotCount: number;
 }
 
 export interface UpdatePriceInput {
@@ -41,6 +65,9 @@ export interface UpdatePriceInput {
   isVisible: boolean;
   announcedAt: string;
   changedBy: string;
+  changeOrigin?: PriceHistoryOrigin;
+  source?: string | null;
+  metadata?: Record<string, unknown>;
 }
 
 export interface PriceTrendPoint {
@@ -87,6 +114,8 @@ export interface PriceAutoSettings {
   minApplyChangeWon: number;
   maxAutoPublishChangePercent: number;
   businessHoursOnly: boolean;
+  staleGuardEnabled: boolean;
+  staleAfterHours: number;
   lastCheckedAt: string | null;
   lastAutoAppliedAt: string | null;
   updatedBy: string;
@@ -112,6 +141,8 @@ export interface PriceAutoSettingsInput {
   minApplyChangeWon: number;
   maxAutoPublishChangePercent: number;
   businessHoursOnly: boolean;
+  staleGuardEnabled: boolean;
+  staleAfterHours: number;
   updatedBy: string;
 }
 

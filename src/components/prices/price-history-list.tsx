@@ -18,7 +18,7 @@ export function PriceHistoryList({ history }: PriceHistoryListProps) {
         <p className="text-sm text-[var(--color-muted)]">{history.length}건 표시</p>
       </div>
       <div>
-        {history.map((entry) => (
+        {history.length ? history.map((entry) => (
           <div key={entry.id} className="border-b border-[var(--color-line)] py-5">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -55,7 +55,14 @@ export function PriceHistoryList({ history }: PriceHistoryListProps) {
               </div>
             </div>
           </div>
-        ))}
+        )) : (
+          <div className="rounded-[1.25rem] border border-[var(--color-line)] bg-white px-5 py-5">
+            <p className="font-semibold text-[var(--color-ink)]">현재 고시 시세 기준으로 이력을 준비 중입니다.</p>
+            <p className="mt-2 text-sm leading-7 text-[var(--color-muted)]">
+              직접 저장 또는 자동시세 반영이 쌓이면 이곳에 최근 조정 이력이 표시됩니다. 공개 시세표는 현재 고시값을 기준으로 계속 확인할 수 있습니다.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ export function TradingViewDisclosure() {
       onToggle={(event) => setIsOpen(event.currentTarget.open)}
     >
       <summary className="cursor-pointer px-5 py-4 text-sm font-semibold text-[#15191b]">
-        국제 금속 차트 열기
+        국제 금속 차트 보기
       </summary>
       {isOpen ? (
         <div className="border-t border-[#e4ebe9]">

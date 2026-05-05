@@ -7,6 +7,7 @@ import type {
   PriceAutoSuggestionItem,
   PriceCategory,
   PriceRecord,
+  UpdatePriceInput,
 } from "@/types/price";
 
 const DEFAULT_ROUNDING_UNIT = 100;
@@ -33,6 +34,8 @@ export function getDefaultPriceAutoSettings(
     minApplyChangeWon: 500,
     maxAutoPublishChangePercent: 0.05,
     businessHoursOnly: true,
+    staleGuardEnabled: true,
+    staleAfterHours: 24,
     lastCheckedAt: null,
     lastAutoAppliedAt: null,
     updatedBy: "관리자",
@@ -178,22 +181,30 @@ export function buildPriceUpdatesFromSuggestion(
   prices: PriceRecord[],
   suggestion: PriceAutoSuggestion,
   changedBy: string,
-) {
+): UpdatePriceInput[] {
   const priceByCategory = new Map(prices.map((price) => [price.category, price]));
   const announcedAt = new Date().toISOString();
+  const updates: UpdatePriceInput[] = [];
 
-  return suggestion.items
-    .map((item) => {
-      const price = priceByCategory.get(item.category);
-      if (!price) return null;
-      return {
-        id: price.id,
-        value: item.proposedValue,
-        note: item.note,
-        isVisible: price.isVisible,
-        announcedAt,
-        changedBy,
-      };
-    })
-    .filter((item): item is NonNullable<typeof item> => Boolean(item));
+  for (const item of suggestion.items) {
+    const price = priceByCategory.get(item.category);
+    if (!price) continue;
+    updates.push({
+      id: price.id,
+      value: item.proposedValue,
+      note: item.note,
+      isVisible: price.isVisible,
+      announcedAt,
+      changedBy,
+      changeOrigin: "auto",
+      source: suggestion.providerLabel,
+      metadata: {
+        suggestionId: suggestion.id,
+        source: suggestion.source,
+        sourceUpdatedAt: suggestion.sourceUpdatedAt,
+      },
+    });
+  }
+
+  return updates;
 }

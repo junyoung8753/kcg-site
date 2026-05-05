@@ -8,8 +8,8 @@ This file is the short, durable context for a new Codex chat, another PC, or a f
 
 - 초보자는 먼저 `docs/setup/PROJECT_STATUS_FOR_BEGINNER.md`를 보면 된다. 이 문서는 현재 버전, 작업 브랜치, 백업 기준, 실제 사이트 반영 여부, 쉬운 Codex 요청 문장을 1-2분 안에 읽을 수 있게 정리한다.
 - `branch` = 작업 줄기, `HEAD` = 현재 코드 기준점, `rollback` = 이전 상태로 되돌리기, `backup branch` = 되돌리기용 책갈피, `dirty state` = 아직 정리되지 않은 변경사항.
-- 이번 `v0.2.8`은 자동시세 ON을 눌러도 다시 OFF로 저장될 수 있던 토글 제출 버그를 고치고, `/admin` 첫 화면을 “오늘 먼저 확인할 것” 중심의 실무형 대시보드로 다시 정리하는 작업이다.
-- 되돌릴 때는 "v0.2.8 관리자 토글 버그 수정과 대시보드 재정리만 되돌리는 계획을 먼저 보여줘" 또는 "v0.2.7 관리자 라이트 테마와 자동시세 UX 개선까지만 되돌리는 계획을 보여줘"라고 말하면 된다.
+- 이번 `v0.2.9`는 운영형 QA에서 놓친 GNB 순서, TradingView 실제 가시성, 시세 이력 empty state, 24시간 수동 미등록 자동시세 guard를 보강하는 작업이다.
+- 되돌릴 때는 "v0.2.9 운영형 QA 보강만 되돌리는 계획을 먼저 보여줘" 또는 "v0.2.8 관리자 토글 버그 수정과 대시보드 재정리까지만 되돌리는 계획을 보여줘"라고 말하면 된다.
 
 Junyoung's current preferred workflow is local-first. Codex Cloud is not the default right now because it has been inconvenient and unreliable for current KCG work. Keep Cloud docs as a future option and use `docs/setup/CLOUD_ONLY_WORKFLOW.md` only when junyoung explicitly asks for Codex Cloud or wants to avoid computer-specific setup.
 
@@ -17,20 +17,20 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 
 ## Current Version Snapshot
 
-- Current KCG site version: `v0.2.8`
-- Latest change: `Admin mode persistence and operational readability`
+- Current KCG site version: `v0.2.9`
+- Latest change: `Operations QA guard, TradingView visibility, and price history storage`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: `v0.2.8` includes real admin source changes and was production deployed after verification. Confirm current commit/push/deploy state with `git status --short --branch`, `npm run release:trace`, and `npx vercel inspect https://kcgold.co.kr/` before editing.
-- 실제 사이트 화면이 바뀐 것: 관리자 대시보드 실무형 재구성, 자동시세 ON/OFF 저장 버그 수정, `/admin/prices` 경고/설정 문구 가독성 개선
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.8 changelog/handoff/status trace only
-- 배포된 것: 관리자 대시보드 실무형 재구성, 자동시세 ON/OFF 저장 버그 수정, `/admin/prices` 경고/설정 문구 가독성 개선. Use `npx vercel inspect https://kcgold.co.kr/` for the current deployment id.
-- 아직 배포 안 된 것: 없음. 단, 검색 노출/noindex 해제와 실제 상품 운영자료 확정은 별도 승인 전까지 제외.
+- Reflection status: `v0.2.9` includes real public/admin/data-model source changes and is intended for production deployment after the full verification gate. Confirm current commit/push/deploy state with `git status --short --branch`, `npm run release:trace`, and `npx vercel inspect https://kcgold.co.kr/` before editing.
+- 실제 사이트 화면이 바뀐 것: GNB에서 `매장안내`가 `회사소개`보다 앞에 오며, TradingView 차트 버튼/ready/fallback, 관리자 시세 이력/24시간 guard 표시가 바뀜
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.9 changelog/handoff/status trace until deployment completes
+- 배포된 것: pending until v0.2.9 production deployment completes. Use `npx vercel inspect https://kcgold.co.kr/` for the current deployment id after deploy.
+- 아직 배포 안 된 것: v0.2.9 source/schema/docs until final deploy. 검색 노출/noindex 해제와 실제 상품 운영자료 확정은 별도 승인 전까지 제외.
 - 고객에게 보여줘도 되는 것: 배포 후 `kcgold.co.kr` 사이트. 검색 노출은 여전히 차단.
-- 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
-- Latest QA: `v0.2.8` passed local `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:admin`, `npm run screenshot:site`, `npm run qa:site`, `npm audit --audit-level=moderate`, and `git diff --check`; after deployment it passed `npx vercel inspect https://kcgold.co.kr/`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site`, and `npm run check:external -- --strict-domain`.
+- 아직 내부 기준/계획일 뿐인 것: retention cleanup policy, 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
+- Latest QA: `v0.2.9` verification is required before completion: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm run screenshot:admin`, `npm run qa:site`, `npm audit --audit-level=moderate`, and `git diff --check`; after deployment run `npx vercel inspect https://kcgold.co.kr/`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site`, and `npm run check:external -- --strict-domain`.
 - Change ledger: `docs/setup/CHANGELOG.md`
 - Broader rollback bookmark: `backup/pre-v0.2.4-operations-product-audit`
-- Rollback phrase: `v0.2.8 전으로 되돌려줘`
+- Rollback phrase: `v0.2.9 전으로 되돌려줘`
 
 ## Current Source Of Truth
 

@@ -35,10 +35,13 @@ export default async function AdminPricesPage({
   searchParams,
 }: AdminPricesPageProps) {
   const repository = getRepository();
-  const [prices, settings, suggestion, params] = await Promise.all([
+  await repository.ensurePriceHistoryBaseline("시스템: 관리자 화면 기준 시세 보관");
+  const [prices, settings, suggestion, history, freshness, params] = await Promise.all([
     repository.getPrices(),
     repository.getPriceAutoSettings(),
     repository.getLatestPriceAutoSuggestion(),
+    repository.getPriceHistory(8),
+    repository.getPriceFreshness(),
     searchParams,
   ]);
   const message = getStatusMessage(params.status);
@@ -88,6 +91,8 @@ export default async function AdminPricesPage({
         prices={prices}
         settings={settings}
         suggestion={suggestion}
+        history={history}
+        freshness={freshness}
         hasMetalsKey={hasMetalsKey}
         statusCode={typeof params.status === "string" ? params.status : undefined}
         statusMessage={message}

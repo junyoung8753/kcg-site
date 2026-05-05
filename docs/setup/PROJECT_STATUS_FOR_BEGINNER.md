@@ -19,23 +19,23 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## Current Snapshot
 
-- 현재 공식 작업 버전: `v0.2.8`
+- 현재 공식 작업 버전: `v0.2.9`
 - 현재 작업 브랜치: `codex/kcg-launch-readiness-catalog-20260427`
-- 이번 작업 버전: `v0.2.8`
-- 직전 버전: `v0.2.7`
-- 작업 전 HEAD: `0510b76`
+- 이번 작업 버전: `v0.2.9`
+- 직전 버전: `v0.2.8`
+- 작업 전 HEAD: `db14f20`
 - 백업 브랜치: `backup/pre-v0.2.4-operations-product-audit` (`v0.2.4`와 `v0.2.5` 문서 보강 전으로 크게 돌아가는 책갈피)
 
 ## 실제 사이트 반영 여부
 
-- 실제 사이트 화면이 바뀐 것: 관리자 대시보드 실무형 재구성, 자동시세 ON/OFF 저장 버그 수정, `/admin/prices` 경고/설정 문구 가독성 개선
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.8 changelog/handoff/status trace only
-- 배포된 것: `v0.2.8` 관리자 대시보드, 자동시세 ON/OFF 저장 버그 수정, `/admin/prices` 가독성 개선. 최신 배포 ID는 `npx vercel inspect https://kcgold.co.kr/`로 확인한다.
-- 아직 배포 안 된 것: 없음. 단, 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정은 아직 별도 작업.
+- 실제 사이트 화면이 바뀐 것: 메뉴 순서에서 `매장안내`가 `회사소개`보다 앞에 오고, TradingView 차트 버튼/표시 상태와 관리자 시세 이력/24시간 guard 표시가 바뀜
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.9 changelog/handoff/status trace until deployment completes
+- 배포된 것: 아직 v0.2.9 배포 전. 최신 배포 ID는 배포 후 `npx vercel inspect https://kcgold.co.kr/`로 확인한다.
+- 아직 배포 안 된 것: v0.2.9 코드/schema/문서 변경. 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정은 아직 별도 작업.
 - 내가 고객에게 보여줘도 되는 것: 공개 고객 화면은 기존 방향 유지. 관리자 라이트 UX는 로그인 사용자만 확인.
 - 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
-- 이번 작업에서 건드린 범위: 관리자 대시보드, 자동시세 관리자 UX bug fix, QA/상태 문서, `package.json`, `package-lock.json`
-- 절대 건드리지 않은 범위: 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, Supabase schema, Vercel env/secret
+- 이번 작업에서 건드린 범위: GNB 순서, TradingView disclosure/widget readiness, 시세 이력/일별 스냅샷 schema, 자동시세 24시간 guard, 관리자 시세 이력 표시, QA/상태 문서, `package.json`, `package-lock.json`
+- 절대 건드리지 않은 범위: 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, Vercel env/secret
 
 ## Easy Words
 
@@ -53,8 +53,8 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 | 구분 | 이름 | 쉬운 설명 | 내가 봐야 하는 경우 |
 |---|---|---|---|
-| 현재 작업 버전 | `v0.2.8` | 자동시세 ON/OFF 저장 버그를 고치고 관리자 첫 화면을 실무형으로 다시 정리하는 버전 | 이번 변경 확인 |
-| 이전 버전 | `v0.2.7` | 관리자 콘솔 라이트 테마와 자동시세 UX를 운영자 관점으로 정리한 버전 | 비교/이전 상태 확인 |
+| 현재 작업 버전 | `v0.2.9` | 메뉴 순서, TradingView 표시, 시세 이력 보관, 24시간 자동시세 guard를 운영형 QA 기준으로 보강한 버전 | 이번 변경 확인 |
+| 이전 버전 | `v0.2.8` | 자동시세 ON/OFF 저장 버그를 고치고 관리자 첫 화면을 실무형으로 다시 정리한 버전 | 비교/이전 상태 확인 |
 | 백업 브랜치 | `backup/pre-v0.2.4-operations-product-audit` | `v0.2.4`와 `v0.2.5` 문서 보강 전으로 돌아가는 책갈피 | 크게 되돌릴 때 |
 | 현재 작업 브랜치 | `codex/kcg-launch-readiness-catalog-20260427` | 지금 Codex가 작업 중인 줄기 | 상태 확인 |
 | handoff | `CURRENT_HANDOFF.md` | 다음 작업자에게 넘기는 현재 상태 메모 | 이어서 작업할 때 |
@@ -88,6 +88,7 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## 되돌리기 요청 문장
 
+- "v0.2.9 운영형 QA 보강만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.8 관리자 토글 버그 수정과 대시보드 재정리만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.7 관리자 라이트 테마와 자동시세 UX 개선만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.6 전문가 패널 QA 화면 개선만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."

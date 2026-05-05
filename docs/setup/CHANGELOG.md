@@ -8,6 +8,42 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.9 - Operations QA guard, TradingView visibility, and price history storage
+
+- Date: `2026-05-05 KST`
+- Commit: pending until final verification.
+- Deploy Status: local implementation in progress; intended for commit, push, and production deployment to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` after the v0.2.9 validation gate. Search indexing/noindex release is not included.
+- 사람이 읽는 요약: 고객이 보는 메뉴 순서를 실제 행동 흐름에 맞춰 `매장안내`가 `회사소개`보다 앞에 오게 바꾸고, TradingView 차트가 코드에만 있는 상태가 아니라 실제로 보이거나 실패 이유를 알 수 있게 보강했습니다. 시세 이력이 비어 보이지 않도록 현재 고시값 기준 이력과 일별 스냅샷 보관 구조를 추가했고, `24시간 이상 수동 시세 등록`이 없으면 자동시세가 다음 자동 점검에서 ON으로 전환되도록 운영 guard를 추가했습니다.
+- Summary: Adds operational QA fixes for navigation priority, TradingView visibility/fallback, KCG posted-price history baselines, daily snapshots for future KCG charts, and a 24-hour manual-registration stale guard that enables automatic pricing without bypassing safety checks.
+- Changed:
+  - Reordered GNB to `시세 → 상품/매입 → 서비스 → 매장안내 → 회사소개 → 공지`.
+  - Clarified the home TradingView disclosure to `국제 금속 차트 보기` and made the widget mark itself ready once the official iframe appears while retaining fallback messaging.
+  - Added `price_daily_snapshots`, `price_history.change_origin/source/metadata`, and idempotent baseline inserts to Supabase schema.
+  - Added repository methods for price freshness, daily snapshots, and baseline history preparation.
+  - Added a 24-hour manual-registration stale guard to automatic price refresh: OFF can be switched ON by the system, but public price changes still require KCG formula and safety gates.
+  - Added admin price-screen visibility for latest manual registration, stale guard status, and history/snapshot counts.
+  - Updated source audit guardrails to catch GNB order, TradingView wording, price history schema, and stale-guard code regressions.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀐 것: GNB order, TradingView disclosure wording/readiness behavior, admin price freshness/history/stale-guard display.
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.9 changelog/handoff/status trace until deployment completes.
+  - 배포된 것: pending until production deployment completes.
+  - 아직 배포 안 된 것: v0.2.9 code/schema/docs until final deploy.
+  - 고객에게 보여줘도 되는 것: after deploy, existing noindex-protected `kcgold.co.kr` review site.
+  - 아직 내부 기준/계획일 뿐인 것: retention cleanup policy, final product photos, final automatic-price scheduler plan beyond Vercel Hobby once-daily checks.
+- QA Score:
+  - Public site target: `9380 / 10000`
+  - Admin console target: `9520 / 10000`
+  - Operations readiness target: `9250 / 10000`
+- Verification:
+  - Required before completion: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm run screenshot:admin`, `npm run qa:site`, `npm audit --audit-level=moderate`, `git diff --check`.
+  - Required after deploy: `npx vercel inspect https://kcgold.co.kr/`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site`, and `npm run check:external -- --strict-domain`.
+- Rollback Hint: `v0.2.9 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm whether automatic checks need Vercel Pro/external scheduler beyond the Vercel Hobby once-daily posture.
+  - Provide final KCG-designed product photos and confirm product list/weights/공임/margin.
+  - Rotate the final production admin password before public search launch.
+  - Approve robots/noindex release and search indexing only when final public launch is ready.
+
 ## v0.2.8 - Admin mode persistence and operational readability
 
 - Date: `2026-05-05 KST`

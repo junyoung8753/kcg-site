@@ -117,6 +117,8 @@ export async function updatePricesAction(formData: FormData) {
     isVisible: toBoolean(formData.get(`visible:${id}`)),
     announcedAt,
     changedBy,
+    changeOrigin: "manual" as const,
+    source: "admin",
   }));
 
   let redirectPath = "/admin/prices?status=error";
@@ -261,6 +263,10 @@ export async function updatePriceAutoSettingsAction(formData: FormData) {
       0.05,
     ),
     businessHoursOnly: toBoolean(formData.get("businessHoursOnly")),
+    staleGuardEnabled: formData.has("staleGuardEnabled")
+      ? formData.getAll("staleGuardEnabled").some((value) => toBoolean(value))
+      : true,
+    staleAfterHours: ensureNumber(formData.get("staleAfterHours"), 24),
     updatedBy: ensureString(formData.get("updatedBy"), "관리자"),
   });
 

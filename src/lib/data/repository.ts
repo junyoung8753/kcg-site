@@ -7,6 +7,8 @@ import type {
   PriceAutoSuggestion,
   PriceAutoSuggestionInput,
   PriceAutoSuggestionStatus,
+  PriceDailySnapshot,
+  PriceFreshness,
   PriceHistoryEntry,
   PriceRecord,
   UpdatePriceInput,
@@ -16,6 +18,9 @@ import type { Product, ProductUpsertInput } from "@/types/product";
 export interface SiteRepository {
   getPrices(options?: { visibleOnly?: boolean }): Promise<PriceRecord[]>;
   getPriceHistory(limit?: number): Promise<PriceHistoryEntry[]>;
+  getPriceDailySnapshots(limit?: number): Promise<PriceDailySnapshot[]>;
+  getPriceFreshness(): Promise<PriceFreshness>;
+  ensurePriceHistoryBaseline(changedBy?: string): Promise<RepositoryMutationResult>;
   getPriceAutoSettings(): Promise<PriceAutoSettings>;
   updatePriceAutoSettings(input: PriceAutoSettingsInput): Promise<RepositoryMutationResult>;
   updatePriceAutoRunState(input: PriceAutoRunStateInput): Promise<RepositoryMutationResult>;

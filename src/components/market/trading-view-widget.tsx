@@ -74,10 +74,14 @@ export function TradingViewMarketWidget() {
       setWidgetState("failed");
     };
 
+    let readyTimer: number | null = null;
     const observer = new MutationObserver(() => {
       const iframe = container.querySelector("iframe");
       if (!iframe) return;
       iframe.addEventListener("load", markReady, { once: true });
+      if (!readyTimer) {
+        readyTimer = window.setTimeout(markReady, 600);
+      }
     });
     observer.observe(container, { childList: true, subtree: true });
     const timeout = window.setTimeout(markFailed, 15_000);
@@ -85,6 +89,7 @@ export function TradingViewMarketWidget() {
     return () => {
       observer.disconnect();
       window.clearTimeout(timeout);
+      if (readyTimer) window.clearTimeout(readyTimer);
       container.innerHTML = "";
     };
   }, []);

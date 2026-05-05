@@ -12,6 +12,9 @@ import type {
   PriceAutoSuggestionInput,
   PriceAutoSuggestionItem,
   PriceAutoSuggestionStatus,
+  PriceDailySnapshot,
+  PriceFreshness,
+  PriceHistoryOrigin,
   PriceHistoryEntry,
   PriceRecord,
   UpdatePriceInput,
@@ -44,6 +47,21 @@ type SupabasePriceHistoryRow = {
   changed_at: string;
   changed_by: string;
   note: string | null;
+  change_origin?: PriceHistoryOrigin | null;
+  source?: string | null;
+  metadata?: Record<string, unknown> | null;
+};
+
+type SupabasePriceDailySnapshotRow = {
+  id: string;
+  snapshot_date: string;
+  price_id: string;
+  category: PriceRecord["category"];
+  label: string;
+  value: number;
+  announced_at: string;
+  source: string;
+  created_at: string;
 };
 
 type SupabasePriceAutoSettingsRow = {
@@ -66,6 +84,8 @@ type SupabasePriceAutoSettingsRow = {
   min_apply_change_won?: number | null;
   max_auto_publish_change_percent?: number | null;
   business_hours_only?: boolean | null;
+  stale_guard_enabled?: boolean | null;
+  stale_after_hours?: number | null;
   last_checked_at?: string | null;
   last_auto_applied_at?: string | null;
   updated_by: string;
@@ -151,6 +171,23 @@ function mapHistory(row: SupabasePriceHistoryRow): PriceHistoryEntry {
     changedAt: row.changed_at,
     changedBy: row.changed_by,
     note: row.note,
+    changeOrigin: row.change_origin ?? "manual",
+    source: row.source ?? null,
+    metadata: row.metadata ?? {},
+  };
+}
+
+function mapDailySnapshot(row: SupabasePriceDailySnapshotRow): PriceDailySnapshot {
+  return {
+    id: row.id,
+    snapshotDate: row.snapshot_date,
+    priceId: row.price_id,
+    category: row.category,
+    label: row.label,
+    value: row.value,
+    announcedAt: row.announced_at,
+    source: row.source,
+    createdAt: row.created_at,
   };
 }
 
@@ -183,6 +220,8 @@ function mapPriceAutoSettings(row: SupabasePriceAutoSettingsRow): PriceAutoSetti
       row.max_auto_publish_change_percent ?? row.max_auto_change_percent ?? 0.05,
     ),
     businessHoursOnly: row.business_hours_only ?? true,
+    staleGuardEnabled: row.stale_guard_enabled ?? true,
+    staleAfterHours: Number(row.stale_after_hours ?? 24),
     lastCheckedAt: row.last_checked_at ?? null,
     lastAutoAppliedAt: row.last_auto_applied_at ?? null,
     updatedBy: row.updated_by,
@@ -221,6 +260,31 @@ function isMissingTableError(error: unknown) {
     /could not find .*table/i.test(message) ||
     /schema cache/i.test(message)
   );
+}
+
+function isMissingColumnError(error: unknown) {
+  if (!error || typeof error !== "object") return false;
+  const maybeError = error as { code?: string; message?: string };
+  const message = maybeError.message || "";
+  return (
+    maybeError.code === "42703" ||
+    /column .* does not exist/i.test(message) ||
+    /could not find .*column/i.test(message)
+  );
+}
+
+function getKoreaDateKey(value = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(value);
+
+  const year = parts.find((part) => part.type === "year")?.value ?? "1970";
+  const month = parts.find((part) => part.type === "month")?.value ?? "01";
+  const day = parts.find((part) => part.type === "day")?.value ?? "01";
+  return `${year}-${month}-${day}`;
 }
 
 function mapAnnouncement(row: SupabaseAnnouncementRow): Announcement {
@@ -301,6 +365,155 @@ export class SupabaseRepository implements SiteRepository {
     return (data as SupabasePriceHistoryRow[]).map(mapHistory);
   }
 
+  async getPriceDailySnapshots(limit = 90) {
+    const client = getSupabaseAdminClient();
+    const { data, error } = await client
+      .from("price_daily_snapshots")
+      .select("*")
+      .order("snapshot_date", { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      if (isMissingTableError(error)) return [];
+      throw error;
+    }
+
+    return (data as SupabasePriceDailySnapshotRow[]).map(mapDailySnapshot);
+  }
+
+  async getPriceFreshness(): Promise<PriceFreshness> {
+    const client = getSupabaseAdminClient();
+
+    const { data: latestAny, error: latestAnyError } = await client
+      .from("price_history")
+      .select("changed_at")
+      .order("changed_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (latestAnyError && !isMissingTableError(latestAnyError)) {
+      throw latestAnyError;
+    }
+
+    let latestManualChangedAt: string | null = null;
+    const { data: latestManual, error: latestManualError } = await client
+      .from("price_history")
+      .select("changed_at")
+      .eq("change_origin", "manual")
+      .order("changed_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (latestManualError) {
+      if (!isMissingTableError(latestManualError) && !isMissingColumnError(latestManualError)) {
+        throw latestManualError;
+      }
+    } else {
+      latestManualChangedAt = (latestManual as { changed_at?: string } | null)?.changed_at ?? null;
+    }
+
+    const { count: historyCount, error: historyCountError } = await client
+      .from("price_history")
+      .select("id", { count: "exact", head: true });
+
+    if (historyCountError && !isMissingTableError(historyCountError)) {
+      throw historyCountError;
+    }
+
+    const { count: snapshotCount, error: snapshotCountError } = await client
+      .from("price_daily_snapshots")
+      .select("id", { count: "exact", head: true });
+
+    if (snapshotCountError && !isMissingTableError(snapshotCountError)) {
+      throw snapshotCountError;
+    }
+
+    return {
+      latestManualChangedAt,
+      latestAnyChangedAt: (latestAny as { changed_at?: string } | null)?.changed_at ?? null,
+      historyCount: historyCount ?? 0,
+      dailySnapshotCount: snapshotCount ?? 0,
+    };
+  }
+
+  async ensurePriceHistoryBaseline(changedBy = "시스템: 기준 시세 보관") {
+    const client = getSupabaseAdminClient();
+    const prices = await this.getPrices();
+    const nowIso = new Date().toISOString();
+
+    for (const price of prices) {
+      const { data: existingHistory, error: historyLookupError } = await client
+        .from("price_history")
+        .select("id")
+        .eq("category", price.category)
+        .limit(1);
+
+      if (historyLookupError) {
+        if (isMissingTableError(historyLookupError)) {
+          return {
+            success: false,
+            message: "시세 이력 테이블이 아직 적용되지 않았습니다.",
+            mode: "supabase",
+          } satisfies RepositoryMutationResult;
+        }
+        throw historyLookupError;
+      }
+
+      if (!existingHistory?.length) {
+        const { error: insertError } = await client.from("price_history").insert({
+          price_id: price.id,
+          category: price.category,
+          label: price.label,
+          previous_value: price.value,
+          new_value: price.value,
+          changed_at: price.announcedAt || nowIso,
+          changed_by: changedBy,
+          note: price.note ?? "현재 공개 시세 기준으로 이력 보관을 시작했습니다.",
+          change_origin: "system",
+          source: "baseline",
+          metadata: {
+            reason: "initial_price_history_baseline",
+          },
+        });
+
+        if (insertError) {
+          if (isMissingColumnError(insertError)) break;
+          throw insertError;
+        }
+      }
+
+      const { error: snapshotError } = await client.from("price_daily_snapshots").upsert(
+        {
+          snapshot_date: getKoreaDateKey(new Date(price.announcedAt || nowIso)),
+          price_id: price.id,
+          category: price.category,
+          label: price.label,
+          value: price.value,
+          announced_at: price.announcedAt || nowIso,
+          source: "baseline",
+        },
+        { onConflict: "snapshot_date,category" },
+      );
+
+      if (snapshotError) {
+        if (isMissingTableError(snapshotError)) {
+          return {
+            success: false,
+            message: "일별 시세 스냅샷 테이블이 아직 적용되지 않았습니다.",
+            mode: "supabase",
+          } satisfies RepositoryMutationResult;
+        }
+        throw snapshotError;
+      }
+    }
+
+    return {
+      success: true,
+      message: "현재 고시 시세 기준 이력 보관 상태를 확인했습니다.",
+      mode: "supabase",
+    } satisfies RepositoryMutationResult;
+  }
+
   async getPriceAutoSettings() {
     const client = getSupabaseAdminClient();
     const { data, error } = await client
@@ -342,6 +555,8 @@ export class SupabaseRepository implements SiteRepository {
         min_apply_change_won: defaults.minApplyChangeWon,
         max_auto_publish_change_percent: defaults.maxAutoPublishChangePercent,
         business_hours_only: defaults.businessHoursOnly,
+        stale_guard_enabled: defaults.staleGuardEnabled,
+        stale_after_hours: defaults.staleAfterHours,
         last_checked_at: defaults.lastCheckedAt,
         last_auto_applied_at: defaults.lastAutoAppliedAt,
         updated_by: defaults.updatedBy,
@@ -380,6 +595,8 @@ export class SupabaseRepository implements SiteRepository {
       min_apply_change_won: input.minApplyChangeWon,
       max_auto_publish_change_percent: input.maxAutoPublishChangePercent,
       business_hours_only: input.businessHoursOnly,
+      stale_guard_enabled: input.staleGuardEnabled,
+      stale_after_hours: input.staleAfterHours,
       updated_by: input.updatedBy,
       updated_at: new Date().toISOString(),
     });
@@ -635,10 +852,33 @@ export class SupabaseRepository implements SiteRepository {
           changed_at: new Date().toISOString(),
           changed_by: item.changedBy,
           note: item.note,
+          change_origin: item.changeOrigin ?? "manual",
+          source: item.source ?? null,
+          metadata: item.metadata ?? {},
         });
 
         if (historyError) {
           throw historyError;
+        }
+
+        const snapshotDate = getKoreaDateKey(new Date(item.announcedAt));
+        const { error: snapshotError } = await client.from("price_daily_snapshots").upsert(
+          {
+            snapshot_date: snapshotDate,
+            price_id: item.id,
+            category: current.category,
+            label: current.label,
+            value: item.value,
+            announced_at: item.announcedAt,
+            source: item.source ?? item.changeOrigin ?? "manual",
+          },
+          { onConflict: "snapshot_date,category" },
+        );
+
+        if (snapshotError) {
+          if (!isMissingTableError(snapshotError)) {
+            throw snapshotError;
+          }
         }
       }
     }

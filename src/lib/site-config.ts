@@ -342,8 +342,8 @@ export const siteNavigation = [
   { href: "/prices", label: "시세" },
   { href: "/products", label: "상품/매입" },
   { href: "/services", label: "서비스" },
-  { href: "/company", label: "회사소개" },
   { href: "/about", label: "매장안내" },
+  { href: "/company", label: "회사소개" },
   { href: "/announcements", label: "공지" },
 ];
 

@@ -413,6 +413,10 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.9 - Operations QA guard, TradingView visibility, and price history storage",
+  "24시간 이상 수동 시세 등록",
+  "price_daily_snapshots",
+  "v0.2.9 전으로 되돌려줘",
   "## v0.2.8 - Admin mode persistence and operational readability",
   "자동시세 ON을 눌러도 다시 OFF로 저장될 수 있던",
   "v0.2.8 전으로 되돌려줘",
@@ -447,17 +451,17 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.8`",
-  "Admin mode persistence and operational readability",
+  "Current KCG site version: `v0.2.9`",
+  "Operations QA guard, TradingView visibility, and price history storage",
   "existing-api-integration-audit-2026-05-05.md",
-  "실제 사이트 화면이 바뀐 것: 관리자 대시보드 실무형 재구성",
+  "실제 사이트 화면이 바뀐 것: GNB에서 `매장안내`가 `회사소개`보다 앞에 오며",
   "backup/pre-v0.2.4-operations-product-audit",
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
-  "v0.2.8",
-  "관리자 대시보드 실무형 재구성",
-  "실제 사이트 화면이 바뀐 것: 관리자 대시보드 실무형 재구성",
+  "v0.2.9",
+  "TradingView 표시",
+  "실제 사이트 화면이 바뀐 것: 메뉴 순서",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",
   "MEDIUM",
@@ -468,9 +472,9 @@ expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "deploy 하지 않음",
 ]);
 expectText("docs/setup/QA_REPORT_2026-05-05.md", [
-  "Public site | 9340 / 10000",
-  "Admin console | 9460 / 10000",
-  "Operations readiness | 9120 / 10000",
+  "Public site | 9380 / 10000",
+  "Admin console | 9520 / 10000",
+  "Operations readiness | 9250 / 10000",
   "v0.2.8 Admin Console Follow-Up",
   "v0.2.7 Admin Console Follow-Up",
   "v0.2.6 Expert-Panel Follow-Up",
@@ -668,7 +672,7 @@ expectText("src/components/market/trading-view-disclosure.tsx", [
   "onToggle",
   "isOpen ?",
   "TradingViewMarketWidget",
-  "국제 금속 차트 열기",
+  "국제 금속 차트 보기",
 ]);
 expectText("src/components/market/trading-view-widget.tsx", [
   "TRADINGVIEW CHART",
@@ -781,6 +785,9 @@ expectText("src/lib/price-auto-runner.ts", [
   "auto-fill-disabled",
   "not-due",
   "outside-business-hours",
+  "24시간 이상 수동 시세 등록",
+  "isManualRegistrationStale",
+  "autoEnabledByStaleGuard",
   "small-change",
   "needs-review",
   "data-not-safe",
@@ -812,6 +819,7 @@ expectText("src/components/layout/mobile-contact-bar.tsx", [
   "시세",
   "위치",
 ]);
+expectTextOrder("src/lib/site-config.ts", '{ href: "/about", label: "매장안내" }', '{ href: "/company", label: "회사소개" }');
 expectText("src/lib/legal-info.ts", [
   "TEMP_BUSINESS_REGISTRATION_NUMBER",
   "000-00-00000",
@@ -914,7 +922,6 @@ expectNoText("src/app/admin/prices/price-mode-workspace.tsx", [
   "선택한 모드 저장",
   "Formula",
   "Auto Run",
-  "Manual",
   "type=\"checkbox\" defaultChecked={settings.isEnabled}",
   "최대 자동 변동률",
   "세부 설정 수정",
@@ -1129,6 +1136,12 @@ expectText("src/app/admin/products/page.tsx", [
   "upsertProductAction",
 ]);
 expectText("supabase/schema.sql", [
+  "price_daily_snapshots",
+  "change_origin",
+  "metadata jsonb",
+  "stale_guard_enabled",
+  "stale_after_hours",
+  "시스템: 기준 시세 보관",
   "price_auto_settings",
   "price_auto_suggestions",
   "gold_sell_premium_rate",
@@ -1304,7 +1317,7 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.8` includes real admin source changes",
+  "Reflection status: `v0.2.9` includes real public/admin/data-model source changes",
   "docs/setup/CHANGELOG.md",
   "docs/quality/ai-site-production-playbook.md",
   "docs/quality/data-source-compliance.md",
@@ -1354,6 +1367,7 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-048",
   "KCG-TODO-049",
   "KCG-TODO-050",
+  "KCG-TODO-059",
   "tasks:dashboard",
   "user-only",
   "codex",
@@ -1478,7 +1492,7 @@ if (siteUrl) {
     "시세는 고시 시각 기준이며 실제 거래 금액",
     "국제 현재가",
     "자동 참고 시세와 외부 뉴스는 회사 고시 시세를 대체하지 않습니다.",
-    "국제 금속 차트 열기",
+    "국제 금속 차트 보기",
   ]);
   await expectUrl("/services", [
     "품목 확인, 고시 기준, 실물 확인",

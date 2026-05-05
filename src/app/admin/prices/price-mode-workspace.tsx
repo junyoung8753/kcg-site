@@ -10,12 +10,20 @@ import {
 } from "@/actions/price-actions";
 import { AdminSubmitButton } from "@/components/admin/admin-submit-button";
 import { formatDateTimeKorean } from "@/lib/format";
-import type { PriceAutoSettings, PriceAutoSuggestion, PriceRecord } from "@/types/price";
+import type {
+  PriceAutoSettings,
+  PriceAutoSuggestion,
+  PriceFreshness,
+  PriceHistoryEntry,
+  PriceRecord,
+} from "@/types/price";
 
 interface AdminPricesWorkspaceProps {
   prices: PriceRecord[];
   settings: PriceAutoSettings;
   suggestion: PriceAutoSuggestion | null;
+  history: PriceHistoryEntry[];
+  freshness: PriceFreshness;
   hasMetalsKey: boolean;
   statusCode?: string;
   statusMessage?: string | null;
@@ -68,6 +76,29 @@ function getLatestUpdate(prices: PriceRecord[]) {
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
   );
   return sorted[0]?.updatedAt ?? prices[0]?.announcedAt ?? new Date().toISOString();
+}
+
+function getElapsedHoursLabel(value: string | null) {
+  if (!value) return "기록 없음";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "기록 오류";
+  const hours = Math.max(0, Math.floor((Date.now() - date.getTime()) / 1000 / 60 / 60));
+  if (hours < 1) return "1시간 이내";
+  if (hours < 24) return `${hours}시간 전`;
+  const days = Math.floor(hours / 24);
+  return `${days}일 전`;
+}
+
+function getStaleGuardLabel(settings: PriceAutoSettings, freshness: PriceFreshness) {
+  if (!settings.staleGuardEnabled) return "꺼짐";
+  const latest = freshness.latestManualChangedAt ?? freshness.latestAnyChangedAt;
+  if (!latest) return "다음 자동 점검 때 ON 전환 가능";
+  const date = new Date(latest);
+  if (Number.isNaN(date.getTime())) return "수동 등록 시각 확인 필요";
+  const elapsedHours = (Date.now() - date.getTime()) / 1000 / 60 / 60;
+  return elapsedHours >= settings.staleAfterHours
+    ? "다음 자동 점검 때 ON 전환"
+    : `${Math.ceil(settings.staleAfterHours - elapsedHours)}시간 여유`;
 }
 
 function getFeedbackTone(statusCode?: string) {
@@ -173,6 +204,8 @@ function HiddenAutoSettingsFields({
       <input type="hidden" name="minApplyChangeWon" value={settings.minApplyChangeWon} />
       <input type="hidden" name="maxAutoPublishChangePercent" value={settings.maxAutoPublishChangePercent} />
       {settings.businessHoursOnly ? <input type="hidden" name="businessHoursOnly" value="on" /> : null}
+      <input type="hidden" name="staleGuardEnabled" value={settings.staleGuardEnabled ? "on" : "off"} />
+      <input type="hidden" name="staleAfterHours" value={settings.staleAfterHours} />
       <input type="hidden" name="updatedBy" value="관리자" />
     </>
   );
@@ -210,11 +243,13 @@ function OperationSummary({
   prices,
   settings,
   suggestion,
+  freshness,
   isAutoOn,
 }: {
   prices: PriceRecord[];
   settings: PriceAutoSettings;
   suggestion: PriceAutoSuggestion | null;
+  freshness: PriceFreshness;
   isAutoOn: boolean;
 }) {
   const latestUpdate = getLatestUpdate(prices);
@@ -223,13 +258,15 @@ function OperationSummary({
     { label: "운영 상태", value: isAutoOn ? "자동시세 ON" : "직접 입력" },
     { label: "마지막 저장", value: formatDateTimeKorean(latestUpdate) },
     { label: "최근 자동 반영", value: settings.lastAutoAppliedAt ? formatDateTimeKorean(settings.lastAutoAppliedAt) : "아직 없음" },
+    { label: "마지막 수동 등록", value: getElapsedHoursLabel(freshness.latestManualChangedAt) },
+    { label: "24시간 guard", value: getStaleGuardLabel(settings, freshness) },
     { label: "다음 확인 예정", value: getNextCheckLabel(settings, isAutoOn) },
     { label: "검토 대기", value: draftCount ? `${draftCount}개 항목` : "없음" },
   ];
 
   return (
     <section className="admin-panel p-4 sm:p-5">
-      <div className="grid gap-3 md:grid-cols-5">
+      <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-7">
         {stats.map((item) => (
           <div key={item.label} className="rounded-xl border border-[var(--admin-line)] bg-[#fbfdfb] px-4 py-3">
             <p className="text-xs font-bold text-[var(--admin-muted)]">{item.label}</p>
@@ -506,6 +543,25 @@ function AutoSettingsForm({
         </label>
 
         <div className="grid gap-4 sm:grid-cols-2">
+          <label className="inline-flex items-start gap-3 rounded-xl border border-[var(--admin-line)] bg-[#fbf7e8] px-4 py-3 text-sm font-semibold text-[var(--admin-ink)]">
+            <input type="hidden" name="staleGuardEnabled" value="off" />
+            <input name="staleGuardEnabled" type="checkbox" defaultChecked={settings.staleGuardEnabled} className="mt-1" />
+            <span>
+              <span className="block">24시간 미등록 guard</span>
+              <span className="mt-1 block text-xs font-medium leading-5 text-[var(--admin-muted)]">
+                수동 등록이 오래 없으면 다음 자동 점검에서 자동시세를 ON으로 전환합니다.
+              </span>
+            </span>
+          </label>
+          <NumberField
+            name="staleAfterHours"
+            label="자동 전환 기준 시간"
+            value={settings.staleAfterHours}
+            help="이 시간 이상 직접 저장이 없으면 자동시세 OFF도 다음 점검에서 ON으로 바뀝니다."
+          />
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
           <NumberField
             name="goldSellPremiumRatePct"
             label="순금 살 때 프리미엄(%)"
@@ -623,6 +679,7 @@ function AutoSuggestionPanel({ suggestion }: { suggestion: PriceAutoSuggestion }
 function AutoModePanel({
   settings,
   suggestion,
+  freshness,
   hasMetalsKey,
   statusCode,
   statusMessage,
@@ -630,6 +687,7 @@ function AutoModePanel({
 }: {
   settings: PriceAutoSettings;
   suggestion: PriceAutoSuggestion | null;
+  freshness: PriceFreshness;
   hasMetalsKey: boolean;
   statusCode?: string;
   statusMessage?: string | null;
@@ -682,10 +740,21 @@ function AutoModePanel({
                 <dt className="text-[var(--admin-muted)]">자동 게시 허용 변동폭</dt>
                 <dd className="mt-1 font-extrabold text-[var(--admin-ink)]">{formatRate(settings.maxAutoPublishChangePercent)} 미만</dd>
               </div>
+              <div className="admin-subpanel px-4 py-3">
+                <dt className="text-[var(--admin-muted)]">마지막 수동 등록</dt>
+                <dd className="mt-1 font-extrabold text-[var(--admin-ink)]">{getElapsedHoursLabel(freshness.latestManualChangedAt)}</dd>
+              </div>
+              <div className="admin-subpanel px-4 py-3">
+                <dt className="text-[var(--admin-muted)]">24시간 미등록 guard</dt>
+                <dd className="mt-1 font-extrabold text-[var(--admin-ink)]">
+                  {settings.staleGuardEnabled ? `${settings.staleAfterHours}시간 기준` : "꺼짐"}
+                </dd>
+              </div>
             </dl>
             <p className="admin-help mt-3 text-xs">
               예약 자동 실행은 현재 Vercel 무료 플랜 기준 하루 1회입니다. 다만 이 화면의 `지금 계산 실행`은
               즉시 계산하며, 안전 기준을 통과할 때만 공개 시세를 바꿉니다.
+              자동시세를 OFF로 꺼도 수동 등록이 {settings.staleAfterHours}시간 이상 없으면 다음 자동 점검에서 다시 ON이 될 수 있습니다.
             </p>
           </div>
 
@@ -730,11 +799,15 @@ function AutoModePanel({
 
 function PriceEditor({
   prices,
+  history,
+  freshness,
   statusCode,
   statusMessage,
   warnings,
 }: {
   prices: PriceRecord[];
+  history: PriceHistoryEntry[];
+  freshness: PriceFreshness;
   statusCode?: string;
   statusMessage?: string | null;
   warnings?: string[];
@@ -778,6 +851,31 @@ function PriceEditor({
 
       <div className="mt-4">
         <AdminActionFeedback statusCode={statusCode} message={statusMessage} warnings={warnings} scope="manual" />
+      </div>
+
+      <div className="mt-5 rounded-xl border border-[var(--admin-line)] bg-[#fbfdfb] px-4 py-3 text-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="font-extrabold text-[var(--admin-ink)]">최근 시세 조정 이력</p>
+          <p className="text-[var(--admin-muted)]">
+            이력 {freshness.historyCount.toLocaleString("ko-KR")}건 · 일별 보관 {freshness.dailySnapshotCount.toLocaleString("ko-KR")}건
+          </p>
+        </div>
+        {history.length ? (
+          <div className="mt-3 grid gap-2 md:grid-cols-2">
+            {history.slice(0, 4).map((entry) => (
+              <div key={entry.id} className="rounded-lg border border-[var(--admin-line)] bg-white px-3 py-2">
+                <p className="font-bold text-[var(--admin-ink)]">{entry.label} {formatWon(entry.previousValue)} → {formatWon(entry.newValue)}</p>
+                <p className="mt-1 text-xs text-[var(--admin-muted)]">
+                  {formatDateTimeKorean(entry.changedAt)} · {entry.changeOrigin === "auto" ? "자동시세" : entry.changeOrigin === "system" ? "기준 보관" : "직접 입력"}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 leading-6 text-[var(--admin-muted)]">
+            아직 실제 변경 이력이 적습니다. 현재 고시 시세 기준으로 기준값을 보관하고 있으며, 직접 저장하거나 자동 반영되면 이곳에 기록이 쌓입니다.
+          </p>
+        )}
       </div>
 
       <div className="mt-5 overflow-x-auto">
@@ -844,6 +942,8 @@ export function AdminPricesWorkspace({
   prices,
   settings,
   suggestion,
+  history,
+  freshness,
   hasMetalsKey,
   statusCode,
   statusMessage,
@@ -864,18 +964,26 @@ export function AdminPricesWorkspace({
         statusMessage={statusMessage}
         warnings={warnings}
       />
-      <OperationSummary prices={prices} settings={settings} suggestion={suggestion} isAutoOn={isAutoOn} />
+      <OperationSummary prices={prices} settings={settings} suggestion={suggestion} freshness={freshness} isAutoOn={isAutoOn} />
       {isAutoOn ? (
         <AutoModePanel
           settings={settings}
           suggestion={suggestion}
+          freshness={freshness}
           hasMetalsKey={hasMetalsKey}
           statusCode={statusCode}
           statusMessage={statusMessage}
           warnings={warnings}
         />
       ) : (
-        <PriceEditor prices={prices} statusCode={statusCode} statusMessage={statusMessage} warnings={warnings} />
+        <PriceEditor
+          prices={prices}
+          history={history}
+          freshness={freshness}
+          statusCode={statusCode}
+          statusMessage={statusMessage}
+          warnings={warnings}
+        />
       )}
     </>
   );

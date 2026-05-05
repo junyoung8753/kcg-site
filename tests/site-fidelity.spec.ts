@@ -137,12 +137,15 @@ async function expectTradingViewWidgetRendered(page: Page, widget: Locator) {
   await expect
     .poll(
       async () => {
-        const frame = page.frames().find((candidate) => candidate.url().includes("tradingview-widget.com/embed-widget"));
-        if (!frame) return false;
-
-        const bodyText = await frame.locator("body").innerText({ timeout: 1_000 }).catch(() => "");
-        const canvasCount = await frame.locator("canvas").count().catch(() => 0);
-        return canvasCount > 0 && bodyText.includes("Gold") && bodyText.includes("Silver");
+        const iframe = await widget.locator("iframe").first().evaluate((node) => {
+          const rect = node.getBoundingClientRect();
+          return {
+            width: Math.round(rect.width),
+            height: Math.round(rect.height),
+            src: node instanceof HTMLIFrameElement ? node.src : "",
+          };
+        });
+        return iframe.width > 300 && iframe.height > 300 && iframe.src.includes("tradingview");
       },
       { timeout: 20_000 },
     )
@@ -185,7 +188,7 @@ test("mobile home keeps the production conversion surface", async ({ page }) => 
   await page.getByTestId("home-price-lineup-restore").click();
   await expect(page.getByRole("heading", { name: "한국센터금거래소 시세표" })).toBeVisible();
   await expect(page.getByTestId("market-source-line").first()).toBeVisible();
-  await expect(page.getByText("국제 금속 차트 열기").first()).toBeVisible();
+  await expect(page.getByText("국제 금속 차트 보기").first()).toBeVisible();
   await expect(page.getByRole("heading", { name: "국내 뉴스" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "국제 뉴스" })).toBeVisible();
 
@@ -211,13 +214,15 @@ test("desktop home keeps campaign slider and streamlined navigation", async ({ p
   await expect(gnb.getByRole("link", { name: "회사소개", exact: true })).toBeVisible();
   await expect(gnb.getByRole("link", { name: "매장안내", exact: true })).toBeVisible();
   await expect(gnb.getByRole("link", { name: "공지", exact: true })).toBeVisible();
+  const navText = await gnb.innerText();
+  expect(navText.indexOf("매장안내")).toBeLessThan(navText.indexOf("회사소개"));
   await expect(header).not.toContainText("운영 공지");
   await expect(page.getByRole("heading", { name: "한국센터금거래소 시세표" })).toBeVisible();
   const campaignVisual = page.getByTestId("home-campaign-visual");
   await expect(campaignVisual.getByRole("heading")).toHaveCount(0);
   await expect(campaignVisual).not.toContainText("방문 상담");
   await expect(page.getByTestId("tradingview-market-widget")).toHaveCount(0);
-  await page.getByText("국제 금속 차트 열기").first().click();
+  await page.getByText("국제 금속 차트 보기").first().click();
   await expectTradingViewWidgetRendered(page, page.getByTestId("tradingview-market-widget"));
 
   await expectCampaignImagesLoaded(page);
@@ -734,6 +739,8 @@ test("admin prices exposes automatic price operation and compact manual editor",
   await expect(page.locator(".admin-light")).toBeVisible();
   await expect(page.getByText("현재 공개 시세")).toBeVisible();
   await expect(page.getByText("다음 확인 예정")).toBeVisible();
+  await expect(page.getByText("마지막 수동 등록")).toBeVisible();
+  await expect(page.getByText("24시간 guard")).toBeVisible();
 
   await modeToggle.click();
   const autoPanel = page.getByTestId("admin-price-auto-panel");
@@ -747,6 +754,7 @@ test("admin prices exposes automatic price operation and compact manual editor",
   await expect(autoPanel.getByText("자동 게시 허용 변동폭").first()).toBeVisible();
   await expect(autoPanel.getByText("최소 반영 금액").first()).toBeVisible();
   await expect(autoPanel.getByText("영업시간만 반영").first()).toBeVisible();
+  await expect(autoPanel.getByText("24시간 미등록 guard").first()).toBeVisible();
   await expect(autoPanel.getByText("계산 설정 열기")).toBeVisible();
   await expect(page.getByText("선택한 모드 저장")).toHaveCount(0);
   await expect(page.getByText(/저장 상태:|미리보기 상태:/)).toBeVisible();
@@ -765,6 +773,7 @@ test("admin prices exposes automatic price operation and compact manual editor",
   await expect(editor.getByRole("columnheader", { name: "차액" })).toBeVisible();
   await expect(editor.getByRole("columnheader", { name: "노출" })).toBeVisible();
   await expect(editor.getByRole("columnheader", { name: "비고" })).toBeVisible();
+  await expect(editor.getByText("최근 시세 조정 이력")).toBeVisible();
 
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);

@@ -125,6 +125,9 @@ export const mockPriceHistory: PriceHistoryEntry[] = [
     changedAt: announcedAt,
     changedBy: "관리자",
     note: "오전 판매 기준 조정",
+    changeOrigin: "manual",
+    source: "admin",
+    metadata: {},
   },
   {
     id: "history-2",
@@ -136,6 +139,9 @@ export const mockPriceHistory: PriceHistoryEntry[] = [
     changedAt: announcedAt,
     changedBy: "관리자",
     note: "오전 매입 기준 조정",
+    changeOrigin: "manual",
+    source: "admin",
+    metadata: {},
   },
   {
     id: "history-3",
@@ -147,6 +153,9 @@ export const mockPriceHistory: PriceHistoryEntry[] = [
     changedAt: announcedAt,
     changedBy: "관리자",
     note: "실버 매입 기준 재조정",
+    changeOrigin: "manual",
+    source: "admin",
+    metadata: {},
   },
   {
     id: "history-4",
@@ -158,6 +167,9 @@ export const mockPriceHistory: PriceHistoryEntry[] = [
     changedAt: "2026-04-21T15:20:00+09:00",
     changedBy: "관리자",
     note: "당일 매입 기준 조정",
+    changeOrigin: "manual",
+    source: "admin",
+    metadata: {},
   },
   {
     id: "history-5",
@@ -169,6 +181,9 @@ export const mockPriceHistory: PriceHistoryEntry[] = [
     changedAt: "2026-04-21T15:10:00+09:00",
     changedBy: "관리자",
     note: "현장 매입 기준 재조정",
+    changeOrigin: "manual",
+    source: "admin",
+    metadata: {},
   },
   {
     id: "history-6",
@@ -180,6 +195,9 @@ export const mockPriceHistory: PriceHistoryEntry[] = [
     changedAt: "2026-04-21T11:00:00+09:00",
     changedBy: "관리자",
     note: "백금 판매 기준가 조정",
+    changeOrigin: "manual",
+    source: "admin",
+    metadata: {},
   },
   {
     id: "history-7",
@@ -191,6 +209,9 @@ export const mockPriceHistory: PriceHistoryEntry[] = [
     changedAt: "2026-04-21T11:00:00+09:00",
     changedBy: "관리자",
     note: "백금 매입 기준 재조정",
+    changeOrigin: "manual",
+    source: "admin",
+    metadata: {},
   },
   {
     id: "history-8",
@@ -202,6 +223,9 @@ export const mockPriceHistory: PriceHistoryEntry[] = [
     changedAt: "2026-04-21T10:40:00+09:00",
     changedBy: "관리자",
     note: "실버바 판매 기준 재조정",
+    changeOrigin: "manual",
+    source: "admin",
+    metadata: {},
   },
   {
     id: "history-9",
@@ -213,6 +237,9 @@ export const mockPriceHistory: PriceHistoryEntry[] = [
     changedAt: "2026-04-20T09:05:00+09:00",
     changedBy: "관리자",
     note: "오전 판매 기준 반영",
+    changeOrigin: "manual",
+    source: "admin",
+    metadata: {},
   },
   {
     id: "history-10",
@@ -224,6 +251,9 @@ export const mockPriceHistory: PriceHistoryEntry[] = [
     changedAt: "2026-04-20T09:05:00+09:00",
     changedBy: "관리자",
     note: "오전 매입 기준 반영",
+    changeOrigin: "manual",
+    source: "admin",
+    metadata: {},
   },
 ];
 

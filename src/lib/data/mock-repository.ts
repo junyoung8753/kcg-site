@@ -32,6 +32,38 @@ export class MockRepository implements SiteRepository {
     return mockPriceHistory.slice(0, limit);
   }
 
+  async getPriceDailySnapshots(limit = 90) {
+    return mockPrices.slice(0, limit).map((price) => ({
+      id: `snapshot-${price.id}`,
+      snapshotDate: price.announcedAt.slice(0, 10),
+      priceId: price.id,
+      category: price.category,
+      label: price.label,
+      value: price.value,
+      announcedAt: price.announcedAt,
+      source: "mock",
+      createdAt: price.announcedAt,
+    }));
+  }
+
+  async getPriceFreshness() {
+    const latest = mockPriceHistory[0]?.changedAt ?? null;
+    return {
+      latestManualChangedAt: latest,
+      latestAnyChangedAt: latest,
+      historyCount: mockPriceHistory.length,
+      dailySnapshotCount: mockPrices.length,
+    };
+  }
+
+  async ensurePriceHistoryBaseline() {
+    return {
+      success: true,
+      message: "mock 기준 시세 이력이 준비되어 있습니다.",
+      mode: "mock",
+    } satisfies RepositoryMutationResult;
+  }
+
   async getPriceAutoSettings() {
     return getDefaultPriceAutoSettings();
   }
