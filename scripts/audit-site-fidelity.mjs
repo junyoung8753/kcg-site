@@ -413,6 +413,10 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.6 - Expert panel deep QA public and admin polish",
+  "홈 시세표가 한 화면 안에 더 안정적으로 들어오고",
+  "실제 사이트 화면이 바뀐 것: 홈 시세표 크기/간격",
+  "v0.2.6 전으로 되돌려줘",
   "## v0.2.5 - Existing API integration audit",
   "이미 붙어 있는 Gold API",
   "실제 사이트 화면이 바뀐 것: 없음",
@@ -436,17 +440,17 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.5`",
-  "Existing API integration audit",
+  "Current KCG site version: `v0.2.6`",
+  "Expert panel deep QA public and admin polish",
   "existing-api-integration-audit-2026-05-05.md",
-  "실제 사이트 화면이 바뀐 것: 없음",
+  "실제 사이트 화면이 바뀐 것: 홈 시세표 크기/간격",
   "backup/pre-v0.2.4-operations-product-audit",
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
-  "v0.2.5",
+  "v0.2.6",
   "기존 API 연동 감사 문서",
-  "실제 사이트 화면이 바뀐 것: 없음",
+  "실제 사이트 화면이 바뀐 것: 홈 시세표 크기/간격",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",
   "MEDIUM",
@@ -455,6 +459,25 @@ expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "그대로 복사해서 Codex에게 말하면 되는 문장",
   "push 하지 않음",
   "deploy 하지 않음",
+]);
+expectText("docs/setup/QA_REPORT_2026-05-05.md", [
+  "Public site | 9340 / 10000",
+  "Admin console | 9020 / 10000",
+  "Operations readiness | 8880 / 10000",
+  "v0.2.6 Expert-Panel Follow-Up",
+]);
+expectText("src/app/admin/prices/price-mode-workspace.tsx", [
+  "순금 살 때",
+  "순금 팔 때",
+  "백금 살 때",
+  "은 팔 때",
+]);
+expectText("src/app/admin/page.tsx", [
+  "미리보기 저장",
+  "formatDateTimeKorean",
+]);
+expectText("src/components/market/market-dashboard.tsx", [
+  "text-xl font-bold tabular-nums",
 ]);
 expectText("docs/quality/operations-product-audit-checklist.md", [
   "Technical QA",
@@ -1247,7 +1270,7 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: local docs/control-plane reflected",
+  "Reflection status: `v0.2.6` includes real UI/admin source changes",
   "docs/setup/CHANGELOG.md",
   "docs/quality/ai-site-production-playbook.md",
   "docs/quality/data-source-compliance.md",

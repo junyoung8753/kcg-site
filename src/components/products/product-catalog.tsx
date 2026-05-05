@@ -273,7 +273,7 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
   }
 
   return (
-    <section className="section-shell py-4 sm:py-10">
+    <section className="section-shell py-3 sm:py-10">
       <div className="grid grid-cols-2 overflow-hidden border border-[#d8dfdd] bg-white sm:grid-cols-3 xl:grid-cols-6">
         {productCatalogTabs.map((tab) => {
           const isActive = tab.slug === selectedCategory;
@@ -284,7 +284,7 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
               aria-pressed={isActive}
               data-testid={`product-tab-${tab.slug}`}
               onClick={() => updateQuery("category", tab.slug)}
-              className={`min-h-12 border-b border-r border-[#d8dfdd] px-3 py-3 text-center text-[13px] font-semibold leading-tight transition sm:text-sm md:min-h-14 md:px-4 md:py-4 md:text-base ${
+              className={`min-h-11 border-b border-r border-[#d8dfdd] px-3 py-2.5 text-center text-[13px] font-semibold leading-tight transition sm:text-sm md:min-h-14 md:px-4 md:py-4 md:text-base ${
                 isActive
                   ? "border-[#ff6a00] text-[#f05a00]"
                   : "text-[#7a8382] hover:bg-[#fff8df] hover:text-[#15191b]"
@@ -300,7 +300,7 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
 
       <div className="mt-4 sm:mt-6">
         <div>
-          <div className="flex flex-col gap-3 border-y border-[#d8dfdd] py-3 md:flex-row md:items-center md:justify-between md:py-4">
+          <div className="flex flex-col gap-2 border-y border-[#d8dfdd] py-2.5 md:flex-row md:items-center md:justify-between md:py-4">
             <p data-testid="product-count" className="text-sm font-semibold text-[#15191b]">
               상품 <span className="text-[#ff6a00]">{visibleProducts.length}</span>개
             </p>

@@ -105,7 +105,7 @@ const lineupStyle = {
   panelShell: "text-white lg:shadow-[0_24px_70px_rgba(0,0,0,0.24)]",
   contentShiftClass: "lg:ml-[36rem]",
   panelBase: "absolute inset-0 bg-[rgba(38,39,39,0.96)]",
-  panelHeaderBar: "absolute inset-x-0 top-0 h-[4.75rem] bg-[rgba(13,13,13,0.98)]",
+  panelHeaderBar: "absolute inset-x-0 top-0 h-[4.35rem] bg-[rgba(13,13,13,0.98)]",
   panelTexture:
     "absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.03),transparent_18%),radial-gradient(circle_at_0%_90%,rgba(255,188,89,0.045),transparent_18%)]",
   panelFrame: "lg:h-full",
@@ -113,7 +113,7 @@ const lineupStyle = {
   dateText: "text-white/58",
   columnHeader: "border-y border-white/8 bg-[rgba(11,11,11,0.18)] text-white",
   rowsWrap: "",
-  row: "grid grid-cols-2 items-start gap-x-4 gap-y-2 border-b border-white/10 py-[0.72rem] last:border-b-0 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:gap-4 sm:border-b-0 sm:py-[0.76rem]",
+  row: "grid grid-cols-2 items-start gap-x-4 gap-y-2 border-b border-white/10 py-[0.72rem] last:border-b-0 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:gap-4 sm:border-b-0 sm:py-[0.58rem]",
   rowTitle: "text-white",
   rowSubtitle: "text-white/52",
   priceText: "text-white",
@@ -165,7 +165,7 @@ function PriceCell({
   if (text) {
     return (
       <div className="pt-1.5">
-        <p className={cn("text-[1.02rem] font-semibold tracking-[-0.022em] sm:text-[1.48rem]", style.priceText)}>{text}</p>
+        <p className={cn("text-[1.02rem] font-semibold tracking-[-0.022em] sm:text-[1.34rem]", style.priceText)}>{text}</p>
       </div>
     );
   }
@@ -178,10 +178,10 @@ function PriceCell({
 
   return (
     <div>
-      <p className={cn("kcg-price-primary text-[1.08rem] font-semibold sm:text-[1.64rem]", style.priceText)}>
+      <p className={cn("kcg-price-primary text-[1.08rem] font-semibold sm:text-[1.48rem]", style.priceText)}>
         {formatWon(price.value)}
       </p>
-      <p className={cn("mt-1 text-[0.68rem] leading-5 sm:text-[0.9rem]", style.metaText)}>
+      <p className={cn("mt-0.5 text-[0.68rem] leading-5 sm:text-[0.82rem]", style.metaText)}>
         {change ? (
           <>
             {change.percent} <span className={change.tone}>{change.amount}</span>
@@ -190,7 +190,7 @@ function PriceCell({
           getPriceTradeGuide(price.category)
         )}
       </p>
-      {note ? <p className={cn("mt-1 text-[0.68rem] leading-5 sm:text-[0.9rem]", style.noteText)}>{note}</p> : null}
+      {note ? <p className={cn("mt-0.5 text-[0.68rem] leading-5 sm:text-[0.82rem]", style.noteText)}>{note}</p> : null}
     </div>
   );
 }
@@ -221,8 +221,8 @@ export function PriceLineup({
   const [isLineupOpen, setIsLineupOpen] = useState(true);
   const priceByCategory = new Map(prices.map((price) => [price.category, price]));
   const style = lineupStyle;
-  const wrapperHeightClass = "lg:min-h-[36rem]";
-  const contentHeightClass = "aspect-[16/9] min-h-0 sm:min-h-[23rem] lg:aspect-auto lg:min-h-[36rem]";
+  const wrapperHeightClass = "lg:min-h-[38.5rem]";
+  const contentHeightClass = "aspect-[16/9] min-h-0 sm:min-h-[23rem] lg:aspect-auto lg:min-h-[38.5rem]";
   const zeroChangeSymbol = visualMode === "signboard" ? "-" : "━";
   const visualShellClass = visualMode === "campaign" ? "w-full kcg-full-bleed-campaign" : "mx-auto max-w-[1500px]";
   const wrapperLayoutClass = "relative flex flex-col lg:block";
@@ -291,11 +291,11 @@ export function PriceLineup({
                   panelFrameWidthClass,
                 )}
               >
-                <div className="grid grid-cols-[1fr_auto_auto] items-center gap-2 px-4 pb-3 pt-5 sm:gap-3 sm:px-8 sm:pb-4 sm:pt-5">
+                <div className="grid grid-cols-[1fr_auto_auto] items-center gap-2 px-4 pb-3 pt-5 sm:gap-3 sm:px-8 sm:pb-3 sm:pt-4">
                   <div className="min-w-0">
                     <h1
                       className={cn(
-                        "text-[1.32rem] font-semibold leading-tight tracking-[-0.022em] sm:text-[1.86rem]",
+                        "text-[1.32rem] font-semibold leading-tight tracking-[-0.022em] sm:text-[1.72rem]",
                         style.titleText,
                       )}
                     >
@@ -310,7 +310,7 @@ export function PriceLineup({
                       {visualMode === "campaign" ? siteConfig.englishName : null}
                     </p>
                   </div>
-                  <p className={cn("text-right text-[0.72rem] sm:text-[0.95rem]", style.dateText)}>
+                  <p className={cn("text-right text-[0.72rem] sm:text-[0.86rem]", style.dateText)}>
                     {announcedDateLabel}
                   </p>
                   {visualMode === "campaign" ? (
@@ -344,7 +344,7 @@ export function PriceLineup({
 
                 <div
                   className={cn(
-                    "grid grid-cols-2 px-4 py-2 text-center text-[0.78rem] font-semibold leading-6 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:px-8 sm:py-3 sm:text-[0.98rem]",
+                    "grid grid-cols-2 px-4 py-2 text-center text-[0.78rem] font-semibold leading-6 sm:grid-cols-[0.98fr_0.94fr_0.94fr] sm:px-8 sm:py-2.5 sm:text-[0.92rem]",
                     style.columnHeader,
                   )}
                 >
@@ -353,7 +353,7 @@ export function PriceLineup({
                   <p>{visualMode === "signboard" ? "내가 팔 때 (현장기준)" : "내가 팔 때 (현장 기준)"}</p>
                 </div>
 
-                <div className={cn("px-4 pb-4 pt-1 sm:px-8 sm:pb-5", style.rowsWrap)}>
+                <div className={cn("px-4 pb-4 pt-1 sm:px-8 sm:pb-4", style.rowsWrap)}>
                   {rows.map((row) => {
                     const sell = row.sellCategory ? priceByCategory.get(row.sellCategory) : undefined;
                     const buy = row.buyCategory ? priceByCategory.get(row.buyCategory) : undefined;
@@ -361,10 +361,10 @@ export function PriceLineup({
                     return (
                       <div key={row.title} className={style.row}>
                         <div className="col-span-2 sm:col-span-1">
-                          <p className={cn("text-[1.02rem] font-semibold tracking-[-0.022em] sm:text-[1.56rem]", style.rowTitle)}>
+                          <p className={cn("text-[1.02rem] font-semibold tracking-[-0.022em] sm:text-[1.38rem]", style.rowTitle)}>
                             {row.title}
                           </p>
-                          <p className={cn("mt-0.5 text-[0.7rem] font-medium leading-5 sm:text-[0.92rem]", style.rowSubtitle)}>
+                          <p className={cn("mt-0.5 text-[0.7rem] font-medium leading-5 sm:text-[0.82rem]", style.rowSubtitle)}>
                             {row.subtitle}
                           </p>
                         </div>

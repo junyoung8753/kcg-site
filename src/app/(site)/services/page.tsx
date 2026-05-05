@@ -26,8 +26,8 @@ export default function ServicesPage() {
   return (
     <>
       <section className="bg-[#f7faf8]">
-        <div className="section-shell grid gap-6 py-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
-          <div className="relative min-h-[13rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:min-h-[17rem] lg:min-h-[18rem]">
+        <div className="section-shell grid gap-4 py-4 sm:gap-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
+          <div className="relative min-h-[10rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:min-h-[17rem] lg:min-h-[18rem]">
             <Image
               src="/campaign/kcg-home-inspection-action-20260503.webp"
               alt="장갑을 착용한 금거래소 상담 데스크"
@@ -38,17 +38,17 @@ export default function ServicesPage() {
             />
           </div>
 
-          <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-6 lg:py-7">
+          <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-4 lg:py-7">
             <p className="kcg-eyebrow text-[#9a8a00]">SERVICE FLOW</p>
-            <h1 className="kcg-page-title mt-3 text-[#15191b]">
+            <h1 className="mt-2 text-[1.72rem] font-semibold leading-tight tracking-[-0.02em] text-[#15191b] sm:kcg-page-title sm:mt-3">
               품목 확인, 고시 기준, 실물 확인
             </h1>
-            <div className="mt-6 grid gap-px overflow-hidden border border-[#dfe6e3] bg-[#dfe6e3] sm:grid-cols-3">
+            <div className="mt-4 grid grid-cols-3 gap-px overflow-hidden border border-[#dfe6e3] bg-[#dfe6e3] sm:mt-6">
               {flowSteps.map(([number, title, body]) => (
-                <div key={title} className="bg-white px-4 py-4">
+                <div key={title} className="bg-white px-3 py-3 sm:px-4 sm:py-4">
                   <p className="kcg-fine-label text-[#9a8a00]">{number}</p>
-                  <p className="mt-2 text-base font-bold tracking-[-0.02em] text-[#15191b]">{title}</p>
-                  <p className="mt-2 text-sm leading-6 text-[#687171]">{body}</p>
+                  <p className="mt-2 text-sm font-bold tracking-[-0.02em] text-[#15191b] sm:text-base">{title}</p>
+                  <p className="mt-1 text-xs leading-5 text-[#687171] sm:mt-2 sm:text-sm sm:leading-6">{body}</p>
                 </div>
               ))}
             </div>

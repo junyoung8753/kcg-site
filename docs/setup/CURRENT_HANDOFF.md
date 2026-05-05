@@ -8,8 +8,8 @@ This file is the short, durable context for a new Codex chat, another PC, or a f
 
 - 초보자는 먼저 `docs/setup/PROJECT_STATUS_FOR_BEGINNER.md`를 보면 된다. 이 문서는 현재 버전, 작업 브랜치, 백업 기준, 실제 사이트 반영 여부, 쉬운 Codex 요청 문장을 1-2분 안에 읽을 수 있게 정리한다.
 - `branch` = 작업 줄기, `HEAD` = 현재 코드 기준점, `rollback` = 이전 상태로 되돌리기, `backup branch` = 되돌리기용 책갈피, `dirty state` = 아직 정리되지 않은 변경사항.
-- 이번 `v0.2.5`는 실제 고객 화면을 바꾸는 작업이 아니라 이미 연동된 API/데이터 흐름을 현재 사이트 QA 범위로 정리한 문서 보강 작업이다.
-- 되돌릴 때는 "v0.2.5 기존 API 감사 문서 보강만 되돌리는 계획을 먼저 보여줘" 또는 "backup/pre-v0.2.4-operations-product-audit 기준으로 전체 되돌리는 계획을 보여줘"라고 말하면 된다.
+- 이번 `v0.2.6`은 실제 고객 화면과 관리자 콘솔을 함께 다듬은 전문가 패널 딥 QA 반영 작업이다. 홈 시세표, 국제 현재가 표, 모바일 상품/서비스 첫 화면, 관리자 가격 라벨을 수정한다.
+- 되돌릴 때는 "v0.2.6 전문가 패널 QA 화면 개선만 되돌리는 계획을 먼저 보여줘" 또는 "v0.2.5 기존 API 감사 기준까지만 되돌리는 계획을 보여줘"라고 말하면 된다.
 
 Junyoung's current preferred workflow is local-first. Codex Cloud is not the default right now because it has been inconvenient and unreliable for current KCG work. Keep Cloud docs as a future option and use `docs/setup/CLOUD_ONLY_WORKFLOW.md` only when junyoung explicitly asks for Codex Cloud or wants to avoid computer-specific setup.
 
@@ -17,19 +17,20 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 
 ## Current Version Snapshot
 
-- Current KCG site version: `v0.2.5`
-- Latest change: `Existing API integration audit`
+- Current KCG site version: `v0.2.6`
+- Latest change: `Expert panel deep QA public and admin polish`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: local docs/control-plane reflected for `v0.2.5`; actual public site UI, `src` runtime behavior, `public` assets, API logic, Supabase schema, Vercel settings, production deploy, and GitHub push were not changed by this version. Confirm current commit/push/deploy state with `git status --short --branch`, `npm run release:trace`, and `npx vercel inspect https://kcgold.co.kr/` before editing.
-- 실제 사이트 화면이 바뀐 것: 없음
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 운영 감리 기준, 기존 API 감사 기준, 메인 시세고지 우선 기준, 이미지/placeholder 기준, 초보자용 상태 문서, 기존 API 연동 감사 문서
-- 배포된 것: 없음
-- 아직 배포 안 된 것: `v0.2.5` 문서/기준 변경
-- 고객에게 보여줘도 되는 것: 기존 배포 사이트 상태
-- 아직 내부 기준/계획일 뿐인 것: `v0.2.5` 감리 기준과 TODO
-- Latest local QA: runtime/site QA remains `v0.2.3` `npm run qa:site` on 2026-05-05 KST with rendered audit `981 checks, 0 skipped`, Playwright `19 passed`, public screenshots, admin screenshots through `npm run screenshot:admin`, and npm audit `0 vulnerabilities`. `v0.2.4` and `v0.2.5` are docs/control-plane only and are verified with lint/audit/release/tasks/diff checks.
+- Reflection status: `v0.2.6` includes real UI/admin source changes and is intended for production refresh after verification. Confirm current commit/push/deploy state with `git status --short --branch`, `npm run release:trace`, and `npx vercel inspect https://kcgold.co.kr/` before editing.
+- 실제 사이트 화면이 바뀐 것: 홈 시세표 크기/간격, 국제 현재가 표 가독성, 모바일 상품/서비스 첫 화면, 관리자 가격/대시보드 라벨
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.6 QA 점수표와 handoff/status trace
+- 배포된 것: 이 문서가 커밋되기 전에는 없음. 커밋/배포 후 최종 보고와 `vercel inspect` 결과를 기준으로 확인한다.
+- 아직 배포 안 된 것: 현재 working tree에 남아 있는 `v0.2.6` 변경
+- 고객에게 보여줘도 되는 것: 배포 후 `kcgold.co.kr` 사이트. 검색 노출은 여전히 차단.
+- 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
+- Latest local QA: `v0.2.6` partial verification passed on 2026-05-05 KST with `npm run lint`, `npm run typecheck`, `npm run build`, `npm run screenshot:site`, and `npm run screenshot:admin`; full `qa:site` and external production checks must pass before final completion.
 - Change ledger: `docs/setup/CHANGELOG.md`
-- Rollback phrase: `v0.2.5 전으로 되돌려줘`
+- Broader rollback bookmark: `backup/pre-v0.2.4-operations-product-audit`
+- Rollback phrase: `v0.2.6 전으로 되돌려줘`
 
 ## Current Source Of Truth
 

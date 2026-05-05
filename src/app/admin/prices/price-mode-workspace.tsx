@@ -36,6 +36,29 @@ function formatPercentInput(value: number) {
   return Number((value * 100).toFixed(3));
 }
 
+function getAdminPriceSnapshotLabel(price: PriceRecord) {
+  switch (price.category) {
+    case "gold_24k_sell":
+      return "순금 살 때";
+    case "gold_24k_buy":
+      return "순금 팔 때";
+    case "gold_18k_buy":
+      return "18K 팔 때";
+    case "gold_14k_buy":
+      return "14K 팔 때";
+    case "platinum_sell":
+      return "백금 살 때";
+    case "platinum_buy":
+      return "백금 팔 때";
+    case "silver_sell":
+      return "은 살 때";
+    case "silver_buy":
+      return "은 팔 때";
+    default:
+      return price.label;
+  }
+}
+
 function getLatestUpdate(prices: PriceRecord[]) {
   const sorted = [...prices].sort(
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
@@ -106,7 +129,7 @@ function CurrentPriceSnapshot({ prices }: { prices: PriceRecord[] }) {
       <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
         {visiblePrices.map((price) => (
           <div key={price.id} className="rounded-2xl border border-white/8 bg-black/18 px-4 py-3">
-            <p className="text-xs text-white/45">{price.label}</p>
+            <p className="text-xs text-white/45">{getAdminPriceSnapshotLabel(price)}</p>
             <p className="mt-1 text-lg font-semibold tabular-nums text-white">{formatWon(price.value)}</p>
           </div>
         ))}

@@ -8,6 +8,42 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.6 - Expert panel deep QA public and admin polish
+
+- Date: `2026-05-05 KST`
+- Commit: local working tree until this version is committed; work-before HEAD `c161f74`
+- Deploy Status: this version contains real public/admin UI changes and is intended for `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` production refresh after verification. Search indexing/noindex release is not included.
+- 사람이 읽는 요약: 전문가 패널 QA에서 실제로 보인 화면 문제를 줄인 버전입니다. 홈 시세표가 한 화면 안에 더 안정적으로 들어오고, 국제 현재가 표 글자가 더 읽히며, 모바일 상품/서비스 첫 화면이 덜 늘어지고, 관리자 가격 화면의 현재 공개가 라벨이 `순금 살 때/팔 때`처럼 바로 구분됩니다.
+- Summary: Applied focused P1 fixes from the customer/operator/admin/mobile QA pass without changing launch/search, payment, trading, competitor scraping, or secret state.
+- Changed:
+  - Tightened the desktop home price-lineup panel so all posted-price rows fit in the first viewport while preserving the left overlay over the campaign image.
+  - Increased market-reference table readability for international current prices and domestic conversion rows.
+  - Compressed the mobile `/products` hero, catalog spacing, tab controls, and sort controls so product cards appear earlier.
+  - Compressed the mobile `/services` first viewport and made the three-step transaction flow visible without excessive scrolling.
+  - Clarified `/admin/prices` current public price snapshot labels: `순금 살 때`, `순금 팔 때`, `18K 팔 때`, `14K 팔 때`, `백금 살 때/팔 때`, `은 살 때/팔 때`.
+  - Reworded `/admin` storage status from `Demo` to `미리보기 저장` and formatted the posted-time display consistently.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀐 것: 홈 시세표 크기/간격, 국제 현재가 표 가독성, 모바일 상품/서비스 첫 화면, 관리자 가격/대시보드 라벨
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.6 QA 점수표와 handoff/status trace
+  - 배포된 것: 최종 검증 후 production deploy 대상. 실제 deployment id는 최종 보고와 `npx vercel inspect https://kcgold.co.kr/`로 확인한다.
+  - 아직 배포 안 된 것: 커밋/배포 전 로컬 working tree 상태에서는 v0.2.6 변경 전체
+  - 고객에게 보여줘도 되는 것: 배포 후 `kcgold.co.kr` 화면. robots/noindex는 계속 차단 유지.
+  - 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
+- QA Score:
+  - Public site: `9340 / 10000`
+  - Admin console: `9020 / 10000`
+  - Operations readiness: `8880 / 10000`
+  - Weighted launch candidate: `9210 / 10000`
+- Verification:
+  - Passed before trace update: `npm run lint`, `npm run typecheck`, `npm run build`, `npm run screenshot:site`, `npm run screenshot:admin`.
+  - Required before completion: `npm run audit:site`, `npm run tasks:dashboard`, `npm run release:trace`, `npm run test:site`, `npm run screenshot:site`, `npm run screenshot:admin`, `npm run qa:site`, `npm audit --audit-level=moderate`, `git diff --check`.
+- Rollback Hint: `v0.2.6 전으로 되돌려줘`
+- Remaining User-only:
+  - Provide real KCG product photos and confirm real product list, weights, 공임/margin, and which items show reference price versus inquiry.
+  - Rotate the final production admin password before public search launch.
+  - Decide whether automatic price checks need Vercel Pro/external scheduler beyond the free daily posture.
+  - Approve robots/noindex release and search indexing only when final public launch is ready.
+
 ## v0.2.5 - Existing API integration audit
 
 - Date: `2026-05-05 KST`

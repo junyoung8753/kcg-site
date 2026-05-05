@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getRepository } from "@/lib/data";
+import { formatDateTimeKorean } from "@/lib/format";
 import { getLaunchReadiness } from "@/lib/launch-readiness";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 
@@ -15,12 +16,13 @@ export default async function AdminPage() {
   const launchReadiness = getLaunchReadiness();
   const visibleProducts = products.filter((product) => product.status !== "hidden").length;
   const announcedAt = prices[0]?.announcedAt
-    ? new Date(prices[0].announcedAt).toLocaleString("ko-KR")
+    ? formatDateTimeKorean(prices[0].announcedAt)
     : "-";
+  const storageMode = isSupabaseConfigured() ? "Supabase 저장" : "미리보기 저장";
 
   const stats = [
     { label: "오늘 고시 시각", value: announcedAt },
-    { label: "저장 방식", value: isSupabaseConfigured() ? "Supabase" : "Demo" },
+    { label: "저장 방식", value: storageMode },
     {
       label: "자동시세 상태",
       value:

@@ -20,8 +20,8 @@ export default async function ProductsPage() {
   return (
     <>
       <section id="top" className="bg-[#f7faf8]">
-        <div className="section-shell grid gap-4 py-4 sm:gap-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
-          <div className="relative min-h-[10.5rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:min-h-[17rem] lg:min-h-[18rem]">
+        <div className="section-shell grid gap-3 py-3 sm:gap-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
+          <div className="relative min-h-[8.8rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:min-h-[17rem] lg:min-h-[18rem]">
             <Image
               src="/products/kcg-product-gold-silver-catalog-20260503.webp"
               alt="한국센터금거래소 골드바와 실버바 상품 안내"
@@ -30,21 +30,21 @@ export default async function ProductsPage() {
               className="object-cover"
               sizes="(min-width: 1024px) 48vw, 100vw"
             />
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/62 via-black/18 to-transparent px-4 py-4 text-white sm:px-6 sm:py-5">
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/62 via-black/18 to-transparent px-4 py-3 text-white sm:px-6 sm:py-5">
               <p className="kcg-eyebrow text-[#ffd95a]">PRODUCTS & BUYING</p>
-              <h1 className="kcg-page-title mt-2 max-w-2xl">
+              <h1 className="mt-1 text-[1.72rem] font-semibold leading-tight tracking-[-0.02em] sm:kcg-page-title sm:mt-2 sm:max-w-2xl">
                 상품/매입
               </h1>
             </div>
           </div>
 
-          <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-4 sm:py-6 lg:py-7">
+          <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-3 sm:py-6 lg:py-7">
             <div>
               <p className="kcg-eyebrow text-[#9a8a00]">KCG CATEGORY</p>
-              <h2 className="kcg-section-title mt-3 max-w-3xl text-[#15191b]">
+              <h2 className="mt-2 max-w-3xl text-[1.45rem] font-semibold leading-tight tracking-[-0.02em] text-[#15191b] sm:kcg-section-title sm:mt-3">
                 탭에서 품목을 고르고 기준가를 확인합니다.
               </h2>
-              <p className="kcg-body-copy mt-3 max-w-2xl text-[#687171] sm:mt-4">
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#687171] sm:kcg-body-copy sm:mt-4">
                 골드바, 실버바, 순금제품, 고금 매입 항목을 바로 볼 수 있습니다.
               </p>
             </div>
