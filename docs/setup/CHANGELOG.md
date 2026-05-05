@@ -11,8 +11,8 @@ Versioning rule before public launch: `0.x.x`.
 ## v0.2.12 - Pre-launch customer flow and catalog image QA
 
 - Date: `2026-05-06 KST`
-- Commit: final v0.2.12 commit is recorded by Git after verification.
-- Deploy Status: local validation passed; production deploy and live checks are performed after commit/push. Search indexing/noindex release is not included.
+- Commit: implementation commit `57ecbbc` (`Release v0.2.12 customer flow QA`) pushed to `origin/codex/kcg-launch-readiness-catalog-20260427`; deployment-verification trace is recorded in the follow-up documentation commit.
+- Deploy Status: committed, pushed, and production deployed to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` on 2026-05-06 KST. Search indexing/noindex release is not included.
 - Design Direction: `Price-first operational guidance + category-specific visual variety`.
 - 사람이 읽는 요약: 공개 런칭 전 마지막 고객/직원 관점으로 `/prices`, `/products`, `/services` 흐름을 다시 보면서, 고객이 전화 전 무엇을 확인해야 하는지와 직원이 어떤 질문을 먼저 해야 하는지 더 분명하게 보강했습니다. 상품 목록은 같은 금괴/상담 데스크 이미지가 반복되지 않도록 승인된 기존 AI 후보 이미지를 slug별로 분산하고, 운영 DB에 placeholder 경로가 남아 있어도 public 화면에서 더 다양한 카테고리 이미지가 보이도록 했습니다.
 - Summary: Strengthens pre-call guidance on price reading and services FAQ, adds a compact buy/sell/bulk decision strip to `/products`, diversifies product-card imagery through source-safe placeholder remapping, and adds Playwright/source-audit guardrails for first-viewport catalog access and image variety.
@@ -28,7 +28,7 @@ Versioning rule before public launch: `0.x.x`.
 - 실제 사이트 반영 여부:
   - 실제 사이트 화면이 바뀌는 것: `/prices` 시세 이용/전화 전 확인 안내, `/products` 모바일/데스크톱 상단 선택 기준, `/products` 상품 카드 이미지 분산, `/services` FAQ.
   - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음.
-  - 배포된 것: local QA passed; commit/push/deploy and live external QA are performed next.
+  - 배포된 것: `v0.2.12` 고객/직원 흐름, 상품 이미지 다양화, FAQ/상담 안내, QA guardrail 보강 전체.
   - 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, Vercel Pro 또는 외부 scheduler 결정.
   - 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` review site after deploy.
   - 아직 내부 기준/계획일 뿐인 것: final real product/store photography, final product prices/photos, final admin secret rotation, search launch approval.
@@ -49,7 +49,10 @@ Versioning rule before public launch: `0.x.x`.
   - Passed: `npm run qa:site` (rendered audit `1191 checks, 0 skipped`; Playwright `21 passed`; screenshot refresh; npm audit `0 vulnerabilities`)
   - Passed: `npm audit --audit-level=moderate` (`0 vulnerabilities`)
   - Passed: `git diff --check` with line-ending warnings only.
-  - Live deploy/external checks are performed after commit and push.
+  - Live deploy inspect passed: `npx vercel inspect https://kcgold.co.kr/` shows a `Ready` production deployment aliased to `kcgold.co.kr`, `www.kcgold.co.kr`, and `kcg-confirm-preview.vercel.app`.
+  - Live audit passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`1191 checks, 0 skipped`)
+  - Live Playwright passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`21 passed`)
+  - Live external check passed: `npm run check:external -- --strict-domain`; `/api/health` reports `mode=supabase`, `deployment=production`, `indexing=disabled`, `adminAuth=env-password`, `/robots.txt` remains `Disallow: /`, and the pre-launch sitemap is empty.
 - Rollback Hint: `v0.2.12 전으로 되돌려줘`
 - Remaining User-only:
   - Provide real KCG product/store/staff photos if generated placeholders should be replaced before public search launch.

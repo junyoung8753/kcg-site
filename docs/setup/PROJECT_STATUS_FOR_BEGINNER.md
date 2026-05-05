@@ -30,7 +30,7 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 - 실제 사이트 화면이 바뀐 것: `/prices` 전화 전 확인 안내, `/products` 살 때/팔 때/대량 선택 기준, `/products` 상품 카드 이미지 다양화, `/services` FAQ
 - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음.
-- 배포된 것: `v0.2.12`는 로컬 deep QA를 통과했고, 이어서 커밋·푸시·production deploy와 live external QA까지 진행한다. 직전 live는 `v0.2.11`.
+- 배포된 것: `v0.2.12` 고객/직원 흐름과 상품 이미지 다양화 작업은 커밋·푸시·production deploy·live external QA까지 완료됐다.
 - 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, Vercel Pro 또는 외부 scheduler 결정은 아직 별도 작업.
 - 내가 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` 검토 화면. 검색 노출은 아직 차단.
 - 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
