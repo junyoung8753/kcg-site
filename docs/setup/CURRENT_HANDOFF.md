@@ -13,7 +13,7 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 - Current KCG site version: `v0.2.2`
 - Latest change: `Expert panel deep QA and admin evidence hardening`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: local reflected in the working tree for `v0.2.2`; production refresh is pending commit/push/deploy for this version. Confirm current commit/push/deploy state with `git status --short --branch` and `npm run release:trace` before editing.
+- Reflection status: local reflected and committed locally for `v0.2.2` as `7d23f27`; push and production refresh are pending. Confirm current commit/push/deploy state with `git status --short --branch` and `npm run release:trace` before editing.
 - Latest local QA: `v0.2.2` passed `npm run qa:site` on 2026-05-05 KST with rendered audit `981 checks, 0 skipped`, Playwright `19 passed`, public screenshots, admin screenshots through `npm run screenshot:admin`, and npm audit `0 vulnerabilities`.
 - Change ledger: `docs/setup/CHANGELOG.md`
 - Rollback phrase: `v0.2.2 전으로 되돌려줘`

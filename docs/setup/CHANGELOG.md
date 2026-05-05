@@ -11,7 +11,7 @@ Versioning rule before public launch: `0.x.x`.
 ## v0.2.2 - Expert panel deep QA and admin evidence hardening
 
 - Date: `2026-05-05 KST`
-- Commit: `pending`
+- Commit: `7d23f27`
 - Deploy Status: local reflected in the working tree; production domains are not refreshed with this version until the final verification and deploy step completes.
 - Summary: Converted the interrupted expert-panel QA follow-up into traceable admin evidence, product-operation, and automatic-price operation guardrails so future KCG work is easier to verify, explain, and resume.
 - Changed:
