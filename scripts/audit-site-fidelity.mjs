@@ -315,6 +315,7 @@ expectFile("docs/setup/CHANGELOG.md", { minBytes: 1_500 });
 expectFile("docs/setup/CONTACT_CHANNELS_RUNBOOK.md", { minBytes: 1_000 });
 expectFile("docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md", { minBytes: 4_000 });
 expectFile("docs/setup/PRODUCT_OPERATIONS_CHECKLIST.md", { minBytes: 2_000 });
+expectFile("docs/setup/AUTO_PRICE_OPERATIONS_BRIEF.md", { minBytes: 2_000 });
 expectFile("docs/setup/LAUNCH_BRIEFING.md", { minBytes: 2_000 });
 expectFile("docs/setup/QA_REPORT_2026-05-05.md", { minBytes: 1_500 });
 expectFile("docs/brand/campaign-image-prompts.md", { minBytes: 1_000 });
@@ -325,6 +326,7 @@ expectFile("scripts/render-open-tasks-dashboard.mjs", { minBytes: 5_000 });
 expectFile("scripts/check-external-services.mjs", { minBytes: 2_000 });
 expectFile("scripts/run-rendered-site-audit.mjs", { minBytes: 2_000 });
 expectFile("scripts/run-site-qa.mjs", { minBytes: 1_000 });
+expectFile("scripts/capture-admin-screenshots.mjs", { minBytes: 100 });
 expectFile("docs/research/gold-exchange-benchmark-2026-04-25.md", { minBytes: 3_000 });
 expectFile("docs/research/gold-exchange-deep-audit-2026-04-27.md", { minBytes: 6_000 });
 expectMissing("src/app/(site)/option-1/page.tsx");
@@ -341,9 +343,14 @@ expectText("package.json", [
   "\"audit:rendered\": \"node scripts/run-rendered-site-audit.mjs\"",
   "\"qa:site\": \"node scripts/run-site-qa.mjs\"",
   "\"release:trace\": \"node scripts/report-release-trace.mjs\"",
+  "\"screenshot:admin\": \"node scripts/capture-admin-screenshots.mjs\"",
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.2 - Expert panel deep QA and admin evidence hardening",
+  "Admin screenshot evidence can now be refreshed independently",
+  "Vercel Hobby Cron is limited to once-daily automatic checks",
+  "v0.2.2 전으로 되돌려줘",
   "## v0.2.1 - Release trace, market readability, and contact readiness",
   "Deploy Status",
   "Verification",
@@ -375,6 +382,12 @@ expectText("scripts/capture-site-screenshots.mjs", [
   "prices-mobile-viewport.png",
   "products-mobile-viewport.png",
   "services-mobile-viewport.png",
+  "KCG_ADMIN_SCREENSHOTS_ONLY",
+]);
+expectText("scripts/capture-admin-screenshots.mjs", [
+  "KCG_INCLUDE_ADMIN_SCREENSHOTS",
+  "KCG_ADMIN_SCREENSHOTS_ONLY",
+  "capture-site-screenshots.mjs",
 ]);
 
 expectText("src/components/market/price-lineup.tsx", [
@@ -1086,7 +1099,9 @@ expectText("docs/quality/ai-site-production-playbook.md", [
   "Do not scrape, republish, or chart third-party data",
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
-  "Current KCG site version: `v0.2.1`",
+  "Current KCG site version: `v0.2.2`",
+  "Expert panel deep QA and admin evidence hardening",
+  "npm run screenshot:admin",
   "Reflection status: local reflected",
   "docs/setup/CHANGELOG.md",
   "docs/quality/ai-site-production-playbook.md",
@@ -1135,6 +1150,8 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "campaign-image-prompts.md",
   "KCG-TODO-045",
   "KCG-TODO-048",
+  "KCG-TODO-049",
+  "KCG-TODO-050",
   "tasks:dashboard",
   "user-only",
   "codex",
@@ -1145,6 +1162,17 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "codex review --base main",
   "kcgold.co.kr",
   "Do not record passwords",
+]);
+expectText("docs/setup/AUTO_PRICE_OPERATIONS_BRIEF.md", [
+  "KCG Automatic Price Operations Brief",
+  "Gold API",
+  "KCG internal formula",
+  "Vercel Hobby",
+  "once per day",
+  "Vercel Pro",
+  "external scheduler",
+  "no competitor scraping",
+  "company approval",
 ]);
 expectText("docs/setup/CONTACT_CHANNELS_RUNBOOK.md", [
   "KCG Contact Channels Runbook",

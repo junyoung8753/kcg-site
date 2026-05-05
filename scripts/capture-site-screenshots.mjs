@@ -13,6 +13,7 @@ const port = process.env.SITE_SCREENSHOT_PORT || "3038";
 const baseURL = externalBaseURL || `http://127.0.0.1:${port}`;
 const screenshotDir = resolve(rootDir, "output", "screenshots");
 const includeAdminScreenshots = process.env.KCG_INCLUDE_ADMIN_SCREENSHOTS === "1";
+const adminScreenshotsOnly = process.env.KCG_ADMIN_SCREENSHOTS_ONLY === "1";
 const adminScreenshotFiles = [
   "admin-home-desktop.png",
   "admin-launch-mobile.png",
@@ -253,47 +254,49 @@ try {
   browser = await chromium.launch();
   const page = await browser.newPage({ deviceScaleFactor: 1 });
 
-  await capture(page, "/", { width: 390, height: 844 }, "home-mobile-viewport.png", "한국센터금거래소 시세표", {
-    fullPage: false,
-    primeImages: false,
-  });
-  await capture(page, "/", { width: 1440, height: 900 }, "home-desktop-viewport.png", "한국센터금거래소 시세표", {
-    fullPage: false,
-    primeImages: false,
-  });
-  await capture(
-    page,
-    "/prices",
-    { width: 390, height: 844 },
-    "prices-mobile-viewport.png",
-    "품목별 회사 고시 시세 상세",
-    { fullPage: false, primeImages: false },
-  );
-  await capture(
-    page,
-    "/products",
-    { width: 390, height: 844 },
-    "products-mobile-viewport.png",
-    "상품/매입",
-    { fullPage: false, primeImages: false },
-  );
-  await capture(
-    page,
-    "/services",
-    { width: 390, height: 844 },
-    "services-mobile-viewport.png",
-    "품목 확인, 고시 기준",
-    { fullPage: false, primeImages: false },
-  );
+  if (!adminScreenshotsOnly) {
+    await capture(page, "/", { width: 390, height: 844 }, "home-mobile-viewport.png", "한국센터금거래소 시세표", {
+      fullPage: false,
+      primeImages: false,
+    });
+    await capture(page, "/", { width: 1440, height: 900 }, "home-desktop-viewport.png", "한국센터금거래소 시세표", {
+      fullPage: false,
+      primeImages: false,
+    });
+    await capture(
+      page,
+      "/prices",
+      { width: 390, height: 844 },
+      "prices-mobile-viewport.png",
+      "품목별 회사 고시 시세 상세",
+      { fullPage: false, primeImages: false },
+    );
+    await capture(
+      page,
+      "/products",
+      { width: 390, height: 844 },
+      "products-mobile-viewport.png",
+      "상품/매입",
+      { fullPage: false, primeImages: false },
+    );
+    await capture(
+      page,
+      "/services",
+      { width: 390, height: 844 },
+      "services-mobile-viewport.png",
+      "품목 확인, 고시 기준",
+      { fullPage: false, primeImages: false },
+    );
 
-  await capture(page, "/", { width: 390, height: 1800 }, "home-mobile.png", "한국센터금거래소 시세표");
-  await capture(page, "/", { width: 1440, height: 1800 }, "home-desktop.png", "한국센터금거래소 시세표");
-  await capture(page, "/prices", { width: 390, height: 1800 }, "prices-mobile.png", "품목별 회사 고시 시세 상세");
-  await capture(page, "/products", { width: 390, height: 1800 }, "products-mobile.png", "상품/매입");
-  await capture(page, "/products", { width: 1440, height: 1800 }, "products-desktop.png", "상품/매입");
-  await capture(page, "/services", { width: 390, height: 1800 }, "services-mobile.png", "품목 확인, 고시 기준");
-  await capture(page, "/company", { width: 390, height: 1800 }, "company-mobile.png", "사업자등록번호");
-  await capture(page, "/about", { width: 390, height: 1800 }, "about-mobile.png", "사업자등록번호");
+    await capture(page, "/", { width: 390, height: 1800 }, "home-mobile.png", "한국센터금거래소 시세표");
+    await capture(page, "/", { width: 1440, height: 1800 }, "home-desktop.png", "한국센터금거래소 시세표");
+    await capture(page, "/prices", { width: 390, height: 1800 }, "prices-mobile.png", "품목별 회사 고시 시세 상세");
+    await capture(page, "/products", { width: 390, height: 1800 }, "products-mobile.png", "상품/매입");
+    await capture(page, "/products", { width: 1440, height: 1800 }, "products-desktop.png", "상품/매입");
+    await capture(page, "/services", { width: 390, height: 1800 }, "services-mobile.png", "품목 확인, 고시 기준");
+    await capture(page, "/company", { width: 390, height: 1800 }, "company-mobile.png", "사업자등록번호");
+    await capture(page, "/about", { width: 390, height: 1800 }, "about-mobile.png", "사업자등록번호");
+  }
 
   if (includeAdminScreenshots) {
     await captureAdminRoute(page, "/admin", { width: 1440, height: 1600 }, "admin-home-desktop.png", "오늘 운영 상태");

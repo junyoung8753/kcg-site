@@ -10,13 +10,13 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 
 ## Current Version Snapshot
 
-- Current KCG site version: `v0.2.1`
-- Latest change: `Release trace, market readability, TradingView height fix, company hero consistency, and contact-channel readiness`
+- Current KCG site version: `v0.2.2`
+- Latest change: `Expert panel deep QA and admin evidence hardening`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: local reflected and production refreshed for `v0.2.1`; confirm current commit/push state with `git status --short --branch` before editing.
-- Latest local QA: `npm run qa:site` passed on 2026-05-05 KST with rendered audit `957 checks, 0 skipped`, Playwright `19 passed`, screenshots, and npm audit `0 vulnerabilities`.
+- Reflection status: local reflected in the working tree for `v0.2.2`; production refresh is pending commit/push/deploy for this version. Confirm current commit/push/deploy state with `git status --short --branch` and `npm run release:trace` before editing.
+- Latest local QA: `v0.2.2` passed `npm run qa:site` on 2026-05-05 KST with rendered audit `981 checks, 0 skipped`, Playwright `19 passed`, public screenshots, admin screenshots through `npm run screenshot:admin`, and npm audit `0 vulnerabilities`.
 - Change ledger: `docs/setup/CHANGELOG.md`
-- Rollback phrase: `v0.2.1 전으로 되돌려줘`
+- Rollback phrase: `v0.2.2 전으로 되돌려줘`
 
 ## Current Source Of Truth
 
@@ -54,6 +54,7 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 - `code_review.md` is the KCG-specific Codex review checklist for price hierarchy, mobile first viewport, consultation conversion, source boundaries, launch gates, and screenshot evidence.
 - `.agents/skills/kcg-site-quality/SKILL.md` is the repo-local skill for both KCG site project-room environment upkeep and user-requested site artifact work. It must first distinguish setup/latest-guidance work from actual rendered site work.
 - `npm run qa:site` is the full local KCG quality gate. It runs source audit and rendered audit; rendered audit must finish with `0 skipped` checks before claiming rendered-route completeness.
+- `npm run screenshot:admin` is the dedicated admin evidence command. It captures `/admin`, `/admin/launch`, `/admin/prices`, and `/admin/products` only, using the same screenshot helper as the public site without refreshing public screenshots.
 - `docs/setup/OPEN_TASKS.md` is the active KCG task ledger. Use it to separate Codex-doable work, blocked work, and junyoung-only public-launch actions. Run `npm run tasks:dashboard` to render the local browser dashboard at `output/kcg-open-tasks.html`.
 - `npm run check:external` is the quick reconnect/status check for the stable URL, robots/noindex posture, empty pre-launch sitemap, and Cafe24 DNS A-record state. It does not read or store secrets.
 - `docs/research/gold-exchange-deep-audit-2026-04-27.md` records the deeper competitor benchmark pass across home, subpages, price wording, forms, tables, and network/API/chart behavior. Do not treat a home-screen-only review as sufficient for benchmark-driven work.
@@ -84,6 +85,7 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 ## External Services Runbook
 
 - `docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md` is the current runbook for Cafe24/Vercel domain connection, Supabase setup, Gold API/Metals.Dev/KRX decisions, TradingView widget boundaries, and post-connection verification.
+- `docs/setup/AUTO_PRICE_OPERATIONS_BRIEF.md` is the plain-language operations brief for explaining automatic KCG posted-price checks, Gold API/Metals.Dev reference data, Vercel Hobby Cron limits, Vercel Pro/external scheduler options, and why competitor scraping is not part of the implementation.
 - `docs/setup/COMPANY_ACCOUNT_MIGRATION_RUNBOOK.md` is the no-secret runbook for moving KCG operations from junyoung's personal accounts to company-owned Google Workspace, Supabase, Vercel, and GitHub accounts. Google Workspace signup is prepared for `admin@kcgold.co.kr`; after junyoung completes password/terms/payment and says `플랜 결제 했어`, continue from that runbook.
 - Default market data remains `MARKET_DATA_PROVIDER=auto` with no `METALS_DEV_API_KEY`, which means Gold API free current reference prices are used before fallback data. Do not pay for Metals.Dev until bid/ask, history charts, quota, or reliability justify it. TradingView is used only through its official embeddable widget for chart context; keep attribution visible and do not extract the widget data into KCG tables or storage.
 - KRX Open API has 금시장 일별매매정보, but KRX usage terms and market-data distribution rules must be confirmed before public commercial display. Do not mix KRX values into KCG posted prices or "실시간 참고시세" until approval/contract scope is clear.

@@ -1,6 +1,6 @@
 # KCG Product Operations Checklist
 
-Last updated: 2026-04-30 KST.
+Last updated: 2026-05-05 KST.
 
 This checklist is for preparing the public `상품/매입` catalog before launch. Do not record passwords, Supabase keys, customer data, or unapproved internal price rules here.
 
@@ -34,6 +34,26 @@ Use `/admin/products` to prepare each item.
 3. 순금제품: 돌반지, 순금 카드, 기념 메달, packaging.
 4. 고금·주얼리 매입: tray with old gold/jewelry, scale, neutral counter.
 5. B2B·기업: bulk packaging, gift boxes, blank folder, no customer/company names.
+
+## Category Launch Inputs
+
+Use this table before replacing the current generated/product placeholder assets. These are operating inputs, not passwords or private rules.
+
+| Category | Required Before Launch | Price Basis | Image Priority | Public Wording |
+| --- | --- | --- | --- | --- |
+| 골드바 | Confirm exact weights sold first, packaging, certificate envelope policy, and 공임/margin by weight. | `순금 살 때` plus weight and 공임. | Actual KCG gold bars by size; avoid generic desk-only photos. | `현재 고시가 기준 참고가`, high-weight items may say `사전 문의 필요`. |
+| 실버바 | Confirm inventory sizes such as 100g, 500g, 1kg and supply check flow. | `은 살 때` plus weight and 공임. | Silver bars must look visually different from gold-bar cards. | Make supply confirmation clear; do not promise same-day stock unless confirmed. |
+| 순금제품 | Confirm 돌반지, 순금 카드, 기념 메달, gift packaging, and 공임 display rule. | `순금 살 때` plus weight and item 공임. | Product/gift packaging photo, not a generic gold-bar pile. | Mention gift/product category, not investment promise. |
+| 고금·주얼리 매입 | Confirm handled purity basis: 순금, 18K, 14K, 백금, 은, and any excluded item types. | `내가 팔 때` basis by purity. | Jewelry tray, rings/necklaces, simple scale; no personal documents. | Use `실물 확인 후 확정`; do not show a fixed quote for every item. |
+| B2B·기업 | Confirm minimum quantity, corporate gift scope, packaging, lead time, and 담당 flow. | `사전 문의 필요` unless a clear weight item exists. | Packaging, blank folder, samples; no client names. | Emphasize quantity/spec review and separate consultation. |
+
+## Admin Update Flow
+
+1. Edit the item in `/admin/products`.
+2. Save only customer-facing fields needed for the public catalog.
+3. Open `/products` and confirm the correct tab, image, reference price, and wording.
+4. Check mobile `/products` so tabs, count/sort, and the card image are visible without awkward empty space.
+5. If a real image is not ready, keep the item `사전 문의 필요` or `비공개` rather than publishing a weak placeholder.
 
 ## Price Wording Rules
 
