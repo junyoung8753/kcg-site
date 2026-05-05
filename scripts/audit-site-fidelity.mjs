@@ -413,6 +413,9 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.8 - Admin mode persistence and operational readability",
+  "자동시세 ON을 눌러도 다시 OFF로 저장될 수 있던",
+  "v0.2.8 전으로 되돌려줘",
   "## v0.2.7 - Light admin console and automatic price UX",
   "관리자 화면을 어두운 카드형 화면에서 밝은 운영 콘솔로 바꾸고",
   "실제 사이트 화면이 바뀐 것: 관리자 로그인/대시보드/시세 관리 라이트 테마",
@@ -444,17 +447,17 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.7`",
-  "Light admin console and automatic price UX",
+  "Current KCG site version: `v0.2.8`",
+  "Admin mode persistence and operational readability",
   "existing-api-integration-audit-2026-05-05.md",
-  "실제 사이트 화면이 바뀐 것: 관리자 로그인/대시보드/시세 관리 라이트 테마",
+  "실제 사이트 화면이 바뀐 것: 관리자 대시보드 실무형 재구성",
   "backup/pre-v0.2.4-operations-product-audit",
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
-  "v0.2.7",
-  "관리자 콘솔 라이트 테마와 자동시세 UX",
-  "실제 사이트 화면이 바뀐 것: 관리자 로그인/대시보드/시세 관리 라이트 테마",
+  "v0.2.8",
+  "관리자 대시보드 실무형 재구성",
+  "실제 사이트 화면이 바뀐 것: 관리자 대시보드 실무형 재구성",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",
   "MEDIUM",
@@ -466,8 +469,9 @@ expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
 ]);
 expectText("docs/setup/QA_REPORT_2026-05-05.md", [
   "Public site | 9340 / 10000",
-  "Admin console | 9350 / 10000",
-  "Operations readiness | 9050 / 10000",
+  "Admin console | 9460 / 10000",
+  "Operations readiness | 9120 / 10000",
+  "v0.2.8 Admin Console Follow-Up",
   "v0.2.7 Admin Console Follow-Up",
   "v0.2.6 Expert-Panel Follow-Up",
 ]);
@@ -480,6 +484,9 @@ expectText("src/app/admin/prices/price-mode-workspace.tsx", [
 expectText("src/app/admin/page.tsx", [
   "미리보기 저장",
   "formatDateTimeKorean",
+  "오늘 먼저 확인할 것",
+  "헷갈리면 이것만 기준",
+  "공개 시세 보기",
 ]);
 expectText("src/components/market/market-dashboard.tsx", [
   "text-xl font-bold tabular-nums",
@@ -867,10 +874,12 @@ expectText("src/app/admin/launch/page.tsx", [
 expectText("src/app/admin/layout.tsx", ["/admin/launch", "오픈 점검"]);
 expectText("src/app/admin/layout.tsx", ["admin-light", "한국센터금거래소 운영 콘솔"]);
 expectText("src/app/admin/page.tsx", [
-  "오늘 운영 상태",
-  "자동시세 상태",
+  "오늘 먼저 확인할 것",
+  "시세 운영",
   "검토 대기",
   "상품 공개 수",
+  "운영자가 바로 눌러야 할 메뉴",
+  "헷갈리면 이것만 기준",
 ]);
 expectText("src/app/admin/prices/page.tsx", [
   "자동시세 ON이면 산식과 안전 기준",
@@ -888,13 +897,16 @@ expectText("src/app/admin/prices/price-mode-workspace.tsx", [
   "자동 게시 허용 변동폭",
   "최소 반영 금액",
   "지금 계산 실행",
-  "자동 계산 기준 자세히 보기",
+  "계산 설정 열기",
   "저장 상태:",
   "AdminActionFeedback",
   "검토 후 반영",
   "저장 중...",
   "계산 중...",
   "반영 중...",
+  "nextIsAutoOn",
+  "enabled={nextIsAutoOn}",
+  "mode={nextIsAutoOn ? \"auto_publish\" : \"manual_review\"}",
 ]);
 expectNoText("src/app/admin/prices/price-mode-workspace.tsx", [
   "대표가 직접 넣는",
@@ -910,6 +922,9 @@ expectNoText("src/app/admin/prices/price-mode-workspace.tsx", [
   "지금 자동 확인",
   "버튼을 누르면 바로 저장됩니다",
   "드래프트",
+  "onModeChange(!isAutoOn)",
+  "enabled={isAutoOn}",
+  "mode={isAutoOn",
 ]);
 expectText("src/components/layout/site-footer.tsx", [
   "getBusinessRegistrationDisplay",
@@ -1289,7 +1304,7 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.7` includes real admin source changes",
+  "Reflection status: `v0.2.8` includes real admin source changes",
   "docs/setup/CHANGELOG.md",
   "docs/quality/ai-site-production-playbook.md",
   "docs/quality/data-source-compliance.md",

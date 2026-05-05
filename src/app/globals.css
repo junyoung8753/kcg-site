@@ -225,6 +225,110 @@ a {
   color: #8a2c20;
 }
 
+.admin-panel {
+  border: 1px solid var(--admin-line);
+  border-radius: 1.35rem;
+  background: var(--admin-panel);
+  box-shadow: 0 14px 36px rgba(31, 47, 43, 0.045);
+}
+
+.admin-panel-plain {
+  border: 1px solid var(--admin-line);
+  border-radius: 1rem;
+  background: #ffffff;
+}
+
+.admin-subpanel {
+  border: 1px solid rgba(31, 47, 43, 0.1);
+  border-radius: 1rem;
+  background: #fbfdfb;
+}
+
+.admin-compact-label {
+  color: var(--admin-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.admin-help {
+  color: var(--admin-muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.admin-input {
+  width: 100%;
+  border: 1px solid var(--admin-line-strong);
+  border-radius: 0.85rem;
+  background: #fffdf5;
+  padding: 0.72rem 0.85rem;
+  color: var(--admin-ink);
+  outline: none;
+}
+
+.admin-input:focus {
+  border-color: #d9ad00;
+  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.2);
+}
+
+.admin-primary-button {
+  border-radius: 999px;
+  background: var(--color-gold);
+  padding: 0.72rem 1.15rem;
+  color: #181818;
+  font-size: 0.9rem;
+  font-weight: 800;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.admin-primary-button:hover {
+  background: var(--color-gold-soft);
+}
+
+.admin-primary-button:active {
+  transform: translateY(1px);
+}
+
+.admin-secondary-button {
+  border: 1px solid var(--admin-line-strong);
+  border-radius: 999px;
+  background: #ffffff;
+  padding: 0.68rem 1rem;
+  color: var(--admin-ink);
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.admin-secondary-button:hover {
+  border-color: #d9ad00;
+  background: #fff9df;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.92rem;
+}
+
+.admin-table th {
+  border-bottom: 1px solid var(--admin-line);
+  background: #fbf7e8;
+  padding: 0.78rem 0.85rem;
+  color: var(--admin-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.admin-table td {
+  border-bottom: 1px solid rgba(31, 47, 43, 0.1);
+  padding: 0.82rem 0.85rem;
+  color: var(--admin-ink);
+  vertical-align: top;
+}
+
 @keyframes kcg-hero-copy-in {
   from {
     opacity: 0;

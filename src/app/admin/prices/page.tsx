@@ -9,10 +9,10 @@ function getStatusMessage(status?: string | string[]) {
   if (status === "saved") return "시세가 저장되었습니다.";
   if (status === "demo") return "Supabase 미연결 상태에서는 저장이 비활성화됩니다.";
   if (status === "error") return "저장 중 오류가 발생했습니다.";
-  if (status === "auto-settings-saved") return "자동입력 설정이 저장되었습니다.";
+  if (status === "auto-settings-saved") return "자동시세 설정이 저장되었습니다.";
   if (status === "auto-on-saved") return "자동시세 ON으로 저장되었습니다. 조건을 통과한 계산값은 자동으로 공개 시세에 반영됩니다.";
   if (status === "auto-off-saved") return "자동시세 OFF로 저장되었습니다. 이제 직접 입력표에서 시세를 저장합니다.";
-  if (status === "auto-schema") return "자동입력 테이블이 아직 Supabase에 적용되지 않았습니다.";
+  if (status === "auto-schema") return "자동시세 테이블이 아직 Supabase에 적용되지 않았습니다.";
   if (status === "auto-held") return "자동 계산 결과를 검토 대기로 남겼습니다.";
   if (status === "auto-disabled") return "자동시세가 꺼져 있어 공개 시세를 바꾸지 않았습니다.";
   if (status === "auto-outside-hours") return "영업시간 밖이라 자동으로 바꾸지 않았습니다. 설정에서 영업시간 제한을 끄면 수동 실행도 반영할 수 있습니다.";
@@ -22,7 +22,7 @@ function getStatusMessage(status?: string | string[]) {
   if (status === "auto-data-not-safe") return "참고 데이터가 불안정해 공개 시세를 바꾸지 않고 검토 대기로 남겼습니다.";
   if (status === "auto-applied") return "자동 계산 결과가 공개 시세에 반영되었습니다.";
   if (status === "auto-rejected") return "검토 대기 항목을 폐기했습니다.";
-  if (status === "auto-error") return "자동입력 처리 중 오류가 발생했습니다.";
+  if (status === "auto-error") return "자동시세 처리 중 오류가 발생했습니다.";
   return null;
 }
 
@@ -73,8 +73,8 @@ export default async function AdminPricesPage({
         </p>
       ) : null}
       {warnings.length ? (
-        <div className="rounded-[1.6rem] border border-[#f2c35a]/30 bg-[#2c2413] px-5 py-4 text-sm text-[#f8e2ab]">
-          <p className="font-semibold text-[#ffd77a]">저장은 완료되었지만 아래 항목을 다시 확인해 주세요.</p>
+        <div className="rounded-[1.2rem] border border-[#d9ad00]/35 bg-[#fff8dc] px-5 py-4 text-sm text-[#725100]">
+          <p className="font-extrabold text-[#725100]">저장은 완료되었지만 아래 항목을 다시 확인해 주세요.</p>
           <div className="mt-3 space-y-2 leading-7">
             {warnings.map((warning) => (
               <p key={warning}>· {warning}</p>
@@ -84,6 +84,7 @@ export default async function AdminPricesPage({
       ) : null}
 
       <AdminPricesWorkspace
+        key={`${settings.isEnabled}-${settings.mode}-${settings.updatedAt}`}
         prices={prices}
         settings={settings}
         suggestion={suggestion}

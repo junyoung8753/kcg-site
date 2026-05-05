@@ -689,6 +689,31 @@ test("admin launch dashboard separates pre-launch work from public-launch approv
   await expectNoVisibleElementEscapesViewport(page);
 });
 
+test("admin dashboard prioritizes daily operator tasks", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await page.goto("/admin", { waitUntil: "domcontentloaded" });
+  await expect(page).toHaveURL(/\/admin\/login\?next=%2Fadmin/);
+
+  if (!adminPassword) return;
+
+  await page.getByLabel("관리자 비밀번호").fill(adminPassword);
+  await page.getByRole("button", { name: "관리자 페이지로 이동" }).click();
+  await expect(page).toHaveURL(/\/admin/);
+
+  await expect(page.getByRole("heading", { name: "오늘 먼저 확인할 것" })).toBeVisible();
+  await expect(page.getByText("오늘 고시 시각")).toBeVisible();
+  await expect(page.getByText("시세 운영", { exact: true })).toBeVisible();
+  await expect(page.getByText("검토 대기")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "운영자가 바로 눌러야 할 메뉴" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "헷갈리면 이것만 기준" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "시세 관리" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "상품 관리" }).first()).toBeVisible();
+  await expect(page.locator(".admin-light")).toBeVisible();
+
+  await expectNoHorizontalOverflow(page);
+  await expectNoVisibleElementEscapesViewport(page);
+});
+
 test("admin prices exposes automatic price operation and compact manual editor", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   await page.goto("/admin/prices", { waitUntil: "domcontentloaded" });
@@ -722,7 +747,7 @@ test("admin prices exposes automatic price operation and compact manual editor",
   await expect(autoPanel.getByText("자동 게시 허용 변동폭").first()).toBeVisible();
   await expect(autoPanel.getByText("최소 반영 금액").first()).toBeVisible();
   await expect(autoPanel.getByText("영업시간만 반영").first()).toBeVisible();
-  await expect(autoPanel.getByText("자동 계산 기준 자세히 보기")).toBeVisible();
+  await expect(autoPanel.getByText("계산 설정 열기")).toBeVisible();
   await expect(page.getByText("선택한 모드 저장")).toHaveCount(0);
   await expect(page.getByText(/저장 상태:|미리보기 상태:/)).toBeVisible();
   await expect(page.getByRole("link", { name: "한국금거래소 참고 보기" })).toBeVisible();

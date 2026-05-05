@@ -325,7 +325,7 @@ try {
   }
 
   if (includeAdminScreenshots) {
-    await captureAdminRoute(page, "/admin", { width: 1440, height: 1600 }, "admin-home-desktop.png", "오늘 운영 상태");
+    await captureAdminRoute(page, "/admin", { width: 1440, height: 1600 }, "admin-home-desktop.png", "오늘 먼저 확인할 것");
     await captureAdminLaunch(page, { width: 390, height: 1800 }, "admin-launch-mobile.png");
     await captureAdminLaunch(page, { width: 1440, height: 1600 }, "admin-launch-desktop.png");
     if (!externalBaseURL) {

@@ -8,11 +8,44 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.8 - Admin mode persistence and operational readability
+
+- Date: `2026-05-05 KST`
+- Commit: pending until final verification; work-before HEAD `0510b76`.
+- Deploy Status: this version changes the real admin UI and is intended for `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` production refresh after verification. Search indexing/noindex release is not included.
+- 사람이 읽는 요약: 자동시세 ON을 눌러도 다시 OFF로 저장될 수 있던 원인을 고치고, `/admin` 첫 화면을 “오늘 먼저 확인할 것” 중심의 실무형 대시보드로 다시 정리한 버전입니다.
+- Summary: Fixes the admin automatic-price mode submission race and improves dashboard readability around daily operator tasks, status cards, and source-of-truth guidance.
+- Changed:
+  - Fixed the automatic-price mode switch so the submitted hidden fields use the intended next state instead of the just-rendered current state.
+  - Rebuilt `/admin` around daily work: posted-price check, automatic-price review queue, product visibility, announcements, and launch blockers.
+  - Added explicit source-audit guardrails for the mode-switch regression.
+  - Replaced remaining dark warning panels in `/admin/prices` with readable light warning styling.
+  - Updated admin screenshot/audit/test expectations for the new dashboard and settings wording.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀐 것: 관리자 대시보드 실무형 재구성, 자동시세 ON/OFF 저장 버그 수정, `/admin/prices` 경고/설정 문구 가독성 개선
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: `v0.2.8` changelog/handoff/status trace
+  - 배포된 것: 최종 검증 후 production deploy 대상
+  - 아직 배포 안 된 것: 커밋/배포 전 로컬 working tree 상태에서는 `v0.2.8` 변경 전체
+  - 고객에게 보여줘도 되는 것: 공개 고객 화면은 기존 방향 유지. 관리자 화면은 로그인 사용자만 확인.
+  - 아직 내부 기준/계획일 뿐인 것: Vercel Pro/external scheduler 결제, 실제 자동 실행 빈도 상향, 최종 상품 사진/공임/판매정책
+- QA Score:
+  - Public site: `9340 / 10000` baseline unchanged unless verification finds regressions
+  - Admin console target: `9460 / 10000`
+  - Operations readiness target: `9120 / 10000`
+- Verification:
+  - Required before completion: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:admin`, `npm run screenshot:site`, `npm run qa:site`, `npm audit --audit-level=moderate`, `git diff --check`.
+- Rollback Hint: `v0.2.8 전으로 되돌려줘`
+- Remaining User-only:
+  - Decide whether to pay for Vercel Pro or connect an external scheduler if automatic checks must run more than once per day.
+  - Confirm final KCG product photos, product list, weights, 공임/margin, and price display policy.
+  - Rotate the final production admin password before public search launch.
+  - Approve robots/noindex release and search indexing only when final public launch is ready.
+
 ## v0.2.7 - Light admin console and automatic price UX
 
 - Date: `2026-05-05 KST`
-- Commit: pending until final verification; work-before HEAD `da33d82`.
-- Deploy Status: this version changes the real admin UI and is intended for `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` production refresh after verification. Search indexing/noindex release is not included.
+- Commit: `0510b76`; work-before HEAD `da33d82`.
+- Deploy Status: committed, pushed, and production deployed before `v0.2.8` follow-up. Search indexing/noindex release was not included.
 - 사람이 읽는 요약: 관리자 화면을 어두운 카드형 화면에서 밝은 운영 콘솔로 바꾸고, 자동시세 ON/OFF가 무엇을 저장하는지, 지금 계산 실행이 왜 반영/보류/실패됐는지 버튼 근처에서 바로 보이게 만든 버전입니다.
 - Summary: Reworked the admin price operation surface around light theme, explicit mode state, pending submit feedback, automatic-price result feedback, and clearer operator wording.
 - Changed:

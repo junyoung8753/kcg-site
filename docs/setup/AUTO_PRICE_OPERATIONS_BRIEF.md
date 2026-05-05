@@ -46,7 +46,7 @@ For now, keep the current setup:
 
 - `vercel.json` daily cron stays deployable on Hobby.
 - Admin manual input remains the main operating method.
-- Automatic mode can be tested with manual "지금 자동 확인" and one daily check.
+- Automatic mode can be tested with manual "지금 계산 실행" and one daily scheduled check.
 - If KCG later says "hourly automatic price checks are worth paying for", choose Vercel Pro first because it is the simplest path for the current codebase.
 
 ## What Codex Can Do After Payment Or Scheduler Approval
