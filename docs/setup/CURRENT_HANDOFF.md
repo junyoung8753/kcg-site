@@ -8,8 +8,8 @@ This file is the short, durable context for a new Codex chat, another PC, or a f
 
 - 초보자는 먼저 `docs/setup/PROJECT_STATUS_FOR_BEGINNER.md`를 보면 된다. 이 문서는 현재 버전, 작업 브랜치, 백업 기준, 실제 사이트 반영 여부, 쉬운 Codex 요청 문장을 1-2분 안에 읽을 수 있게 정리한다.
 - `branch` = 작업 줄기, `HEAD` = 현재 코드 기준점, `rollback` = 이전 상태로 되돌리기, `backup branch` = 되돌리기용 책갈피, `dirty state` = 아직 정리되지 않은 변경사항.
-- 이번 `v0.2.11`은 운영 콘솔의 공개 승인 가독성 버그와 시세 관리 시간 표기 혼선을 고치는 작업이다. `고시 기준`은 고객 화면에 표시되는 회사 고시 시각이고, `관리자 저장`은 운영자가 마지막으로 저장한 시각이라는 점을 화면에서 분리한다.
-- 되돌릴 때는 "v0.2.11 전으로 되돌려줘" 또는 "v0.2.10 비주얼/인포그래픽 보강만 되돌리는 계획을 먼저 보여줘"라고 말하면 된다.
+- 이번 `v0.2.12`는 공개 런칭 전 고객/직원 관점에서 시세표 읽기, 상품/매입 선택, 서비스 FAQ, 상품 이미지 반복감을 다시 보강하는 작업이다. 검색 노출/noindex 해제는 포함하지 않는다.
+- 되돌릴 때는 "v0.2.12 전으로 되돌려줘" 또는 "v0.2.11 운영 콘솔 시간표기/가독성 수정만 되돌리는 계획을 먼저 보여줘"라고 말하면 된다.
 
 Junyoung's current preferred workflow is local-first. Codex Cloud is not the default right now because it has been inconvenient and unreliable for current KCG work. Keep Cloud docs as a future option and use `docs/setup/CLOUD_ONLY_WORKFLOW.md` only when junyoung explicitly asks for Codex Cloud or wants to avoid computer-specific setup.
 
@@ -17,20 +17,20 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 
 ## Current Version Snapshot
 
-- Current KCG site version: `v0.2.11`
-- Latest change: `Admin launch readability and price-time clarity`
+- Current KCG site version: `v0.2.12`
+- Latest change: `Pre-launch customer flow and catalog image QA`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: `v0.2.11` is an admin/UI bugfix for launch approval contrast, announcement delete-button contrast, price-time labeling, KST datetime handling, and dynamic runtime rendering for admin status screens. Confirm current state with `git status --short --branch`, `npm run release:trace`, and required validation commands before handoff.
-- 실제 사이트 화면이 바뀌는 것: `/admin/launch` 공개 승인 항목 가독성, `/admin/announcements` 삭제 버튼 가독성, `/admin/prices` 시간 라벨과 기준 시각 입력.
+- Reflection status: `v0.2.12` is a public customer-flow and catalog-image QA pass before search launch. It strengthens `/prices` pre-call guidance, `/products` buy/sell/bulk selection, `/services` FAQ, and product-card image variety while preserving robots/noindex blocking. Confirm current state with `git status --short --branch`, `npm run release:trace`, and required validation commands before handoff.
+- 실제 사이트 화면이 바뀌는 것: `/prices` 전화 전 확인 안내, `/products` 상단 살 때/팔 때/대량 선택 기준, `/products` 상품 카드 이미지 다양화, `/services` FAQ.
 - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음.
-- 배포된 것: pending for `v0.2.11` until validation, commit, push, and production deploy finish.
+- 배포된 것: local `v0.2.12` QA passed; commit, push, production deploy, and live external QA are performed next.
 - 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 운영자료 확정, Vercel Pro 또는 외부 scheduler 결정.
 - 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` review site. Search exposure remains blocked.
 - 아직 내부 기준/계획일 뿐인 것: real product/store/staff photography replacement, final product prices/공임/판매정책, final admin secret rotation, search launch approval.
-- Latest QA: local `v0.2.11` validation passed with `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, targeted admin Playwright regression checks, full `npm run test:site` (`21 passed`), `npm run screenshot:admin`, `npm run qa:site` (rendered audit `1136 checks, 0 skipped`; Playwright `21 passed`), `npm audit --audit-level=moderate`, and `git diff --check` with line-ending warnings only. The issue investigation confirmed one real admin contrast bug, one admin timestamp-label UX bug, and one admin status static-rendering risk. Direct Supabase history read showed manual price history at `2026-05-05 10:01 UTC` (`2026-05-05 19:01 KST`), matching the user-reported `마지막 저장`; subsequent direct row reads temporarily hit Supabase pooler `ECIRCUITBREAKER`, so do not ask for DB passwords and retry later only if row-level data is still needed.
+- Latest QA: local `v0.2.12` validation passed on 2026-05-06 KST. Passed: `npm run audit:site` (`1131 checks, 1 skipped` before rendered URL checks), `npm run lint`, `npm run typecheck`, `npm run tasks:dashboard` (`62 tasks`), `npm run build`, targeted Playwright product first-viewport/typography regression (`2 passed`), `npm run test:site` (`21 passed`), `npm run screenshot:site`, visual screenshot inspection for home/prices/products/services mobile and desktop key views, `npm run qa:site` (rendered audit `1191 checks, 0 skipped`; Playwright `21 passed`; npm audit `0 vulnerabilities`), standalone `npm audit --audit-level=moderate` (`0 vulnerabilities`), and `git diff --check` with line-ending warnings only. Production deploy and live external QA are performed after commit/push.
 - Change ledger: `docs/setup/CHANGELOG.md`
 - Broader rollback bookmark: `backup/pre-v0.2.4-operations-product-audit`
-- Rollback phrase: `v0.2.11 전으로 되돌려줘`
+- Rollback phrase: `v0.2.12 전으로 되돌려줘`
 
 ## Current Source Of Truth
 
@@ -77,7 +77,7 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 - `/option-1` and `/option-2` have been removed from the app. The audit and Playwright tests now expect those routes to return 404.
 - The old source comparison script has been removed from the default workflow because the repo is now the accepted baseline.
 - The home campaign slider must remain a full-bleed visual surface. On desktop, the company price table belongs as a left-side overlay on top of the full-width campaign image, with a visible left image margin and a narrower dark lineup-panel ratio inspired by major Korean gold-exchange sites. The image must still span the viewport and must not shrink into a right-side half-width banner. On mobile/tablet, preserve price readability over strict overlay behavior.
-- The current public image set uses 2026-04-27, 2026-04-30, 2026-05-03, and 2026-05-06 assets under `public/campaign`, `public/products`, `public/company`, and `public/services`. Public UI references optimized `.webp` versions for generated assets while source originals stay in File-Hub and repo review folders keep candidates/contact sheets. The home carousel now starts with `kcg-home-price-desk-20260506.webp`, then uses `kcg-home-human-consultation-20260506.webp`, `kcg-home-seoul-retail-20260506.webp`, and `kcg-old-gold-process-20260506.webp`. Product/catalog surfaces use `kcg-product-minimal-bars-20260506.webp`, `kcg-product-pure-gold-gifts-20260506.webp`, `kcg-old-gold-process-20260506.webp`, and `kcg-product-corporate-consulting-20260506.webp`; silver-bar cards intentionally retain `kcg-silver-gift-20260427-v2.jpg` for category contrast. Existing 2026-04-27/2026-04-30/2026-05-03 images remain available for comparison under `public/image-options/2026-05-03`; the new v0.2.10 originals, optimized WebPs, contact sheet, and manifest are under `public/image-options/2026-05-06/generated`. File-Hub preserved source originals are under `C:\Users\junyo\Documents\File-Hub\30_Media\Images\AI generated\KCG\2026-05-06-visual-guidance-refresh`.
+- The current public image set uses 2026-04-27, 2026-04-30, 2026-05-03, and 2026-05-06 assets under `public/campaign`, `public/products`, `public/company`, and `public/services`. Public UI references optimized `.webp` versions for generated assets while source originals stay in File-Hub and repo review folders keep candidates/contact sheets. The home carousel now starts with `kcg-home-price-desk-20260506.webp`, then uses `kcg-home-human-consultation-20260506.webp`, `kcg-home-seoul-retail-20260506.webp`, and `kcg-old-gold-process-20260506.webp`. Product/catalog surfaces now distribute approved placeholders by slug across `kcg-product-minimal-bars-20260506.webp`, `kcg-product-gold-silver-catalog-20260503.webp`, `kcg-home-product-keyvisual-20260503.webp`, `kcg-silver-gift-20260427-v2.jpg`, `kcg-product-pure-gold-gifts-20260506.webp`, `kcg-pure-gold-products-20260427-v2.jpg`, `kcg-old-gold-process-20260506.webp`, `kcg-product-jewelry-buying-20260503.webp`, `kcg-jewelry-buying-tray-20260430.webp`, `kcg-b2b-gift-packaging-20260430.webp`, `kcg-product-b2b-consulting-20260503.webp`, and `kcg-product-corporate-consulting-20260506.webp`. Known placeholder image URLs stored in product data are remapped by slug on the public site so existing Supabase rows do not force repeated catalog cards; custom non-placeholder admin image URLs are still preserved. Existing 2026-04-27/2026-04-30/2026-05-03 images remain available for comparison under `public/image-options/2026-05-03`; the v0.2.10 originals, optimized WebPs, contact sheet, and manifest are under `public/image-options/2026-05-06/generated`. File-Hub preserved source originals are under `C:\Users\junyo\Documents\File-Hub\30_Media\Images\AI generated\KCG\2026-05-06-visual-guidance-refresh`.
 - Competitor sites may be used for structure, hierarchy, category grouping, CTA placement, and visual grammar. Do not copy competitor-owned images, prices, slogans, detailed copy, logos, staff/model photos, internal API endpoints, or scraped data into KCG.
 - `/products` is now the public consultation catalog surface. It is intentionally not a checkout/cart mall: price wording, product photos, display order, visibility, and consultation notes can be managed through the product model/admin flow, while public copy keeps phone inquiry and trade consultation as the conversion path.
 - The baseline product catalog now uses a tabbed `상품/매입` structure: `전체`, `골드바`, `실버바`, `순금제품`, `고금·주얼리 매입`, and `B2B·기업`. Product cards may show current posted-price reference calculations, but they must remain inquiry-first and must not behave like checkout, payment, live trading, or guaranteed quote flow.
@@ -89,7 +89,7 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 - Search exposure must use `canExposeToSearch()` rather than raw production/noindex state, so legal placeholders and non-final domains keep robots/sitemap blocked.
 - Keep search blocking/noindex until public launch approval.
 - Current launch-prep boundary: Cafe24 DNS, Vercel custom domains, HTTPS, and Supabase production storage are connected. Do not remove robots/noindex, enable search indexing, publish launch announcements, or treat this as final public launch approval until junyoung explicitly approves after final legal display, product prices/photos, operating copy, and final admin secret rotation are confirmed.
-- Safe pre-launch work is limited to preview deployments, route/UI/content polish, admin launch-readiness checks, product/catalog preparation, source-attribution/data-safety work, and documentation.
+- Safe pre-launch work includes verified deploys to the existing live review domains, route/UI/content polish, admin launch-readiness checks, product/catalog preparation, source-attribution/data-safety work, and documentation. It still excludes search/noindex release, payment/trading behavior, secret/env changes, new DNS/domain policy changes, and hard-to-reverse infrastructure changes unless junyoung explicitly approves them.
 
 ## Public Launch Terms
 
@@ -261,7 +261,7 @@ kcg사이트 만들던거 이어나갈수있게 준비해
 Agents must treat that short prompt as equivalent to:
 
 ```text
-KCG 사이트 작업 이어가자. 이 repo의 AGENTS.md, docs/setup/CURRENT_HANDOFF.md, docs/quality/product-experience-rubric.md, docs/quality/data-source-compliance.md, docs/quality/ai-site-production-playbook.md를 먼저 읽고, 접근 권한이 있으면 private repo junyoung8753/kcg-company-knowledge의 README.md, ops/local-first-workflow.md, company/identity.md, company/business-rules.md, pricing/posted-price-policy.md, projects/kcg-site.md도 회사 맥락으로 참고해줘. 현재 repo를 단일 오픈 후보 기준으로 점검하고, 내부자료는 public-safe subset만 site repo에 반영해. API/RSS/차트/폼/경쟁사 참고는 출처와 약관 기준을 지키고, old option route 복구나 production 배포, stable alias 변경, 검색 색인 허용은 내가 명확히 승인하기 전에는 하지 마.
+KCG 사이트 작업 이어가자. 이 repo의 AGENTS.md, docs/setup/CURRENT_HANDOFF.md, docs/quality/product-experience-rubric.md, docs/quality/data-source-compliance.md, docs/quality/ai-site-production-playbook.md를 먼저 읽고, 접근 권한이 있으면 private repo junyoung8753/kcg-company-knowledge의 README.md, ops/local-first-workflow.md, company/identity.md, company/business-rules.md, pricing/posted-price-policy.md, projects/kcg-site.md도 회사 맥락으로 참고해줘. 현재 repo를 단일 오픈 후보 기준으로 점검하고, 내부자료는 public-safe subset만 site repo에 반영해. API/RSS/차트/폼/경쟁사 참고는 출처와 약관 기준을 지켜. 검증된 KCG 사이트 변경은 live review를 위해 배포까지 진행하되, old option route 복구, 검색 색인 허용/noindex 해제, 결제/거래, secret/env 변경, 새 DNS/도메인 정책 변경은 내가 명확히 승인하기 전에는 하지 마.
 ```
 
 For task tracking, also read `docs/setup/OPEN_TASKS.md`. For visual or route work, also read `docs/quality/design-review-checklist.md`.

@@ -59,6 +59,24 @@ New source and review storage:
 - Review contact sheet: `public/image-options/2026-05-06/generated/contact-sheet.jpg`
 - Machine-readable manifest: `public/image-options/2026-05-06/generated/manifest.json`
 
+## 2026-05-06 v0.2.12 Follow-up
+
+This pass did not generate additional AI images. The issue found in the final customer/staff flow QA was not a lack of source assets; it was that product data could still carry older placeholder image URLs, making the live catalog feel repetitive even after the v0.2.10 visual refresh.
+
+The fix keeps custom admin-provided image URLs intact, but remaps known placeholder URLs by product slug on the public site. That means Supabase rows that still point to a generic category placeholder can render with a more appropriate approved KCG asset without mutating production product data.
+
+Applied catalog distribution:
+
+| Product Surface | Preferred Asset Direction |
+| --- | --- |
+| Investment/gold-bar consultation | graphite gold/silver catalog or product key visual |
+| Silver-bar cards | silver-focused or mixed gold/silver catalog image |
+| Pure-gold gifts | pure-gold gift/product image rather than generic bullion |
+| Old-gold and jewelry buying | jewelry tray, process, or inspection image |
+| B2B/corporate consultation | corporate consulting table or B2B packaging image |
+
+Operational note: real KCG product/store/staff photos should still replace generated placeholders before search launch if the company wants the site to show actual inventory and store conditions. Until then, image variety is treated as a public-safe visual aid, not proof of exact inventory, certification, or final price.
+
 ## Selection Folder
 
 Use this folder when junyoung wants to choose a different visual direction:

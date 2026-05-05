@@ -327,6 +327,7 @@ async function expectUrlStatus(pathname, expectedStatus) {
   "public/campaign/kcg-advisor-counter-20260430.webp",
   "public/campaign/kcg-home-price-desk-20260506.webp",
   "public/campaign/kcg-home-human-consultation-20260506.webp",
+  "public/campaign/kcg-home-product-keyvisual-20260503.webp",
   "public/campaign/kcg-home-seoul-retail-20260506.webp",
   "public/campaign/kcg-price-guide-visual-20260506.webp",
   "public/campaign/kcg-old-gold-process-20260506.webp",
@@ -342,6 +343,9 @@ async function expectUrlStatus(pathname, expectedStatus) {
   "public/products/kcg-b2b-gift-packaging-20260430.png",
   "public/products/kcg-b2b-gift-packaging-20260430.webp",
   "public/products/kcg-product-minimal-bars-20260506.webp",
+  "public/products/kcg-product-gold-silver-catalog-20260503.webp",
+  "public/products/kcg-product-jewelry-buying-20260503.webp",
+  "public/products/kcg-product-b2b-consulting-20260503.webp",
   "public/products/kcg-product-pure-gold-gifts-20260506.webp",
   "public/products/kcg-product-corporate-consulting-20260506.webp",
   "public/products/kcg-buying-process-20260427-v2.jpg",
@@ -360,6 +364,7 @@ expectFile("public/image-options/2026-05-06/generated/manifest.json", { minBytes
   "public/campaign/kcg-advisor-counter-20260430.webp",
   "public/campaign/kcg-home-price-desk-20260506.webp",
   "public/campaign/kcg-home-human-consultation-20260506.webp",
+  "public/campaign/kcg-home-product-keyvisual-20260503.webp",
   "public/campaign/kcg-home-seoul-retail-20260506.webp",
   "public/campaign/kcg-price-guide-visual-20260506.webp",
   "public/campaign/kcg-old-gold-process-20260506.webp",
@@ -367,6 +372,9 @@ expectFile("public/image-options/2026-05-06/generated/manifest.json", { minBytes
   "public/products/kcg-jewelry-buying-tray-20260430.webp",
   "public/products/kcg-b2b-gift-packaging-20260430.webp",
   "public/products/kcg-product-minimal-bars-20260506.webp",
+  "public/products/kcg-product-gold-silver-catalog-20260503.webp",
+  "public/products/kcg-product-jewelry-buying-20260503.webp",
+  "public/products/kcg-product-b2b-consulting-20260503.webp",
   "public/products/kcg-product-pure-gold-gifts-20260506.webp",
   "public/products/kcg-product-corporate-consulting-20260506.webp",
 ].forEach((relativePath) => expectFileSizeAtMost(relativePath, { maxBytes: 300_000 }));
@@ -419,6 +427,13 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.12 - Pre-launch customer flow and catalog image QA",
+  "Price-first operational guidance",
+  "전화 전 확인",
+  "살 때",
+  "팔 때",
+  "대량",
+  "v0.2.12 전으로 되돌려줘",
   "## v0.2.11 - Admin launch readability and price-time clarity",
   "고시 기준",
   "관리자 저장",
@@ -467,25 +482,25 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.11`",
-  "Admin launch readability and price-time clarity",
+  "Current KCG site version: `v0.2.12`",
+  "Pre-launch customer flow and catalog image QA",
   "existing-api-integration-audit-2026-05-05.md",
-  "실제 사이트 화면이 바뀌는 것: `/admin/launch`",
+  "실제 사이트 화면이 바뀌는 것: `/prices` 전화 전 확인 안내",
   "backup/pre-v0.2.4-operations-product-audit",
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
-  "v0.2.11",
-  "운영 콘솔",
-  "실제 사이트 화면이 바뀐 것: `/admin/launch`",
+  "v0.2.12",
+  "고객/직원 관점",
+  "실제 사이트 화면이 바뀐 것: `/prices` 전화 전 확인 안내",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",
   "MEDIUM",
   "HIGH",
   "FORBIDDEN",
   "그대로 복사해서 Codex에게 말하면 되는 문장",
-  "push 하지 않음",
-  "deploy 하지 않음",
+  "검증 전 push/deploy 하지 않음",
+  "검색 노출/noindex 해제하지 않음",
 ]);
 expectText("docs/setup/QA_REPORT_2026-05-05.md", [
   "Public site | 9380 / 10000",
@@ -741,7 +756,15 @@ expectNoText("src/components/prices/price-table.tsx", ["단위: {price.unit}", "
 expectText("src/lib/price-announcement.ts", ["오늘 고시 예정 시각", "고시 예정 시각"]);
 expectText("src/components/home/final-home.tsx", ["getPriceAnnouncementDisplay"]);
 expectNoText("src/components/home/final-home.tsx", ["오늘 고시 시각: {"]);
-expectText("src/app/(site)/prices/page.tsx", ["PriceContextGuide", "시세 이용 기준", "getPriceAnnouncementDisplay", "기준 고시 예정"]);
+expectText("src/app/(site)/prices/page.tsx", [
+  "PriceContextGuide",
+  "시세 이용 기준",
+  "priceUseCards",
+  "자동 참고 시세",
+  "국제 현재가와 환산값은 시장 흐름 확인용입니다.",
+  "getPriceAnnouncementDisplay",
+  "기준 고시 예정",
+]);
 expectText("src/components/market/price-lineup.tsx", ["announcedHeading"]);
 expectText("src/components/prices/price-table.tsx", ["getPriceAnnouncementDisplay", "tableLabel"]);
 expectNoText("src/app/(site)/prices/page.tsx", ["PageIntro"]);
@@ -753,6 +776,11 @@ expectText("src/components/prices/price-context-guide.tsx", [
   "법인·대량",
   "볼 시세",
   "준비 항목",
+  "preCallChecks",
+  "전화 전 확인",
+  "무엇을 보유했나요?",
+  "얼마나 있나요?",
+  "어떻게 오시나요?",
 ]);
 expectText("tests/site-fidelity.spec.ts", [
   "expectNoVisibleElementEscapesViewport",
@@ -762,6 +790,9 @@ expectText("tests/site-fidelity.spec.ts", [
   "product quick links sync same-route category query",
   "고시가 / 3.75g 기준",
   "품목별로 볼 기준만 확인합니다.",
+  "무엇을 보유했나요?",
+  "처음 연락할 때 무엇부터 말하면 되나요?",
+  "firstProductImageSources",
   "USD/KRW",
   "단위: 3.75g",
   "한국센터금거래소 상담원과 고객 상담 장면",
@@ -990,6 +1021,9 @@ expectText("src/app/(site)/products/page.tsx", [
   "/products/kcg-product-minimal-bars-20260506.webp",
   "탭에서 품목을 고르고 기준가를 확인합니다.",
   "골드바, 실버바, 순금제품, 고금 매입 항목을 바로 볼 수 있습니다.",
+  "decisionPaths",
+  "내가 팔 때 기준과 실물 확인 항목을 먼저 봅니다.",
+  "품목 목록, 예상 수량, 희망 일정을 정리합니다.",
   "ProductCatalog",
 ]);
 expectText("src/app/(site)/products/[slug]/page.tsx", [
@@ -1031,6 +1065,8 @@ expectText("src/lib/site-config.ts", [
   "고금·주얼리",
   "custom_order",
   "고금매입은 시세표의 어느 금액을 보면 되나요?",
+  "처음 연락할 때 무엇부터 말하면 되나요?",
+  "보증서나 영수증이 없으면 진행이 어렵나요?",
   "전화로 금액을 확정받을 수 있나요?",
   "KC주얼리 그룹 사명",
   "고객가치를 높이고 보다 많은 사람들이 귀금속과 다이아몬드를 즐기며 행복할수 있도록 돕는다.",
@@ -1086,7 +1122,13 @@ expectText("src/lib/product-presenter.ts", [
   "productCatalogTabs",
   "if (imageUrl?.startsWith(\"/\"))",
   "legacyProductImageReplacements",
+  "replaceablePlaceholderImages",
   "kcg-product-minimal-bars-20260506.webp",
+  "kcg-product-gold-silver-catalog-20260503.webp",
+  "kcg-home-product-keyvisual-20260503.webp",
+  "kcg-product-jewelry-buying-20260503.webp",
+  "kcg-product-b2b-consulting-20260503.webp",
+  "kcg-b2b-gift-packaging-20260430.webp",
   "kcg-silver-gift-20260427-v2.jpg",
   "kcg-product-pure-gold-gifts-20260506.webp",
   "kcg-old-gold-process-20260506.webp",
@@ -1121,6 +1163,10 @@ expectNoText("src/components/products/product-catalog.tsx", [
 );
 expectText("src/lib/product-presenter.ts", [
   "/products/kcg-product-minimal-bars-20260506.webp",
+  "/products/kcg-product-gold-silver-catalog-20260503.webp",
+  "/campaign/kcg-home-product-keyvisual-20260503.webp",
+  "/products/kcg-product-jewelry-buying-20260503.webp",
+  "/products/kcg-product-b2b-consulting-20260503.webp",
   "/products/kcg-silver-gift-20260427-v2.jpg",
   "/products/kcg-product-pure-gold-gifts-20260506.webp",
   "/campaign/kcg-old-gold-process-20260506.webp",
@@ -1137,6 +1183,11 @@ expectText("src/mock/products.ts", [
   "현재 고시가 기준 참고가",
   "custom_order",
   "/products/kcg-product-minimal-bars-20260506.webp",
+  "/products/kcg-product-gold-silver-catalog-20260503.webp",
+  "/campaign/kcg-home-product-keyvisual-20260503.webp",
+  "/products/kcg-product-jewelry-buying-20260503.webp",
+  "/products/kcg-product-b2b-consulting-20260503.webp",
+  "/products/kcg-b2b-gift-packaging-20260430.webp",
   "/products/kcg-silver-gift-20260427-v2.jpg",
   "/products/kcg-product-pure-gold-gifts-20260506.webp",
   "/campaign/kcg-old-gold-process-20260506.webp",
@@ -1150,6 +1201,11 @@ expectText("supabase/seed.sql", [
   "18K 주얼리 매입",
   "귀금속 매입 절차 안내",
   "/products/kcg-product-minimal-bars-20260506.webp",
+  "/products/kcg-product-gold-silver-catalog-20260503.webp",
+  "/campaign/kcg-home-product-keyvisual-20260503.webp",
+  "/products/kcg-product-jewelry-buying-20260503.webp",
+  "/products/kcg-product-b2b-consulting-20260503.webp",
+  "/products/kcg-b2b-gift-packaging-20260430.webp",
   "/products/kcg-silver-gift-20260427-v2.jpg",
   "/products/kcg-product-pure-gold-gifts-20260506.webp",
   "/products/kcg-product-corporate-consulting-20260506.webp",
@@ -1280,7 +1336,7 @@ expectText(".agents/skills/kcg-site-quality/SKILL.md", [
   "description: Use in the KCG site repo",
   "npm run qa:site",
   "0 skipped",
-  "Do not change production deploys",
+  "Deploy completed, verified KCG site changes",
   "Proactive Launch Steward Review",
   "docs/setup/CHANGELOG.md",
 ]);
@@ -1353,8 +1409,8 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.11` is an admin/UI bugfix",
-  "price-time labeling",
+  "Reflection status: `v0.2.12` is a public customer-flow and catalog-image QA pass",
+  "product-card image variety",
   "docs/setup/CHANGELOG.md",
   "docs/quality/ai-site-production-playbook.md",
   "docs/quality/data-source-compliance.md",
@@ -1407,6 +1463,7 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-059",
   "KCG-TODO-060",
   "KCG-TODO-061",
+  "KCG-TODO-062",
   "tasks:dashboard",
   "user-only",
   "codex",
@@ -1443,7 +1500,7 @@ expectText("docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md", [
   "SUPABASE_SERVICE_ROLE_KEY=<server-only secret>",
   "Gold API free current prices",
   "KRX boundary",
-  "Run production deploy only when junyoung explicitly approves",
+  "Completed, verified KCG site source/UI changes may be deployed",
 ]);
 expectText("docs/setup/PRODUCT_OPERATIONS_CHECKLIST.md", [
   "consultation-first catalog",
@@ -1536,10 +1593,12 @@ if (siteUrl) {
   await expectUrl("/services", [
     "품목 확인, 고시 기준, 실물 확인",
     "매입 가능 품목",
+    "처음 연락할 때 무엇부터 말하면 되나요?",
     "자주 묻는 기준",
   ]);
   await expectUrl("/products", [
     "상품/매입",
+    "내가 팔 때 기준과 실물 확인 항목을 먼저 봅니다.",
     "KCG 골드바 3.75g",
     "현재 고시가 기준",
   ]);
@@ -1552,6 +1611,7 @@ if (siteUrl) {
     "한국센터금거래소 시세표",
     "품목별 회사 고시 시세 상세",
     "품목별로 볼 기준만 확인합니다.",
+    "무엇을 보유했나요?",
     "국제 현재가",
     "TradingView 제공",
   ]);

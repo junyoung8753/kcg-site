@@ -8,6 +8,55 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.12 - Pre-launch customer flow and catalog image QA
+
+- Date: `2026-05-06 KST`
+- Commit: final v0.2.12 commit is recorded by Git after verification.
+- Deploy Status: local validation passed; production deploy and live checks are performed after commit/push. Search indexing/noindex release is not included.
+- Design Direction: `Price-first operational guidance + category-specific visual variety`.
+- 사람이 읽는 요약: 공개 런칭 전 마지막 고객/직원 관점으로 `/prices`, `/products`, `/services` 흐름을 다시 보면서, 고객이 전화 전 무엇을 확인해야 하는지와 직원이 어떤 질문을 먼저 해야 하는지 더 분명하게 보강했습니다. 상품 목록은 같은 금괴/상담 데스크 이미지가 반복되지 않도록 승인된 기존 AI 후보 이미지를 slug별로 분산하고, 운영 DB에 placeholder 경로가 남아 있어도 public 화면에서 더 다양한 카테고리 이미지가 보이도록 했습니다.
+- Summary: Strengthens pre-call guidance on price reading and services FAQ, adds a compact buy/sell/bulk decision strip to `/products`, diversifies product-card imagery through source-safe placeholder remapping, and adds Playwright/source-audit guardrails for first-viewport catalog access and image variety.
+- Changed:
+  - Added `/prices` `전화 전 확인` guidance for item type, rough weight/quantity, visit timing, and 법인·대리·상속 flags.
+  - Fixed `/prices` summary-card structure so each card has a label, title, and body rather than a two-field fallback.
+  - Added compact `/products` decision paths for `살 때`, `팔 때`, and `대량` so customers reach the correct tab before reading every card.
+  - Diversified product catalog images by slug using approved 2026-05-03 and 2026-05-06 assets, while preserving custom non-placeholder admin image URLs.
+  - Updated mock product data and Supabase seed references so future local/seeded environments use the same product-image spread.
+  - Expanded service FAQ with first-contact and missing-receipt questions without promising final prices or appraisal certainty.
+  - Added source-audit asset guards and Playwright checks for product image variety, price-guide pre-call prompts, and new FAQ text.
+  - Aligned repo guidance so verified KCG site changes deploy to the existing live review domains by default, while search/noindex release, secrets, payment/trading, DNS policy, and hard-to-reverse infrastructure remain approval-gated.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/prices` 시세 이용/전화 전 확인 안내, `/products` 모바일/데스크톱 상단 선택 기준, `/products` 상품 카드 이미지 분산, `/services` FAQ.
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음.
+  - 배포된 것: local QA passed; commit/push/deploy and live external QA are performed next.
+  - 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, Vercel Pro 또는 외부 scheduler 결정.
+  - 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` review site after deploy.
+  - 아직 내부 기준/계획일 뿐인 것: final real product/store photography, final product prices/photos, final admin secret rotation, search launch approval.
+- Root Cause:
+  - v0.2.10 visual refresh added stronger images, but live product rows could still reuse the same placeholder paths from Supabase seed/admin data, so source-only image mapping was not enough to reduce visible repetition.
+  - Product/service guidance existed, but the first product viewport did not explicitly separate `살 때`, `팔 때`, and `대량` decision paths before the tab controls.
+  - Existing FAQ covered final-price caveats, but first-contact wording and missing receipt/guarantee handling were still better answered by staff than by the site.
+- Verification:
+  - Passed: `npm run audit:site` (`1131 checks, 1 skipped` before rendered route URL checks)
+  - Passed: `npm run lint`
+  - Passed: `npm run typecheck`
+  - Passed: `npm run tasks:dashboard` (`62 tasks`)
+  - Passed: `npm run build`
+  - Passed: targeted Playwright regression check for product first viewport and typography (`2 passed`)
+  - Passed: `npm run test:site` (`21 passed`)
+  - Passed: `npm run screenshot:site`
+  - Passed: visual inspection of `home-mobile-viewport.png`, `home-desktop-viewport.png`, `prices-mobile.png`, `products-mobile-viewport.png`, `products-mobile.png`, `products-desktop.png`, `services-mobile-viewport.png`, and `services-mobile.png`.
+  - Passed: `npm run qa:site` (rendered audit `1191 checks, 0 skipped`; Playwright `21 passed`; screenshot refresh; npm audit `0 vulnerabilities`)
+  - Passed: `npm audit --audit-level=moderate` (`0 vulnerabilities`)
+  - Passed: `git diff --check` with line-ending warnings only.
+  - Live deploy/external checks are performed after commit and push.
+- Rollback Hint: `v0.2.12 전으로 되돌려줘`
+- Remaining User-only:
+  - Provide real KCG product/store/staff photos if generated placeholders should be replaced before public search launch.
+  - Confirm final product list, real product photos, weights, 공임/margin, and which items show reference price versus inquiry.
+  - Rotate the final production admin password before public search launch.
+  - Approve robots/noindex release and search indexing only when final public launch is ready.
+
 ## v0.2.11 - Admin launch readability and price-time clarity
 
 - Date: `2026-05-06 KST`

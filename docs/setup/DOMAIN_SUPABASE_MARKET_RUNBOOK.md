@@ -89,7 +89,7 @@ Current verification state:
 
 Important deployment note:
 
-DNS connection can make the Vercel production deployment reachable at `kcgold.co.kr`. Before changing Cafe24 DNS, verify which deployment Vercel production currently points to. Run production deploy only when junyoung explicitly approves a stable review refresh or public launch step. Do not release robots/noindex until public launch approval.
+DNS connection can make the Vercel production deployment reachable at `kcgold.co.kr`. Before changing Cafe24 DNS, verify which deployment Vercel production currently points to. Completed, verified KCG site source/UI changes may be deployed to the existing live review domains by default for junyoung's review. Do not change DNS/domain policy or release robots/noindex until explicit public launch approval.
 
 ## Supabase Operating Data Setup
 

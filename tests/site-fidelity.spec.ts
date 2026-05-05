@@ -538,6 +538,8 @@ test("services route preserves high-risk business wording", async ({ page }) => 
   await expect(page.getByText("판매·수급 품목")).toBeVisible();
   await expect(page.getByRole("heading", { name: "고금 매입 절차" })).toBeVisible();
   await expect(page.getByText("고금매입은 시세표의 어느 금액을 보면 되나요?")).toBeVisible();
+  await expect(page.getByText("처음 연락할 때 무엇부터 말하면 되나요?")).toBeVisible();
+  await expect(page.getByText("보증서나 영수증이 없으면 진행이 어렵나요?")).toBeVisible();
   await expect(page.getByText("전화로 금액을 확정받을 수 있나요?")).toBeVisible();
   await expect(page.getByText("자동 참고시세와 회사 게시 시세는 무엇이 다른가요?")).toBeVisible();
   await expect(page.getByRole("link", { name: "상품/매입 보기" })).toBeVisible();
@@ -550,6 +552,9 @@ test("mobile products route exposes a consultation catalog without checkout", as
   await page.goto("/products", { waitUntil: "domcontentloaded" });
 
   await expect(page.getByRole("heading", { name: "상품/매입" })).toBeVisible();
+  await expect(page.getByText("골드바·실버바·순금제품")).toBeVisible();
+  await expect(page.getByText("내가 팔 때 기준과 실물 확인 항목을 먼저 봅니다.")).toBeVisible();
+  await expect(page.getByText("품목 목록, 예상 수량, 희망 일정을 정리합니다.")).toBeVisible();
   await expect(page.getByRole("button", { name: "전체" })).toBeVisible();
   await expect(page.getByRole("button", { name: "골드바" })).toBeVisible();
   await expect(page.getByRole("button", { name: "순금제품" })).toBeVisible();
@@ -571,10 +576,17 @@ test("mobile products route exposes a consultation catalog without checkout", as
     images.map((image) => (image instanceof HTMLImageElement ? image.currentSrc || image.src : "")),
   );
   expect(productImageSources.some((src) => src.includes("kcg-product-minimal-bars-20260506"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-product-gold-silver-catalog-20260503"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-home-product-keyvisual-20260503"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-product-jewelry-buying-20260503"))).toBe(true);
   expect(productImageSources.some((src) => src.includes("kcg-old-gold-process-20260506"))).toBe(true);
   expect(productImageSources.some((src) => src.includes("kcg-product-corporate-consulting-20260506"))).toBe(true);
   expect(productImageSources.some((src) => src.includes("kcg-home-price-desk-20260506"))).toBe(true);
   expect(new Set(productImageSources).size).toBeGreaterThanOrEqual(6);
+  const firstProductImageSources = await page.locator("main article img").evaluateAll((images) =>
+    images.slice(0, 6).map((image) => (image instanceof HTMLImageElement ? image.currentSrc || image.src : "")),
+  );
+  expect(new Set(firstProductImageSources).size).toBeGreaterThanOrEqual(5);
   await expect(page.locator("main")).not.toContainText("방문 상담");
   await expect(page.locator("main")).not.toContainText("관리자에서");
   await expect(page.locator("main")).not.toContainText("등록해 운영");
@@ -821,6 +833,9 @@ test("mobile prices puts consultation actions before the company price columns",
   await expect(page.getByText("신분증, 보증서·영수증, 제품 상태")).toBeVisible();
   await expect(page.getByText("살 때·팔 때 분리", { exact: true })).toBeVisible();
   await expect(page.getByText("현장 확정", { exact: true })).toBeVisible();
+  await expect(page.getByText("무엇을 보유했나요?")).toBeVisible();
+  await expect(page.getByText("얼마나 있나요?")).toBeVisible();
+  await expect(page.getByText("어떻게 오시나요?")).toBeVisible();
   expect(mainText.split("USD/KRW").length - 1).toBeGreaterThanOrEqual(1);
   expect(mainText.split("업데이트").length - 1).toBeLessThanOrEqual(1);
   expect(mainText.split("3.75g 자동 환산").length - 1).toBe(0);

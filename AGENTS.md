@@ -17,7 +17,7 @@
 - Scheduled project-environment automation must not run recurring site verification, review screenshot artifacts as a recurring product review, hunt UI defects, edit `src`/`public`/content, deploy, or change launch/search/secret state unless junyoung explicitly asks for site work in this project room.
 - For KCG code reviews, use `code_review.md` so findings stay focused on price hierarchy, mobile first viewport, consultation conversion, source boundaries, launch gates, and screenshot evidence.
 - Use Korean UI/copy by default. Preserve exact business facts unless the user provides updated source documents.
-- Treat prices, trading language, legal business information, admin authentication, and production deployment as high-risk. Do not invent official prices, business registration numbers, compliance claims, or live trading/payment behavior.
+- Treat prices, trading language, legal business information, admin authentication, search-index release, secrets/env changes, and hard-to-reverse infrastructure changes as high-risk. Do not invent official prices, business registration numbers, compliance claims, or live trading/payment behavior.
 - Keep the company posted price table separate from automatic market-reference data. External APIs must not overwrite company prices.
 - Keep `/` as the single public site entry. Do not restore old option routes such as `/option-1` or `/option-2` unless the user explicitly asks for a new comparison workflow.
 - Keep preview-mode and search-blocking behavior unless the user explicitly approves public launch/search indexing. Vercel SSO Deployment Protection may stay disabled for ordinary browser review, but noindex/robots blocking must remain until public launch approval.
@@ -35,7 +35,7 @@
 - For final launch-candidate confidence, prefer `npm run qa:site`; it includes rendered audit with `0 skipped` route checks and refreshed screenshots.
 - Do not make visual QA code changes just to bypass a Cloud environment restriction. If Google Fonts, Playwright browser downloads, npm audit endpoints, or external fetches are blocked, report the environment/network issue and fix the Cloud setup or run the verification locally instead of removing design assets, fonts, images, or routes.
 - When a user points out a miss, update the smallest relevant executable guardrail first, then fix similar cases. Keep `docs/quality/agent-quality-system.md` aligned with meaningful process changes.
-- If a deployment is needed, prefer a preview deployment first. Use production deployment or alias changes only when the user clearly asks for the live URL to change.
+- Junyoung's 2026-05-06 standing instruction is to deploy completed, verified KCG site changes to the existing live review domains by default so he can review and request rollback. This does not approve robots/noindex release, search indexing, payment/trading behavior, secret/env changes, new DNS/domain policy changes, or hard-to-reverse infrastructure changes.
 
 <!-- BEGIN: FRONTEND_DESIGN_QUALITY_ADDON -->
 

@@ -80,7 +80,7 @@ roles when site work is requested.
 
 ## Do Not Do
 
-- Do not change production deploys, stable aliases, public search indexing, admin secrets, payment/trading/legal behavior, or credential storage without explicit approval.
+- Deploy completed, verified KCG site changes to the existing live review domains by default for junyoung's review. Do not change public search indexing/noindex, admin secrets, payment/trading/legal behavior, credential storage, new DNS/domain policy, or hard-to-reverse infrastructure without explicit approval.
 - Do not copy private company notes, private document photos, customer data, competitor-owned assets/copy/prices, or raw secrets into the repo.
 - Do not treat source audit, route `200`, or full-page screenshots alone as visual completeness.
 - Do not edit generated `.codex/environments/environment.toml` manually.

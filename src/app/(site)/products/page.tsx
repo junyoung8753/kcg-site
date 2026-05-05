@@ -10,6 +10,12 @@ export const metadata: Metadata = {
     "한국센터금거래소의 골드바, 순금 제품, 실버바, 고금·주얼리 매입, B2B 대량 상담 카테고리입니다.",
 };
 
+const decisionPaths = [
+  ["살 때", "골드바·실버바·순금제품", "중량, 수량, 수급 가능 여부를 확인합니다."],
+  ["팔 때", "고금·주얼리 매입", "내가 팔 때 기준과 실물 확인 항목을 먼저 봅니다."],
+  ["대량", "B2B·기업", "품목 목록, 예상 수량, 희망 일정을 정리합니다."],
+] as const;
+
 export default async function ProductsPage() {
   const repository = getRepository();
   const [products, prices] = await Promise.all([
@@ -47,6 +53,17 @@ export default async function ProductsPage() {
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[#687171] sm:kcg-body-copy sm:mt-4">
                 골드바, 실버바, 순금제품, 고금 매입 항목을 바로 볼 수 있습니다.
               </p>
+              <div className="mt-3 grid grid-cols-3 gap-px overflow-hidden border border-[#dfe6e3] bg-[#dfe6e3] sm:mt-5">
+                {decisionPaths.map(([label, title, body]) => (
+                  <div key={label} className="bg-white px-2.5 py-2.5 sm:px-4 sm:py-3">
+                    <p className="kcg-fine-label text-[#9a8a00]">{label}</p>
+                    <p className="mt-1.5 text-[11px] font-bold leading-4 tracking-[-0.02em] text-[#15191b] sm:text-sm sm:leading-5">
+                      {title}
+                    </p>
+                    <p className="mt-1 text-[11px] leading-4 text-[#687171] sm:text-xs sm:leading-5">{body}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

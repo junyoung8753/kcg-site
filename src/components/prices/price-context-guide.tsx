@@ -14,6 +14,12 @@ const priceReadingSteps = [
   ["04", "현장 확정", "실제 금액은 순도, 중량, 부속, 제품 상태 확인 후 안내합니다."],
 ] as const;
 
+const preCallChecks = [
+  ["무엇을 보유했나요?", "순금, 18K, 14K, 백금, 은, 골드바, 실버바, 주얼리처럼 품목을 먼저 구분합니다."],
+  ["얼마나 있나요?", "정확하지 않아도 대략 중량, 수량, 포장 상태를 알려주면 안내가 빨라집니다."],
+  ["어떻게 오시나요?", "방문 가능 시간, 법인·대리·상속 정리 여부는 전화 전에 따로 표시해 둡니다."],
+] as const;
+
 export function PriceContextGuide() {
   return (
     <section className="section-shell py-10 sm:py-12">
@@ -66,6 +72,16 @@ export function PriceContextGuide() {
                 <p className="font-bold tracking-[-0.022em] text-[#15191b]">{item}</p>
                 <p>{priceLine}</p>
                 <p>{prepare}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid gap-px overflow-hidden border border-[#eadfbc] bg-[#eadfbc] md:grid-cols-3">
+            {preCallChecks.map(([title, body]) => (
+              <div key={title} className="bg-[#fffdf4] px-5 py-5">
+                <p className="kcg-fine-label text-[#9a8a00]">전화 전 확인</p>
+                <h3 className="mt-2 text-base font-bold tracking-[-0.02em] text-[#15191b]">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-[#687171]">{body}</p>
               </div>
             ))}
           </div>

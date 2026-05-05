@@ -19,22 +19,22 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## Current Snapshot
 
-- 현재 공식 작업 버전: `v0.2.11`
+- 현재 공식 작업 버전: `v0.2.12`
 - 현재 작업 브랜치: `codex/kcg-launch-readiness-catalog-20260427`
-- 이번 작업 버전: `v0.2.11`
-- 직전 버전: `v0.2.10`
-- 작업 전 HEAD: `6a7d427`
+- 이번 작업 버전: `v0.2.12`
+- 직전 버전: `v0.2.11`
+- 작업 전 HEAD: `6fbfd89`
 - 백업 브랜치: `backup/pre-v0.2.4-operations-product-audit` (`v0.2.4`와 `v0.2.5` 문서 보강 전으로 크게 돌아가는 책갈피)
 
 ## 실제 사이트 반영 여부
 
-- 실제 사이트 화면이 바뀐 것: `/admin/launch` 공개 승인 항목 글씨 가독성, `/admin/announcements` 삭제 버튼 가독성, `/admin/prices` 고시 기준/관리자 저장/예약 실행/다음 계산 가능 시간 라벨, 기준 시각 입력 동작
+- 실제 사이트 화면이 바뀐 것: `/prices` 전화 전 확인 안내, `/products` 살 때/팔 때/대량 선택 기준, `/products` 상품 카드 이미지 다양화, `/services` FAQ
 - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음.
-- 배포된 것: `v0.2.11`은 로컬 검증을 통과했고 커밋·배포 단계로 진행한다. 직전 live는 `v0.2.10` deployment id `dpl_2YX967sa6B8Wx6nXhr1vJy25CFp1`.
+- 배포된 것: `v0.2.12`는 로컬 deep QA를 통과했고, 이어서 커밋·푸시·production deploy와 live external QA까지 진행한다. 직전 live는 `v0.2.11`.
 - 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, Vercel Pro 또는 외부 scheduler 결정은 아직 별도 작업.
 - 내가 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` 검토 화면. 검색 노출은 아직 차단.
 - 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
-- 이번 작업에서 건드린 범위: 관리자 오픈 점검 화면, 관리자 공지 삭제 버튼, 관리자 시세 관리 시간 표기/기준 시각 입력, 관리자 상태 화면 동적 렌더링, 시간 포맷 유틸, QA 테스트/스크린샷 스크립트/상태 문서, `package.json`, `package-lock.json`
+- 이번 작업에서 건드린 범위: 시세표 이용 안내, 상품/매입 첫 화면 선택 기준, 상품 이미지 선택 로직과 mock/seed 이미지 경로, 서비스 FAQ, QA 테스트/감사 가드, 상태 문서, `package.json`, `package-lock.json`
 - 절대 건드리지 않은 범위: 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, Vercel env/secret
 - 배포 기본값: 2026-05-06 KST 기준 junyoung은 KCG 사이트 변경을 완료·검증하면 live 배포까지 진행하라고 지시했다. 단, 검색 노출/noindex 해제, 결제/장바구니/실시간 거래, secret/env 변경, 되돌리기 어려운 인프라 변경은 여전히 별도 승인 대상이다.
 
@@ -54,8 +54,8 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 | 구분 | 이름 | 쉬운 설명 | 내가 봐야 하는 경우 |
 |---|---|---|---|
-| 현재 작업 버전 | `v0.2.11` | 운영 콘솔에서 공개 승인 항목 글씨가 안 보이던 문제, 공지 삭제 버튼 저대비 위험, 시세 기준/저장/자동확인 시간 혼선을 고친 버전 | 이번 변경 확인 |
-| 이전 버전 | `v0.2.10` | 차콜 가격 데스크, 인물 상담, 종로 매장 무드, 고금 매입 절차 이미지와 시세표/방문/매입 안내를 보강하고 production 배포한 버전 | 비교/이전 상태 확인 |
+| 현재 작업 버전 | `v0.2.12` | 공개 런칭 전 고객/직원 관점에서 시세표 읽기, 상품/매입 선택, FAQ, 상품 이미지 반복감을 보강한 버전 | 이번 변경 확인 |
+| 이전 버전 | `v0.2.11` | 운영 콘솔에서 공개 승인 항목 글씨가 안 보이던 문제, 공지 삭제 버튼 저대비 위험, 시세 기준/저장/자동확인 시간 혼선을 고친 버전 | 비교/이전 상태 확인 |
 | 백업 브랜치 | `backup/pre-v0.2.4-operations-product-audit` | `v0.2.4`와 `v0.2.5` 문서 보강 전으로 돌아가는 책갈피 | 크게 되돌릴 때 |
 | 현재 작업 브랜치 | `codex/kcg-launch-readiness-catalog-20260427` | 지금 Codex가 작업 중인 줄기 | 상태 확인 |
 | handoff | `CURRENT_HANDOFF.md` | 다음 작업자에게 넘기는 현재 상태 메모 | 이어서 작업할 때 |
@@ -89,6 +89,7 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## 되돌리기 요청 문장
 
+- "v0.2.12 고객/직원 흐름과 상품 이미지 다양화 수정만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.11 운영 콘솔 시간표기/가독성 수정만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.10 비주얼/인포그래픽 보강만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.9 운영형 QA 보강만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
@@ -117,14 +118,15 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
    - API 로직 변경
    - 관리자 기능 변경
    - 실제 이미지 교체
-   - 배포
-   - 반드시 별도 승인 필요
+   - secret/env 변경
+   - DNS/도메인 정책 변경
+   - 검색 노출/noindex 해제
+   - 배포 자체는 검증된 KCG 사이트 변경이면 기본 진행하되, 위 항목은 반드시 별도 승인 필요
 
 ## 하지 말아야 할 것
 
-- 별도 승인 전 push 하지 않음 = GitHub 원격 저장소에 올리지 않음
-- 별도 승인 전 deploy 하지 않음 = 실제 사이트에 공개 반영하지 않음
-- 별도 승인 전 검색 노출/noindex 해제하지 않음
+- 검증 전 push/deploy 하지 않음 = 테스트·감사·스크린샷 확인 없이 GitHub/실제 사이트에 올리지 않음
+- 검색 노출/noindex 해제하지 않음 = junyoung의 명시 승인 전에는 robots/noindex 차단 유지
 - 결제/장바구니/실시간 거래 추가 없음
 - 경쟁사 이미지/카피/가격/API 데이터 사용 없음
 - API 로직 수정 없음 = 시세나 데이터 가져오는 작동 방식은 바꾸지 않음

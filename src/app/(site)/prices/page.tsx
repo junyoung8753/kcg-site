@@ -15,6 +15,12 @@ export const metadata: Metadata = {
     "한국센터금거래소의 오늘 고시 시세, 실시간 참고 시세, 국내 환산 참고 시세, 시장 뉴스를 확인합니다.",
 };
 
+const priceUseCards = [
+  ["회사 고시 시세", "KCG 기준", "살 때·팔 때 기준과 고시 시각이 우선입니다."],
+  ["자동 참고 시세", "보조 데이터", "국제 현재가와 환산값은 시장 흐름 확인용입니다."],
+  ["현장 확인", "최종 안내", "중량·수량·실물 상태에 따라 실제 금액이 달라질 수 있습니다."],
+] as const;
+
 export default async function PricesPage() {
   const repository = getRepository();
   const [prices, history, marketData] = await Promise.all([
@@ -44,14 +50,11 @@ export default async function PricesPage() {
           <div>
             <p className="kcg-eyebrow text-[#9a8a00]">시세 이용 기준</p>
             <div className="mt-4 grid gap-px overflow-hidden border border-[#dfe6e4] bg-[#dfe6e4] md:grid-cols-3">
-              {[
-                ["회사 고시 시세", "살 때·팔 때 기준과 고시 시각"],
-                ["국제 현재가", "시장 흐름 확인용 보조 데이터"],
-                ["품목 확인", "중량·수량·실물 상태에 따라 최종 확정"],
-              ].map(([label, title, body]) => (
+              {priceUseCards.map(([label, title, body]) => (
                 <div key={label} className="bg-white px-5 py-4">
                   <p className="kcg-fine-label text-[#9a8a00]">{label}</p>
-                  <p className="mt-2 text-sm font-bold leading-6 tracking-[-0.022em] text-[#15191b]">{title || body}</p>
+                  <p className="mt-2 text-sm font-bold leading-6 tracking-[-0.022em] text-[#15191b]">{title}</p>
+                  <p className="mt-1 text-xs leading-5 text-[#687171]">{body}</p>
                 </div>
               ))}
             </div>
