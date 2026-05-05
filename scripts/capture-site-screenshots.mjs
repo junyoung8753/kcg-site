@@ -18,7 +18,9 @@ const adminScreenshotFiles = [
   "admin-home-desktop.png",
   "admin-launch-mobile.png",
   "admin-launch-desktop.png",
+  "admin-prices-manual-desktop.png",
   "admin-prices-auto-desktop.png",
+  "admin-prices-auto-mobile.png",
   "admin-products-desktop.png",
 ];
 const adminPassword =
@@ -212,6 +214,30 @@ async function captureAdminPricesAuto(page, viewport, filename) {
   await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: true });
 }
 
+async function captureAdminPricesManual(page, viewport, filename) {
+  await page.setViewportSize(viewport);
+  await page.goto(new URL("/admin/prices", baseURL).href, { waitUntil: "domcontentloaded" });
+
+  if (page.url().includes("/admin/login")) {
+    await page.getByLabel("관리자 비밀번호").fill(adminPassword);
+    await page.getByRole("button", { name: "관리자 페이지로 이동" }).click();
+    await page.waitForURL(/\/admin\/prices/);
+    await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => {});
+  }
+
+  const toggle = page.getByTestId("admin-price-mode-toggle");
+  if ((await toggle.getAttribute("aria-pressed")) === "true") {
+    await toggle.click();
+    await page.waitForFunction(() => {
+      return document
+        .querySelector('[data-testid="admin-price-mode-toggle"]')
+        ?.getAttribute("aria-pressed") === "false";
+    });
+  }
+  await page.getByTestId("admin-price-editor").waitFor({ state: "visible", timeout: 5_000 });
+  await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: true });
+}
+
 async function captureAdminRoute(page, route, viewport, filename, expectedText) {
   await page.setViewportSize(viewport);
   await page.goto(new URL(route, baseURL).href, { waitUntil: "domcontentloaded" });
@@ -303,7 +329,9 @@ try {
     await captureAdminLaunch(page, { width: 390, height: 1800 }, "admin-launch-mobile.png");
     await captureAdminLaunch(page, { width: 1440, height: 1600 }, "admin-launch-desktop.png");
     if (!externalBaseURL) {
+      await captureAdminPricesManual(page, { width: 1440, height: 1800 }, "admin-prices-manual-desktop.png");
       await captureAdminPricesAuto(page, { width: 1440, height: 1800 }, "admin-prices-auto-desktop.png");
+      await captureAdminPricesAuto(page, { width: 390, height: 1800 }, "admin-prices-auto-mobile.png");
       await captureAdminRoute(
         page,
         "/admin/products",

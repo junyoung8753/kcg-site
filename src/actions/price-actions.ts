@@ -184,18 +184,43 @@ function revalidatePriceSurfaces() {
   revalidatePath("/admin/prices");
 }
 
+function mapAutoRefreshStatus(status: string) {
+  switch (status) {
+    case "applied":
+      return "auto-applied";
+    case "schema-not-ready":
+      return "auto-schema";
+    case "auto-fill-disabled":
+      return "auto-disabled";
+    case "outside-business-hours":
+      return "auto-outside-hours";
+    case "not-due":
+      return "auto-not-due";
+    case "small-change":
+      return "auto-small-change";
+    case "needs-review":
+      return "auto-needs-review";
+    case "data-not-safe":
+      return "auto-data-not-safe";
+    default:
+      return "auto-held";
+  }
+}
+
 export async function updatePriceAutoSettingsAction(formData: FormData) {
   if (!isSupabaseConfigured()) {
     redirect("/admin/prices?status=demo");
   }
 
+  const isEnabled = toBoolean(formData.get("autoEnabled"));
+  const mode = ensurePriceAutoMode(formData.get("autoMode"));
   const repository = getRepository();
   const result = await repository.updatePriceAutoSettings({
-    isEnabled: toBoolean(formData.get("autoEnabled")),
+    isEnabled,
     source: ensurePriceAutoSource(formData.get("autoSource")),
     intervalHours: ensureIntervalHours(formData.get("intervalHours")),
     checkIntervalMinutes: ensureCheckIntervalMinutes(formData.get("checkIntervalMinutes")),
-    mode: ensurePriceAutoMode(formData.get("autoMode")),
+    mode,
     roundingUnit: ensureNumber(formData.get("roundingUnit"), 100),
     goldSellPremiumRate: ensureRateFromPercentOrDecimal(
       formData.get("goldSellPremiumRatePct"),
@@ -240,7 +265,12 @@ export async function updatePriceAutoSettingsAction(formData: FormData) {
   });
 
   revalidatePriceSurfaces();
-  redirect(`/admin/prices?status=${result.success ? "auto-settings-saved" : "auto-schema"}`);
+  const status = result.success
+    ? isEnabled && mode === "auto_publish"
+      ? "auto-on-saved"
+      : "auto-off-saved"
+    : "auto-schema";
+  redirect(`/admin/prices?status=${status}`);
 }
 
 export async function generatePriceAutoSuggestionAction() {
@@ -255,14 +285,7 @@ export async function generatePriceAutoSuggestionAction() {
     revalidatePriceSurfaces();
 
     const search = new URLSearchParams({
-      status:
-        result.status === "applied"
-          ? "auto-applied"
-          : result.status === "schema-not-ready"
-            ? "auto-schema"
-            : result.status === "auto-fill-disabled"
-              ? "auto-disabled"
-              : "auto-held",
+      status: mapAutoRefreshStatus(result.status),
     });
     result.warnings.forEach((warning) => search.append("warning", warning));
     redirectPath = `/admin/prices?${search.toString()}`;

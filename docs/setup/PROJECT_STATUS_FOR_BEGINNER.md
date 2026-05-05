@@ -19,22 +19,22 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## Current Snapshot
 
-- 현재 공식 작업 버전: `v0.2.6`
+- 현재 공식 작업 버전: `v0.2.7`
 - 현재 작업 브랜치: `codex/kcg-launch-readiness-catalog-20260427`
-- 이번 작업 버전: `v0.2.6`
-- 직전 버전: `v0.2.5`
-- 작업 전 HEAD: `c161f74`
+- 이번 작업 버전: `v0.2.7`
+- 직전 버전: `v0.2.6`
+- 작업 전 HEAD: `da33d82`
 - 백업 브랜치: `backup/pre-v0.2.4-operations-product-audit` (`v0.2.4`와 `v0.2.5` 문서 보강 전으로 크게 돌아가는 책갈피)
 
 ## 실제 사이트 반영 여부
 
-- 실제 사이트 화면이 바뀐 것: 홈 시세표 크기/간격, 국제 현재가 표 글자 가독성, 모바일 상품/서비스 첫 화면, 관리자 가격/대시보드 라벨
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.6 QA 점수표와 handoff/status trace
+- 실제 사이트 화면이 바뀐 것: 관리자 로그인/대시보드/시세 관리 라이트 테마, 자동시세 ON/OFF와 계산 실행 UX, 관리자 form pending feedback
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.7 changelog/handoff/status trace
 - 배포된 것: 이 문서 기준으로는 아직 최종 확인 필요. 실제 배포 여부는 Codex 최종 보고와 `npx vercel inspect https://kcgold.co.kr/`로 확인한다.
-- 아직 배포 안 된 것: 커밋/배포 전 working tree에 남아 있는 `v0.2.6` 변경
-- 내가 고객에게 보여줘도 되는 것: 배포 후 `kcgold.co.kr` 사이트. 검색 노출은 계속 차단.
+- 아직 배포 안 된 것: 커밋/배포 전 working tree에 남아 있는 `v0.2.7` 변경
+- 내가 고객에게 보여줘도 되는 것: 공개 고객 화면은 기존 방향 유지. 관리자 라이트 UX는 로그인 사용자만 확인.
 - 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
-- 이번 작업에서 건드린 범위: 공개 UI 일부, 관리자 UI 일부, QA/상태 문서, `package.json`, `package-lock.json`
+- 이번 작업에서 건드린 범위: 관리자 UI 일부, 자동시세 관리자 UX, QA/상태 문서, `package.json`, `package-lock.json`
 - 절대 건드리지 않은 범위: 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, Supabase schema, Vercel env/secret
 
 ## Easy Words
@@ -53,8 +53,8 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 | 구분 | 이름 | 쉬운 설명 | 내가 봐야 하는 경우 |
 |---|---|---|---|
-| 현재 작업 버전 | `v0.2.6` | 전문가 패널 QA로 실제 공개/관리자 화면의 확실한 문제를 다듬는 버전 | 이번 변경 확인 |
-| 이전 버전 | `v0.2.5` | 기존 API 연동 감사 문서를 추가하고 이미 연동된 API를 현재 사이트 QA 범위로 정리한 기준 보강 | 비교/이전 상태 확인 |
+| 현재 작업 버전 | `v0.2.7` | 관리자 콘솔 라이트 테마와 자동시세 UX를 운영자 관점으로 정리하는 버전 | 이번 변경 확인 |
+| 이전 버전 | `v0.2.6` | 전문가 패널 QA로 실제 공개/관리자 화면의 확실한 문제를 다듬은 버전 | 비교/이전 상태 확인 |
 | 백업 브랜치 | `backup/pre-v0.2.4-operations-product-audit` | `v0.2.4`와 `v0.2.5` 문서 보강 전으로 돌아가는 책갈피 | 크게 되돌릴 때 |
 | 현재 작업 브랜치 | `codex/kcg-launch-readiness-catalog-20260427` | 지금 Codex가 작업 중인 줄기 | 상태 확인 |
 | handoff | `CURRENT_HANDOFF.md` | 다음 작업자에게 넘기는 현재 상태 메모 | 이어서 작업할 때 |
@@ -88,6 +88,7 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## 되돌리기 요청 문장
 
+- "v0.2.7 관리자 라이트 테마와 자동시세 UX 개선만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.6 전문가 패널 QA 화면 개선만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.5 기존 API 감사 문서 보강만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.4 제품/업무 감리 문서 보강만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."

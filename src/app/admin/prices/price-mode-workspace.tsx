@@ -8,6 +8,7 @@ import {
   updatePriceAutoSettingsAction,
   updatePricesAction,
 } from "@/actions/price-actions";
+import { AdminSubmitButton } from "@/components/admin/admin-submit-button";
 import { formatDateTimeKorean } from "@/lib/format";
 import type { PriceAutoSettings, PriceAutoSuggestion, PriceRecord } from "@/types/price";
 
@@ -16,6 +17,9 @@ interface AdminPricesWorkspaceProps {
   settings: PriceAutoSettings;
   suggestion: PriceAutoSuggestion | null;
   hasMetalsKey: boolean;
+  statusCode?: string;
+  statusMessage?: string | null;
+  warnings?: string[];
 }
 
 function formatWon(value: number) {
@@ -64,6 +68,68 @@ function getLatestUpdate(prices: PriceRecord[]) {
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
   );
   return sorted[0]?.updatedAt ?? prices[0]?.announcedAt ?? new Date().toISOString();
+}
+
+function getFeedbackTone(statusCode?: string) {
+  if (!statusCode) return "neutral";
+  if (statusCode.includes("error") || statusCode.includes("schema") || statusCode.includes("data-not-safe")) {
+    return "danger";
+  }
+  if (
+    statusCode.includes("held") ||
+    statusCode.includes("disabled") ||
+    statusCode.includes("outside") ||
+    statusCode.includes("not-due") ||
+    statusCode.includes("small-change") ||
+    statusCode.includes("needs-review")
+  ) {
+    return "warning";
+  }
+  return "success";
+}
+
+function AdminActionFeedback({
+  statusCode,
+  message,
+  warnings = [],
+  scope,
+}: {
+  statusCode?: string;
+  message?: string | null;
+  warnings?: string[];
+  scope?: "mode" | "auto" | "manual";
+}) {
+  if (!message) return null;
+  if (scope === "mode" && !["auto-on-saved", "auto-off-saved", "auto-settings-saved", "demo", "auto-schema"].includes(statusCode ?? "")) {
+    return null;
+  }
+  if (scope === "auto" && !String(statusCode ?? "").startsWith("auto-")) {
+    return null;
+  }
+  if (scope === "manual" && !["saved", "demo", "error"].includes(statusCode ?? "")) {
+    return null;
+  }
+
+  const tone = getFeedbackTone(statusCode);
+  const toneClass =
+    tone === "danger"
+      ? "admin-status-danger"
+      : tone === "warning"
+        ? "admin-status-warning"
+        : "admin-status-success";
+
+  return (
+    <div className={`rounded-2xl border px-4 py-3 text-sm leading-6 ${toneClass}`} data-testid={`admin-feedback-${scope ?? "general"}`}>
+      <p className="font-semibold">{message}</p>
+      {warnings.length ? (
+        <div className="mt-2 space-y-1">
+          {warnings.map((warning) => (
+            <p key={warning}>· {warning}</p>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 function addMinutes(date: Date, minutes: number) {
@@ -178,13 +244,31 @@ function ModeSwitch({
   isAutoOn,
   savedIsAutoOn,
   onModeChange,
+  statusCode,
+  statusMessage,
+  warnings,
 }: {
   settings: PriceAutoSettings;
   isAutoOn: boolean;
   savedIsAutoOn: boolean;
   onModeChange: (nextMode: boolean) => void;
+  statusCode?: string;
+  statusMessage?: string | null;
+  warnings?: string[];
 }) {
   const canPersist = settings.schemaReady;
+  const statusMatchesCurrentMode =
+    statusCode === "auto-settings-saved" ||
+    statusCode === "demo" ||
+    statusCode === "auto-schema" ||
+    (isAutoOn && statusCode === "auto-on-saved") ||
+    (!isAutoOn && statusCode === "auto-off-saved");
+  const modeStatusLabel = canPersist
+    ? `저장 상태: ${savedIsAutoOn ? "자동시세 ON" : "자동시세 OFF"}`
+    : `미리보기 상태: ${isAutoOn ? "자동시세 ON" : "자동시세 OFF"}`;
+  const modeStatusHelp = canPersist
+    ? "클릭하면 운영 모드가 저장됩니다."
+    : "저장소 미연결: 화면에서만 전환됩니다.";
 
   return (
     <section
@@ -211,8 +295,9 @@ function ModeSwitch({
               enabled={!isAutoOn}
               mode={isAutoOn ? "manual_review" : "auto_publish"}
             />
-            <button
+            <AdminSubmitButton
               type={canPersist ? "submit" : "button"}
+              pendingLabel={isAutoOn ? "자동시세 OFF 저장 중..." : "자동시세 ON 저장 중..."}
               data-testid="admin-price-mode-toggle"
               onClick={(event) => {
                 onModeChange(!isAutoOn);
@@ -254,13 +339,14 @@ function ModeSwitch({
                   ].join(" ")}
                 />
               </span>
-            </button>
+            </AdminSubmitButton>
           </form>
           <p className="text-xs leading-5 text-white/45">
-            저장된 운영 상태: {savedIsAutoOn ? "자동시세 ON" : "자동시세 OFF"} · 화면 상태:{" "}
-            {isAutoOn ? "자동시세 ON" : "직접 입력"} ·{" "}
-            {canPersist ? "버튼을 누르면 바로 저장됩니다." : "저장소 미연결: 화면 전환만 미리 봅니다."}
+            {modeStatusLabel} · {modeStatusHelp}
           </p>
+          {statusMatchesCurrentMode ? (
+            <AdminActionFeedback statusCode={statusCode} message={statusMessage} warnings={warnings} scope="mode" />
+          ) : null}
         </div>
       </div>
     </section>
@@ -350,7 +436,7 @@ function AutoSettingsForm({
   return (
     <details className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
       <summary className="cursor-pointer text-sm font-semibold text-white">
-        계산 기준 세부 설정
+        자동 계산 기준 자세히 보기
       </summary>
       <form action={updatePriceAutoSettingsAction} className="mt-4 grid gap-4">
         <input type="hidden" name="autoEnabled" value="on" />
@@ -437,9 +523,12 @@ function AutoSettingsForm({
         <input type="hidden" name="silverSellPremiumRate" value={settings.silverSellPremiumRate} />
         <input type="hidden" name="silverBuyDiscountRate" value={settings.silverBuyDiscountRate} />
         <input type="hidden" name="updatedBy" value="관리자" />
-        <button className="rounded-full border border-white/14 px-5 py-3 text-sm font-semibold text-white transition hover:border-[var(--color-gold-soft)] hover:bg-white/6">
-          세부 설정 저장
-        </button>
+        <AdminSubmitButton
+          pendingLabel="설정 저장 중..."
+          className="rounded-full border border-white/14 px-5 py-3 text-sm font-semibold text-white transition hover:border-[var(--color-gold-soft)] hover:bg-white/6"
+        >
+          설정 저장
+        </AdminSubmitButton>
       </form>
     </details>
   );
@@ -448,6 +537,7 @@ function AutoSettingsForm({
 function AutoSuggestionPanel({ suggestion }: { suggestion: PriceAutoSuggestion }) {
   const needsReview =
     suggestion.warnings.length > 0 || suggestion.items.some((item) => item.needsReview);
+  const showReviewActions = needsReview;
 
   return (
     <div className="mt-5 rounded-[1.6rem] border border-[var(--color-gold)]/25 bg-[#241f12] p-4">
@@ -462,22 +552,26 @@ function AutoSuggestionPanel({ suggestion }: { suggestion: PriceAutoSuggestion }
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <form action={applyPriceAutoSuggestionAction}>
-            <input type="hidden" name="suggestionId" value={suggestion.id} />
-            <input
-              type="hidden"
-              name="changedBy"
-              value={needsReview ? "자동시세 검토 후 반영" : "자동시세 계산값 반영"}
-            />
-            <button className="rounded-full bg-[var(--color-gold)] px-4 py-2 text-sm font-semibold text-[#171717]">
-              {needsReview ? "검토 후 반영" : "계산값 반영"}
-            </button>
-          </form>
+          {showReviewActions ? (
+            <form action={applyPriceAutoSuggestionAction}>
+              <input type="hidden" name="suggestionId" value={suggestion.id} />
+              <input type="hidden" name="changedBy" value="자동시세 검토 후 반영" />
+              <AdminSubmitButton
+                pendingLabel="반영 중..."
+                className="rounded-full bg-[var(--color-gold)] px-4 py-2 text-sm font-semibold text-[#171717]"
+              >
+                검토 후 반영
+              </AdminSubmitButton>
+            </form>
+          ) : null}
           <form action={rejectPriceAutoSuggestionAction}>
             <input type="hidden" name="suggestionId" value={suggestion.id} />
-            <button className="rounded-full border border-white/14 px-4 py-2 text-sm font-semibold text-white/72">
-              {needsReview ? "검토 항목 폐기" : "드래프트 폐기"}
-            </button>
+            <AdminSubmitButton
+              pendingLabel="폐기 중..."
+              className="rounded-full border border-white/14 px-4 py-2 text-sm font-semibold text-white/72"
+            >
+              {needsReview ? "검토 항목 폐기" : "계산 기록 폐기"}
+            </AdminSubmitButton>
           </form>
         </div>
       </div>
@@ -526,10 +620,16 @@ function AutoModePanel({
   settings,
   suggestion,
   hasMetalsKey,
+  statusCode,
+  statusMessage,
+  warnings,
 }: {
   settings: PriceAutoSettings;
   suggestion: PriceAutoSuggestion | null;
   hasMetalsKey: boolean;
+  statusCode?: string;
+  statusMessage?: string | null;
+  warnings?: string[];
 }) {
   const draft = suggestion?.status === "draft" ? suggestion : null;
 
@@ -550,10 +650,16 @@ function AutoModePanel({
                 <h3 className="mt-2 text-lg font-semibold text-white">현재 자동 운영 중</h3>
               </div>
               <form action={generatePriceAutoSuggestionAction}>
-                <button className="rounded-full bg-[var(--color-gold)] px-4 py-2.5 text-sm font-semibold text-[#171717] transition hover:bg-[var(--color-gold-soft)]">
-                  지금 자동 확인
-                </button>
+                <AdminSubmitButton
+                  pendingLabel="계산 중..."
+                  className="rounded-full bg-[var(--color-gold)] px-4 py-2.5 text-sm font-semibold text-[#171717] transition hover:bg-[var(--color-gold-soft)]"
+                >
+                  지금 계산 실행
+                </AdminSubmitButton>
               </form>
+            </div>
+            <div className="mt-4">
+              <AdminActionFeedback statusCode={statusCode} message={statusMessage} warnings={warnings} scope="auto" />
             </div>
             <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
               <div className="rounded-2xl bg-white/[0.035] px-4 py-3">
@@ -576,6 +682,7 @@ function AutoModePanel({
             <p className="mt-3 text-xs leading-5 text-white/42">
               현재 Vercel 무료 플랜에서는 자동 호출이 하루 1회로 배포됩니다. 30분/1시간 주기는 Pro 또는 외부
               스케줄러를 연결하면 그대로 적용됩니다.
+              수동으로 누르는 지금 계산 실행도 안전 기준을 통과해야 공개 시세를 바꿉니다.
             </p>
           </div>
 
@@ -618,7 +725,17 @@ function AutoModePanel({
   );
 }
 
-function PriceEditor({ prices }: { prices: PriceRecord[] }) {
+function PriceEditor({
+  prices,
+  statusCode,
+  statusMessage,
+  warnings,
+}: {
+  prices: PriceRecord[];
+  statusCode?: string;
+  statusMessage?: string | null;
+  warnings?: string[];
+}) {
   const announcedAt = prices[0]?.announcedAt ?? new Date().toISOString();
 
   return (
@@ -653,6 +770,10 @@ function PriceEditor({ prices }: { prices: PriceRecord[] }) {
             />
           </label>
         </div>
+      </div>
+
+      <div className="mt-4">
+        <AdminActionFeedback statusCode={statusCode} message={statusMessage} warnings={warnings} scope="manual" />
       </div>
 
       <div className="mt-5 overflow-x-auto">
@@ -705,9 +826,12 @@ function PriceEditor({ prices }: { prices: PriceRecord[] }) {
         </table>
       </div>
 
-      <button className="mt-6 rounded-full bg-[var(--color-gold)] px-6 py-3 text-sm font-semibold text-[#171717] transition hover:bg-[var(--color-gold-soft)]">
-        저장
-      </button>
+      <AdminSubmitButton
+        pendingLabel="저장 중..."
+        className="mt-6 rounded-full bg-[var(--color-gold)] px-6 py-3 text-sm font-semibold text-[#171717] transition hover:bg-[var(--color-gold-soft)]"
+      >
+        시세 저장
+      </AdminSubmitButton>
     </form>
   );
 }
@@ -717,6 +841,9 @@ export function AdminPricesWorkspace({
   settings,
   suggestion,
   hasMetalsKey,
+  statusCode,
+  statusMessage,
+  warnings = [],
 }: AdminPricesWorkspaceProps) {
   const savedIsAutoOn = settings.isEnabled && settings.mode === "auto_publish";
   const [isAutoOn, setIsAutoOn] = useState(savedIsAutoOn);
@@ -729,12 +856,22 @@ export function AdminPricesWorkspace({
         isAutoOn={isAutoOn}
         savedIsAutoOn={savedIsAutoOn}
         onModeChange={setIsAutoOn}
+        statusCode={statusCode}
+        statusMessage={statusMessage}
+        warnings={warnings}
       />
       <OperationSummary prices={prices} settings={settings} suggestion={suggestion} isAutoOn={isAutoOn} />
       {isAutoOn ? (
-        <AutoModePanel settings={settings} suggestion={suggestion} hasMetalsKey={hasMetalsKey} />
+        <AutoModePanel
+          settings={settings}
+          suggestion={suggestion}
+          hasMetalsKey={hasMetalsKey}
+          statusCode={statusCode}
+          statusMessage={statusMessage}
+          warnings={warnings}
+        />
       ) : (
-        <PriceEditor prices={prices} />
+        <PriceEditor prices={prices} statusCode={statusCode} statusMessage={statusMessage} warnings={warnings} />
       )}
     </>
   );

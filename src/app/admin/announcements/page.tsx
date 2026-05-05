@@ -2,6 +2,7 @@ import {
   deleteAnnouncementAction,
   upsertAnnouncementAction,
 } from "@/actions/announcement-actions";
+import { AdminSubmitButton } from "@/components/admin/admin-submit-button";
 import { getRepository } from "@/lib/data";
 import { formatDateTimeKorean } from "@/lib/format";
 
@@ -126,9 +127,12 @@ export default async function AdminAnnouncementsPage({
           </label>
         </div>
 
-        <button className="mt-8 rounded-full bg-[var(--color-gold)] px-6 py-3 text-sm font-semibold text-[#171717] transition hover:bg-[var(--color-gold-soft)]">
+        <AdminSubmitButton
+          pendingLabel="공지 저장 중..."
+          className="mt-8 rounded-full bg-[var(--color-gold)] px-6 py-3 text-sm font-semibold text-[#171717] transition hover:bg-[var(--color-gold-soft)]"
+        >
           공지 저장
-        </button>
+        </AdminSubmitButton>
       </form>
 
       <section className="space-y-4">
@@ -218,17 +222,23 @@ export default async function AdminAnnouncementsPage({
                     <option value="draft">초안</option>
                   </select>
                 </label>
-                <button className="rounded-full bg-[var(--color-gold)] px-5 py-3 text-sm font-semibold text-[#171717] transition hover:bg-[var(--color-gold-soft)]">
+                <AdminSubmitButton
+                  pendingLabel="수정 저장 중..."
+                  className="rounded-full bg-[var(--color-gold)] px-5 py-3 text-sm font-semibold text-[#171717] transition hover:bg-[var(--color-gold-soft)]"
+                >
                   수정 저장
-                </button>
+                </AdminSubmitButton>
               </div>
             </form>
 
             <form action={deleteAnnouncementAction} className="mt-4">
               <input type="hidden" name="id" value={item.id} />
-              <button className="rounded-full border border-red-300/20 px-4 py-2 text-sm font-medium text-red-100 transition hover:bg-red-500/10">
+              <AdminSubmitButton
+                pendingLabel="삭제 중..."
+                className="rounded-full border border-red-300/20 px-4 py-2 text-sm font-medium text-red-100 transition hover:bg-red-500/10"
+              >
                 삭제
-              </button>
+              </AdminSubmitButton>
             </form>
           </details>
         ))}

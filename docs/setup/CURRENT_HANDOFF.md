@@ -8,8 +8,8 @@ This file is the short, durable context for a new Codex chat, another PC, or a f
 
 - 초보자는 먼저 `docs/setup/PROJECT_STATUS_FOR_BEGINNER.md`를 보면 된다. 이 문서는 현재 버전, 작업 브랜치, 백업 기준, 실제 사이트 반영 여부, 쉬운 Codex 요청 문장을 1-2분 안에 읽을 수 있게 정리한다.
 - `branch` = 작업 줄기, `HEAD` = 현재 코드 기준점, `rollback` = 이전 상태로 되돌리기, `backup branch` = 되돌리기용 책갈피, `dirty state` = 아직 정리되지 않은 변경사항.
-- 이번 `v0.2.6`은 실제 고객 화면과 관리자 콘솔을 함께 다듬은 전문가 패널 딥 QA 반영 작업이다. 홈 시세표, 국제 현재가 표, 모바일 상품/서비스 첫 화면, 관리자 가격 라벨을 수정한다.
-- 되돌릴 때는 "v0.2.6 전문가 패널 QA 화면 개선만 되돌리는 계획을 먼저 보여줘" 또는 "v0.2.5 기존 API 감사 기준까지만 되돌리는 계획을 보여줘"라고 말하면 된다.
+- 이번 `v0.2.7`은 관리자 콘솔을 라이트 테마의 운영 화면으로 바꾸고, 자동시세 ON/OFF·지금 계산 실행·저장/실패 피드백을 운영자가 헷갈리지 않게 정리하는 작업이다.
+- 되돌릴 때는 "v0.2.7 관리자 라이트 테마와 자동시세 UX 개선만 되돌리는 계획을 먼저 보여줘" 또는 "v0.2.6 전문가 패널 QA 화면 개선까지만 되돌리는 계획을 보여줘"라고 말하면 된다.
 
 Junyoung's current preferred workflow is local-first. Codex Cloud is not the default right now because it has been inconvenient and unreliable for current KCG work. Keep Cloud docs as a future option and use `docs/setup/CLOUD_ONLY_WORKFLOW.md` only when junyoung explicitly asks for Codex Cloud or wants to avoid computer-specific setup.
 
@@ -17,20 +17,20 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 
 ## Current Version Snapshot
 
-- Current KCG site version: `v0.2.6`
-- Latest change: `Expert panel deep QA public and admin polish`
+- Current KCG site version: `v0.2.7`
+- Latest change: `Light admin console and automatic price UX`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: `v0.2.6` includes real UI/admin source changes and is intended for production refresh after verification. Confirm current commit/push/deploy state with `git status --short --branch`, `npm run release:trace`, and `npx vercel inspect https://kcgold.co.kr/` before editing.
-- 실제 사이트 화면이 바뀐 것: 홈 시세표 크기/간격, 국제 현재가 표 가독성, 모바일 상품/서비스 첫 화면, 관리자 가격/대시보드 라벨
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.6 QA 점수표와 handoff/status trace
+- Reflection status: `v0.2.7` includes real admin source changes and is intended for production refresh after verification. Confirm current commit/push/deploy state with `git status --short --branch`, `npm run release:trace`, and `npx vercel inspect https://kcgold.co.kr/` before editing.
+- 실제 사이트 화면이 바뀐 것: 관리자 로그인/대시보드/시세 관리 라이트 테마, 자동시세 ON/OFF와 계산 실행 UX, 관리자 form pending feedback
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.7 changelog/handoff/status trace
 - 배포된 것: 이 문서가 커밋되기 전에는 없음. 커밋/배포 후 최종 보고와 `vercel inspect` 결과를 기준으로 확인한다.
-- 아직 배포 안 된 것: 현재 working tree에 남아 있는 `v0.2.6` 변경
+- 아직 배포 안 된 것: 현재 working tree에 남아 있는 `v0.2.7` 변경
 - 고객에게 보여줘도 되는 것: 배포 후 `kcgold.co.kr` 사이트. 검색 노출은 여전히 차단.
 - 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
-- Latest local QA: `v0.2.6` partial verification passed on 2026-05-05 KST with `npm run lint`, `npm run typecheck`, `npm run build`, `npm run screenshot:site`, and `npm run screenshot:admin`; full `qa:site` and external production checks must pass before final completion.
+- Latest local QA: `v0.2.7` verification must pass with `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:admin`, `npm run screenshot:site`, `npm run qa:site`, `npm audit --audit-level=moderate`, and `git diff --check` before final completion.
 - Change ledger: `docs/setup/CHANGELOG.md`
 - Broader rollback bookmark: `backup/pre-v0.2.4-operations-product-audit`
-- Rollback phrase: `v0.2.6 전으로 되돌려줘`
+- Rollback phrase: `v0.2.7 전으로 되돌려줘`
 
 ## Current Source Of Truth
 

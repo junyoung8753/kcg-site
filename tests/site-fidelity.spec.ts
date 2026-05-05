@@ -706,6 +706,7 @@ test("admin prices exposes automatic price operation and compact manual editor",
   await expect(modeToggle).toBeVisible();
   await expect(modeToggle).toContainText("자동시세 OFF");
   await expect(page.getByText("대표가 직접 넣는")).toHaveCount(0);
+  await expect(page.locator(".admin-light")).toBeVisible();
   await expect(page.getByText("현재 공개 시세")).toBeVisible();
   await expect(page.getByText("다음 확인 예정")).toBeVisible();
 
@@ -717,12 +718,13 @@ test("admin prices exposes automatic price operation and compact manual editor",
   await expect(page.getByRole("heading", { name: "현재 자동 운영 중" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "자동 계산 공식" })).toBeVisible();
   await expect(page.getByText("국제 금 3.75g 환산가").first()).toBeVisible();
-  await expect(page.getByRole("button", { name: "지금 자동 확인" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "지금 계산 실행" })).toBeVisible();
   await expect(autoPanel.getByText("자동 게시 허용 변동폭").first()).toBeVisible();
   await expect(autoPanel.getByText("최소 반영 금액").first()).toBeVisible();
   await expect(autoPanel.getByText("영업시간만 반영").first()).toBeVisible();
-  await expect(autoPanel.getByText("계산 기준 세부 설정")).toBeVisible();
+  await expect(autoPanel.getByText("자동 계산 기준 자세히 보기")).toBeVisible();
   await expect(page.getByText("선택한 모드 저장")).toHaveCount(0);
+  await expect(page.getByText(/저장 상태:|미리보기 상태:/)).toBeVisible();
   await expect(page.getByRole("link", { name: "한국금거래소 참고 보기" })).toBeVisible();
   await expect(page.getByRole("link", { name: "삼성금거래소 참고 보기" })).toBeVisible();
   await expect(page.getByRole("link", { name: "GBK 참고 보기" })).toBeVisible();

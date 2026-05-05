@@ -1,4 +1,5 @@
 import { upsertProductAction } from "@/actions/product-actions";
+import { AdminSubmitButton } from "@/components/admin/admin-submit-button";
 import { getRepository } from "@/lib/data";
 import {
   getProductCategoryLabel,
@@ -238,9 +239,12 @@ function productForm(product: Product) {
             <input name="priceVisible" type="checkbox" defaultChecked={product.priceVisible} />
             확정 가격처럼 노출
           </label>
-          <button className="w-full rounded-full bg-[var(--color-gold)] px-6 py-3 text-sm font-semibold text-[#171717] transition hover:bg-[var(--color-gold-soft)]">
+          <AdminSubmitButton
+            pendingLabel="상품 저장 중..."
+            className="w-full rounded-full bg-[var(--color-gold)] px-6 py-3 text-sm font-semibold text-[#171717] transition hover:bg-[var(--color-gold-soft)]"
+          >
             상품 저장
-          </button>
+          </AdminSubmitButton>
         </div>
         </div>
       </form>

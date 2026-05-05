@@ -17,17 +17,17 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const configured = isSupabaseConfigured();
 
   return (
-    <div className="min-h-screen bg-[#141518] text-white">
-      <header className="border-b border-white/10">
+    <div className="admin-light min-h-screen">
+      <header className="border-b border-[var(--admin-line)] bg-white/88 shadow-sm shadow-black/[0.03] backdrop-blur">
         <div className="section-shell flex flex-wrap items-center justify-between gap-4 py-5">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-gold-soft)]">
-              Admin Console
+              Operations Console
             </p>
-            <h1 className="font-display text-2xl">한국센터금거래소 관리자</h1>
+            <h1 className="font-display text-2xl">한국센터금거래소 운영 콘솔</h1>
           </div>
           <form action={logoutAction}>
-            <button className="rounded-full border border-white/14 px-5 py-2.5 text-sm font-semibold transition hover:border-[var(--color-gold-soft)] hover:bg-white/6">
+            <button className="rounded-full border border-[var(--admin-line)] bg-white px-5 py-2.5 text-sm font-semibold text-[var(--admin-ink)] transition hover:border-[var(--color-gold-soft)] hover:bg-[#fff9df]">
               로그아웃
             </button>
           </form>
@@ -36,15 +36,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       <div className="section-shell py-8">
         <div className="mb-6 grid gap-3 lg:grid-cols-2">
-          <div className="rounded-[1.6rem] border border-white/10 bg-white/5 px-5 py-4 text-sm text-white/72">
+          <div className="rounded-[1.6rem] border border-[var(--admin-line)] bg-white px-5 py-4 text-sm text-[var(--admin-muted)]">
             저장 모드:{" "}
-            <span className="font-semibold text-white">
+            <span className="font-semibold text-[var(--admin-ink)]">
               {configured ? "Supabase 연결" : "미리보기 저장 모드"}
             </span>
           </div>
-          <div className="rounded-[1.6rem] border border-white/10 bg-white/5 px-5 py-4 text-sm text-white/72">
+          <div className="rounded-[1.6rem] border border-[var(--admin-line)] bg-white px-5 py-4 text-sm text-[var(--admin-muted)]">
             인증 모드:{" "}
-            <span className="font-semibold text-white">
+            <span className="font-semibold text-[var(--admin-ink)]">
               {passwordMode === "demo"
                 ? "기본 관리자 비밀번호 사용 중"
                 : passwordMode === "missing-env"
@@ -59,7 +59,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-full border border-white/10 px-5 py-2.5 text-sm font-medium text-white/74 transition hover:border-[var(--color-gold-soft)] hover:text-white"
+              className="rounded-full border border-[var(--admin-line)] bg-white px-5 py-2.5 text-sm font-semibold text-[var(--admin-muted)] transition hover:border-[var(--color-gold-soft)] hover:text-[var(--admin-ink)]"
             >
               {item.label}
             </Link>

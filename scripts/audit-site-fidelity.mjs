@@ -413,6 +413,10 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.7 - Light admin console and automatic price UX",
+  "관리자 화면을 어두운 카드형 화면에서 밝은 운영 콘솔로 바꾸고",
+  "실제 사이트 화면이 바뀐 것: 관리자 로그인/대시보드/시세 관리 라이트 테마",
+  "v0.2.7 전으로 되돌려줘",
   "## v0.2.6 - Expert panel deep QA public and admin polish",
   "홈 시세표가 한 화면 안에 더 안정적으로 들어오고",
   "실제 사이트 화면이 바뀐 것: 홈 시세표 크기/간격",
@@ -440,17 +444,17 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.6`",
-  "Expert panel deep QA public and admin polish",
+  "Current KCG site version: `v0.2.7`",
+  "Light admin console and automatic price UX",
   "existing-api-integration-audit-2026-05-05.md",
-  "실제 사이트 화면이 바뀐 것: 홈 시세표 크기/간격",
+  "실제 사이트 화면이 바뀐 것: 관리자 로그인/대시보드/시세 관리 라이트 테마",
   "backup/pre-v0.2.4-operations-product-audit",
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
-  "v0.2.6",
-  "기존 API 연동 감사 문서",
-  "실제 사이트 화면이 바뀐 것: 홈 시세표 크기/간격",
+  "v0.2.7",
+  "관리자 콘솔 라이트 테마와 자동시세 UX",
+  "실제 사이트 화면이 바뀐 것: 관리자 로그인/대시보드/시세 관리 라이트 테마",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",
   "MEDIUM",
@@ -462,8 +466,9 @@ expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
 ]);
 expectText("docs/setup/QA_REPORT_2026-05-05.md", [
   "Public site | 9340 / 10000",
-  "Admin console | 9020 / 10000",
-  "Operations readiness | 8880 / 10000",
+  "Admin console | 9350 / 10000",
+  "Operations readiness | 9050 / 10000",
+  "v0.2.7 Admin Console Follow-Up",
   "v0.2.6 Expert-Panel Follow-Up",
 ]);
 expectText("src/app/admin/prices/price-mode-workspace.tsx", [
@@ -756,9 +761,9 @@ expectText("src/actions/price-actions.ts", [
   "buildPriceWarnings",
 ]);
 expectText("src/app/admin/prices/price-mode-workspace.tsx", [
-  "자동시세 계산값 반영",
-  "계산값 반영",
-  "드래프트 폐기",
+  "지금 계산 실행",
+  "검토 후 반영",
+  "계산 기록 폐기",
 ]);
 expectNoText("src/app/admin/prices/price-mode-workspace.tsx", ["{needsReview ? ("]);
 expectText("src/app/api/admin/price-auto-refresh/route.ts", [
@@ -860,6 +865,7 @@ expectText("src/app/admin/launch/page.tsx", [
   "robots/noindex 해제와 검색 색인 승인",
 ]);
 expectText("src/app/admin/layout.tsx", ["/admin/launch", "오픈 점검"]);
+expectText("src/app/admin/layout.tsx", ["admin-light", "한국센터금거래소 운영 콘솔"]);
 expectText("src/app/admin/page.tsx", [
   "오늘 운영 상태",
   "자동시세 상태",
@@ -869,6 +875,8 @@ expectText("src/app/admin/page.tsx", [
 expectText("src/app/admin/prices/page.tsx", [
   "자동시세 ON이면 산식과 안전 기준",
   "AdminPricesWorkspace",
+  "auto-on-saved",
+  "auto-off-saved",
 ]);
 expectText("src/app/admin/prices/price-mode-workspace.tsx", [
   "자동시세 ON",
@@ -879,10 +887,14 @@ expectText("src/app/admin/prices/price-mode-workspace.tsx", [
   "국제 금 3.75g 환산가",
   "자동 게시 허용 변동폭",
   "최소 반영 금액",
-  "지금 자동 확인",
-  "계산 기준 세부 설정",
-  "버튼을 누르면 바로 저장됩니다",
+  "지금 계산 실행",
+  "자동 계산 기준 자세히 보기",
+  "저장 상태:",
+  "AdminActionFeedback",
   "검토 후 반영",
+  "저장 중...",
+  "계산 중...",
+  "반영 중...",
 ]);
 expectNoText("src/app/admin/prices/price-mode-workspace.tsx", [
   "대표가 직접 넣는",
@@ -895,6 +907,9 @@ expectNoText("src/app/admin/prices/price-mode-workspace.tsx", [
   "최대 자동 변동률",
   "세부 설정 수정",
   "초안 적용",
+  "지금 자동 확인",
+  "버튼을 누르면 바로 저장됩니다",
+  "드래프트",
 ]);
 expectText("src/components/layout/site-footer.tsx", [
   "getBusinessRegistrationDisplay",
@@ -1157,6 +1172,9 @@ expectText("scripts/capture-site-screenshots.mjs", [
   "services-mobile-viewport.png",
   "admin-launch-mobile.png",
   "admin-launch-desktop.png",
+  "admin-prices-manual-desktop.png",
+  "admin-prices-auto-desktop.png",
+  "admin-prices-auto-mobile.png",
   "KCG_INCLUDE_ADMIN_SCREENSHOTS",
   "nextEnv.loadEnvConfig(rootDir)",
   "primeLazyImagesForScreenshot",
@@ -1271,7 +1289,7 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.6` includes real UI/admin source changes",
+  "Reflection status: `v0.2.7` includes real admin source changes",
   "docs/setup/CHANGELOG.md",
   "docs/quality/ai-site-production-playbook.md",
   "docs/quality/data-source-compliance.md",
