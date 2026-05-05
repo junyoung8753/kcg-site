@@ -11,8 +11,8 @@ Versioning rule before public launch: `0.x.x`.
 ## v0.2.2 - Expert panel deep QA and admin evidence hardening
 
 - Date: `2026-05-05 KST`
-- Commit: `7d23f27`
-- Deploy Status: local reflected in the working tree; production domains are not refreshed with this version until the final verification and deploy step completes.
+- Commit: `7d23f27`; trace status commit: `636f00d`
+- Deploy Status: local reflected, pushed to `origin/codex/kcg-launch-readiness-catalog-20260427`, and production domains `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` were refreshed with this version on 2026-05-05 KST after verification. Use `npx vercel inspect https://kcgold.co.kr/` for the current deployment id.
 - Summary: Converted the interrupted expert-panel QA follow-up into traceable admin evidence, product-operation, and automatic-price operation guardrails so future KCG work is easier to verify, explain, and resume.
 - Changed:
   - Admin screenshot evidence can now be refreshed independently with `npm run screenshot:admin` instead of mixing private admin artifacts into every public screenshot run.
