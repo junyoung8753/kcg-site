@@ -20,14 +20,14 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 - Current KCG site version: `v0.2.9`
 - Latest change: `Operations QA guard, TradingView visibility, and price history storage`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: `v0.2.9` includes real public/admin/data-model source changes and is intended for production deployment after the full verification gate. Confirm current commit/push/deploy state with `git status --short --branch`, `npm run release:trace`, and `npx vercel inspect https://kcgold.co.kr/` before editing.
+- Reflection status: `v0.2.9` includes real public/admin/data-model source changes and has been committed, pushed, and production deployed after the full verification gate. Confirm the current state with `git status --short --branch`, `npm run release:trace`, and `npx vercel inspect https://kcgold.co.kr/` before editing.
 - 실제 사이트 화면이 바뀐 것: GNB에서 `매장안내`가 `회사소개`보다 앞에 오며, TradingView 차트 버튼/ready/fallback, 관리자 시세 이력/24시간 guard 표시가 바뀜
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.9 changelog/handoff/status trace until deployment completes
-- 배포된 것: pending until v0.2.9 production deployment completes. Use `npx vercel inspect https://kcgold.co.kr/` for the current deployment id after deploy.
-- 아직 배포 안 된 것: v0.2.9 source/schema/docs until final deploy. 검색 노출/noindex 해제와 실제 상품 운영자료 확정은 별도 승인 전까지 제외.
-- 고객에게 보여줘도 되는 것: 배포 후 `kcgold.co.kr` 사이트. 검색 노출은 여전히 차단.
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음. v0.2.9 source/schema/docs 변경은 production 배포까지 완료됨.
+- 배포된 것: v0.2.9 운영형 QA 보강 전체. Use `npx vercel inspect https://kcgold.co.kr/` for the current deployment id.
+- 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 운영자료 확정, Vercel Pro 또는 외부 scheduler 결정은 별도 승인 전까지 제외.
+- 고객에게 보여줘도 되는 것: `kcgold.co.kr` 검토용 사이트. 검색 노출은 여전히 차단.
 - 아직 내부 기준/계획일 뿐인 것: retention cleanup policy, 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
-- Latest QA: `v0.2.9` verification is required before completion: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm run screenshot:admin`, `npm run qa:site`, `npm audit --audit-level=moderate`, and `git diff --check`; after deployment run `npx vercel inspect https://kcgold.co.kr/`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site`, and `npm run check:external -- --strict-domain`.
+- Latest QA: `v0.2.9` completed local verification with `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm run screenshot:admin`, `npm run qa:site`, `npm audit --audit-level=moderate`, and `git diff --check`; after deployment verify with `npx vercel inspect https://kcgold.co.kr/`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site`, and `npm run check:external -- --strict-domain`.
 - Change ledger: `docs/setup/CHANGELOG.md`
 - Broader rollback bookmark: `backup/pre-v0.2.4-operations-product-audit`
 - Rollback phrase: `v0.2.9 전으로 되돌려줘`

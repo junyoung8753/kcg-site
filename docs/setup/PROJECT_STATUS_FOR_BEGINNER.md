@@ -29,10 +29,10 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 ## 실제 사이트 반영 여부
 
 - 실제 사이트 화면이 바뀐 것: 메뉴 순서에서 `매장안내`가 `회사소개`보다 앞에 오고, TradingView 차트 버튼/표시 상태와 관리자 시세 이력/24시간 guard 표시가 바뀜
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.9 changelog/handoff/status trace until deployment completes
-- 배포된 것: 아직 v0.2.9 배포 전. 최신 배포 ID는 배포 후 `npx vercel inspect https://kcgold.co.kr/`로 확인한다.
-- 아직 배포 안 된 것: v0.2.9 코드/schema/문서 변경. 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정은 아직 별도 작업.
-- 내가 고객에게 보여줘도 되는 것: 공개 고객 화면은 기존 방향 유지. 관리자 라이트 UX는 로그인 사용자만 확인.
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음. v0.2.9 코드/schema/문서 변경은 production 배포까지 완료됨.
+- 배포된 것: v0.2.9 운영형 QA 보강 전체. 최신 배포 ID는 `npx vercel inspect https://kcgold.co.kr/`로 확인한다.
+- 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, Vercel Pro 또는 외부 scheduler 결정은 아직 별도 작업.
+- 내가 고객에게 보여줘도 되는 것: `kcgold.co.kr` 검토용 공개 화면. 검색 노출은 아직 차단.
 - 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인
 - 이번 작업에서 건드린 범위: GNB 순서, TradingView disclosure/widget readiness, 시세 이력/일별 스냅샷 schema, 자동시세 24시간 guard, 관리자 시세 이력 표시, QA/상태 문서, `package.json`, `package-lock.json`
 - 절대 건드리지 않은 범위: 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, Vercel env/secret

@@ -11,8 +11,8 @@ Versioning rule before public launch: `0.x.x`.
 ## v0.2.9 - Operations QA guard, TradingView visibility, and price history storage
 
 - Date: `2026-05-05 KST`
-- Commit: pending until final verification.
-- Deploy Status: local implementation in progress; intended for commit, push, and production deployment to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` after the v0.2.9 validation gate. Search indexing/noindex release is not included.
+- Commit: implementation commit `3f31af6` (`v0.2.9: Add operations QA guard and price history storage`) pushed to `origin/codex/kcg-launch-readiness-catalog-20260427`; deployment-status trace is recorded in the current `v0.2.9` HEAD. Use `git log -2 --oneline` for the exact latest commits.
+- Deploy Status: committed, pushed, and production deployed to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` on 2026-05-05 KST after the v0.2.9 validation gate. Use `npx vercel inspect https://kcgold.co.kr/` for the current deployment id. Search indexing/noindex release is not included.
 - 사람이 읽는 요약: 고객이 보는 메뉴 순서를 실제 행동 흐름에 맞춰 `매장안내`가 `회사소개`보다 앞에 오게 바꾸고, TradingView 차트가 코드에만 있는 상태가 아니라 실제로 보이거나 실패 이유를 알 수 있게 보강했습니다. 시세 이력이 비어 보이지 않도록 현재 고시값 기준 이력과 일별 스냅샷 보관 구조를 추가했고, `24시간 이상 수동 시세 등록`이 없으면 자동시세가 다음 자동 점검에서 ON으로 전환되도록 운영 guard를 추가했습니다.
 - Summary: Adds operational QA fixes for navigation priority, TradingView visibility/fallback, KCG posted-price history baselines, daily snapshots for future KCG charts, and a 24-hour manual-registration stale guard that enables automatic pricing without bypassing safety checks.
 - Changed:
@@ -25,18 +25,18 @@ Versioning rule before public launch: `0.x.x`.
   - Updated source audit guardrails to catch GNB order, TradingView wording, price history schema, and stale-guard code regressions.
 - 실제 사이트 반영 여부:
   - 실제 사이트 화면이 바뀐 것: GNB order, TradingView disclosure wording/readiness behavior, admin price freshness/history/stale-guard display.
-  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: v0.2.9 changelog/handoff/status trace until deployment completes.
-  - 배포된 것: pending until production deployment completes.
-  - 아직 배포 안 된 것: v0.2.9 code/schema/docs until final deploy.
-  - 고객에게 보여줘도 되는 것: after deploy, existing noindex-protected `kcgold.co.kr` review site.
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음. `v0.2.9` 소스/schema/docs 변경은 production 배포까지 완료됨.
+  - 배포된 것: `v0.2.9` 운영형 QA 보강 전체. 단, noindex/robots 차단은 계속 유지.
+  - 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, Vercel Pro 또는 외부 scheduler 결정.
+  - 고객에게 보여줘도 되는 것: existing noindex-protected `kcgold.co.kr` review site.
   - 아직 내부 기준/계획일 뿐인 것: retention cleanup policy, final product photos, final automatic-price scheduler plan beyond Vercel Hobby once-daily checks.
 - QA Score:
   - Public site target: `9380 / 10000`
   - Admin console target: `9520 / 10000`
   - Operations readiness target: `9250 / 10000`
 - Verification:
-  - Required before completion: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm run screenshot:admin`, `npm run qa:site`, `npm audit --audit-level=moderate`, `git diff --check`.
-  - Required after deploy: `npx vercel inspect https://kcgold.co.kr/`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site`, and `npm run check:external -- --strict-domain`.
+  - Completed before deployment: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm run screenshot:admin`, `npm run qa:site`, `npm audit --audit-level=moderate`, `git diff --check`.
+  - Completed after deployment: `npx vercel inspect https://kcgold.co.kr/`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site`, and `npm run check:external -- --strict-domain`.
 - Rollback Hint: `v0.2.9 전으로 되돌려줘`
 - Remaining User-only:
   - Confirm whether automatic checks need Vercel Pro/external scheduler beyond the Vercel Hobby once-daily posture.
