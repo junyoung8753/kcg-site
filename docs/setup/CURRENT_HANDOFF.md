@@ -10,13 +10,13 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 
 ## Current Version Snapshot
 
-- Current KCG site version: `v0.2.2`
-- Latest change: `Expert panel deep QA and admin evidence hardening`
+- Current KCG site version: `v0.2.3`
+- Latest change: `Operations product-audit QA pass`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: local reflected for `v0.2.2`, committed (`7d23f27` + trace commit `636f00d`), pushed to `origin/codex/kcg-launch-readiness-catalog-20260427`, and production domains were refreshed on 2026-05-05 KST. Confirm current commit/push/deploy state with `git status --short --branch`, `npm run release:trace`, and `npx vercel inspect https://kcgold.co.kr/` before editing.
-- Latest local QA: `v0.2.2` passed `npm run qa:site` on 2026-05-05 KST with rendered audit `981 checks, 0 skipped`, Playwright `19 passed`, public screenshots, admin screenshots through `npm run screenshot:admin`, and npm audit `0 vulnerabilities`.
+- Reflection status: local reflected for `v0.2.3`; production domains were not refreshed for this docs/skill QA-system patch. Confirm current commit/push/deploy state with `git status --short --branch`, `npm run release:trace`, and `npx vercel inspect https://kcgold.co.kr/` before editing.
+- Latest local QA: `v0.2.3` passed `npm run qa:site` on 2026-05-05 KST with rendered audit `981 checks, 0 skipped`, Playwright `19 passed`, public screenshots, admin screenshots through `npm run screenshot:admin`, and npm audit `0 vulnerabilities`.
 - Change ledger: `docs/setup/CHANGELOG.md`
-- Rollback phrase: `v0.2.2 전으로 되돌려줘`
+- Rollback phrase: `v0.2.3 전으로 되돌려줘`
 
 ## Current Source Of Truth
 

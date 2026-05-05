@@ -81,6 +81,33 @@ Core review perspectives:
 - Legal/operations: are price claims, source attribution, noindex/search state, and checkout/trading/payment boundaries still safe?
 - Performance/mobile: does the real mobile and desktop surface stay fast, readable, and free of fixed-UI collisions?
 
+### Gold Exchange Operations Product Audit Pass
+
+For meaningful admin, price, product/매입, service, customer-response, or launch-readiness work, run this operational pass before deciding that visual polish or technical QA is enough. This pass is not permission to add ERP, POS, accounting, customer-data, checkout, live-trading, or payment behavior. It is a way to detect where real gold-exchange staff would fall back to Excel, KakaoTalk, phone notes, or manual ledgers.
+
+Select only the roles relevant to the task:
+
+- 대표/관리자
+- 시세 등록 직원
+- 고금 매입 직원
+- 골드바/제품 관리 직원
+- 고객 응대 직원
+- 일반 고객
+- 세금/정산/장부를 신경 쓰는 운영자
+
+For each selected role, check:
+
+- What is the role trying to do in the real daily workflow?
+- Where does the current flow block, slow down, or confuse that work?
+- Where would the role leave the site and use Excel, KakaoTalk, phone calls, screenshots, or a manual ledger instead?
+- What repeated manual work, double entry, or copy/paste step is likely?
+- What error, omission, stale-data, price misunderstanding, or customer expectation risk can happen?
+- What information would reduce customer calls or repeated staff explanations?
+- What must the operator check every day before trusting the site?
+- What feature is not needed today but likely needed soon for real operation?
+
+Record the result as one of: `fix now`, `track in OPEN_TASKS`, `user-only decision`, or `intentionally out of scope`. Keep the output short enough to guide the current task, not to create a full ERP specification.
+
 Required output: record selected expert perspectives and at least one proactive improvement candidate in the final answer or in `docs/setup/OPEN_TASKS.md`. If there is no useful candidate, say `추가 후보 없음` with the evidence that supports that decision.
 
 ## Required Flow For Visual Or Launch-Candidate Work

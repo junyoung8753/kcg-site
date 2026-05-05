@@ -40,6 +40,10 @@ roles when site work is requested.
   mobile/accessibility, SEO/search, 금거래소 베테랑 직원, store consultation
   staff, price-table operator, legal/compliance, performance, data/API, and
   content/brand.
+- For admin, price, product/매입, service, customer-response, or launch-readiness
+  work, include the Gold Exchange Operations Product Audit Pass from
+  `docs/quality/agent-quality-system.md` so operational staff needs are checked
+  before visual polish is treated as complete.
 - Do not run every role every time. Use a Role Discovery Pass to choose the
   smallest useful set, record excluded high-risk roles when relevant, and add
   durable guidance only when it removes repeated ambiguity or a real
@@ -58,7 +62,7 @@ roles when site work is requested.
 8. Verify with the narrowest reliable commands, then use `npm run qa:site` for full launch-candidate confidence.
 9. Inspect screenshot artifacts before claiming visual completion, especially the viewport captures that avoid full-page sticky/fixed UI artifacts.
 10. For meaningful site/admin/QA changes, update `docs/setup/CHANGELOG.md`, `docs/setup/CURRENT_HANDOFF.md`, and `docs/setup/OPEN_TASKS.md` so the version, reflection status, rollback hint, and remaining user-only work are traceable.
-11. Run the Role Discovery Pass and Proactive Launch Steward Review from `docs/quality/agent-quality-system.md` before the final answer. Record the selected expert perspectives, at least one proactive improvement candidate, or explicitly state `추가 후보 없음` with evidence.
+11. Run the Role Discovery Pass and Proactive Launch Steward Review from `docs/quality/agent-quality-system.md` before the final answer. For operational surfaces, include the selected Gold Exchange Operations Product Audit roles. Record the selected expert perspectives, at least one proactive improvement candidate, or explicitly state `추가 후보 없음` with evidence.
 
 ## Evidence Bar
 

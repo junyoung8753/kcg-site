@@ -190,6 +190,69 @@ function expectLatestChangelogVersionMatchesPackage() {
   record(passes, "version traceability", `package.json ${packageVersion} matches CHANGELOG v${changelogVersion}`);
 }
 
+function expectCurrentHandoffMatchesLatestRelease() {
+  const packageText = readText("package.json");
+  const changelogText = readText("docs/setup/CHANGELOG.md");
+  const handoffText = readText("docs/setup/CURRENT_HANDOFF.md");
+
+  if (packageText === null) {
+    record(failures, "missing file", "package.json");
+    return;
+  }
+
+  if (changelogText === null) {
+    record(failures, "missing file", "docs/setup/CHANGELOG.md");
+    return;
+  }
+
+  if (handoffText === null) {
+    record(failures, "missing file", "docs/setup/CURRENT_HANDOFF.md");
+    return;
+  }
+
+  let packageVersion = "";
+  try {
+    packageVersion = JSON.parse(packageText).version;
+  } catch (error) {
+    record(failures, "package version", `package.json could not be parsed: ${error.message}`);
+    return;
+  }
+
+  const latestTitleMatch = changelogText.match(/^## v(\d+\.\d+\.\d+) - (.+)$/m);
+  if (!latestTitleMatch) {
+    record(failures, "changelog version", "docs/setup/CHANGELOG.md has no latest ## vX.Y.Z - title entry");
+    return;
+  }
+
+  const [, changelogVersion, changelogTitle] = latestTitleMatch;
+  const expectedVersionLine = `Current KCG site version: \`v${packageVersion}\``;
+
+  if (packageVersion !== changelogVersion) {
+    record(
+      failures,
+      "version mismatch",
+      `package.json version ${packageVersion} does not match changelog latest v${changelogVersion}`,
+    );
+    return;
+  }
+
+  if (!handoffText.includes(expectedVersionLine)) {
+    record(failures, "missing text", `docs/setup/CURRENT_HANDOFF.md -> ${expectedVersionLine}`);
+    return;
+  }
+
+  if (!handoffText.includes(changelogTitle)) {
+    record(failures, "missing text", `docs/setup/CURRENT_HANDOFF.md -> ${changelogTitle}`);
+    return;
+  }
+
+  record(
+    passes,
+    "handoff traceability",
+    `CURRENT_HANDOFF.md references v${packageVersion} and latest changelog title`,
+  );
+}
+
 async function expectUrl(pathname, patterns = []) {
   const url = new URL(pathname, siteUrl);
   const response = await fetch(url);
@@ -1098,9 +1161,8 @@ expectText("docs/quality/ai-site-production-playbook.md", [
   "Do not invent",
   "Do not scrape, republish, or chart third-party data",
 ]);
+expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
-  "Current KCG site version: `v0.2.2`",
-  "Expert panel deep QA and admin evidence hardening",
   "npm run screenshot:admin",
   "Reflection status: local reflected",
   "docs/setup/CHANGELOG.md",

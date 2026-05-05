@@ -8,6 +8,33 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.3 - Operations product-audit QA pass
+
+- Date: `2026-05-05 KST`
+- Commit: current `HEAD` after committing this version; use `npm run release:trace` for the exact branch and commit state.
+- Deploy Status: local reflected only. No production deploy, stable alias change, search-indexing change, secret change, or public-launch action was performed for this docs/skill QA-system patch.
+- Summary: Extended the existing KCG quality system so future QA and improvement work checks real gold-exchange operator, staff, and customer workflows instead of stopping at technical QA or visual polish.
+- Changed:
+  - `docs/quality/agent-quality-system.md` now includes `Gold Exchange Operations Product Audit Pass` for meaningful admin, price, product/매입, service, customer-response, and launch-readiness work.
+  - The operational pass checks where 대표/관리자, 시세 등록 직원, 고금 매입 직원, 골드바/제품 관리 직원, 고객 응대 직원, 일반 고객, and 세금/정산/장부 운영자가 would hit blockers, repeated manual work, Excel/Kakao/phone/manual-ledger fallbacks, stale-data risks, or soon-needed features.
+  - `.agents/skills/kcg-site-quality/SKILL.md` now routes operational surfaces through that pass before treating visual polish as complete.
+  - `docs/setup/OPEN_TASKS.md` records the completed guardrail as `KCG-TODO-051`.
+  - `scripts/audit-site-fidelity.mjs` now checks `CURRENT_HANDOFF.md` against the latest package/changelog version dynamically, so the handoff cannot silently point at an older release after a version bump.
+- Verification:
+  - Passed: `npm run release:trace` before version bump; it correctly reported the previous uncommitted state.
+  - Passed: `npm run tasks:dashboard`
+  - Passed: `npm run audit:site`
+  - Passed: `npm run qa:site` with rendered audit `981 checks, 0 skipped`, Playwright `19 passed`, screenshots, and npm audit `0 vulnerabilities`
+  - Passed: `npm run screenshot:admin`
+  - Passed: `npm run check:external -- --strict-domain`
+  - Passed: `git diff --check` with line-ending warnings only
+- Rollback Hint: say `v0.2.3 전으로 되돌려줘`.
+- Remaining User-only:
+  - Confirm final real product photos, product list, 공임/margin, and which items show reference price versus inquiry.
+  - Decide whether to pay for Vercel Pro or use an external scheduler if KCG needs automatic checks more than once per day.
+  - Rotate the final production admin password before public search launch.
+  - Approve robots/noindex release and search indexing only when the site is ready for public discovery.
+
 ## v0.2.2 - Expert panel deep QA and admin evidence hardening
 
 - Date: `2026-05-05 KST`
