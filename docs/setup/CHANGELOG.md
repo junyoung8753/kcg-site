@@ -8,6 +8,41 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.19 - Vercel transfer owner-member blocker record
+
+- Date: `2026-05-06 KST`
+- Commit: implementation commit is created after this verification pass.
+- Deploy Status: committed after verification. Production deploy remains blocked because the existing live Vercel project `kcg-confirm-preview` is still outside the company `KCG` team/project context. No search/noindex release, payment, card entry, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, SMS/Kakao credential, OpenAI key, KRX API key, or actual KRX data call was performed.
+- 사람이 읽는 요약: 기존 Vercel source owner 계정 `junyoung8753-2361`으로 로그인한 뒤 `kcg-confirm-preview` transfer flow를 실제로 열어 확인했습니다. 회사 team `KCG`에는 기존 계정을 `MEMBER`로 추가했지만, transfer 대상 검색에서 `KCG`가 나오지 않았고, 무료 team에서 기존 계정을 추가 Owner로 올리려는 API 시도는 Vercel이 Pro upgrade를 요구해 중단했습니다. 따라서 지금은 결제 없이 transfer를 끝낼 수 없거나 Vercel UI/API가 추가 owner/payment eligibility를 요구하는 상태로 분류합니다.
+- Summary: Records the source-owner Vercel transfer attempt, adds the old Vercel account as a KCG team member, and keeps production deploy blocked until Vercel transfer eligibility/payment/owner constraints are resolved.
+- Changed:
+  - Documented that `junyoung8753-2361` is now a `MEMBER` of Vercel team `KCG`, while `kcgoldx-7259` remains the sole `OWNER`.
+  - Documented that free-team Owner promotion failed with Vercel's "add more than one Owner, upgrade to Pro" requirement.
+  - Documented that the Vercel transfer modal still returns `No results` for `KCG`/`kcgoldx` from the source-owner session, so company CLI cannot deploy `v0.2.18+` yet.
+  - Logged out the temporary Vercel CLI source-transfer session after it authenticated back into the company account instead of the source owner.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀐 것: 없음.
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/운영 상태만 바뀐 것: Vercel team membership and transfer blocker notes.
+  - 배포된 것: 없음. 회사 Vercel CLI는 아직 기존 live 프로젝트 권한이 없어 production deploy/inspect를 실행할 수 없다.
+  - 아직 배포 안 된 것: `v0.2.18` 상담 도우미, `v0.2.19` 문서 상태, inquiry health fields, existing Vercel/Supabase project transfer, final admin secret rotation, search/noindex release.
+- Verification:
+  - Passed: `git status --short --branch` before edits was clean on `codex/kcg-launch-readiness-catalog-20260427`.
+  - Passed: `npm run release:trace` before edits reported `v0.2.18`, HEAD `2a8fcfb`, deploy blocked by company Vercel access.
+  - Passed: source-owner browser session opened `kcg-confirm-preview` project settings and the transfer modal.
+  - Passed: `npx vercel teams invite junyoung8753@gmail.com --scope kcgoldx` added `junyoung8753-2361` to `KCG`.
+  - Passed: `npx vercel teams members --scope kcgoldx` shows `junyoung8753-2361 MEMBER` and `kcgoldx-7259 OWNER`.
+  - Expected blocked: `npx vercel api /v1/teams/kcgoldx/members/TFwKWbB1M1Vu7fcoKwuCfizr -X PATCH -F role=OWNER --scope kcgoldx` failed because free team only allows one Owner unless upgraded to Pro.
+  - Expected blocked: source-owner transfer modal search returned `No results` for `KCG` and `kcgoldx`.
+  - Passed: temporary Vercel CLI source-transfer session was logged out with `npx vercel logout --global-config C:\Users\junyo\.codex\temp-vercel-source-transfer --non-interactive`.
+  - Passed before edits: `npm run check:external -- --strict-domain`; live site remains `mode=supabase`, `indexing=disabled`, robots blocked, sitemap empty, and both KCG domains point to Vercel.
+  - Passed before edits: live `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`1381 checks, 0 skipped`).
+  - Expected version mismatch before deploy: live `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` passed 21 tests and failed only the `v0.2.18` inquiry-assistant button test because `v0.2.18` is still not deployed.
+- Rollback Hint: `v0.2.19 Vercel 이전 기록만 되돌려줘`
+- Remaining User-only:
+  - Decide whether to add Vercel payment/Pro or another Vercel-approved eligibility path if `KCG` must receive the existing project now.
+  - If payment stays excluded, keep `kcg-confirm-preview` in the old owner context and treat `v0.2.18+` production deploy as blocked.
+  - Complete Supabase project transfer separately when source-org owner prompts are available; do not paste tokens or service-role keys.
+
 ## v0.2.18 - Inquiry assistant and KRX no-scraping boundary
 
 - Date: `2026-05-06 KST`

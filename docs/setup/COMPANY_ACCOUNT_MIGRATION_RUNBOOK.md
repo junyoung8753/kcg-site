@@ -18,11 +18,15 @@ This is the no-secret runbook for moving KCG site operations, ownership, and fut
 
 ## Current Progress - 2026-05-06 KST
 
-Completed without payment or secrets, refreshed in `v0.2.16`:
+Completed without payment or secrets, refreshed in `v0.2.19`:
 
 - Removed the previous personal Vercel CLI session from the routine operating path.
 - Vercel CLI now reports company account `kcgoldx-7259`.
 - Created/verified Vercel team `KCG` with slug `kcgoldx`.
+- Added existing source-owner Vercel account `junyoung8753-2361` to team `KCG` as `MEMBER`.
+- Confirmed team membership: `junyoung8753-2361 MEMBER`, `kcgoldx-7259 OWNER`.
+- Attempted source-owner transfer flow for `kcg-confirm-preview`; the modal still returns `No results` for `KCG`/`kcgoldx`.
+- Attempted to promote `junyoung8753-2361` to a second `OWNER`; Vercel blocked it because the free team allows only one Owner unless upgraded to Pro.
 - Confirmed no Vercel projects exist yet under `kcgoldx` or `kcgoldx-7259s-projects`.
 - Confirmed the existing live deployment cannot be inspected under `kcgoldx` because `kcg-confirm-preview` has not been transferred.
 - Confirmed `npx vercel project inspect kcg-confirm-preview --scope kcgoldx` is expected blocked because the company account does not own the project yet.
@@ -43,9 +47,9 @@ Still not changed:
 
 Confirmed official transfer boundary:
 
-- Vercel transfer must be started by an owner of the source team and the account must be a member of the target team. Vercel can require a valid payment method on the target team before transfer.
+- Vercel transfer must be started by an owner of the source team and the account must be a member of the target team. Vercel can require a valid payment method on the target team before transfer. In the current KCG free-team state, the source owner is a target-team member but the transfer UI still does not expose `KCG`, and making the source owner a second target-team Owner requires Pro.
 - Supabase transfer requires source organization owner rights and membership in the target organization. GitHub integrations, project-scoped roles, log drains, plan compatibility, and Free Plan limits can block or change the transfer flow.
-- Therefore, Codex has completed the target setup and non-secret checks. The actual existing-project transfer remains blocked on service-forced source-owner/approval/payment prompts.
+- Therefore, Codex has completed the target setup, source-owner membership, and non-secret checks. The actual existing-project transfer remains blocked on Vercel transfer eligibility/payment/Owner constraints and Supabase source-owner transfer prompts.
 
 ## Minimal Required Mode
 
@@ -203,7 +207,7 @@ Plan:
 1. Company Vercel team/workspace exists as `KCG` (`kcgoldx`).
 2. Add company billing only if Vercel requires it for the transfer/operation or if KCG chooses Pro later.
 3. Keep Vercel Pro optional for now. The current Hobby cron posture is acceptable while automatic checks are at most once per day.
-4. Transfer project `kcg-confirm-preview` to the company team after verifying the target team is ready.
+4. Transfer project `kcg-confirm-preview` to the company team after verifying the target team is ready and Vercel no longer hides `KCG` from the transfer target list.
 5. Confirm transferred items:
    - domains
    - aliases
@@ -229,6 +233,7 @@ Secret rule:
 - `npx vercel env ls production` may list variable names and scopes only. Do not print secret values.
 - If env values must be rotated, use Vercel dashboard/CLI secret flow only.
 - Until `kcg-confirm-preview` is transferred or company access is granted, `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx` is expected to fail because the live deployment is not in the company context.
+- Current free-team blocker: `junyoung8753-2361` is already a `MEMBER` of `KCG`, but Vercel still does not show `KCG` as a transfer target and blocks adding a second Owner without Pro.
 - Until project access exists, final admin secret rotation cannot be verified from the company CLI. Codex can prepare the variable names and flow; junyoung/company must enter `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` values directly when rotation is approved.
 
 ### Phase 3 - Supabase

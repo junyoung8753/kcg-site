@@ -16,12 +16,14 @@ This checklist records ownership and migration status only. Do not write passwor
 
 ## Current Company CLI State
 
-Verified on 2026-05-06 KST, refreshed in `v0.2.16`:
+Verified on 2026-05-06 KST, refreshed in `v0.2.19`:
 
 - Vercel CLI account: `kcgoldx-7259`
 - Vercel company team: `KCG` (`vercel.com/kcgoldx`)
+- Vercel team members: `kcgoldx-7259` is `OWNER`; existing source-owner account `junyoung8753-2361` is `MEMBER`
 - Vercel company projects: none under `kcgoldx` or `kcgoldx-7259s-projects`
 - Existing live Vercel project: `kcg-confirm-preview` is still not transferred into the company context, so company CLI cannot inspect or deploy it yet
+- Current Vercel transfer blocker: source-owner browser access can open the transfer modal, but target search returns `No results` for `KCG`/`kcgoldx`; promoting `junyoung8753-2361` to a second `OWNER` is blocked by Vercel Pro/payment requirements
 - Expected blocked Vercel checks:
   - `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx` -> deployment not found under `kcgoldx`
   - `npx vercel project inspect kcg-confirm-preview --scope kcgoldx` -> no project found
@@ -59,7 +61,7 @@ Checked against official docs on 2026-05-06 KST:
 | `kcgoldx@gmail.com` browser login | done | junyoung/company | Junyoung reported Chrome login complete; do not paste password, MFA, cookies, or recovery codes into Codex. |
 | Human security prompts | user-only as-needed | junyoung/company | Complete MFA/passkey/CAPTCHA/phone/email/terms/transfer confirmations only if a service requires them. |
 | Vercel company workspace | done | codex | Created/verified team `KCG` with slug `kcgoldx`; CLI reports `kcgoldx-7259`. |
-| Vercel project transfer | blocked | shared | Existing project `kcg-confirm-preview` is still outside the company context. Official docs require source-team owner action and may require a target payment method. Do not use the previous personal CLI session; transfer requires owner/payment/approval handling outside secret-sharing. |
+| Vercel project transfer | blocked | shared | Existing project `kcg-confirm-preview` is still outside the company context. Source-owner access was verified and `junyoung8753-2361` is now a `KCG` member, but transfer target search still does not show `KCG`; a second Owner requires Vercel Pro/payment. Do not paste tokens or card data into Codex. |
 | Supabase company organization | done | codex | Created/verified organization `Korea Center Gold Exchange` under the company Supabase login. |
 | Supabase project transfer | blocked | shared | Existing project `ehmsqlfxxydnebzjfarr` is still outside the company organization. Official docs require source-org owner rights and target-org membership. Do not paste access tokens or service-role keys into Codex. |
 | Company card/payment entry | user-only later | junyoung/company | Only when Vercel/Supabase/API billing is actually selected or required. |
@@ -82,7 +84,7 @@ Checked against official docs on 2026-05-06 KST:
 | Service | Target Account / Org / Team | Current Known State | Billing Status | Recovery Method Type | Transfer Status | Next Step |
 | --- | --- | --- | --- | --- | --- | --- |
 | Google representative account | `kcgoldx@gmail.com` | Chosen as permanent KCG representative Gmail; Chrome login reported complete | Company decision/user-only | Optional security prompts only when required | Active | Keep using this as the company operating identity. |
-| Vercel | `KCG` team under `kcgoldx@gmail.com` (`kcgoldx`) | Company CLI reports `kcgoldx-7259`; team `KCG` exists; no projects under company scopes | Company card only if transfer/operation requires it or Pro is chosen later | Team owner + backup owner later | Team created; project transfer blocked | Transfer `kcg-confirm-preview` only through an approved owner/payment-safe flow. Until then, company CLI cannot deploy the existing live project. |
+| Vercel | `KCG` team under `kcgoldx@gmail.com` (`kcgoldx`) | Company CLI reports `kcgoldx-7259`; team `KCG` exists; `junyoung8753-2361` is a `MEMBER`; no projects under company scopes | Company card only if transfer/operation requires it or Pro is chosen later | Current Owner is company account; backup Owner requires Pro on this free team | Team created; project transfer blocked | Transfer `kcg-confirm-preview` only after Vercel exposes `KCG` as an eligible target or KCG approves the required payment/Pro path. Until then, company CLI cannot deploy the existing live project. |
 | Supabase | `Korea Center Gold Exchange` organization under `kcgoldx@gmail.com` | Company CLI sees org `raqltqjuqcrusylilnqs`; no company projects | Pay only if plan/usage/transfer requirements require it | Org owner + backup owner later | Org created; project transfer blocked | Transfer project `ehmsqlfxxydnebzjfarr` only through an approved owner/payment-safe flow. Do not paste tokens or service keys. |
 | GitHub | Org slug candidate `kcgold`, `korea-center-gold`, or `kcgold-exchange` | Repo `junyoung8753/kcg-site` is public | Paid Team not required for current public repo unless governance needs change | Org owner + backup owner | Deferred unless ownership/Git integration requires it | Codex prepares org/repo transfer only after Vercel/Supabase are stable or when it becomes necessary. |
 | Cafe24 / domain DNS | Company-owned Cafe24/domain account | `kcgold.co.kr` and `www.kcgold.co.kr` point to Vercel | Existing domain/DNS billing must stay active | Account recovery + backup owner | Planned | Keep DNS stable; do not delete Vercel A records. |
@@ -100,7 +102,9 @@ Before any transfer:
 - [x] `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` passes live Playwright checks.
 - [x] The target Vercel team exists: `KCG` (`kcgoldx`).
 - [x] The target Supabase organization exists: `Korea Center Gold Exchange` (`raqltqjuqcrusylilnqs`).
-- [ ] Source Vercel owner initiates transfer or grants company access.
+- [x] Source Vercel owner browser session opened project transfer flow.
+- [x] Source Vercel account was added to target team `KCG` as `MEMBER`.
+- [ ] Vercel exposes `KCG` as an eligible transfer target or KCG approves the payment/Pro/Owner path required by Vercel.
 - [ ] Source Supabase owner initiates transfer or grants company access.
 - [ ] junyoung personal account is invited as backup Owner/Admin where the service supports it.
 - [ ] Company payment method is entered only by junyoung/company, not Codex.
