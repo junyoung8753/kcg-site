@@ -27,10 +27,18 @@ async function checkStableHealth() {
     }
 
     const health = JSON.parse(text);
+    const searchApproved = health.searchApproved ?? "legacy";
+    const forceNoindex = health.forceNoindex ?? "legacy";
+
+    if (health.indexing === "enabled" && health.searchApproved !== true) {
+      addResult("stable /api/health", "fail", "indexing=enabled without searchApproved=true");
+      return;
+    }
+
     addResult(
       "stable /api/health",
       "pass",
-      `mode=${health.mode}, deployment=${health.deployment}, indexing=${health.indexing}, adminAuth=${health.adminAuth}`,
+      `mode=${health.mode}, deployment=${health.deployment}, indexing=${health.indexing}, searchApproved=${searchApproved}, forceNoindex=${forceNoindex}, adminAuth=${health.adminAuth}`,
     );
   } catch (error) {
     addResult("stable /api/health", "fail", error instanceof Error ? error.message : String(error));

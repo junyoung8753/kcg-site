@@ -34,6 +34,10 @@ export function isConfirmPreviewMode() {
   return isTruthyEnv(process.env.KCG_FORCE_NOINDEX);
 }
 
+export function isPublicSearchApproved() {
+  return isTruthyEnv(process.env.KCG_PUBLIC_SEARCH_APPROVED);
+}
+
 export function getResolvedSiteUrl() {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
     return process.env.NEXT_PUBLIC_SITE_URL;
@@ -47,5 +51,5 @@ export function getResolvedSiteUrl() {
 }
 
 export function isSearchIndexingEnabled() {
-  return isProductionDeployment() && !isConfirmPreviewMode();
+  return isProductionDeployment() && !isConfirmPreviewMode() && isPublicSearchApproved();
 }

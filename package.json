@@ -1,6 +1,6 @@
 {
   "name": "korea-center-gold-exchange-site",
-  "version": "0.2.19",
+  "version": "0.2.20",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -11,6 +11,7 @@
     "audit:site": "node scripts/audit-site-fidelity.mjs",
     "audit:rendered": "node scripts/run-rendered-site-audit.mjs",
     "check:external": "node scripts/check-external-services.mjs",
+    "check:release-state": "node scripts/check-live-release-state.mjs",
     "tasks:dashboard": "node scripts/render-open-tasks-dashboard.mjs",
     "test:site": "playwright test",
     "screenshot:site": "node scripts/capture-site-screenshots.mjs",

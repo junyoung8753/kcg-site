@@ -12,7 +12,7 @@ export const mockProducts: Product[] = [
     slug: "kcg-gold-bar-1g",
     shortDescription: "소액 실물 보유용 1g 순금 골드바",
     description:
-      "KCG 골드바 1g은 소액 실물 보유와 선물 수요를 위한 순금 제품입니다. 표시 가격은 현재 회사 고시 시세와 임시 공임을 기준으로 계산한 참고가입니다.",
+      "KCG 골드바 1g은 소액 실물 보유와 선물 수요를 위한 순금 제품입니다. 표시 가격은 현재 회사 고시 시세와 상담 기준 공임을 기준으로 계산한 참고가입니다.",
     imageUrl: "/products/kcg-product-minimal-bars-20260506.webp",
     specs: ["순금 999.9", "중량 1g", "보증서·패키지 확인"],
     status: "active",
@@ -37,7 +37,7 @@ export const mockProducts: Product[] = [
     slug: "investment-gold-bar-consulting",
     shortDescription: "1돈 기준 투자·선물용 순금 골드바",
     description:
-      "가장 많이 찾는 3.75g 단위 골드바입니다. 가격은 현재 회사 고시가와 임시 공임 기준 참고가이며, 재고와 브랜드·포장 상태는 문의 후 확인합니다.",
+      "가장 많이 찾는 3.75g 단위 골드바입니다. 가격은 현재 회사 고시가와 상담 기준 공임 기준 참고가이며, 재고와 브랜드·포장 상태는 문의 후 확인합니다.",
     imageUrl: "/products/kcg-product-gold-silver-catalog-20260503.webp",
     specs: ["순금 999.9", "중량 3.75g", "1돈 단위 상담"],
     status: "active",
@@ -137,7 +137,7 @@ export const mockProducts: Product[] = [
     slug: "kcg-silver-bar-100g",
     shortDescription: "기념·소장용 100g 실버바",
     description:
-      "100g 실버바는 기념품과 소량 실물 보유 수요에 적합합니다. 현재 은 판매 고시가와 임시 공임 기준 참고가를 제공합니다.",
+      "100g 실버바는 기념품과 소량 실물 보유 수요에 적합합니다. 현재 은 판매 고시가와 상담 기준 공임 기준 참고가를 제공합니다.",
     imageUrl: "/products/kcg-silver-gift-20260427-v2.jpg",
     specs: ["순은 999", "중량 100g", "수급 확인 필요"],
     status: "active",
@@ -212,7 +212,7 @@ export const mockProducts: Product[] = [
     slug: "pure-gold-baby-ring-3-75g",
     shortDescription: "선물용 1돈 순금 돌반지 상담",
     description:
-      "순금 돌반지 3.75g은 선물용 수요가 높은 제품입니다. 현재 순금 판매 고시가와 임시 공임 기준 참고가를 먼저 확인할 수 있습니다.",
+      "순금 돌반지 3.75g은 선물용 수요가 높은 제품입니다. 현재 순금 판매 고시가와 상담 기준 공임 기준 참고가를 먼저 확인할 수 있습니다.",
     imageUrl: "/products/kcg-product-pure-gold-gifts-20260506.webp",
     specs: ["순금 999.9", "중량 3.75g", "선물 포장 확인"],
     status: "active",
@@ -237,7 +237,7 @@ export const mockProducts: Product[] = [
     slug: "pure-gold-card-1g",
     shortDescription: "소형 선물용 순금 카드 1g",
     description:
-      "순금 카드 1g은 소형 선물과 기념품 문의에 적합한 제품입니다. 가격은 현재 고시가와 임시 공임 기준 참고가입니다.",
+      "순금 카드 1g은 소형 선물과 기념품 문의에 적합한 제품입니다. 가격은 현재 고시가와 상담 기준 공임 기준 참고가입니다.",
     imageUrl: "/products/kcg-pure-gold-products-20260427-v2.jpg",
     specs: ["순금 999.9", "중량 1g", "패키지 상담"],
     status: "active",

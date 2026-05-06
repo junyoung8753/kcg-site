@@ -19,26 +19,26 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## Current Snapshot
 
-- 현재 공식 작업 버전: `v0.2.19`
+- 현재 공식 작업 버전: `v0.2.20`
 - 현재 작업 브랜치: `codex/kcg-launch-readiness-catalog-20260427`
-- 이번 작업 버전: `v0.2.19`
-- 직전 버전: `v0.2.18`
-- 작업 전 HEAD: `2a8fcfb`
+- 이번 작업 버전: `v0.2.20`
+- 직전 버전: `v0.2.19`
+- 작업 전 HEAD: `241a159`
 - 백업 브랜치: `backup/pre-v0.2.4-operations-product-audit` (`v0.2.4`와 `v0.2.5` 문서 보강 전으로 크게 돌아가는 책갈피)
 
 ## 실제 사이트 반영 여부
 
-- 이번 `v0.2.19`에서 실제 사이트 화면이 새로 바뀐 것: 없음.
+- 이번 `v0.2.20`에서 실제 사이트 화면이 새로 바뀌는 것: `/admin/launch` 공개 승인 checklist에 `KCG_PUBLIC_SEARCH_APPROVED=1` 단계가 추가되고, admin 상품 편집의 `임시 공임` label이 `상담 기준 공임`으로 바뀐다.
 - 현재 source에는 들어갔지만 live에는 아직 안 보이는 화면 변경: `v0.2.18` 상담 도우미. 데스크톱 오른쪽 하단에 `상담 도우미` 버튼이 생기고, 모바일 하단 고정 CTA에는 `상담` 버튼이 추가된다. 열면 시세표 보는 법, 고금 매입, 방문 준비, KRX 구분 같은 기본 문의를 저장 없이 안내한다.
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: `v0.2.19` Vercel 이전 기록, OpenAI API key, SMS 자동 발송, Kakao 공식 채널 URL, KRX/Koscom 승인·계약 경로는 준비 기준만 추가됐다.
-- 배포된 것: 아직 없음. `v0.2.18`과 `v0.2.19`는 회사 Vercel CLI가 기존 live 프로젝트 권한을 갖기 전까지 production deploy를 하지 않는다. 기존 live site는 `v0.2.14` 문서 배포와 `v0.2.12` 고객/직원 흐름 화면을 유지한다.
-- 아직 배포 안 된 것: `v0.2.18` 상담 도우미, `v0.2.19` Vercel 이전 기록, inquiry health fields, 검색 노출/noindex 해제, KRX API 승인/키/env/실제 provider 연결, 실제 상품 사진/공임/최종 판매정책 확정, 기존 Vercel project transfer, 기존 Supabase project transfer, final admin secret rotation, 유료 서버/API 결제는 아직 별도 작업.
+- 실제 사이트 화면은 아직 안 바뀌고, source 기준만 바뀐 것: `v0.2.20` 검색 승인 health fields, `npm run check:release-state`, `v0.2.19` Vercel 이전 기록, OpenAI API key, SMS 자동 발송, Kakao 공식 채널 URL, KRX/Koscom 승인·계약 경로는 준비 기준만 추가됐다.
+- 배포된 것: 아직 없음. `v0.2.18`, `v0.2.19`, `v0.2.20`은 회사 Vercel CLI가 기존 live 프로젝트 권한을 갖기 전까지 production deploy를 하지 않는다. 기존 live site는 `v0.2.14` 문서 배포와 `v0.2.12` 고객/직원 흐름 화면을 유지한다.
+- 아직 배포 안 된 것: `v0.2.18` 상담 도우미, `v0.2.19` Vercel 이전 기록, `v0.2.20` 검색 승인 guard/health fields, inquiry health fields, 검색 노출/noindex 해제, KRX API 승인/키/env/실제 provider 연결, 실제 상품 사진/공임/최종 판매정책 확정, 기존 Vercel project transfer, 기존 Supabase project transfer, final admin secret rotation, 유료 서버/API 결제는 아직 별도 작업.
 - 내가 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` 검토 화면. 검색 노출은 아직 차단.
 - 아직 내부 기준/계획일 뿐인 것: `kcgoldx@gmail.com`으로 진행할 KRX/Koscom 승인 결과, KRX 공개·상업 표시 범위, 실제 상품 사진/공임/최종 판매정책/검색 노출 승인, 회사 Vercel/Supabase 기존 프로젝트 이전 실행, 유료 서버/API가 필요할 때 회사 카드 입력, 선택적 Google Workspace/domain-mail 결제
-- 이번 작업에서 건드린 범위: Vercel source-owner transfer attempt 기록, 회사 Vercel team membership 기록, migration runbook/checklist/handoff/open tasks 정리, `audit:site` guardrail의 v0.2.19 기대 문구, `package.json`, `package-lock.json`
+- 이번 작업에서 건드린 범위: 검색 공개 positive approval guard, `/api/health` 검색 승인 상태, `/admin/launch` 승인 checklist, `npm run check:release-state`, fallback/mock/seed 상품 공임 문구, handoff/open tasks/changelog/status 정리, `audit:site` guardrail, `package.json`, `package-lock.json`
 - 절대 건드리지 않은 범위: 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, SMS 발송, Kakao credential, OpenAI key/env 입력, Vercel env/secret, 실제 KRX API 호출, 실제 KRX key/env 입력, Supabase schema
 - 배포 기본값: 2026-05-06 KST 기준 junyoung은 KCG 사이트 변경을 완료·검증하면 live 배포까지 진행하라고 지시했다. 단, 검색 노출/noindex 해제, 결제/장바구니/실시간 거래, secret/env 변경, 되돌리기 어려운 인프라 변경은 여전히 별도 승인 대상이다.
-- 이번 검증 결과: 기존 Vercel 계정 `junyoung8753-2361`을 회사 Vercel team `KCG`에 `MEMBER`로 추가했고, 회사 계정 `kcgoldx-7259`는 계속 `OWNER`다. 하지만 무료 team에서는 두 번째 Owner 승격이 Pro 업그레이드를 요구했고, transfer 대상 검색에서 `KCG`/`kcgoldx`가 계속 나오지 않았다. 따라서 `v0.2.18` production deploy는 여전히 권한/결제 eligibility 전까지 막혀 있다. 이전 `v0.2.18` QA는 `npm run qa:site` rendered audit `1381 checks, 0 skipped`, Playwright `22 passed`, npm audit `0 vulnerabilities`로 통과했다.
+- 이번 검증 결과: `v0.2.20`은 lint, typecheck, source audit, build, Playwright 22개, public/admin screenshot, full `qa:site`, npm audit, live external audit, strict external check를 통과했다. 기존 Vercel 계정 `junyoung8753-2361`은 회사 Vercel team `KCG`의 `MEMBER`이고, 회사 계정 `kcgoldx-7259`는 계속 `OWNER`다. 하지만 company CLI에서 `npx vercel project ls --scope kcgoldx`는 프로젝트 없음으로 나오고, `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx`도 기존 live 배포를 찾지 못한다. 따라서 company CLI에서 기존 project가 보이기 전까지 production deploy는 권한/결제 eligibility 전까지 막혀 있다. Supabase도 회사 org는 보이지만 project list는 비어 있다.
 
 ## Easy Words
 
@@ -56,8 +56,8 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 | 구분 | 이름 | 쉬운 설명 | 내가 봐야 하는 경우 |
 |---|---|---|---|
-| 현재 작업 버전 | `v0.2.19` | Vercel 기존 프로젝트 이전 시도와 무료 team blocker를 기록한 버전 | 이번 변경 확인 |
-| 이전 버전 | `v0.2.18` | 저장 없는 거래 상담 도우미를 추가하고 KRX 우회 수집을 막은 버전 | 비교/이전 상태 확인 |
+| 현재 작업 버전 | `v0.2.20` | 검색 공개 명시 승인 gate와 live/source 상태 점검을 추가한 버전 | 이번 변경 확인 |
+| 이전 버전 | `v0.2.19` | Vercel 기존 프로젝트 이전 시도와 무료 team blocker를 기록한 버전 | 비교/이전 상태 확인 |
 | 백업 브랜치 | `backup/pre-v0.2.4-operations-product-audit` | `v0.2.4`와 `v0.2.5` 문서 보강 전으로 돌아가는 책갈피 | 크게 되돌릴 때 |
 | 현재 작업 브랜치 | `codex/kcg-launch-readiness-catalog-20260427` | 지금 Codex가 작업 중인 줄기 | 상태 확인 |
 | handoff | `CURRENT_HANDOFF.md` | 다음 작업자에게 넘기는 현재 상태 메모 | 이어서 작업할 때 |
@@ -91,6 +91,7 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## 되돌리기 요청 문장
 
+- "v0.2.20 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.19 Vercel 이전 기록만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.18 상담 도우미만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.17 KRX 승인 우선 guard만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."

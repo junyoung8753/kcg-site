@@ -27,6 +27,7 @@ const publicLaunchTasks = [
   "Production 배포 승인",
   "Stable alias 변경 승인",
   "kcgold.co.kr Cafe24 DNS 전환 승인",
+  "KCG_PUBLIC_SEARCH_APPROVED=1 명시 승인 env 설정",
   "robots/noindex 해제와 검색 색인 승인",
 ];
 
@@ -87,7 +88,8 @@ export default function AdminLaunchPage() {
             ))}
           </ul>
           <p className="mt-5 rounded-[1rem] border border-[#e5b8b4] bg-white px-4 py-3 text-sm leading-7 text-[#5f2721]">
-            현재 공개 차단 조건은 유지됩니다. 사업자 임시값, 비최종 도메인, production 미승인, 강제 noindex가 남아 있으면 검색 노출은 열리지 않습니다.
+            현재 공개 차단 조건은 유지됩니다. 사업자 임시값, 비최종 도메인, production 미승인, 강제 noindex,
+            공개 승인 env 미설정 중 하나라도 남아 있으면 검색 노출은 열리지 않습니다.
           </p>
         </div>
       </section>

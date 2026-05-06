@@ -19,7 +19,7 @@ Use `/admin/products` to prepare each item.
 | 서브카테고리 | Optional grouping such as `1돈 골드바`, `18K 매입`, `기업 기념품` | Useful for sorting and scanning |
 | 중량(g) | Exact gram weight when the item is weight-based | Required for automatic reference price |
 | 연동 시세 | Posted price basis such as `순금 살 때`, `순금 팔 때`, `은 살 때` | Must match actual business logic |
-| 임시 공임 | Temporary making fee or margin estimate | Replace with confirmed operating rule |
+| 상담 기준 공임 | Temporary making fee or margin estimate used only as a consultation reference | Replace with confirmed operating rule |
 | 수동 가격 | Use only when automatic posted-price calculation is not appropriate | Must be labeled as reference/inquiry if not final |
 | 이미지 URL | Approved product image under `/products`, `/campaign`, or `/company` | No private documents, competitor images, or fake certificates |
 | 공개 상태 | `상담 가능`, `사전 문의 필요`, or `비공개` | Hide items not ready for public review |

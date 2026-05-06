@@ -8,6 +8,47 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.20 - Search approval guard and release-state QA
+
+- Date: `2026-05-06 KST`
+- Commit: implementation commit is created after this verification pass.
+- Deploy Status: local validation passed and live external QA remains healthy, but production deploy is blocked because the company Vercel account `kcgoldx-7259` still cannot see the existing live project `kcg-confirm-preview`. `npx vercel project ls --scope kcgoldx` reports no projects and `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx` cannot find the deployment. No search/noindex release, payment, card entry, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, SMS/Kakao credential, OpenAI key, KRX API key, or actual KRX data call is included.
+- 사람이 읽는 요약: 검색 노출이 `KCG_FORCE_NOINDEX` 같은 차단 플래그 하나에만 의존하지 않도록, 공개 검색은 별도 명시 승인 env `KCG_PUBLIC_SEARCH_APPROVED=1`이 있을 때만 열리게 바꿨습니다. live가 현재 source보다 뒤처져 있을 때 상담 도우미 테스트 실패를 실제 장애와 구분하는 `check:release-state`도 추가했고, fallback 상품 문구의 `임시 공임` 표현은 `상담 기준 공임`으로 정리했습니다.
+- Summary: Adds a positive search-launch approval gate, exposes search-approval posture in health/admin launch readiness, adds a live/source release-state checker, and cleans customer-facing fallback product fee wording.
+- Changed:
+  - `canExposeToSearch()` now requires production deployment, approved launch hostname, no legal blockers, no forced noindex, and explicit `KCG_PUBLIC_SEARCH_APPROVED=1`.
+  - `/api/health` now exposes `searchApprovalRequired`, `searchApproved`, `forceNoindex`, and `searchExposureStatus` alongside the existing `indexing` status.
+  - `/admin/launch` now lists the explicit search-approval env step and states that missing approval env keeps search blocked.
+  - Added `npm run check:release-state` to classify live/source version mismatches without treating an undeployed source feature as a live-site outage.
+  - Replaced fallback/mock/seed/admin wording `임시 공임` with `상담 기준 공임` without changing real prices, actual product data, Supabase schema, or payment/trading behavior.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/admin/launch`의 공개 승인 항목에 `KCG_PUBLIC_SEARCH_APPROVED=1` 단계가 추가되고, admin 상품 편집 label이 `상담 기준 공임`으로 바뀐다.
+  - 실제 사이트 화면은 아직 안 바뀌고, source 기준만 바뀐 것: live/source mismatch checker and health search-approval fields until deployment is unblocked.
+  - 배포된 것: verification and company Vercel visibility check after this entry decides whether deployment is possible.
+  - 아직 배포 안 된 것: if Vercel project visibility remains blocked, `v0.2.18` 상담 도우미, `v0.2.19` transfer notes, and `v0.2.20` search guard/release-state fields remain source-only.
+- Verification:
+  - Passed: `npm run lint`.
+  - Passed: `npm run typecheck`.
+  - Passed: `npm run audit:site` (`1347 checks, 1 skipped`; rendered URL checks intentionally skipped without `SITE_AUDIT_URL`).
+  - Passed: `npm run build`.
+  - Passed: `npm run test:site` (`22 passed`).
+  - Passed: `npm run screenshot:site`; refreshed public screenshots and visually inspected mobile/desktop launch-relevant captures.
+  - Passed: `npm run screenshot:admin`; inspected `/admin/launch` mobile/desktop and confirmed the new approval-env text is readable.
+  - Passed: `npm run qa:site`; rendered audit `1407 checks, 0 skipped`, Playwright `22 passed`, and npm audit `0 vulnerabilities`.
+  - Passed: `npm audit --audit-level=moderate` (`0 vulnerabilities`).
+  - Passed: `git diff --check` with line-ending warnings only.
+  - Passed with expected warnings: `npm run check:release-state`; live is reachable and not search-indexable, while missing `v0.2.18+` inquiry and `v0.2.20+` search fields are classified as `live behind source`.
+  - Passed live external QA: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`1407 checks, 0 skipped`) and `npm run check:external -- --strict-domain`; live `/api/health` remains `indexing=disabled`, robots blocked, sitemap empty, and both KCG domains resolve to Vercel.
+  - Confirmed company Vercel blocker: `npx vercel whoami` reports `kcgoldx-7259`, team `KCG` exists, `npx vercel project ls --scope kcgoldx` returns no projects, and `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx` cannot find the live deployment.
+  - Confirmed company Supabase blocker: `npx supabase orgs list` shows `Korea Center Gold Exchange`, but `npx supabase projects list` shows no projects.
+- Rollback Hint: `v0.2.20 전으로 되돌려줘`
+- Remaining User-only:
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Provide real KCG product/store/staff photos and final product prices/공임/운영자료 when ready.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
 ## v0.2.19 - Vercel transfer owner-member blocker record
 
 - Date: `2026-05-06 KST`

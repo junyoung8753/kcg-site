@@ -6,7 +6,7 @@ import {
   getSearchExposureStatus,
   isApprovedLaunchHostname,
 } from "@/lib/public-launch";
-import { getDeploymentStage, isConfirmPreviewMode } from "@/lib/runtime-env";
+import { getDeploymentStage, isConfirmPreviewMode, isPublicSearchApproved } from "@/lib/runtime-env";
 import { siteConfig } from "@/lib/site-config";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 
@@ -35,6 +35,9 @@ export function getLaunchReadiness() {
   const legalNotice = getLegalPlaceholderNotice();
   const deployment = getDeploymentStage();
   const approvedLaunchHostname = isApprovedLaunchHostname();
+  const forcedNoindex = isConfirmPreviewMode();
+  const publicSearchApproved = isPublicSearchApproved();
+  const searchExposureStatus = getSearchExposureStatus();
 
   const items: LaunchReadinessItem[] = [
     {
@@ -60,15 +63,19 @@ export function getLaunchReadiness() {
     {
       key: "search-indexing",
       title: "검색 노출",
-      level: getSearchExposureStatus() === "enabled" ? "pass" : "warning",
+      level: searchExposureStatus === "enabled" ? "pass" : "warning",
       summary:
-        getSearchExposureStatus() === "enabled"
-          ? "검색 색인이 허용될 수 있는 상태입니다."
-          : `검색 노출 상태: ${getSearchExposureStatus()}`,
+        searchExposureStatus === "enabled"
+          ? "명시 승인 env와 공개 조건이 모두 맞아 검색 색인이 허용될 수 있는 상태입니다."
+          : `검색 노출 상태: ${searchExposureStatus}`,
       action:
         publicLaunchBlockers.length > 0
           ? `공개 전 차단 항목: ${publicLaunchBlockers.join(" / ")}`
-          : "공개 승인 전까지 KCG_FORCE_NOINDEX=1을 유지합니다.",
+          : forcedNoindex
+            ? "KCG_FORCE_NOINDEX=1이 최우선 차단값입니다. 공개 승인 전까지 유지합니다."
+            : publicSearchApproved
+              ? "robots.txt, sitemap.xml, metadata 색인 상태를 공개 직전 live QA로 재확인합니다."
+              : "junyoung의 명시 승인 전에는 KCG_PUBLIC_SEARCH_APPROVED=1을 설정하지 않습니다.",
     },
     {
       key: "admin-auth",
@@ -95,15 +102,15 @@ export function getLaunchReadiness() {
     {
       key: "launch-approval",
       title: "공개 승인",
-      level: deployment === "production" && !isConfirmPreviewMode() ? "warning" : "pass",
+      level: publicSearchApproved ? "warning" : "pass",
       summary:
-        deployment === "production" && !isConfirmPreviewMode()
-          ? "Production에서 noindex가 해제된 상태일 수 있습니다."
-          : "프리뷰/비공개 검토 모드가 유지됩니다.",
+        publicSearchApproved
+          ? "KCG_PUBLIC_SEARCH_APPROVED가 켜져 있습니다. 공개 직전 승인과 live 외부 QA를 재확인해야 합니다."
+          : "검색 공개 승인 env가 없어 공개 직전 별도 승인 단계가 남아 있습니다.",
       action:
-        deployment === "production" && !isConfirmPreviewMode()
-          ? "실제 공개 승인, 도메인, 법적 표시, 관리자 비밀값을 재확인합니다."
-          : "공개 전까지 preview/noindex 흐름을 유지합니다.",
+        publicSearchApproved
+          ? `현재 배포 단계(${deployment})에서 도메인, 법적 표시, 관리자 비밀값, robots/sitemap 상태를 재확인합니다.`
+          : "검색 공개 승인 전까지 KCG_PUBLIC_SEARCH_APPROVED를 설정하지 않고 preview/noindex 흐름을 유지합니다.",
     },
   ];
 

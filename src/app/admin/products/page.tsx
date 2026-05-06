@@ -188,7 +188,7 @@ function productForm(product: Product) {
             />
           </label>
           <label className="block text-sm text-white/74">
-            임시 공임
+            상담 기준 공임
             <input
               name="makingFee"
               type="number"

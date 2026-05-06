@@ -876,6 +876,9 @@ test("inquiry assistant answers safe questions and protects personal data", asyn
   expect(health.inquiryAssistantStoresMessages).toBe(false);
   expect(health.inquiryAssistantCollectsPersonalData).toBe(false);
   expect(["rules", "openai", "openai-disabled"]).toContain(health.inquiryAssistantMode);
+  expect(health.searchApprovalRequired).toBe(true);
+  expect(health.searchApproved).toBe(false);
+  expect(health.indexing).not.toBe("enabled");
 
   const privacyResponse = await request.post("/api/inquiry-assistant", {
     data: {
@@ -977,10 +980,12 @@ test("admin launch dashboard separates pre-launch work from public-launch approv
   await expect(page.getByRole("heading", { name: "지금 미리 가능한 준비" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "공개 직전 별도 승인 필요" })).toBeVisible();
   await expect(page.getByText("Production 배포 승인")).toBeVisible();
+  await expect(page.getByText("KCG_PUBLIC_SEARCH_APPROVED=1 명시 승인 env 설정")).toBeVisible();
   await expect(page.getByText("robots/noindex 해제와 검색 색인 승인")).toBeVisible();
   const publicLaunchPanel = page.getByTestId("admin-public-launch-approval");
   await expectReadableTextContrast(publicLaunchPanel.getByRole("heading", { name: "공개 직전 별도 승인 필요" }));
   await expectReadableTextContrast(publicLaunchPanel.getByText("Production 배포 승인"));
+  await expectReadableTextContrast(publicLaunchPanel.getByText("KCG_PUBLIC_SEARCH_APPROVED=1 명시 승인 env 설정"));
   await expectReadableTextContrast(publicLaunchPanel.getByText("robots/noindex 해제와 검색 색인 승인"));
 
   await expectNoHorizontalOverflow(page);

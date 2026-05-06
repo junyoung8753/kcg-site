@@ -437,6 +437,7 @@ expectText("package.json", [
   "\"audit:rendered\": \"node scripts/run-rendered-site-audit.mjs\"",
   "\"qa:site\": \"node scripts/run-site-qa.mjs\"",
   "\"release:trace\": \"node scripts/report-release-trace.mjs\"",
+  "\"check:release-state\": \"node scripts/check-live-release-state.mjs\"",
   "\"screenshot:admin\": \"node scripts/capture-admin-screenshots.mjs\"",
 ]);
 expectLatestChangelogVersionMatchesPackage();
@@ -529,14 +530,16 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.19`",
-  "Vercel transfer owner-member blocker record",
-  "거래 상담 도우미",
-  "no-storage public `거래 상담 도우미`",
-  "transfer modal still returned `No results`",
+  "Current KCG site version: `v0.2.20`",
+  "Search approval guard and release-state QA",
+  "KCG_PUBLIC_SEARCH_APPROVED=1",
+  "npm run check:release-state",
+  "상담 도우미",
+  "npx vercel project ls --scope kcgoldx",
+  "cannot find the deployment",
   "KRX_API_APPROVAL_RUNBOOK.md",
   "existing-api-integration-audit-2026-05-05.md",
-  "실제 사이트 화면이 바뀌는 것: 데스크톱 오른쪽 하단 `상담 도우미` 버튼",
+  "데스크톱 오른쪽 하단 `상담 도우미` 버튼",
   "모바일 하단 고정 CTA의 `상담` 버튼",
   "kcgoldx@gmail.com",
   "kcgoldx-7259",
@@ -546,10 +549,13 @@ expectText("docs/setup/CURRENT_HANDOFF.md", [
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
+  "v0.2.20",
   "v0.2.18",
   "kcgoldx@gmail.com",
-  "저장 없는 거래 상담 도우미",
-  "이번 `v0.2.19`에서 실제 사이트 화면이 새로 바뀐 것: 없음",
+  "상담 도우미",
+  "이번 `v0.2.20`에서 실제 사이트 화면이 새로 바뀌는 것",
+  "KCG_PUBLIC_SEARCH_APPROVED=1",
+  "상담 기준 공임",
   "현재 source에는 들어갔지만 live에는 아직 안 보이는 화면 변경",
   "모바일 하단 고정 CTA에는 `상담` 버튼",
   "backup/pre-v0.2.4-operations-product-audit",
@@ -688,6 +694,8 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-053",
   "KCG-TODO-055",
   "KCG-TODO-060",
+  "KCG-TODO-072",
+  "KCG_PUBLIC_SEARCH_APPROVED=1",
   "existing-api-integration-audit-2026-05-05.md",
   "실제 제품 사진",
 ]);
@@ -1023,13 +1031,19 @@ expectText("src/lib/legal-info.ts", [
   "000-00-00000",
   "오픈 전 교체 필요",
 ]);
-expectText("src/lib/public-launch.ts", ["canExposeToSearch", "getPublicLaunchContentBlockers"]);
+expectText("src/lib/public-launch.ts", [
+  "canExposeToSearch",
+  "getPublicLaunchContentBlockers",
+  "disabled-pending-approval",
+  "isPublicSearchApproved",
+]);
 expectText("src/lib/launch-readiness.ts", [
   "사업자·법적 표시",
   "대표 도메인",
   "관리자 인증",
   "운영 데이터 저장소",
   "Cafe24 DNS",
+  "KCG_PUBLIC_SEARCH_APPROVED",
 ]);
 expectNoText("src/lib/launch-readiness.ts", ["Gabia", "Whois DNS"]);
 expectText("src/app/robots.ts", ["canExposeToSearch"]);
@@ -1048,6 +1062,9 @@ expectNoText("src/app/layout.tsx", ["next/font/google", "IBM_Plex_Sans_KR", "Int
 expectText("src/app/api/health/route.ts", [
   "launchReadiness",
   "getSearchExposureStatus",
+  "searchApprovalRequired",
+  "searchApproved",
+  "forceNoindex",
   "marketBlockedProvider",
   "marketBlockedProviderReason",
   "krxProviderApprovalStatus",
@@ -1055,6 +1072,16 @@ expectText("src/app/api/health/route.ts", [
   "inquiryAssistantMode",
   "inquiryAssistantStoresMessages",
   "inquiryAssistantCollectsPersonalData",
+]);
+expectText("scripts/check-external-services.mjs", [
+  "searchApproved",
+  "forceNoindex",
+  "indexing=enabled without searchApproved=true",
+]);
+expectText("scripts/check-live-release-state.mjs", [
+  "live behind source",
+  "search approval health fields",
+  "search exposure guard",
 ]);
 expectText("src/lib/auth/password.ts", ["missing-env", "return false"]);
 expectNoText("src/lib/auth/password.ts", ["adminPreviewPassword", "0000"]);
@@ -1087,6 +1114,7 @@ expectText("src/app/admin/launch/page.tsx", [
   "text-[#5f2721]",
   "Cafe24 도메인 연결 절차",
   "KRX 데이터는 승인·계약 범위 확인 전 production 미사용",
+  "KCG_PUBLIC_SEARCH_APPROVED=1 명시 승인 env 설정",
   "Production 배포 승인",
   "robots/noindex 해제와 검색 색인 승인",
 ]);
@@ -1372,7 +1400,7 @@ expectText("src/app/admin/products/page.tsx", [
   "편집 열기",
   "연동 시세",
   "중량(g)",
-  "임시 공임",
+  "상담 기준 공임",
   "수동 가격",
   "upsertProductAction",
 ]);
@@ -1569,7 +1597,7 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.19` records the Vercel transfer attempt",
+  "Reflection status: `v0.2.20` adds an explicit public-search approval gate",
   "Product/catalog surfaces now distribute approved placeholders by slug",
   "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
   "KRX_API_APPROVAL_RUNBOOK.md",
@@ -1592,8 +1620,8 @@ expectText("docs/setup/CURRENT_HANDOFF.md", [
   "Do not restore previous personal CLI sessions",
   "kcgoldx-7259",
   "Korea Center Gold Exchange",
-  "source-owner browser access",
-  "1381 checks, 0 skipped",
+  "npx vercel project ls --scope kcgoldx",
+  "live-behind-source",
   "Current image source folder",
   "kcg-home-price-desk-20260506.webp",
   "kcg-old-gold-process-20260506.webp",
@@ -1639,6 +1667,8 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-068",
   "KCG-TODO-069",
   "KCG-TODO-070",
+  "KCG-TODO-071",
+  "KCG-TODO-072",
   "KRX_API_APPROVAL_RUNBOOK.md",
   "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
   "company-session-first mode",

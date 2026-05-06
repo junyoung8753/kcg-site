@@ -1,8 +1,19 @@
 import { hasLegalInfoPlaceholders } from "@/lib/legal-info";
-import { isConfirmPreviewMode, isProductionDeployment } from "@/lib/runtime-env";
+import {
+  isConfirmPreviewMode,
+  isProductionDeployment,
+  isPublicSearchApproved,
+} from "@/lib/runtime-env";
 import { siteConfig } from "@/lib/site-config";
 
 const approvedLaunchHostnames = new Set(["kcgold.co.kr", "www.kcgold.co.kr"]);
+
+export type SearchExposureStatus =
+  | "enabled"
+  | "disabled-non-production"
+  | "disabled-forced-noindex"
+  | "disabled-pending-approval"
+  | "blocked-by-launch-check";
 
 export function isApprovedLaunchHostname(siteUrl = siteConfig.siteUrl) {
   try {
@@ -31,18 +42,31 @@ export function canExposeToSearch() {
   return (
     isProductionDeployment() &&
     !isConfirmPreviewMode() &&
+    isPublicSearchApproved() &&
     getPublicLaunchContentBlockers().length === 0
   );
 }
 
-export function getSearchExposureStatus() {
+export function getSearchExposureStatus(): SearchExposureStatus {
   if (canExposeToSearch()) {
     return "enabled";
   }
 
-  if (!isProductionDeployment() || isConfirmPreviewMode()) {
-    return "disabled";
+  if (!isProductionDeployment()) {
+    return "disabled-non-production";
+  }
+
+  if (isConfirmPreviewMode()) {
+    return "disabled-forced-noindex";
+  }
+
+  if (!isPublicSearchApproved()) {
+    return "disabled-pending-approval";
   }
 
   return "blocked-by-launch-check";
+}
+
+export function isSearchApprovalMissing() {
+  return !isPublicSearchApproved();
 }

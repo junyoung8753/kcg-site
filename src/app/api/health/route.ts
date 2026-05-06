@@ -4,7 +4,7 @@ import { getInquiryAssistantStatus } from "@/lib/inquiry-assistant";
 import { getLaunchReadiness } from "@/lib/launch-readiness";
 import { getMarketDashboardData } from "@/lib/market-data";
 import { getSearchExposureStatus } from "@/lib/public-launch";
-import { getDeploymentStage } from "@/lib/runtime-env";
+import { getDeploymentStage, isConfirmPreviewMode, isPublicSearchApproved } from "@/lib/runtime-env";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 
 export async function GET() {
@@ -12,6 +12,9 @@ export async function GET() {
   const marketData = await getMarketDashboardData();
   const launchReadiness = getLaunchReadiness();
   const inquiryAssistant = getInquiryAssistantStatus();
+  const searchExposureStatus = getSearchExposureStatus();
+  const searchApproved = isPublicSearchApproved();
+  const forceNoindex = isConfirmPreviewMode();
 
   return NextResponse.json({
     ok: true,
@@ -23,7 +26,11 @@ export async function GET() {
         : passwordMode === "missing-env"
           ? "missing-env-password"
           : "env-password",
-    indexing: getSearchExposureStatus(),
+    indexing: searchExposureStatus,
+    searchExposureStatus,
+    searchApprovalRequired: true,
+    searchApproved,
+    forceNoindex,
     launchReadiness: {
       status: launchReadiness.status,
       score: launchReadiness.score,
