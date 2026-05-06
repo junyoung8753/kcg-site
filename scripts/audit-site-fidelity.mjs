@@ -396,6 +396,7 @@ expectFile("docs/setup/COMPANY_ACCOUNT_MIGRATION_RUNBOOK.md", { minBytes: 4_000 
 expectFile("docs/setup/KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md", { minBytes: 2_000 });
 expectFile("docs/setup/CONTACT_CHANNELS_RUNBOOK.md", { minBytes: 1_000 });
 expectFile("docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md", { minBytes: 4_000 });
+expectFile("docs/setup/KRX_API_APPROVAL_RUNBOOK.md", { minBytes: 3_000 });
 expectFile("docs/setup/PRODUCT_OPERATIONS_CHECKLIST.md", { minBytes: 2_000 });
 expectFile("docs/setup/AUTO_PRICE_OPERATIONS_BRIEF.md", { minBytes: 2_000 });
 expectFile("docs/setup/LAUNCH_BRIEFING.md", { minBytes: 2_000 });
@@ -429,6 +430,11 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.17 - KRX approval-first guardrails",
+  "KRX Open API (승인 전 사용 불가)",
+  "marketBlockedProvider",
+  "KRX_API_APPROVAL_RUNBOOK.md",
+  "v0.2.17 전으로 되돌려줘",
   "## v0.2.16 - Company transfer feasibility and live launch QA",
   "source owner rights",
   "SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site",
@@ -507,10 +513,11 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.16`",
-  "Company transfer feasibility and live launch QA",
+  "Current KCG site version: `v0.2.17`",
+  "KRX approval-first guardrails",
+  "KRX_API_APPROVAL_RUNBOOK.md",
   "existing-api-integration-audit-2026-05-05.md",
-  "실제 사이트 화면이 바뀌는 것: 없음.",
+  "실제 사이트 화면이 바뀌는 것: `/admin/prices`",
   "kcgoldx@gmail.com",
   "kcgoldx-7259",
   "Korea Center Gold Exchange",
@@ -519,10 +526,10 @@ expectText("docs/setup/CURRENT_HANDOFF.md", [
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
-  "v0.2.16",
+  "v0.2.17",
   "kcgoldx@gmail.com",
-  "회사 Vercel/Supabase 계정으로 가능한 이전/검증 범위를 끝까지 확인하고",
-  "실제 사이트 화면이 바뀐 것: 없음",
+  "KRX 금 가격 API를 승인 전에는 fallback으로 막고",
+  "실제 사이트 화면이 바뀐 것: `/admin/prices`",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",
   "MEDIUM",
@@ -683,6 +690,8 @@ expectText("scripts/capture-site-screenshots.mjs", [
   "products-mobile-viewport.png",
   "services-mobile-viewport.png",
   "KCG_ADMIN_SCREENSHOTS_ONLY",
+  "계산 설정 열기",
+  'select[name="autoSource"]',
 ]);
 expectText("scripts/capture-admin-screenshots.mjs", [
   "KCG_INCLUDE_ADMIN_SCREENSHOTS",
@@ -859,6 +868,8 @@ expectText("tests/site-fidelity.spec.ts", [
   "expectNoVisibleElementEscapesViewport",
   "expectMobileBottomBarDoesNotCover",
   "admin prices exposes automatic price operation",
+  "KRX Open API (승인 전 사용 불가)",
+  'option[value="krx"]',
   "admin products uses a compact list-and-editor management surface",
   "product quick links sync same-route category query",
   "고시가 / 3.75g 기준",
@@ -878,6 +889,10 @@ expectText("src/lib/market-data.ts", [
   "https://gold-api.com/docs",
   "https://gold-api.com/terms",
   "https://www.metals.dev/docs",
+  "KRX_BLOCKED_PROVIDER_REASON",
+  "isBlockedKrxProviderPreference",
+  "krx-open-api",
+  "koscom",
   "순금 3.75g 참고가",
   "기사 제목·출처·날짜만 링크로 제공하며, 본문·이미지는 재게시하지 않습니다.",
 ]);
@@ -978,7 +993,14 @@ expectText("src/app/layout.tsx", [
   "sameAs",
 ]);
 expectNoText("src/app/layout.tsx", ["next/font/google", "IBM_Plex_Sans_KR", "Inter({"]);
-expectText("src/app/api/health/route.ts", ["launchReadiness", "getSearchExposureStatus"]);
+expectText("src/app/api/health/route.ts", [
+  "launchReadiness",
+  "getSearchExposureStatus",
+  "marketBlockedProvider",
+  "marketBlockedProviderReason",
+  "krxProviderApprovalStatus",
+  "blocked-pending-approval",
+]);
 expectText("src/lib/auth/password.ts", ["missing-env", "return false"]);
 expectNoText("src/lib/auth/password.ts", ["adminPreviewPassword", "0000"]);
 expectNoText("src/lib/site-config.ts", ["adminPreviewPassword"]);
@@ -1038,6 +1060,8 @@ expectText("src/app/admin/prices/price-mode-workspace.tsx", [
   "국제 금 3.75g 환산가",
   "자동 게시 허용 변동폭",
   "최소 반영 금액",
+  "KRX Open API (승인 전 사용 불가)",
+  "KRX는 승인·계약 범위 확인 전 선택할 수 없습니다.",
   "지금 계산 실행",
   "계산 설정 열기",
   "저장 상태:",
@@ -1404,6 +1428,9 @@ expectText("docs/quality/official-docs-index.md", [
   "Tailwind CSS v4 theme variables",
   "Vercel environment variables",
   "Supabase docs",
+  "KRX Open API service method",
+  "KRX Open API terms",
+  "Koscom market data service",
 ]);
 expectText(".agents/skills/kcg-site-quality/SKILL.md", [
   "description: Use in the KCG site repo",
@@ -1425,6 +1452,8 @@ expectText("docs/quality/data-source-compliance.md", [
   "KRX OPEN API",
   "KRX Use Boundary",
   "Koscom",
+  "MARKET_DATA_PROVIDER=krx",
+  "KRX_API_APPROVAL_RUNBOOK.md",
   "Google News RSS-style URLs",
   "Do not add scraping of third-party sites",
   "Competitor API Observation Rule",
@@ -1482,9 +1511,10 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.16` is a docs/control-plane pass",
+  "Reflection status: `v0.2.17` adds KRX approval-first guardrails",
   "product-card image variety",
   "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
+  "KRX_API_APPROVAL_RUNBOOK.md",
   "docs/setup/CHANGELOG.md",
   "docs/quality/ai-site-production-playbook.md",
   "docs/quality/data-source-compliance.md",
@@ -1549,6 +1579,8 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-066",
   "KCG-TODO-067",
   "KCG-TODO-068",
+  "KCG-TODO-069",
+  "KRX_API_APPROVAL_RUNBOOK.md",
   "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
   "company-session-first mode",
   "kcgoldx-7259",
@@ -1572,8 +1604,19 @@ expectText("docs/setup/AUTO_PRICE_OPERATIONS_BRIEF.md", [
   "once per day",
   "Vercel Pro",
   "external scheduler",
+  "KRX / Koscom Approval-First Boundary",
+  "MARKET_DATA_PROVIDER=krx",
   "no competitor scraping",
   "company approval",
+]);
+expectText("docs/setup/KRX_API_APPROVAL_RUNBOOK.md", [
+  "approval first",
+  "kcgoldx@gmail.com",
+  "법인은 사업자 정보 등록",
+  "KRX_OPEN_API_KEY",
+  "MARKET_DATA_PROVIDER=krx",
+  "한국센터금거래소 내부 시세 산정 참고용",
+  "Do not paste API keys",
 ]);
 expectText("docs/setup/CONTACT_CHANNELS_RUNBOOK.md", [
   "KCG Contact Channels Runbook",
@@ -1589,6 +1632,8 @@ expectText("docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md", [
   "SUPABASE_SERVICE_ROLE_KEY=<server-only secret>",
   "Gold API free current prices",
   "KRX boundary",
+  "MARKET_DATA_PROVIDER=krx",
+  "KRX_API_APPROVAL_RUNBOOK.md",
   "Completed, verified KCG site source/UI changes may be deployed",
 ]);
 expectText("docs/setup/PRODUCT_OPERATIONS_CHECKLIST.md", [

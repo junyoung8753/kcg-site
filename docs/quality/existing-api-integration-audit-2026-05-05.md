@@ -14,6 +14,7 @@ Existing API and external-data surfaces are already part of the current site, so
 | --- | --- | --- | --- | --- | --- |
 | Gold API | `src/lib/market-data.ts` | Default market-reference provider when `MARKET_DATA_PROVIDER=auto` and no `METALS_DEV_API_KEY` is configured. | Shows international current prices, KRW conversion, and reference values below company posted prices. | Can feed automatic price suggestions through KCG formulas. | If fetch fails, dashboard falls back to mock/reference data. Stale display is marked through freshness metadata. |
 | Metals.Dev | `src/lib/market-data.ts` | Optional provider when `METALS_DEV_API_KEY` exists and provider is `auto` or `metals-dev`. | Can provide richer spot/bid/ask/change and currency reference data. | Paid/optional upgrade candidate for more reliable auto suggestions and richer market data. | If Metals.Dev fails in `metals-dev` mode, code attempts Gold API fallback; if that fails, mock/reference fallback is used. |
+| KRX/Koscom requested provider guard | `src/lib/market-data.ts`, `/api/health` | Explicit blocked-provider guard for `MARKET_DATA_PROVIDER=krx`, `krx-open-api`, `krx-openapi`, or `koscom` before approval. | No public KRX data is displayed before approval; the site keeps fallback/reference-only copy. | Operators can see blocked KRX status through `/api/health` and the admin source selector shows KRX as approval-pending/disabled. | Falls back to mock/reference data and records the blocked provider reason; it does not call KRX or write posted prices. |
 | Google News RSS-style feed | `src/lib/market-data.ts` | Fetches headline links for domestic/global gold-market news context. | Shows link-style title, source, and date context only. It does not republish article bodies or images. | Helps keep the home market section active without manual content entry. | If RSS fetch, parse, or volume is insufficient, seed headlines are used. |
 | TradingView official widget | `src/components/market/trading-view-widget.tsx` | Official embedded chart widget with visible attribution. | Provides chart context after company posted prices and reference tables. | No storage or extraction. It is a visual reference only. | If external script does not load within the timeout, fallback text and a TradingView link are shown. |
 | Supabase storage | `src/lib/supabase/server.ts`, `src/lib/data/index.ts`, `src/lib/data/supabase-repository.ts` | Production data repository when Supabase env vars are configured. | Public prices, products, and announcements can be served from persisted data. | Admin edits persist across reloads; auto-price settings and suggestions can be stored. | If env vars are missing, code uses `MockRepository`; `/api/health` reports `mode: "mock"`. |
@@ -47,7 +48,7 @@ Existing API and external-data surfaces are already part of the current site, so
 
 - New API provider integration.
 - Paid Metals.Dev plan upgrade.
-- KRX/Koscom market-data display or distribution.
+- KRX/Koscom market-data display or distribution beyond the approval-pending fallback guard.
 - CRM/ERP/customer-notification integration.
 - More frequent scheduler through Vercel Pro or external scheduler.
 - Competitor-price automatic collection, scraping, or "slightly changed" derivative pricing. This remains blocked.

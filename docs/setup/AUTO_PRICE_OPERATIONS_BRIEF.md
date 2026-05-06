@@ -1,6 +1,6 @@
 # KCG Automatic Price Operations Brief
 
-Last updated: 2026-05-05 KST.
+Last updated: 2026-05-06 KST.
 
 This brief explains the automatic-price setup in plain language for company reporting. Do not record API keys, cron secrets, admin passwords, payment cards, or account credentials here.
 
@@ -10,7 +10,7 @@ KCG public prices are still **company posted prices**. The automatic system does
 
 The intended flow is:
 
-1. Read allowed market-reference data from `Gold API` by default, or `Metals.Dev` if KCG later adds an API key.
+1. Read allowed market-reference data from `Gold API` by default, or `Metals.Dev` if KCG later adds an API key. KRX/Koscom stays approval-pending and disabled until the exact use scope is approved.
 2. Convert the reference spot value into a 3.75g Korean-won basis.
 3. Apply the KCG internal formula: premium, discount, purity factor, spread, and rounding.
 4. Check safety rules: minimum change, allowed change percentage, business hours, and data freshness.
@@ -49,6 +49,17 @@ For now, keep the current setup:
 - Automatic mode can be tested with manual "지금 계산 실행" and one daily scheduled check.
 - If KCG later says "hourly automatic price checks are worth paying for", choose Vercel Pro first because it is the simplest path for the current codebase.
 
+## KRX / Koscom Approval-First Boundary
+
+KRX can be useful for Korean gold-market context, but it is not enabled as a production price provider now.
+
+- `kcgoldx@gmail.com` can be used as the login/contact email; the service-side distinction is 법인 business information versus 개인 verification, not the visual shape of the email address.
+- Before any public or automatic KCG price use, KRX/Koscom approval must confirm public/commercial display, formula-derived publication, attribution wording, request limits, and whether a paid market-data contract is required.
+- If someone sets `MARKET_DATA_PROVIDER=krx`, `krx-open-api`, `krx-openapi`, or `koscom` before approval, the code falls back to the existing mock/reference data and exposes the blocked state in `/api/health`.
+- KRX API keys must go into Vercel env only after company project access exists. Do not paste keys into chat/docs/Git.
+
+Approval runbook: `docs/setup/KRX_API_APPROVAL_RUNBOOK.md`.
+
 ## What Codex Can Do After Payment Or Scheduler Approval
 
 - Update `vercel.json` to hourly or 30-minute cron after Vercel Pro is active.
@@ -62,6 +73,7 @@ For now, keep the current setup:
 - Whether company operation needs hourly/30-minute automatic checks.
 - Whether Vercel Pro payment is acceptable, or whether an external scheduler should be used.
 - Final KCG premium, discount, spread, rounding, and maximum auto-publish threshold values.
+- KRX/Koscom approval scope if KCG wants Korean gold-market data in the formula path.
 - Any paid scheduler, paid API, or plan upgrade requires company approval before Codex connects it.
 
 ## Boundaries

@@ -8,6 +8,48 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.17 - KRX approval-first guardrails
+
+- Date: `2026-05-06 KST`
+- Commit: implementation commit is created after this verification pass.
+- Deploy Status: committed and pushed after verification. Production deploy is still blocked in the company-only operating path because Vercel CLI account `kcgoldx-7259` cannot see or inspect the existing live project `kcg-confirm-preview` until the source owner transfers it or grants company access. No search/noindex release, payment, secret/env value change, KRX API key entry, live trading, checkout/cart, DNS change, Supabase schema change, or actual KRX data call was performed.
+- 사람이 읽는 요약: KRX 금 가격 API는 “승인 먼저” 원칙으로 정리했습니다. `kcgoldx@gmail.com` Gmail 형식 자체가 법인 신청의 핵심 차단 사유는 아니지만, KRX/Koscom의 법인 정보, 활용 승인, 공개·상업 표시, 제3자 제공, 출처 문구, 유료 계약 여부가 확인되기 전에는 KCG 시세 산식이나 공개 참고 시세에 붙이지 않도록 guard를 넣었습니다.
+- Summary: Adds an approval-first KRX/Koscom boundary, explicit blocked-provider fallback, admin/operator visibility, and a no-secret approval runbook before any KRX market-data integration.
+- Changed:
+  - Added `docs/setup/KRX_API_APPROVAL_RUNBOOK.md` with official KRX/Koscom source links, `kcgoldx@gmail.com` application guidance, safe use-purpose wording, human-only approval steps, and stop conditions.
+  - Added an explicit market-data guard: `MARKET_DATA_PROVIDER=krx`, `krx-open-api`, `krx-openapi`, or `koscom` returns fallback data and does not call KRX before approval.
+  - `/api/health` now exposes `marketBlockedProvider`, `marketBlockedProviderReason`, and `krxProviderApprovalStatus` so operators can see why KRX is not active.
+  - `/admin/prices` now shows `KRX Open API (승인 전 사용 불가)` as a disabled source option until approval/contract scope is confirmed.
+  - Updated data-source compliance, existing API audit, official-docs index, domain/market runbook, automatic-price brief, task ledger, handoff/status docs, and user-only queue with the KRX approval-first boundary.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/admin/prices` source selector text only; public customer pages remain unchanged unless an operator opens the admin price settings.
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: KRX approval runbook, source compliance, task ledger, health/status reporting, and fallback guard.
+  - 배포된 것: 없음. 회사 Vercel CLI는 아직 기존 live 프로젝트 권한이 없어 production deploy/inspect를 실행할 수 없다.
+  - 아직 배포 안 된 것: `v0.2.17` guard/admin copy changes, KRX approval, KRX API key/env entry, KRX provider parser, formula connection, existing Vercel/Supabase project transfer, final admin secret rotation, search/noindex release.
+  - 고객에게 보여줘도 되는 것: 기존 noindex-protected live `kcgold.co.kr` review site. KRX 데이터는 아직 공개 표시되지 않는다.
+  - 아직 내부 기준/계획일 뿐인 것: KRX/Koscom approval result, final attribution wording, request limits, commercial/public display scope, and any paid contract decision.
+- Verification:
+  - Passed: `git status --short --branch`, `git rev-parse --short HEAD`, and `npm run release:trace` before edits (`v0.2.16`, clean branch, deploy blocked by company Vercel access).
+  - Passed: official KRX/Koscom source check against KRX Open API service method, terms, service list, KRX data purchase guidance, and Koscom market data service pages.
+  - Passed: `npm run lint`.
+  - Passed: `npm run typecheck`.
+  - Passed: `npm run audit:site` (`1254 checks, 1 skipped`; rendered URL checks intentionally skipped without `SITE_AUDIT_URL`).
+  - Passed: `npm run build`.
+  - Passed: `npm run test:site` (`21 passed`), including the rendered admin price test that opens calculation settings and verifies `KRX Open API (승인 전 사용 불가)` is disabled.
+  - Passed: local KRX guard health check with `MARKET_DATA_PROVIDER=krx`; `/api/health` returned `marketStatus=fallback`, `marketBlockedProvider=krx`, and `krxProviderApprovalStatus=blocked-pending-approval`.
+  - Passed: `npm audit --audit-level=moderate` (`0 vulnerabilities`).
+  - Passed: `git diff --check`.
+  - Passed: `npm run screenshot:site`; refreshed public screenshots for `/`, `/prices`, `/products`, `/services`, `/about`, and mobile viewport captures.
+  - Passed: `npm run screenshot:admin`; refreshed admin screenshots, including `/admin/prices` with calculation settings opened so the KRX approval guard is visible.
+  - Passed: `npm run qa:site` (`Site fidelity audit passed`, `1316 checks, 0 skipped`, `21 passed`, `0 vulnerabilities`).
+  - Passed live safety check: `npm run check:external -- --strict-domain`; live `/api/health` remains `mode=supabase`, `deployment=production`, `indexing=disabled`, robots remains blocked, sitemap remains empty, DNS still points to Vercel.
+  - Expected blocked: `npx vercel whoami` reports `kcgoldx-7259`, `npx vercel project ls --scope kcgoldx` shows no projects, and `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx` fails because the existing deployment is not under company context `kcgoldx`.
+- Rollback Hint: `v0.2.17 전으로 되돌려줘`
+- Remaining User-only:
+  - Complete only KRX/Koscom service-forced human steps: login/signup with `kcgoldx@gmail.com`, terms, email/phone/MFA/CAPTCHA if required, 법인 business information, document upload, representative confirmation, and approval/contract prompts.
+  - Report only non-secret approval facts: approval result, internal-only/public-display scope, attribution wording, request limits, valid period, paid contract requirement, and support contact.
+  - Do not paste KRX API keys, tokens, passwords, MFA codes, recovery codes, cookies, payment/card values, or service-role keys into chat/docs/Git.
+
 ## v0.2.16 - Company transfer feasibility and live launch QA
 
 - Date: `2026-05-06 KST`

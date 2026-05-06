@@ -192,9 +192,10 @@ MARKET_DATA_PROVIDER=auto
 
 KRX boundary:
 
-- KRX OPEN API lists 금시장 일별매매정보, but public commercial display must wait for authentication key approval, utilization approval, terms confirmation, and any Koscom/market-data contract decision.
-- Until that is confirmed, KRX stays out of KCG production market-data widgets and charts.
+- KRX OPEN API lists 금시장 일별매매정보, but public commercial display must wait for authentication key approval, API utilization approval, terms confirmation, public/commercial display scope, attribution wording, third-party/derived-use limits, and any Koscom/market-data contract decision.
+- Until that is confirmed, KRX stays out of KCG production market-data widgets and charts. `MARKET_DATA_PROVIDER=krx`, `krx-open-api`, `krx-openapi`, or `koscom` is guarded to fallback before approval.
 - KRX references may be used only as static safety education that distinguishes KRX Gold Market from KCG private physical consultation.
+- Current approval checklist: `docs/setup/KRX_API_APPROVAL_RUNBOOK.md`.
 
 Verification:
 

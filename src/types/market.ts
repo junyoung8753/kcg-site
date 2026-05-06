@@ -1,5 +1,6 @@
 export type MarketMetal = "gold" | "silver" | "platinum" | "palladium";
 export type MarketProvider = "metals-dev" | "gold-api" | "mock";
+export type BlockedMarketProvider = "krx";
 export type MarketStatus = "live" | "fallback";
 export type MarketSourceTier = "free" | "premium" | "fallback";
 export type UpgradeReadyProvider = "metals-dev" | "premium-fx" | "news-api";
@@ -85,6 +86,8 @@ export interface MarketDashboardData {
   capabilities: MarketCapabilities;
   isStale: boolean;
   staleMinutes: number;
+  blockedProvider?: BlockedMarketProvider;
+  blockedProviderReason?: string;
   headlineSource: "google-news-rss" | "seed";
   headlineSourceName: string;
   headlineSourceUrl?: string;

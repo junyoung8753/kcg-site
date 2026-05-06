@@ -1030,6 +1030,13 @@ test("admin prices exposes automatic price operation and compact manual editor",
   await expect(autoPanel.getByText("영업시간만 반영").first()).toBeVisible();
   await expect(autoPanel.getByText("24시간 미등록 guard").first()).toBeVisible();
   await expect(autoPanel.getByText("계산 설정 열기")).toBeVisible();
+  await autoPanel.getByText("계산 설정 열기").click();
+  const autoSourceSelect = autoPanel.locator('select[name="autoSource"]');
+  const krxOption = autoSourceSelect.locator('option[value="krx"]');
+  await expect(autoSourceSelect).toBeVisible();
+  await expect(krxOption).toHaveText("KRX Open API (승인 전 사용 불가)");
+  await expect(krxOption).toHaveAttribute("disabled", "");
+  await expect(autoPanel.getByText("KRX는 승인·계약 범위 확인 전 선택할 수 없습니다.")).toBeVisible();
   await expect(page.getByText("선택한 모드 저장")).toHaveCount(0);
   await expect(page.getByText(/저장 상태:|미리보기 상태:/)).toBeVisible();
   await expect(page.getByRole("link", { name: "한국금거래소 참고 보기" })).toBeVisible();

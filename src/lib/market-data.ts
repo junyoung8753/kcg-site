@@ -1,5 +1,6 @@
 import { mockMarketData } from "@/mock/market";
 import type {
+  BlockedMarketProvider,
   DomesticMarketPrice,
   MarketCapabilities,
   MarketDashboardData,
@@ -17,6 +18,8 @@ const metals: MarketMetal[] = ["gold", "silver", "platinum", "palladium"];
 const TROY_OUNCE_GRAMS = 31.1034768;
 const DON_GRAMS = 3.75;
 const STALE_AFTER_MINUTES = 30;
+const KRX_BLOCKED_PROVIDER_REASON =
+  "KRX Open API/Koscom 데이터는 인증키, API 활용 승인, 공개·상업 표시 범위, 출처 문구, 제3자 제공 가능 여부가 확인되기 전에는 KCG production 참고 시세로 사용하지 않습니다.";
 
 const metalLabels: Record<MarketMetal, { label: string; symbol: string; goldApiSymbol: string }> = {
   gold: { label: "국제 금시세", symbol: "Gold", goldApiSymbol: "XAU" },
@@ -85,6 +88,10 @@ function revalidateSeconds() {
 
 function marketProviderPreference() {
   return (process.env.MARKET_DATA_PROVIDER || "auto").toLowerCase();
+}
+
+function isBlockedKrxProviderPreference(provider: string) {
+  return ["krx", "krx-open-api", "krx-openapi", "koscom"].includes(provider);
 }
 
 function buildFreshnessMeta(updatedAt: string) {
@@ -464,6 +471,9 @@ function buildMarketBriefs(
 function buildFallbackDashboard(headlines: {
   items: MarketHeadlineItem[];
   source: "google-news-rss" | "seed";
+}, blockedProvider?: {
+  provider: BlockedMarketProvider;
+  reason: string;
 }): MarketDashboardData {
   const freshness = buildFreshnessMeta(mockMarketData.updatedAt);
   const sourceMeta = buildSourceMeta("mock");
@@ -479,6 +489,10 @@ function buildFallbackDashboard(headlines: {
     sourceTier: sourceMeta.sourceTier,
     displayModeLabel: buildDisplayModeLabel("mock", freshness.isStale),
     upgradeReadyProvider: sourceMeta.upgradeReadyProvider,
+    providerLabel: blockedProvider ? "KRX 승인 전 fallback" : mockMarketData.providerLabel,
+    referenceNote: blockedProvider?.reason ?? mockMarketData.referenceNote,
+    blockedProvider: blockedProvider?.provider,
+    blockedProviderReason: blockedProvider?.reason,
     headlineSourceName: headlineMeta.headlineSourceName,
     headlineSourceUrl: headlineMeta.headlineSourceUrl,
     headlineAttribution: headlineMeta.headlineAttribution,
@@ -675,6 +689,13 @@ export async function getMarketDashboardData(
   const configuredProvider = providerOverride || marketProviderPreference();
   const apiKey = process.env.METALS_DEV_API_KEY;
   const headlines = await getExternalHeadlines();
+
+  if (isBlockedKrxProviderPreference(configuredProvider)) {
+    return buildFallbackDashboard(headlines, {
+      provider: "krx",
+      reason: KRX_BLOCKED_PROVIDER_REASON,
+    });
+  }
 
   if (configuredProvider === "mock") {
     return buildFallbackDashboard(headlines);

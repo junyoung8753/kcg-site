@@ -212,6 +212,8 @@ async function captureAdminPricesAuto(page, viewport, filename) {
       ?.getAttribute("aria-pressed") === "true";
   });
   await page.getByTestId("admin-price-auto-panel").waitFor({ state: "visible", timeout: 5_000 });
+  await page.getByText("계산 설정 열기").click();
+  await page.locator('select[name="autoSource"]').waitFor({ state: "visible", timeout: 5_000 });
   await page.screenshot({ path: resolve(screenshotDir, filename), fullPage: true });
 }
 

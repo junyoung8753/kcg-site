@@ -19,24 +19,25 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## Current Snapshot
 
-- 현재 공식 작업 버전: `v0.2.16`
+- 현재 공식 작업 버전: `v0.2.17`
 - 현재 작업 브랜치: `codex/kcg-launch-readiness-catalog-20260427`
-- 이번 작업 버전: `v0.2.16`
-- 직전 버전: `v0.2.15`
-- 작업 전 HEAD: `a039634`
+- 이번 작업 버전: `v0.2.17`
+- 직전 버전: `v0.2.16`
+- 작업 전 HEAD: `86a6b92`
 - 백업 브랜치: `backup/pre-v0.2.4-operations-product-audit` (`v0.2.4`와 `v0.2.5` 문서 보강 전으로 크게 돌아가는 책갈피)
 
 ## 실제 사이트 반영 여부
 
-- 실제 사이트 화면이 바뀐 것: 없음. 이번 `v0.2.16`은 회사 계정 기준으로 기존 Vercel/Supabase 프로젝트 이전 가능 범위와 live external QA를 끝까지 확인한 문서 작업이다.
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: `kcgoldx@gmail.com` 기준 Vercel CLI 회사 계정 `kcgoldx-7259`, Vercel team `KCG`, Supabase organization `Korea Center Gold Exchange`, 기존 live project/production database가 아직 회사 소유로 이전되지 않은 경계, 공식 이전 조건, live QA 결과.
-- 배포된 것: 아직 없음. `v0.2.16`은 회사 Vercel CLI가 기존 live 프로젝트 권한을 갖기 전까지 production deploy를 하지 않는다. 고객 화면 변경은 없고, 기존 live site는 `v0.2.14` 문서 배포와 `v0.2.12` 고객/직원 흐름 화면을 유지한다.
-- 아직 배포 안 된 것: `v0.2.16` 문서/기준 live 반영, 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, 기존 Vercel project transfer, 기존 Supabase project transfer, final admin secret rotation, 유료 서버/API 결제는 아직 별도 작업.
+- 실제 사이트 화면이 바뀐 것: `/admin/prices`에서 KRX Open API가 승인 전 사용 불가 항목으로 보인다. 고객용 공개 화면은 바뀌지 않는다.
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: KRX/Koscom 승인 우선 runbook, KRX provider fallback guard, `/api/health` blocked-provider 상태, data-source compliance, open tasks, user-only queue.
+- 배포된 것: 아직 없음. `v0.2.17`은 회사 Vercel CLI가 기존 live 프로젝트 권한을 갖기 전까지 production deploy를 하지 않는다. 기존 live site는 `v0.2.14` 문서 배포와 `v0.2.12` 고객/직원 흐름 화면을 유지한다.
+- 아직 배포 안 된 것: `v0.2.17` guard/admin copy 변경, 검색 노출/noindex 해제, KRX API 승인/키/env/실제 provider 연결, 실제 상품 사진/공임/최종 판매정책 확정, 기존 Vercel project transfer, 기존 Supabase project transfer, final admin secret rotation, 유료 서버/API 결제는 아직 별도 작업.
 - 내가 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` 검토 화면. 검색 노출은 아직 차단.
-- 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인, 회사 Vercel/Supabase 기존 프로젝트 이전 실행, 유료 서버/API가 필요할 때 회사 카드 입력, 선택적 Google Workspace/domain-mail 결제
-- 이번 작업에서 건드린 범위: 회사 Gmail 기반 운영/결제 이전 runbook, no-secret ownership checklist, 상태 문서, open tasks, audit guardrail, 사용자 전용 액션 큐, `package.json`, `package-lock.json`
-- 절대 건드리지 않은 범위: 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, Vercel env/secret
+- 아직 내부 기준/계획일 뿐인 것: `kcgoldx@gmail.com`으로 진행할 KRX/Koscom 승인 결과, KRX 공개·상업 표시 범위, 실제 상품 사진/공임/최종 판매정책/검색 노출 승인, 회사 Vercel/Supabase 기존 프로젝트 이전 실행, 유료 서버/API가 필요할 때 회사 카드 입력, 선택적 Google Workspace/domain-mail 결제
+- 이번 작업에서 건드린 범위: KRX approval runbook, market-data fallback guard, admin price source selector copy, `/api/health` KRX blocked status, data-source compliance, 상태 문서, open tasks, audit guardrail, Playwright guard, admin screenshot helper, 사용자 전용 액션 큐, `package.json`, `package-lock.json`
+- 절대 건드리지 않은 범위: 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, Vercel env/secret, 실제 KRX API 호출, 실제 KRX key/env 입력, Supabase schema
 - 배포 기본값: 2026-05-06 KST 기준 junyoung은 KCG 사이트 변경을 완료·검증하면 live 배포까지 진행하라고 지시했다. 단, 검색 노출/noindex 해제, 결제/장바구니/실시간 거래, secret/env 변경, 되돌리기 어려운 인프라 변경은 여전히 별도 승인 대상이다.
+- 이번 검증 결과: `npm run qa:site`가 `1316 checks, 0 skipped`, `21 passed`, `0 vulnerabilities`로 통과했고, `MARKET_DATA_PROVIDER=krx` 로컬 health check도 `fallback / marketBlockedProvider=krx / blocked-pending-approval`로 통과했다. `npm run screenshot:admin`은 `/admin/prices` 계산 설정을 열어 KRX 승인 전 차단 문구가 보이는 상태로 갱신한다. 회사 Vercel `kcgoldx` scope에는 아직 기존 live 프로젝트가 없어 `v0.2.17` production deploy는 권한 이전 전까지 막혀 있다.
 
 ## Easy Words
 
@@ -54,8 +55,8 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 | 구분 | 이름 | 쉬운 설명 | 내가 봐야 하는 경우 |
 |---|---|---|---|
-| 현재 작업 버전 | `v0.2.16` | 회사 Vercel/Supabase 계정으로 가능한 이전/검증 범위를 끝까지 확인하고 live QA까지 다시 돌린 버전 | 이번 변경 확인 |
-| 이전 버전 | `v0.2.15` | 개인 Vercel/Supabase CLI를 더 이상 운영 경로로 쓰지 않고, 회사 Vercel 팀과 Supabase 조직을 실제 생성한 버전 | 비교/이전 상태 확인 |
+| 현재 작업 버전 | `v0.2.17` | KRX 금 가격 API를 승인 전에는 fallback으로 막고, 신청/승인/출처/상업 표시 범위를 정리한 버전 | 이번 변경 확인 |
+| 이전 버전 | `v0.2.16` | 회사 Vercel/Supabase 계정으로 가능한 이전/검증 범위를 끝까지 확인하고 live QA까지 다시 돌린 버전 | 비교/이전 상태 확인 |
 | 백업 브랜치 | `backup/pre-v0.2.4-operations-product-audit` | `v0.2.4`와 `v0.2.5` 문서 보강 전으로 돌아가는 책갈피 | 크게 되돌릴 때 |
 | 현재 작업 브랜치 | `codex/kcg-launch-readiness-catalog-20260427` | 지금 Codex가 작업 중인 줄기 | 상태 확인 |
 | handoff | `CURRENT_HANDOFF.md` | 다음 작업자에게 넘기는 현재 상태 메모 | 이어서 작업할 때 |
@@ -89,6 +90,7 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## 되돌리기 요청 문장
 
+- "v0.2.17 KRX 승인 우선 guard만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.16 회사 이전 가능성/live QA 문서만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.15 회사 Vercel/Supabase CLI 전환 문서만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.14 최소 회사 계정 온보딩 모드 문서만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
@@ -133,7 +135,7 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 - 검색 노출/noindex 해제하지 않음 = junyoung의 명시 승인 전에는 robots/noindex 차단 유지
 - 결제/장바구니/실시간 거래 추가 없음
 - 경쟁사 이미지/카피/가격/API 데이터 사용 없음
-- API 로직 수정 없음 = 시세나 데이터 가져오는 작동 방식은 바꾸지 않음
+- 외부 API 연결 추가 없음 = KRX 호출/키/env/provider parser는 아직 넣지 않음. 승인 전 provider 이름이 설정되면 fallback으로 막는 guard만 추가됨
 - Supabase schema 수정 없음 = 데이터베이스 구조는 건드리지 않음
 - Vercel 설정 수정 없음 = 실제 배포/도메인/환경 설정은 건드리지 않음
 

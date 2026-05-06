@@ -11,7 +11,7 @@ It is not legal advice. It is an operating checklist for product and engineering
 | International spot reference prices | Gold API | Free endpoint, no auth for current prices, no rate limits stated for real-time prices | Allowed as a free reference source while attribution and "reference only" copy remain visible. Do not describe it as KCG's transaction price. |
 | Chart widget | TradingView official widget | Public embeddable widget with TradingView branding/attribution | Allowed only as an embedded visual reference. Keep TradingView attribution visible. Do not scrape, store, transform, or republish TradingView data as KCG-owned data. |
 | Premium metals data candidate | Metals.Dev | Free plan exists but only 100 requests/month; paid plans include spot, bid/ask, LBMA, LME, MCX/IBJA, currency conversion, and higher quotas | Use only with a KCG-owned API key. Worth considering when we need production-grade bid/ask, authority prices, and time-series chart data. |
-| KRX official data candidate | KRX OPEN API / Koscom market-data channels | KRX OPEN API lists 금시장 일별매매정보, but OPEN API terms restrict commercial/third-party use and KRX market data distribution may require separate approval or Koscom contract | Do not use KRX values as KCG production live/reference prices until authentication, utilization approval, commercial-use scope, attribution wording, and any market-data contract requirement are confirmed. Keep KRX references as confusion-prevention education only. |
+| KRX official data candidate | KRX OPEN API / Koscom market-data channels | KRX OPEN API lists 금시장 일별매매정보. Official KRX pages state 법인 users register business information, authentication/API utilization requests require administrator approval, Open API use is non-commercial with third-party provision restrictions, screens using KRX statistical information must state that fact, and KRX/Koscom market-data products may require purchase or separate distribution scope. | Do not use KRX values as KCG production live/reference prices until authentication, utilization approval, public/commercial-display scope, attribution wording, third-party/derived-use limits, and any KRX/Koscom market-data contract requirement are confirmed. `MARKET_DATA_PROVIDER=krx` is guarded to fallback before approval. Keep KRX references as confusion-prevention education only. |
 | News headlines | Google News RSS-style URLs | Useful but not a stable official commercial news API; Google Terms also restrict abusive automated access and IP/content misuse | Treat as a temporary link-only headline reference. Show article title, publisher/source, date, and outbound link only. Do not republish full article body, article images, or summaries copied from publishers. |
 | News API candidate | GNews API | Free plan is for non-commercial/dev use; paid plans permit production/commercial usage by plan | Consider paid plan if news becomes a real production feature. Still preserve publisher source and links. |
 | News API candidate | NewsAPI.org | Developer plan is development/testing only; paid subscription required outside development; terms prohibit republishing copyrighted material | Consider only paid plan for production. Do not scrape article bodies from returned URLs unless separately licensed or clearly permitted. |
@@ -126,11 +126,15 @@ Before adding KRX data to any rendered production page:
 - Apply for and receive the KRX authentication key and utilization approval for the exact API.
 - Confirm whether the intended use is non-commercial only or requires separate data purchase/distribution approval.
 - Confirm whether Koscom market-data contract steps apply, especially for real-time, delayed, EOD, or redistributed market information.
+- Confirm whether formula-derived KCG price publication counts as public/commercial display or redistribution.
+- Record the approved source line, display requirements, request limits, valid period, and whether the approval is internal-only.
 - Store the API key only in environment variables.
 - Record the approved attribution wording and usage limits in this file.
 - Keep KRX data visually separate from KCG company posted prices and automatic international reference prices.
 
-Until those checks are complete, KRX remains a blocked production data source and may be used only for static safety education with source links.
+Until those checks are complete, KRX remains a blocked production data source and may be used only for static safety education with source links. The implementation guard must keep `MARKET_DATA_PROVIDER=krx`, `krx-open-api`, `krx-openapi`, or `koscom` on fallback data and expose the blocked state in `/api/health` rather than calling KRX.
+
+See `docs/setup/KRX_API_APPROVAL_RUNBOOK.md` for the current approval-first checklist, official source links, safe use-purpose wording, and user-only steps.
 
 ## Tools, Forms, And Calculators
 

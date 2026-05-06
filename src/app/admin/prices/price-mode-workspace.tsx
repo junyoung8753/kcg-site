@@ -48,6 +48,10 @@ function formatPercentInput(value: number) {
   return Number((value * 100).toFixed(3));
 }
 
+function getAutoSourceLabel(source: PriceAutoSettings["source"]) {
+  return source === "metals-dev" ? "Metals.Dev" : "Gold API";
+}
+
 function getAdminPriceSnapshotLabel(price: PriceRecord) {
   switch (price.category) {
     case "gold_24k_sell":
@@ -360,7 +364,7 @@ function ModeSwitch({
             {isAutoOn ? "자동 운영 중" : "직접 입력 중"}
           </h3>
           <p className="admin-help mt-2 max-w-3xl">
-            ON이면 Gold API 참고값과 KCG 산식으로 계산해 안전 기준 통과 시 공개 시세에 반영합니다.
+            ON이면 승인된 참고 데이터와 KCG 산식으로 계산해 안전 기준 통과 시 공개 시세에 반영합니다.
             OFF이면 아래 표에서 직접 입력한 값만 공개됩니다.
           </p>
         </div>
@@ -522,7 +526,7 @@ function AutoSettingsForm({
         <label className="block text-sm text-[var(--admin-muted)]">
           <span className="font-bold text-[var(--admin-ink)]">참고 데이터</span>
           <span className="mt-1 block text-xs leading-5 text-[var(--admin-muted)]">
-            회사 시세를 바로 가져오는 것이 아니라, 아래 산식의 원천 참고값입니다.
+            회사 시세를 바로 가져오는 것이 아니라, 아래 산식의 원천 참고값입니다. KRX는 승인·계약 범위 확인 전 선택할 수 없습니다.
           </span>
           <select
             name="autoSource"
@@ -532,6 +536,9 @@ function AutoSettingsForm({
             <option value="gold-api">Gold API</option>
             <option value="metals-dev" disabled={!hasMetalsKey}>
               Metals.Dev{hasMetalsKey ? "" : " (API key 필요)"}
+            </option>
+            <option value="krx" disabled>
+              KRX Open API (승인 전 사용 불가)
             </option>
           </select>
         </label>
@@ -762,7 +769,7 @@ function AutoModePanel({
             <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
               <div className="admin-subpanel px-4 py-3">
                 <dt className="text-[var(--admin-muted)]">참고 데이터</dt>
-                <dd className="mt-1 font-extrabold text-[var(--admin-ink)]">{settings.source === "metals-dev" ? "Metals.Dev" : "Gold API"}</dd>
+                <dd className="mt-1 font-extrabold text-[var(--admin-ink)]">{getAutoSourceLabel(settings.source)}</dd>
               </div>
               <div className="admin-subpanel px-4 py-3">
                 <dt className="text-[var(--admin-muted)]">확인 주기</dt>

@@ -1,6 +1,6 @@
 # KCG Official Docs Index
 
-Last updated: 2026-05-04 KST.
+Last updated: 2026-05-06 KST.
 
 Use this index before changing fast-moving Codex, frontend framework, browser automation, deployment, or market-data behavior. Prefer official or primary sources. Community posts can suggest questions, but they do not override local verification or KCG launch safeguards.
 
@@ -60,6 +60,18 @@ Use this index before changing fast-moving Codex, frontend framework, browser au
   - Use only when revisiting the paid upgrade decision.
 - KRX Open API: https://openapi.krx.co.kr/
   - Use before any KRX display, but do not publish KRX-derived commercial display until usage terms and market-data distribution scope are confirmed.
+- KRX Open API service method: https://openapi.krx.co.kr/contents/OPP/INFO/OPPINFO003.jsp
+  - Use to confirm 법인/개인 가입 flow, authentication-key approval, and API utilization approval.
+- KRX Open API terms: https://openapi.krx.co.kr/contents/OPP/INFO/OPPINFO002.jsp
+  - Use to confirm non-commercial use, third-party provision, statistical-information display wording, quota, and key-deletion constraints.
+- KRX Open API service list: https://openapi.krx.co.kr/contents/OPP/INFO/service/OPPINFO004.cmd
+  - Use to confirm whether `금시장 일별매매정보` is available and what exact service identifier/response shape applies.
+- KRX market-data products: https://openapi.krx.co.kr/contents/OPP/DATA/OPPDATA002.jsp
+  - Use before treating KRX market information as redistributable public data.
+- KRX data purchase guidance: https://openapi.krx.co.kr/contents/OPP/DATA/OPPDATA001.jsp
+  - Use when a paid/statistical data path appears; payment remains user-only.
+- Koscom market data service: https://english.koscom.co.kr/eng/main/contents.do?menuNo=300102
+  - Use to confirm whether KRX-generated market data distribution requires a Koscom contract.
 - TradingView widgets: https://www.tradingview.com/widget/
   - Use only for official embed behavior. Do not extract widget data into KCG tables or storage.
 
