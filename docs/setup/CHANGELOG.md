@@ -11,7 +11,7 @@ Versioning rule before public launch: `0.x.x`.
 ## v0.2.20 - Search approval guard and release-state QA
 
 - Date: `2026-05-06 KST`
-- Commit: implementation commit is created after this verification pass.
+- Commit: `ff2f2f4` (`Release v0.2.20 search approval guard`) pushed to `origin/codex/kcg-launch-readiness-catalog-20260427`.
 - Deploy Status: local validation passed and live external QA remains healthy, but production deploy is blocked because the company Vercel account `kcgoldx-7259` still cannot see the existing live project `kcg-confirm-preview`. `npx vercel project ls --scope kcgoldx` reports no projects and `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx` cannot find the deployment. No search/noindex release, payment, card entry, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, SMS/Kakao credential, OpenAI key, KRX API key, or actual KRX data call is included.
 - 사람이 읽는 요약: 검색 노출이 `KCG_FORCE_NOINDEX` 같은 차단 플래그 하나에만 의존하지 않도록, 공개 검색은 별도 명시 승인 env `KCG_PUBLIC_SEARCH_APPROVED=1`이 있을 때만 열리게 바꿨습니다. live가 현재 source보다 뒤처져 있을 때 상담 도우미 테스트 실패를 실제 장애와 구분하는 `check:release-state`도 추가했고, fallback 상품 문구의 `임시 공임` 표현은 `상담 기준 공임`으로 정리했습니다.
 - Summary: Adds a positive search-launch approval gate, exposes search-approval posture in health/admin launch readiness, adds a live/source release-state checker, and cleans customer-facing fallback product fee wording.
@@ -29,7 +29,7 @@ Versioning rule before public launch: `0.x.x`.
 - Verification:
   - Passed: `npm run lint`.
   - Passed: `npm run typecheck`.
-  - Passed: `npm run audit:site` (`1347 checks, 1 skipped`; rendered URL checks intentionally skipped without `SITE_AUDIT_URL`).
+  - Passed: `npm run audit:site` (`1348 checks, 1 skipped`; rendered URL checks intentionally skipped without `SITE_AUDIT_URL`).
   - Passed: `npm run build`.
   - Passed: `npm run test:site` (`22 passed`).
   - Passed: `npm run screenshot:site`; refreshed public screenshots and visually inspected mobile/desktop launch-relevant captures.
