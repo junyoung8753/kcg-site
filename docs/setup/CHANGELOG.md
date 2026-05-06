@@ -8,6 +8,52 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.16 - Company transfer feasibility and live launch QA
+
+- Date: `2026-05-06 KST`
+- Commit: implementation commit is created after this verification pass.
+- Deploy Status: committed and pushed after verification. Production deploy is still blocked in the company-only operating path because Vercel CLI account `kcgoldx-7259` cannot see or inspect the existing live project `kcg-confirm-preview` until the source owner transfers it or grants company access. No public UI, robots/noindex, DNS, env secret, checkout/cart/payment, live trading behavior, Supabase schema, or product data changed.
+- 사람이 읽는 요약: 결제, 실제 사진/이미지 교체, 실제 가격·공임·제품 업로드를 제외하고 Codex가 할 수 있는 남은 일을 전수 확인했습니다. 회사 Vercel/Supabase 계정으로 가능한 조회는 끝까지 했고, 공식 문서 기준으로 기존 프로젝트 이전은 source owner 권한과 human transfer/payment approval 지점 없이는 완료할 수 없음을 확인했습니다. 대신 live `kcgold.co.kr` 외부 QA, public 법적 표기/전화번호 일관성, robots/noindex 유지, admin secret rotation 준비 경계를 다시 검증했습니다.
+- Summary: Completes the company-account feasibility pass and final pre-search live external QA while preserving the company-only CLI boundary and all launch/search/secret safeguards.
+- Changed:
+  - Bumped the release trace to `v0.2.16`.
+  - Re-verified company Vercel CLI account `kcgoldx-7259`, Vercel team `KCG` (`kcgoldx`), and empty company project scopes.
+  - Re-verified company Supabase organizations, including `Korea Center Gold Exchange` (`raqltqjuqcrusylilnqs`), and empty company project list.
+  - Recorded the expected blocked Vercel checks under company scope: `kcgold.co.kr` and project `kcg-confirm-preview` are not visible in `kcgoldx`.
+  - Recorded the expected blocked Supabase link check: company account lacks privileges for production project `ehmsqlfxxydnebzjfarr`.
+  - Added official-doc-backed transfer conditions: Vercel transfer must be started by an owner of the source team, so source owner rights are required, and target team may require a valid payment method; Supabase transfer requires source organization owner rights and target organization membership.
+  - Reconfirmed admin secret rotation can only be prepared now; actual `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` values must be entered through Vercel secret flow after project access exists and must never be pasted into chat/docs/Git.
+  - Rechecked public legal/company source consistency for 법인명, 대표이사, 사업자등록번호, 본사/매장 전화, and old-phone absence.
+  - Updated the account ownership checklist, migration runbook, handoff/status docs, open task ledger, global user-only queue, and audit guardrails so the remaining work is split into true service-forced human approvals versus Codex-verifiable checks.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: 없음.
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 공식 이전 조건, 회사-only CLI 차단 증거, live external QA 결과, admin secret rotation 준비 경계, 남은 user-only 승인 범위.
+  - 배포된 것: 없음. 회사 Vercel CLI는 아직 기존 live 프로젝트 권한이 없어 production deploy/inspect를 실행할 수 없다.
+  - 아직 배포 안 된 것: `v0.2.16` 문서/기준 변경의 live 반영, 기존 Vercel project transfer, 기존 Supabase project transfer, 최종 admin secret rotation, 검색 노출/noindex 해제, 실제 사진·가격·제품 운영자료, 유료 서버/API 결제.
+  - 고객에게 보여줘도 되는 것: 기존 noindex-protected live `kcgold.co.kr` review site. Live QA는 통과했지만 검색 노출은 계속 차단.
+  - 아직 내부 기준/계획일 뿐인 것: 기존 `kcg-confirm-preview`를 회사 Vercel team으로 이전, 기존 Supabase project `ehmsqlfxxydnebzjfarr`를 회사 Supabase org로 이전, 회사 카드가 필요한 결제 선택, final secret rotation.
+- Verification:
+  - Passed: `git status --short --branch` and `git rev-parse --short HEAD` before edits.
+  - Passed: `npm run release:trace` (pre-edit state reported `v0.2.15`, clean branch, and expected company-transfer deploy block).
+  - Passed: company Vercel checks: `npx vercel whoami` -> `kcgoldx-7259`; `npx vercel teams ls` shows `KCG`; `npx vercel project ls --scope kcgoldx` and `--scope kcgoldx-7259s-projects` show no projects.
+  - Expected blocked: `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx` fails with `Can't find the deployment ... under the context "kcgoldx"`.
+  - Expected blocked: `npx vercel project inspect kcg-confirm-preview --scope kcgoldx` fails with `There is no project for "kcg-confirm-preview"`.
+  - Passed: company Supabase checks: `npx supabase orgs list` shows `kcgoldx@gmail.com's Org` and `Korea Center Gold Exchange`; `npx supabase projects list` shows no projects.
+  - Expected blocked: `npx supabase link --project-ref ehmsqlfxxydnebzjfarr` fails with an access-privilege error under the company account.
+  - Passed: official docs check against Vercel project transfer docs, Vercel project-transfer API docs, Supabase project transfer docs, and Supabase access-control docs.
+  - Passed live external QA: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`1265 checks, 0 skipped`).
+  - Passed live external QA: `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`21 passed`).
+  - Passed live external QA: `npm run check:external -- --strict-domain`; live `/api/health` reports `mode=supabase`, `deployment=production`, `indexing=disabled`, `adminAuth=env-password`; robots remain blocked and sitemap remains empty.
+  - Passed source legal consistency check: public source contains the approved legal values and does not contain old public phone `02-747-1802`.
+  - Runtime screenshots are not required for this docs/control-plane pass because no public/admin UI source changed.
+- Rollback Hint: `v0.2.16 전으로 되돌려줘`
+- Remaining User-only:
+  - Existing project transfer still needs source-owner dashboard/API action or service-forced transfer approval. Vercel may require target payment method before transfer; that is excluded unless KCG chooses to proceed.
+  - Supabase project transfer still needs source organization owner access and target organization membership/approval; billing compatibility prompts remain human-only if they appear.
+  - Enter final `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` only through Vercel secret flow after project access exists; do not paste values into chat.
+  - Visually confirm the legal/company facts before search launch.
+  - Approve robots/noindex release and search indexing only when final public launch is ready.
+
 ## v0.2.15 - Company Vercel and Supabase ownership start
 
 - Date: `2026-05-06 KST`

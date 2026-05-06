@@ -429,6 +429,11 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.16 - Company transfer feasibility and live launch QA",
+  "source owner rights",
+  "SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site",
+  "1265 checks, 0 skipped",
+  "v0.2.16 전으로 되돌려줘",
   "## v0.2.15 - Company Vercel and Supabase ownership start",
   "kcgoldx-7259",
   "vercel.com/kcgoldx",
@@ -502,8 +507,8 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.15`",
-  "Company Vercel and Supabase ownership start",
+  "Current KCG site version: `v0.2.16`",
+  "Company transfer feasibility and live launch QA",
   "existing-api-integration-audit-2026-05-05.md",
   "실제 사이트 화면이 바뀌는 것: 없음.",
   "kcgoldx@gmail.com",
@@ -514,9 +519,9 @@ expectText("docs/setup/CURRENT_HANDOFF.md", [
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
-  "v0.2.15",
+  "v0.2.16",
   "kcgoldx@gmail.com",
-  "개인 Vercel/Supabase CLI를 더 이상 운영 경로로 쓰지 않고",
+  "회사 Vercel/Supabase 계정으로 가능한 이전/검증 범위를 끝까지 확인하고",
   "실제 사이트 화면이 바뀐 것: 없음",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",
@@ -531,15 +536,17 @@ expectText("docs/setup/COMPANY_ACCOUNT_MIGRATION_RUNBOOK.md", [
   "Permanent representative company account: `kcgoldx@gmail.com`",
   "Minimal required mode",
   "Current Progress - 2026-05-06 KST",
+  "refreshed in `v0.2.16`",
   "kcgoldx-7259",
   "KCG` with slug `kcgoldx`",
   "Korea Center Gold Exchange",
+  "Confirmed official transfer boundary",
   "Junyoung Only",
   "Codex Handles After Login",
   "Pay Only When Needed",
   "Optional future domain mailbox",
   "Do not record passwords",
-  "Password-manager item for `kcgoldx@gmail.com`",
+  "Optional password-manager item for `kcgoldx@gmail.com`",
   "Vercel team/workspace display name",
   "Project ref: `ehmsqlfxxydnebzjfarr`",
   "GitHub organization slug candidates",
@@ -551,6 +558,7 @@ expectText("docs/setup/KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md", [
   "Permanent representative company account: `kcgoldx@gmail.com`",
   "Minimal required mode",
   "Current Company CLI State",
+  "Official Transfer Conditions",
   "Vercel CLI account: `kcgoldx-7259`",
   "Vercel company team: `KCG`",
   "Supabase company organizations",
@@ -1474,7 +1482,7 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.15` is a docs/control-plane pass",
+  "Reflection status: `v0.2.16` is a docs/control-plane pass",
   "product-card image variety",
   "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
   "docs/setup/CHANGELOG.md",
@@ -1496,6 +1504,8 @@ expectText("docs/setup/CURRENT_HANDOFF.md", [
   "Do not restore previous personal CLI sessions",
   "kcgoldx-7259",
   "Korea Center Gold Exchange",
+  "source owner rights",
+  "1265 checks, 0 skipped",
   "Current image source folder",
   "kcg-home-price-desk-20260506.webp",
   "kcg-old-gold-process-20260506.webp",
@@ -1538,6 +1548,7 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-065",
   "KCG-TODO-066",
   "KCG-TODO-067",
+  "KCG-TODO-068",
   "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
   "company-session-first mode",
   "kcgoldx-7259",

@@ -19,19 +19,19 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## Current Snapshot
 
-- 현재 공식 작업 버전: `v0.2.15`
+- 현재 공식 작업 버전: `v0.2.16`
 - 현재 작업 브랜치: `codex/kcg-launch-readiness-catalog-20260427`
-- 이번 작업 버전: `v0.2.15`
-- 직전 버전: `v0.2.14`
-- 작업 전 HEAD: `089b2b2`
+- 이번 작업 버전: `v0.2.16`
+- 직전 버전: `v0.2.15`
+- 작업 전 HEAD: `a039634`
 - 백업 브랜치: `backup/pre-v0.2.4-operations-product-audit` (`v0.2.4`와 `v0.2.5` 문서 보강 전으로 크게 돌아가는 책갈피)
 
 ## 실제 사이트 반영 여부
 
-- 실제 사이트 화면이 바뀐 것: 없음. 이번 `v0.2.15`는 기존 개인 Vercel/Supabase CLI 세션을 운영 경로에서 제외하고 회사 계정 기준 팀/조직 생성 상태를 반영한 문서 작업이다.
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: Vercel CLI가 회사 계정 `kcgoldx-7259`로 전환된 상태, Vercel team `KCG` 생성, Supabase organization `Korea Center Gold Exchange` 생성, 기존 live project/production database가 아직 회사 소유로 이전되지 않은 경계.
-- 배포된 것: 아직 없음. `v0.2.15`는 회사 Vercel CLI가 기존 live 프로젝트 권한을 갖기 전까지 production deploy를 하지 않는다. 고객 화면 변경은 없고, 기존 live site는 `v0.2.14` 문서 배포와 `v0.2.12` 고객/직원 흐름 화면을 유지한다.
-- 아직 배포 안 된 것: `v0.2.15` 문서/기준 live 반영, 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, 기존 Vercel project transfer, 기존 Supabase project transfer, 유료 서버/API 결제는 아직 별도 작업.
+- 실제 사이트 화면이 바뀐 것: 없음. 이번 `v0.2.16`은 회사 계정 기준으로 기존 Vercel/Supabase 프로젝트 이전 가능 범위와 live external QA를 끝까지 확인한 문서 작업이다.
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: `kcgoldx@gmail.com` 기준 Vercel CLI 회사 계정 `kcgoldx-7259`, Vercel team `KCG`, Supabase organization `Korea Center Gold Exchange`, 기존 live project/production database가 아직 회사 소유로 이전되지 않은 경계, 공식 이전 조건, live QA 결과.
+- 배포된 것: 아직 없음. `v0.2.16`은 회사 Vercel CLI가 기존 live 프로젝트 권한을 갖기 전까지 production deploy를 하지 않는다. 고객 화면 변경은 없고, 기존 live site는 `v0.2.14` 문서 배포와 `v0.2.12` 고객/직원 흐름 화면을 유지한다.
+- 아직 배포 안 된 것: `v0.2.16` 문서/기준 live 반영, 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, 기존 Vercel project transfer, 기존 Supabase project transfer, final admin secret rotation, 유료 서버/API 결제는 아직 별도 작업.
 - 내가 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` 검토 화면. 검색 노출은 아직 차단.
 - 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인, 회사 Vercel/Supabase 기존 프로젝트 이전 실행, 유료 서버/API가 필요할 때 회사 카드 입력, 선택적 Google Workspace/domain-mail 결제
 - 이번 작업에서 건드린 범위: 회사 Gmail 기반 운영/결제 이전 runbook, no-secret ownership checklist, 상태 문서, open tasks, audit guardrail, 사용자 전용 액션 큐, `package.json`, `package-lock.json`
@@ -54,8 +54,8 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 | 구분 | 이름 | 쉬운 설명 | 내가 봐야 하는 경우 |
 |---|---|---|---|
-| 현재 작업 버전 | `v0.2.15` | 개인 Vercel/Supabase CLI를 더 이상 운영 경로로 쓰지 않고, 회사 Vercel 팀과 Supabase 조직을 실제 생성한 버전 | 이번 변경 확인 |
-| 이전 버전 | `v0.2.14` | `kcgoldx@gmail.com` 로그인만 사람이 해주면 Codex가 가능한 계정 생성·연결·검증을 처리하고, 유료 서버/API 결제는 필요할 때만 하도록 줄인 버전 | 비교/이전 상태 확인 |
+| 현재 작업 버전 | `v0.2.16` | 회사 Vercel/Supabase 계정으로 가능한 이전/검증 범위를 끝까지 확인하고 live QA까지 다시 돌린 버전 | 이번 변경 확인 |
+| 이전 버전 | `v0.2.15` | 개인 Vercel/Supabase CLI를 더 이상 운영 경로로 쓰지 않고, 회사 Vercel 팀과 Supabase 조직을 실제 생성한 버전 | 비교/이전 상태 확인 |
 | 백업 브랜치 | `backup/pre-v0.2.4-operations-product-audit` | `v0.2.4`와 `v0.2.5` 문서 보강 전으로 돌아가는 책갈피 | 크게 되돌릴 때 |
 | 현재 작업 브랜치 | `codex/kcg-launch-readiness-catalog-20260427` | 지금 Codex가 작업 중인 줄기 | 상태 확인 |
 | handoff | `CURRENT_HANDOFF.md` | 다음 작업자에게 넘기는 현재 상태 메모 | 이어서 작업할 때 |
@@ -89,6 +89,7 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## 되돌리기 요청 문장
 
+- "v0.2.16 회사 이전 가능성/live QA 문서만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.15 회사 Vercel/Supabase CLI 전환 문서만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.14 최소 회사 계정 온보딩 모드 문서만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.13 회사 Gmail 운영/결제 이전 문서만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."

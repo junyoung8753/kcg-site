@@ -16,18 +16,41 @@ This checklist records ownership and migration status only. Do not write passwor
 
 ## Current Company CLI State
 
-Verified on 2026-05-06 KST:
+Verified on 2026-05-06 KST, refreshed in `v0.2.16`:
 
 - Vercel CLI account: `kcgoldx-7259`
 - Vercel company team: `KCG` (`vercel.com/kcgoldx`)
 - Vercel company projects: none under `kcgoldx` or `kcgoldx-7259s-projects`
 - Existing live Vercel project: `kcg-confirm-preview` is still not transferred into the company context, so company CLI cannot inspect or deploy it yet
+- Expected blocked Vercel checks:
+  - `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx` -> deployment not found under `kcgoldx`
+  - `npx vercel project inspect kcg-confirm-preview --scope kcgoldx` -> no project found
 - Supabase company organizations:
   - `kcgoldx@gmail.com's Org` (`mjcqkzfmrfmwmrbpyapx`)
   - `Korea Center Gold Exchange` (`raqltqjuqcrusylilnqs`)
 - Supabase company projects: none
 - Existing production Supabase project: `ehmsqlfxxydnebzjfarr` is still not transferred into the company organization
+- Expected blocked Supabase check:
+  - `npx supabase link --project-ref ehmsqlfxxydnebzjfarr` -> company account lacks privileges for the existing project
 - Production site behavior: unchanged; live external checks should continue to use public URLs without secrets
+
+## Official Transfer Conditions
+
+Checked against official docs on 2026-05-06 KST:
+
+- Vercel project transfer:
+  - Must be initiated by an owner of the team the project is transferred from.
+  - The initiating account must also be a member of the target team.
+  - Vercel states that if the target team does not have a valid payment method, one must be added before transfer to avoid service interruption.
+  - Vercel project transfer copies deployments, project settings, domains/aliases, encrypted environment variables, Git link, cron jobs, and related project metadata, but integrations/log data/custom log drains are not transferred.
+- Supabase project transfer:
+  - Must be initiated by the owner of the source organization.
+  - The account must be at least a member of the target organization.
+  - No active GitHub integration connection, project-scoped roles, or log drains should block the transfer.
+  - Moving to a Free Plan can involve a short downtime and must respect the two-free-project limit.
+- Current implication for KCG:
+  - Codex has completed target team/org setup and all company-account-visible checks.
+  - The remaining transfer action is blocked by service-side source-owner/approval/payment prompts, not by missing local commands.
 
 ## Do Now / Defer
 
@@ -36,9 +59,9 @@ Verified on 2026-05-06 KST:
 | `kcgoldx@gmail.com` browser login | done | junyoung/company | Junyoung reported Chrome login complete; do not paste password, MFA, cookies, or recovery codes into Codex. |
 | Human security prompts | user-only as-needed | junyoung/company | Complete MFA/passkey/CAPTCHA/phone/email/terms/transfer confirmations only if a service requires them. |
 | Vercel company workspace | done | codex | Created/verified team `KCG` with slug `kcgoldx`; CLI reports `kcgoldx-7259`. |
-| Vercel project transfer | blocked | shared | Existing project `kcg-confirm-preview` is still outside the company context. Do not use the previous personal CLI session; transfer requires owner/payment/approval handling outside secret-sharing. |
+| Vercel project transfer | blocked | shared | Existing project `kcg-confirm-preview` is still outside the company context. Official docs require source-team owner action and may require a target payment method. Do not use the previous personal CLI session; transfer requires owner/payment/approval handling outside secret-sharing. |
 | Supabase company organization | done | codex | Created/verified organization `Korea Center Gold Exchange` under the company Supabase login. |
-| Supabase project transfer | blocked | shared | Existing project `ehmsqlfxxydnebzjfarr` is still outside the company organization. Do not paste access tokens or service-role keys into Codex. |
+| Supabase project transfer | blocked | shared | Existing project `ehmsqlfxxydnebzjfarr` is still outside the company organization. Official docs require source-org owner rights and target-org membership. Do not paste access tokens or service-role keys into Codex. |
 | Company card/payment entry | user-only later | junyoung/company | Only when Vercel/Supabase/API billing is actually selected or required. |
 | Google Workspace / `@kcgold.co.kr` mail | deferred | shared | Not required for current server/API billing or public-site operation. |
 | GitHub paid Team | deferred | shared | Not required for the current public repo unless governance/private-repo needs change. |
@@ -71,10 +94,14 @@ Before any transfer:
 
 - [ ] `git status --short --branch` is clean or expected.
 - [ ] `npm run release:trace` reports the current version and branch.
-- [ ] `npx vercel inspect https://kcgold.co.kr/` shows the current live deployment.
-- [ ] `npm run check:external -- --strict-domain` confirms production health, custom domains, robots/noindex, and sitemap posture.
+- [x] Company-scope `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx` is expected blocked until transfer.
+- [x] `npm run check:external -- --strict-domain` confirms production health, custom domains, robots/noindex, and sitemap posture.
+- [x] `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` passes live route checks.
+- [x] `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` passes live Playwright checks.
 - [x] The target Vercel team exists: `KCG` (`kcgoldx`).
 - [x] The target Supabase organization exists: `Korea Center Gold Exchange` (`raqltqjuqcrusylilnqs`).
+- [ ] Source Vercel owner initiates transfer or grants company access.
+- [ ] Source Supabase owner initiates transfer or grants company access.
 - [ ] junyoung personal account is invited as backup Owner/Admin where the service supports it.
 - [ ] Company payment method is entered only by junyoung/company, not Codex.
 - [ ] No secret values are copied into docs/chat/Git.
