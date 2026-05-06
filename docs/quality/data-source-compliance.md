@@ -72,6 +72,13 @@ Do not add scraping of third-party sites unless all of the following are true:
 
 If a source offers an official API, use the official API instead of scraping.
 
+KRX-specific blocked shortcuts:
+
+- Do not use KRX hidden web endpoints, OTP/download endpoints, browser automation, or public-page scraping as a substitute for Open API/Koscom approval.
+- Do not extract TradingView widget data, chart pixels, or script responses into KCG price tables.
+- Do not copy competitor posted prices and apply offsets, rounding, or formulas to disguise the source.
+- Allowed alternatives before KRX approval are link-only KRX education, official TradingView embed without extraction, existing allowed Gold API/Metals.Dev reference data, or a human operator manually reviewing public sources and then posting KCG company prices under KCG policy.
+
 ## Admin Posted-Price Auto-Fill Boundary
 
 The admin auto-fill feature is a KCG-owned posted-price automation workflow. It must not scrape, copy, proxy, cache, or slightly modify competitor posted prices.
@@ -143,6 +150,7 @@ Useful KCG features inspired by gold exchange sites and visitor needs:
 - 금/은/백금 단위 변환: g, 돈, kg, T.oz.
 - 예상 참고가 계산기: item type, purity, weight, and reference price, with a strong "현장 확인 후 최종 안내" disclaimer.
 - 거래 상담 준비 form: phone, item type, estimated weight, quantity, desired consultation time, photo upload only after explicit privacy/retention rules are approved.
+- 거래 상담 도우미: may answer from approved public FAQ/visit/price guidance without storing messages. It must not collect contact information, final-price promises, photos, documents, legal/tax conclusions, or payment/trading instructions until privacy, retention, provider, and staff workflow are separately approved.
 - 매입 상담 checklist: 신분증, 보증서, 영수증, 제품 상태, 케이스, 수량.
 - Chart time-range controls: 1개월, 5개월, 1년, 3년 when licensed data exists.
 - Source switch/status panel: company posted price, automatic reference price, fallback mode.
@@ -152,6 +160,7 @@ Implementation constraints:
 - Do not add online payment, cart, live trading, quote guarantee, admin write behavior, or personal-data collection without explicit approval.
 - Do not add file/photo upload until privacy copy, retention behavior, storage, and admin access control are designed.
 - For forms before backend approval, use phone-first CTA or local-only UI mockups without collecting data.
+- For AI/chat before backend approval, use no-storage FAQ guidance and route hard questions to phone or verified official channels.
 
 ## Competitor Reference Rules
 
@@ -183,3 +192,4 @@ Before shipping a new API/RSS/chart/form feature:
 - The UI must distinguish company posted prices from automatic reference data.
 - Any paid API key must stay in environment variables and never be committed.
 - Any provider terms that limit commercial use must be recorded in this file or a task-specific handoff.
+- Any AI inquiry feature must expose whether it stores messages, whether it collects personal data, and which human handoff channels are active.

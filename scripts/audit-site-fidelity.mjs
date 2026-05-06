@@ -15,6 +15,14 @@ const blockedCompetitorEndpoints = [
   "irena111.cafe24.com",
   "kaggold.com/index.grp_ajax2.php",
 ];
+const blockedMarketScrapingTerms = [
+  "GenerateOTP",
+  "OTP",
+  "bldAttendant",
+  "data.krx.co.kr/comm/fileDn",
+  "dbms/MDC",
+  "MDCSTAT",
+];
 
 function readText(relativePath) {
   const absolutePath = resolve(rootDir, relativePath);
@@ -410,6 +418,9 @@ expectFile("scripts/check-external-services.mjs", { minBytes: 2_000 });
 expectFile("scripts/run-rendered-site-audit.mjs", { minBytes: 2_000 });
 expectFile("scripts/run-site-qa.mjs", { minBytes: 1_000 });
 expectFile("scripts/capture-admin-screenshots.mjs", { minBytes: 100 });
+expectFile("src/lib/inquiry-assistant.ts", { minBytes: 8_000 });
+expectFile("src/components/inquiry/inquiry-assistant-widget.tsx", { minBytes: 6_000 });
+expectFile("src/app/api/inquiry-assistant/route.ts", { minBytes: 1_000 });
 expectFile("docs/research/gold-exchange-benchmark-2026-04-25.md", { minBytes: 3_000 });
 expectFile("docs/research/gold-exchange-deep-audit-2026-04-27.md", { minBytes: 6_000 });
 expectMissing("src/app/(site)/option-1/page.tsx");
@@ -430,6 +441,11 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.18 - Inquiry assistant and KRX no-scraping boundary",
+  "거래 상담 도우미",
+  "store: false",
+  "inquiryAssistantMode",
+  "v0.2.18 상담 도우미 전으로 되돌려줘",
   "## v0.2.17 - KRX approval-first guardrails",
   "KRX Open API (승인 전 사용 불가)",
   "marketBlockedProvider",
@@ -513,11 +529,14 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.17`",
-  "KRX approval-first guardrails",
+  "Current KCG site version: `v0.2.18`",
+  "Inquiry assistant and KRX no-scraping boundary",
+  "거래 상담 도우미",
+  "store: false",
   "KRX_API_APPROVAL_RUNBOOK.md",
   "existing-api-integration-audit-2026-05-05.md",
-  "실제 사이트 화면이 바뀌는 것: `/admin/prices`",
+  "실제 사이트 화면이 바뀌는 것: 데스크톱 오른쪽 하단 `상담 도우미` 버튼",
+  "모바일 하단 고정 CTA의 `상담` 버튼",
   "kcgoldx@gmail.com",
   "kcgoldx-7259",
   "Korea Center Gold Exchange",
@@ -526,10 +545,11 @@ expectText("docs/setup/CURRENT_HANDOFF.md", [
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
-  "v0.2.17",
+  "v0.2.18",
   "kcgoldx@gmail.com",
-  "KRX 금 가격 API를 승인 전에는 fallback으로 막고",
-  "실제 사이트 화면이 바뀐 것: `/admin/prices`",
+  "저장 없는 거래 상담 도우미",
+  "실제 사이트 화면이 바뀐 것: 데스크톱 오른쪽 하단에 `상담 도우미` 버튼",
+  "모바일 하단 고정 CTA에는 `상담` 버튼",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",
   "MEDIUM",
@@ -867,6 +887,7 @@ expectText("src/components/prices/price-context-guide.tsx", [
 expectText("tests/site-fidelity.spec.ts", [
   "expectNoVisibleElementEscapesViewport",
   "expectMobileBottomBarDoesNotCover",
+  "inquiry assistant answers safe questions and protects personal data",
   "admin prices exposes automatic price operation",
   "KRX Open API (승인 전 사용 불가)",
   'option[value="krx"]',
@@ -946,6 +967,32 @@ expectText("src/app/api/admin/price-auto-apply/route.ts", [
 ]);
 expectText("vercel.json", ["/api/admin/price-auto-refresh", "0 0 * * *"]);
 expectNoText("src/lib/market-data.ts", blockedCompetitorEndpoints);
+expectNoText("src/lib/market-data.ts", blockedMarketScrapingTerms);
+expectNoText("src/lib/inquiry-assistant.ts", blockedCompetitorEndpoints);
+expectNoText("src/lib/inquiry-assistant.ts", blockedMarketScrapingTerms);
+expectNoText("src/app/api/inquiry-assistant/route.ts", blockedCompetitorEndpoints);
+expectNoText("src/app/api/inquiry-assistant/route.ts", blockedMarketScrapingTerms);
+
+expectText("src/lib/inquiry-assistant.ts", [
+  "INQUIRY_ASSISTANT_PROVIDER",
+  "OPENAI_API_KEY",
+  "store: false",
+  "containsPersonalContactInfo",
+  "KRX 데이터는 승인·계약 범위",
+  "Final transaction amount",
+]);
+expectText("src/components/inquiry/inquiry-assistant-widget.tsx", [
+  "data-testid=\"inquiry-assistant-widget\"",
+  "거래 상담 도우미",
+  "/api/inquiry-assistant",
+  "연락처·주민등록번호·카드정보는 입력하지 마세요.",
+]);
+expectText("src/app/api/inquiry-assistant/route.ts", [
+  "answerInquiryAssistant",
+  "getInquiryAssistantStatus",
+  "자동 상담 안내를 불러오지 못했습니다.",
+]);
+expectText("src/app/(site)/layout.tsx", ["InquiryAssistantWidget"]);
 
 expectText("src/components/layout/site-header.tsx", [
   "siteConfig.familyLinks",
@@ -964,6 +1011,7 @@ expectText("src/components/layout/mobile-contact-bar.tsx", [
   "전화",
   "시세",
   "위치",
+  "상담",
 ]);
 expectTextOrder("src/lib/site-config.ts", '{ href: "/about", label: "매장안내" }', '{ href: "/company", label: "회사소개" }');
 expectText("src/lib/legal-info.ts", [
@@ -1000,6 +1048,9 @@ expectText("src/app/api/health/route.ts", [
   "marketBlockedProviderReason",
   "krxProviderApprovalStatus",
   "blocked-pending-approval",
+  "inquiryAssistantMode",
+  "inquiryAssistantStoresMessages",
+  "inquiryAssistantCollectsPersonalData",
 ]);
 expectText("src/lib/auth/password.ts", ["missing-env", "return false"]);
 expectNoText("src/lib/auth/password.ts", ["adminPreviewPassword", "0000"]);
@@ -1458,6 +1509,9 @@ expectText("docs/quality/data-source-compliance.md", [
   "Do not add scraping of third-party sites",
   "Competitor API Observation Rule",
   "KCG must not call, scrape, proxy, cache, republish, or chart competitor internal endpoints",
+  "KRX-specific blocked shortcuts",
+  "Do not extract TradingView widget data",
+  "거래 상담 도우미",
   "기사 제목·출처·날짜만 링크로 제공",
   "Do not add online payment, cart, live trading",
 ]);
@@ -1511,7 +1565,7 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.17` adds KRX approval-first guardrails",
+  "Reflection status: `v0.2.18` adds a no-storage public `거래 상담 도우미`",
   "product-card image variety",
   "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
   "KRX_API_APPROVAL_RUNBOOK.md",
@@ -1580,6 +1634,7 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-067",
   "KCG-TODO-068",
   "KCG-TODO-069",
+  "KCG-TODO-070",
   "KRX_API_APPROVAL_RUNBOOK.md",
   "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
   "company-session-first mode",
@@ -1621,6 +1676,8 @@ expectText("docs/setup/KRX_API_APPROVAL_RUNBOOK.md", [
 expectText("docs/setup/CONTACT_CHANNELS_RUNBOOK.md", [
   "KCG Contact Channels Runbook",
   "카카오톡 문의",
+  "거래 상담 도우미",
+  "SMS staff alerts require",
   "kakaoChatUrl",
   "developers.kakao.com",
 ]);

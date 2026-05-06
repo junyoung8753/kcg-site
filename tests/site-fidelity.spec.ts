@@ -857,6 +857,50 @@ test("prices market reference stays compact in the two-column desktop layout", a
   await expectNoVisibleElementEscapesViewport(page);
 });
 
+test("inquiry assistant answers safe questions and protects personal data", async ({ page, request }) => {
+  await page.setViewportSize({ width: 390, height: 1000 });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+
+  await expect(page.getByTestId("mobile-contact-bar").getByRole("button", { name: "상담" })).toBeVisible();
+  await page.getByTestId("mobile-contact-bar").getByRole("button", { name: "상담" }).click();
+
+  const dialog = page.getByRole("dialog", { name: "거래 상담 도우미" });
+  await expect(dialog.getByText("개인정보 저장 없이 기본 문의만 안내합니다")).toBeVisible();
+  await dialog.getByRole("button", { name: "시세표" }).click();
+  await expect(dialog.getByText("회사가 고시한 시세").last()).toBeVisible();
+  await expect(dialog.getByRole("link", { name: "전화 상담" }).first()).toBeVisible();
+
+  const healthResponse = await request.get("/api/health");
+  expect(healthResponse.ok()).toBe(true);
+  const health = await healthResponse.json();
+  expect(health.inquiryAssistantStoresMessages).toBe(false);
+  expect(health.inquiryAssistantCollectsPersonalData).toBe(false);
+  expect(["rules", "openai", "openai-disabled"]).toContain(health.inquiryAssistantMode);
+
+  const privacyResponse = await request.post("/api/inquiry-assistant", {
+    data: {
+      message: "010-1234-5678로 연락 주세요",
+      path: "/",
+    },
+  });
+  expect(privacyResponse.ok()).toBe(true);
+  const privacy = await privacyResponse.json();
+  expect(privacy.handoffRequired).toBe(true);
+  expect(privacy.answer).toContain("개인정보");
+
+  const krxResponse = await request.post("/api/inquiry-assistant", {
+    data: {
+      message: "KRX 금시장 시세를 가져와서 우리 시세로 써도 되나요?",
+      path: "/prices",
+    },
+  });
+  expect(krxResponse.ok()).toBe(true);
+  const krx = await krxResponse.json();
+  expect(krx.intent).toBe("krx_reference");
+  expect(krx.answer).toContain("승인");
+  expect(krx.answer).toContain("회사 고시 시세");
+});
+
 test("mobile fixed contact bar does not cover key decision content", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
 

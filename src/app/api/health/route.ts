@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminPasswordMode } from "@/lib/auth/password";
+import { getInquiryAssistantStatus } from "@/lib/inquiry-assistant";
 import { getLaunchReadiness } from "@/lib/launch-readiness";
 import { getMarketDashboardData } from "@/lib/market-data";
 import { getSearchExposureStatus } from "@/lib/public-launch";
@@ -10,6 +11,7 @@ export async function GET() {
   const passwordMode = getAdminPasswordMode();
   const marketData = await getMarketDashboardData();
   const launchReadiness = getLaunchReadiness();
+  const inquiryAssistant = getInquiryAssistantStatus();
 
   return NextResponse.json({
     ok: true,
@@ -45,6 +47,11 @@ export async function GET() {
     metalsDevConfigured: Boolean(process.env.METALS_DEV_API_KEY),
     krxProviderPrepared: false,
     krxProviderApprovalStatus: "blocked-pending-approval",
+    inquiryAssistantMode: inquiryAssistant.mode,
+    inquiryAssistantStoresMessages: inquiryAssistant.storesMessages,
+    inquiryAssistantCollectsPersonalData: inquiryAssistant.collectsPersonalData,
+    inquiryAssistantOpenAiConfigured: inquiryAssistant.openAiConfigured,
+    inquiryAssistantHandoffChannels: inquiryAssistant.handoffChannels,
     fxPair: "USD/KRW",
     fxAsk: marketData.krwRate,
     fxUpdatedAt: marketData.updatedAt,

@@ -31,6 +31,17 @@ This runbook covers the approval-first path for using KRX/Koscom gold-market dat
 - KRX Gold Market safety guidance: `https://open.krx.co.kr/contents/OPN/01/01050206/OPN01050206.jsp`
   - KRX Gold Market is a securities-company account based exchange-traded market and is separate from private homepage/pre-deposit/OTC physical trades.
 
+## Legal Alternative Review - 2026-05-06
+
+There is no safe "shortcut" that should be implemented as production code before approval. The reviewed legal paths are:
+
+- Approved KRX Open API path: use `금시장 일별매매정보` only after authentication key issuance, API utilization approval, attribution wording, request limits, and public/commercial-display scope are confirmed.
+- Contract/data-product path: use KRX data purchase or Koscom market-data service if KRX/Koscom says public web display, redistribution, real-time, delayed, or derived formula use requires a contract.
+- Interim reference path: keep the existing Gold API/Metals.Dev-style reference provider boundary, link-only KRX education, and KCG human operator posted-price workflow.
+- Blocked workaround path: do not call hidden KRX web endpoints, OTP/download URLs, public-page scraping, browser automation, TradingView extraction, competitor price copying, or "copy then offset" formulas.
+
+If approval is internal-only, Codex may add an admin/operator reference importer later, but public pages must still show company posted prices first and must not publish raw KRX data.
+
 ## Human-Only Steps
 
 Junyoung or a company representative must complete only the service-forced steps:

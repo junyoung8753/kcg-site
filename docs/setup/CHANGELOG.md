@@ -8,6 +8,48 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.18 - Inquiry assistant and KRX no-scraping boundary
+
+- Date: `2026-05-06 KST`
+- Commit: implementation commit is created after this verification pass.
+- Deploy Status: committed and pushed after verification. Production deploy is still blocked in the company-only operating path because Vercel CLI account `kcgoldx-7259` cannot see or inspect the existing live project `kcg-confirm-preview` until the source owner transfers it or grants company access. No search/noindex release, payment, secret/env value change, SMS provider key, Kakao channel credential, KRX API key entry, checkout/cart, DNS change, Supabase schema change, or actual KRX data call was performed.
+- 사람이 읽는 요약: 고객이 전화하기 전 헷갈리는 기본 질문을 줄이기 위해 사이트 전체에 `거래 상담 도우미`를 추가했습니다. 첫 버전은 개인정보를 저장하지 않고, 시세표 보는 법·고금 매입·방문 준비·상품/대량 문의·KRX 구분만 안내합니다. 전화번호·이메일 같은 개인정보, 확정가, 결제, 법률/세무, 직원 확인이 필요한 문의는 자동 답변 대신 전화/공식 채널로 넘깁니다.
+- Summary: Adds a no-storage, consultation-only inquiry assistant with optional OpenAI Responses API support and blocks KRX scraping/hidden-endpoint workarounds in favor of approved or licensed data paths.
+- Changed:
+  - Added `/api/inquiry-assistant` with rule-based safe answers by default and optional `INQUIRY_ASSISTANT_PROVIDER=openai` + `OPENAI_API_KEY` support using OpenAI Responses API with `store: false`.
+  - Added a `거래 상담 도우미` widget outside public page `main` content; desktop uses a lower-right trigger and mobile opens it from the fixed contact bar so the closed trigger does not cover the price table.
+  - Added personal-data detection for phone/email/resident-number patterns so contact details are not sent to OpenAI and the user is routed to human consultation.
+  - `/api/health` now exposes `inquiryAssistantMode`, no-message-storage posture, no-personal-data-collection posture, OpenAI key presence, and configured handoff channels.
+  - Added Playwright coverage for the rendered widget, `/api/health` inquiry fields, personal-data handoff, and KRX approval-boundary answer.
+  - Updated data-source and contact-channel guidance so KRX hidden endpoint scraping, TradingView extraction, competitor price copying, and SMS/Kakao automation without consent/provider approval remain blocked.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: 데스크톱 오른쪽 하단에는 `상담 도우미` 버튼이 보이고, 모바일 하단 고정 CTA에는 `상담` 버튼이 추가되어 기본 문의를 자동 안내한다.
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: OpenAI API key, SMS 자동 발송, Kakao 공식 채널 URL, KRX/Koscom 승인·계약 경로는 준비 기준만 추가됐다.
+  - 배포된 것: 없음. 회사 Vercel CLI는 아직 기존 live 프로젝트 권한이 없어 production deploy/inspect를 실행할 수 없다.
+  - 아직 배포 안 된 것: `v0.2.18` 상담 도우미, inquiry health fields, KRX no-scraping guardrail docs, existing Vercel/Supabase project transfer, final admin secret rotation, search/noindex release.
+  - 고객에게 보여줘도 되는 것: noindex-protected review site after deploy. 상담 도우미는 확정가·결제·실시간 거래를 제공하지 않는다.
+  - 아직 내부 기준/계획일 뿐인 것: OpenAI API key/billing, Kakao official channel URL, SMS provider contract/key, KRX/Koscom approval result, KRX attribution wording, request limits, commercial/public display scope, and any paid contract decision.
+- Verification:
+  - Passed: official OpenAI docs MCP check for Responses API `store: false`, structured output via `text.format`, and `gpt-5.4-mini` availability for a later optional assistant mode.
+  - Passed: official KRX/Koscom source check for `금시장 일별매매정보`, KRX Open API approval steps, KRX Open API terms, KRX data purchase review, Koscom market-data contract/distribution paths, and KRX Gold Market separation from private gold-exchange sites.
+  - Passed: `npm run lint`.
+  - Passed: `npm run typecheck`.
+  - Passed: `npm run audit:site` (`1321 checks, 1 skipped`; rendered URL checks intentionally skipped without `SITE_AUDIT_URL`).
+  - Passed: `npm run build`.
+  - Passed: `npm run test:site` (`22 passed`), including the new inquiry assistant test for mobile CTA open, safe answer, `/api/health` inquiry fields, personal-data handoff, and KRX approval-boundary answer.
+  - Passed: `npm run screenshot:site`; refreshed public screenshots for `/`, `/prices`, `/products`, `/services`, `/about`, and mobile viewport captures. Manually inspected `home-mobile-viewport.png`, `prices-mobile-viewport.png`, `home-desktop-viewport.png`, and an extra `inquiry-assistant-mobile-open.png` capture.
+  - Passed: `npm run qa:site`; rendered audit completed with `1381 checks, 0 skipped`, browser tests `22 passed`, and npm audit `0 vulnerabilities`.
+  - Passed: `npm run check:external -- --strict-domain`; live site remains `mode=supabase`, `deployment=production`, `indexing=disabled`, robots remains blocked, sitemap remains empty, and both KCG domains still point to Vercel.
+  - Passed: `git diff --check` with line-ending warnings only.
+  - Expected blocked: `npx vercel whoami` reports `kcgoldx-7259`, `npx vercel project ls --scope kcgoldx` shows no projects, and `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx` fails because the existing live deployment is not under company context `kcgoldx`.
+- Rollback Hint: `v0.2.18 상담 도우미 전으로 되돌려줘`
+- Remaining User-only:
+  - Optional later: enter an OpenAI API key only through Vercel env after company project access exists; do not paste the key into chat/docs/Git.
+  - Optional later: confirm the official Kakao channel/chat URL before public Kakao buttons appear.
+  - Optional later: approve and pay for SMS provider integration only if KCG wants staff text alerts; provider keys and payment remain human-only.
+  - Complete KRX/Koscom service-forced human steps before any KRX production data use; report only non-secret approval facts.
+  - Do not paste API keys, tokens, passwords, MFA codes, recovery codes, cookies, payment/card values, or service-role keys into chat/docs/Git.
+
 ## v0.2.17 - KRX approval-first guardrails
 
 - Date: `2026-05-06 KST`
