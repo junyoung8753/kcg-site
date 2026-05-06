@@ -30,7 +30,7 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 - 실제 사이트 화면이 바뀐 것: 없음. 이번 `v0.2.13`은 회사 계정/결제/소유권 이전 계획 문서 작업이다.
 - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: `kcgoldx@gmail.com` 영구 대표 운영 계정 기준, Vercel/Supabase/GitHub/Cafe24 이전 순서, 비밀값 없는 ownership checklist, 사용자 전용 보안/결제/승인 할 일.
-- 배포된 것: `v0.2.12` 고객/직원 흐름과 상품 이미지 다양화 작업은 커밋·푸시·production deploy·live external QA까지 완료됐다. `v0.2.13`은 고객 화면 변경이 없는 문서/운영 기준 작업이며 로컬 검증까지 완료됐다.
+- 배포된 것: `v0.2.13` 회사 Gmail 운영/결제 이전 문서 작업은 커밋·푸시·production deploy·live external QA까지 완료됐다. 고객 화면 변경은 없고, `v0.2.12` 고객/직원 흐름 화면이 그대로 유지된다.
 - 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, Vercel Pro 또는 외부 scheduler 결정, 실제 SaaS 계정 이전 실행은 아직 별도 작업.
 - 내가 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` 검토 화면. 검색 노출은 아직 차단.
 - 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인, 회사 Vercel/Supabase/GitHub/Cafe24 이전 실행, 회사 카드 입력, 선택적 Google Workspace/domain-mail 결제

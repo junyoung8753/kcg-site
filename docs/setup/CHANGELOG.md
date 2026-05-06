@@ -11,8 +11,8 @@ Versioning rule before public launch: `0.x.x`.
 ## v0.2.13 - Company Gmail ownership and billing migration plan
 
 - Date: `2026-05-06 KST`
-- Commit: pending until this documentation/control-plane pass is committed.
-- Deploy Status: local docs/control-plane reflected only until commit/push/deploy. This version does not change public UI, product data, admin runtime behavior, robots/noindex, Vercel env secrets, checkout/cart/payment, or live trading behavior.
+- Commit: implementation commit `18ad6c3` (`Release v0.2.13 company account migration plan`) pushed to `origin/codex/kcg-launch-readiness-catalog-20260427`; deployment-verification trace is recorded in the follow-up documentation commit.
+- Deploy Status: committed, pushed, and production deployed to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` on 2026-05-06 KST. This version does not change public UI, product data, admin runtime behavior, robots/noindex, Vercel env secrets, checkout/cart/payment, or live trading behavior.
 - 사람이 읽는 요약: `kcgoldx@gmail.com`을 회사의 영구 대표 운영 계정으로 확정한 기준을 문서화했습니다. 기존 `admin@kcgold.co.kr` Google Workspace 결제 대기 흐름은 기본 경로가 아니라, 나중에 도메인 메일이 필요할 때 선택하는 유료 옵션으로 낮췄습니다. Vercel, Supabase, GitHub, Cafe24/DNS, 결제수단을 어떤 순서로 회사 계정으로 넘기고 무엇을 사람만 처리해야 하는지 비밀값 없이 정리했습니다.
 - Summary: Converts the company account migration runbook from a paused Google Workspace-first path into a permanent `kcgoldx@gmail.com` operating-account plan, adds a no-secret ownership checklist, and records user-only account security/billing/approval steps without changing the public site.
 - Changed:
@@ -25,7 +25,7 @@ Versioning rule before public launch: `0.x.x`.
 - 실제 사이트 반영 여부:
   - 실제 사이트 화면이 바뀌는 것: 없음.
   - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 회사 Gmail 기반 운영/결제 이전 runbook, ownership checklist, handoff/status/task trace, no-secret user-action queue.
-  - 배포된 것: pending until final verification/commit/deploy.
+  - 배포된 것: `v0.2.13` 회사 Gmail 운영/결제 이전 문서, ownership checklist, handoff/status/task trace, no-secret user-action queue, audit guardrail. 고객 화면 변경은 없음.
   - 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, 최종 admin secret rotation, 실제 SaaS 계정 이전 실행.
   - 고객에게 보여줘도 되는 것: 기존 noindex-protected live `kcgold.co.kr` review site. 이 버전은 고객 화면 변경이 없다.
   - 아직 내부 기준/계획일 뿐인 것: Vercel/Supabase/GitHub/Cafe24 계정 이전 실행, company card entry, Workspace/custom-domain mail purchase, final search launch approval.
@@ -39,6 +39,10 @@ Versioning rule before public launch: `0.x.x`.
   - Passed: `npm run test:site` (`21 passed`).
   - Passed: `npm audit --audit-level=moderate` (`0 vulnerabilities`).
   - Passed: `git diff --check` with line-ending warnings only.
+  - Live deploy inspect passed: `npx vercel inspect https://kcgold.co.kr/` shows a `Ready` production deployment aliased to `kcgold.co.kr`, `www.kcgold.co.kr`, and `kcg-confirm-preview.vercel.app`.
+  - Live audit passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`1222 checks, 0 skipped`).
+  - Live Playwright passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`21 passed`).
+  - Live external check passed: `npm run check:external -- --strict-domain`; `/api/health` reports `mode=supabase`, `deployment=production`, `indexing=disabled`, `adminAuth=env-password`, `/robots.txt` remains `Disallow: /`, and the pre-launch sitemap is empty.
   - Runtime route screenshots are not required for this docs/control-plane pass because no public/admin UI source changed.
 - Rollback Hint: `v0.2.13 전으로 되돌려줘`
 - Remaining User-only:
