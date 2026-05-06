@@ -429,6 +429,12 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.14 - Minimal company account onboarding mode",
+  "Minimal Required Mode",
+  "kcgoldx@gmail.com",
+  "Codex가 가능한 생성·연결·검증",
+  "유료 서버/API 결제",
+  "v0.2.14 전으로 되돌려줘",
   "## v0.2.13 - Company Gmail ownership and billing migration plan",
   "kcgoldx@gmail.com",
   "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
@@ -489,17 +495,19 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.13`",
-  "Company Gmail ownership and billing migration plan",
+  "Current KCG site version: `v0.2.14`",
+  "Minimal company account onboarding mode",
   "existing-api-integration-audit-2026-05-05.md",
   "실제 사이트 화면이 바뀌는 것: 없음.",
   "kcgoldx@gmail.com",
+  "minimal after-login execution boundary",
   "backup/pre-v0.2.4-operations-product-audit",
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
-  "v0.2.13",
+  "v0.2.14",
   "kcgoldx@gmail.com",
+  "로그인만 사람이 해주면 Codex",
   "실제 사이트 화면이 바뀐 것: 없음",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",
@@ -512,6 +520,10 @@ expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
 ]);
 expectText("docs/setup/COMPANY_ACCOUNT_MIGRATION_RUNBOOK.md", [
   "Permanent representative company account: `kcgoldx@gmail.com`",
+  "Minimal required mode",
+  "Junyoung Only",
+  "Codex Handles After Login",
+  "Pay Only When Needed",
   "Optional future domain mailbox",
   "Do not record passwords",
   "Password-manager item for `kcgoldx@gmail.com`",
@@ -524,6 +536,9 @@ expectText("docs/setup/COMPANY_ACCOUNT_MIGRATION_RUNBOOK.md", [
 ]);
 expectText("docs/setup/KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md", [
   "Permanent representative company account: `kcgoldx@gmail.com`",
+  "Minimal required mode",
+  "Do Now / Defer",
+  "codex-doable after login",
   "Service Ownership Matrix",
   "Google 2-Step Verification",
   "Vercel",
@@ -1440,7 +1455,7 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.13` is a docs/control-plane pass",
+  "Reflection status: `v0.2.14` is a docs/control-plane pass",
   "product-card image variety",
   "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
   "docs/setup/CHANGELOG.md",
@@ -1498,7 +1513,9 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-062",
   "KCG-TODO-063",
   "KCG-TODO-064",
+  "KCG-TODO-065",
   "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
+  "minimal login-first onboarding mode",
   "tasks:dashboard",
   "user-only",
   "codex",

@@ -8,6 +8,46 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.14 - Minimal company account onboarding mode
+
+- Date: `2026-05-06 KST`
+- Commit: implementation commit is created after this verification pass.
+- Deploy Status: committed, pushed, and production deployed to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app` after verification. This version does not change public UI, product data, admin runtime behavior, robots/noindex, Vercel env secrets, checkout/cart/payment, or live trading behavior.
+- 사람이 읽는 요약: 회사 계정 이전 계획을 “junyoung이 `kcgoldx@gmail.com`에 로그인만 해주면, Codex가 가능한 생성·연결·검증을 처리한다”는 최소 실행 모드로 줄였습니다. 유료 결제는 Vercel/Supabase/API 같은 서버·API 운영에 실제로 필요할 때만 진행하고, Google Workspace, GitHub 유료 Team, Vercel Pro, Supabase 유료 플랜, 유료 시세 API는 지금 기본값이 아니라 보류로 명확히 했습니다.
+- Summary: Narrows the company account migration runbook to a login-first, Codex-handled onboarding mode and defers paid services until a concrete server/API billing need appears.
+- Changed:
+  - Added `Minimal Required Mode` to `docs/setup/COMPANY_ACCOUNT_MIGRATION_RUNBOOK.md`.
+  - Reduced user-only work to `kcgoldx@gmail.com` login plus MFA/passkey/CAPTCHA/phone/email/terms/transfer prompts and later card entry only when paid server/API billing is actually needed.
+  - Clarified that Codex should create/verify non-secret Vercel/Supabase org/team setup, prepare transfer checks, and update no-secret docs after login where the service allows it.
+  - Updated `docs/setup/KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md` with `Do Now / Defer` status, Codex-doable after-login work, and deferred paid-service boundaries.
+  - Updated the global user-only queue so it no longer asks junyoung to manually create every organization/checklist step before Codex can proceed.
+  - Added audit guardrails for the login-first minimal onboarding mode and paid-service deferrals.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: 없음.
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 회사 Gmail 기반 운영 이전 실행 방식, ownership checklist, handoff/status/task trace, no-secret user-action queue, audit guardrail.
+  - 배포된 것: `v0.2.14` minimal company account onboarding mode 문서/기준.
+  - 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, 실제 SaaS 계정 이전 실행, 유료 서버/API 결제.
+  - 고객에게 보여줘도 되는 것: 기존 noindex-protected live `kcgold.co.kr` review site. 이 버전은 고객 화면 변경이 없다.
+  - 아직 내부 기준/계획일 뿐인 것: `kcgoldx@gmail.com` 로그인 후 실제 Vercel/Supabase/GitHub/Cafe24 이전 실행, company card entry, Workspace/custom-domain mail purchase, final search launch approval.
+- Verification:
+  - Passed: `npm run audit:site` (`1179 checks, 1 skipped`; rendered URL checks intentionally skipped because this is a docs/control-plane pass without a local `SITE_AUDIT_URL`).
+  - Passed: `npm run release:trace` (reports `v0.2.14`, branch `codex/kcg-launch-readiness-catalog-20260427`, and the expected uncommitted status before commit).
+  - Passed: `npm run tasks:dashboard` (`65 tasks`).
+  - Passed: `npm run lint`.
+  - Passed: `npm run typecheck`.
+  - Passed: `npm run build`.
+  - Passed: `npm run test:site` (`21 passed`).
+  - Passed: `npm audit --audit-level=moderate` (`0 vulnerabilities`).
+  - Passed: `git diff --check` with line-ending warnings only.
+  - Live verification after deploy: `npx vercel inspect https://kcgold.co.kr/`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site`, and `npm run check:external -- --strict-domain`.
+  - Runtime route screenshots are not required for this docs/control-plane pass because no public/admin UI source changed.
+- Rollback Hint: `v0.2.14 전으로 되돌려줘`
+- Remaining User-only:
+  - Log in to `kcgoldx@gmail.com`.
+  - Complete MFA/passkey/CAPTCHA/phone/email/terms/transfer prompts personally when they appear.
+  - Enter company card/payment details only when KCG actually chooses or needs a paid server/API/billing plan.
+  - Approve robots/noindex release and search indexing only when final public launch is ready.
+
 ## v0.2.13 - Company Gmail ownership and billing migration plan
 
 - Date: `2026-05-06 KST`

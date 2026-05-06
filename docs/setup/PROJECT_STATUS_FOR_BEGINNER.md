@@ -19,21 +19,21 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## Current Snapshot
 
-- 현재 공식 작업 버전: `v0.2.13`
+- 현재 공식 작업 버전: `v0.2.14`
 - 현재 작업 브랜치: `codex/kcg-launch-readiness-catalog-20260427`
-- 이번 작업 버전: `v0.2.13`
-- 직전 버전: `v0.2.12`
-- 작업 전 HEAD: `3e12b33`
+- 이번 작업 버전: `v0.2.14`
+- 직전 버전: `v0.2.13`
+- 작업 전 HEAD: `4ecb78c`
 - 백업 브랜치: `backup/pre-v0.2.4-operations-product-audit` (`v0.2.4`와 `v0.2.5` 문서 보강 전으로 크게 돌아가는 책갈피)
 
 ## 실제 사이트 반영 여부
 
-- 실제 사이트 화면이 바뀐 것: 없음. 이번 `v0.2.13`은 회사 계정/결제/소유권 이전 계획 문서 작업이다.
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: `kcgoldx@gmail.com` 영구 대표 운영 계정 기준, Vercel/Supabase/GitHub/Cafe24 이전 순서, 비밀값 없는 ownership checklist, 사용자 전용 보안/결제/승인 할 일.
-- 배포된 것: `v0.2.13` 회사 Gmail 운영/결제 이전 문서 작업은 커밋·푸시·production deploy·live external QA까지 완료됐다. 고객 화면 변경은 없고, `v0.2.12` 고객/직원 흐름 화면이 그대로 유지된다.
-- 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, Vercel Pro 또는 외부 scheduler 결정, 실제 SaaS 계정 이전 실행은 아직 별도 작업.
+- 실제 사이트 화면이 바뀐 것: 없음. 이번 `v0.2.14`는 회사 계정/결제/소유권 이전을 최소 실행 모드로 줄인 문서 작업이다.
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: `kcgoldx@gmail.com` 로그인 후 Codex가 가능한 생성·연결·검증을 처리한다는 기준, Vercel/Supabase/GitHub/Cafe24 이전 준비 방식, 비밀값 없는 ownership checklist, 사용자 전용 로그인/보안/결제/승인 경계.
+- 배포된 것: `v0.2.14` minimal company account onboarding mode 문서 작업은 커밋·푸시·production deploy·live external QA까지 완료됐다. 고객 화면 변경은 없고, `v0.2.12` 고객/직원 흐름 화면이 그대로 유지된다.
+- 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, 실제 SaaS 계정 이전 실행, 유료 서버/API 결제는 아직 별도 작업.
 - 내가 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` 검토 화면. 검색 노출은 아직 차단.
-- 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인, 회사 Vercel/Supabase/GitHub/Cafe24 이전 실행, 회사 카드 입력, 선택적 Google Workspace/domain-mail 결제
+- 아직 내부 기준/계획일 뿐인 것: 실제 상품 사진/공임/최종 판매정책/검색 노출 승인, `kcgoldx@gmail.com` 로그인 후 회사 Vercel/Supabase/GitHub/Cafe24 이전 실행, 유료 서버/API가 필요할 때 회사 카드 입력, 선택적 Google Workspace/domain-mail 결제
 - 이번 작업에서 건드린 범위: 회사 Gmail 기반 운영/결제 이전 runbook, no-secret ownership checklist, 상태 문서, open tasks, audit guardrail, 사용자 전용 액션 큐, `package.json`, `package-lock.json`
 - 절대 건드리지 않은 범위: 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, Vercel env/secret
 - 배포 기본값: 2026-05-06 KST 기준 junyoung은 KCG 사이트 변경을 완료·검증하면 live 배포까지 진행하라고 지시했다. 단, 검색 노출/noindex 해제, 결제/장바구니/실시간 거래, secret/env 변경, 되돌리기 어려운 인프라 변경은 여전히 별도 승인 대상이다.
@@ -54,8 +54,8 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 | 구분 | 이름 | 쉬운 설명 | 내가 봐야 하는 경우 |
 |---|---|---|---|
-| 현재 작업 버전 | `v0.2.13` | `kcgoldx@gmail.com`을 회사 영구 대표 운영 계정으로 정하고, Vercel/Supabase/GitHub/Cafe24/결제 이전 순서를 비밀값 없이 정리한 버전 | 이번 변경 확인 |
-| 이전 버전 | `v0.2.12` | 공개 런칭 전 고객/직원 관점에서 시세표 읽기, 상품/매입 선택, FAQ, 상품 이미지 반복감을 보강한 버전 | 비교/이전 상태 확인 |
+| 현재 작업 버전 | `v0.2.14` | `kcgoldx@gmail.com` 로그인만 사람이 해주면 Codex가 가능한 계정 생성·연결·검증을 처리하고, 유료 서버/API 결제는 필요할 때만 하도록 줄인 버전 | 이번 변경 확인 |
+| 이전 버전 | `v0.2.13` | `kcgoldx@gmail.com`을 회사 영구 대표 운영 계정으로 정하고, Vercel/Supabase/GitHub/Cafe24/결제 이전 순서를 비밀값 없이 정리한 버전 | 비교/이전 상태 확인 |
 | 백업 브랜치 | `backup/pre-v0.2.4-operations-product-audit` | `v0.2.4`와 `v0.2.5` 문서 보강 전으로 돌아가는 책갈피 | 크게 되돌릴 때 |
 | 현재 작업 브랜치 | `codex/kcg-launch-readiness-catalog-20260427` | 지금 Codex가 작업 중인 줄기 | 상태 확인 |
 | handoff | `CURRENT_HANDOFF.md` | 다음 작업자에게 넘기는 현재 상태 메모 | 이어서 작업할 때 |
@@ -89,6 +89,7 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## 되돌리기 요청 문장
 
+- "v0.2.14 최소 회사 계정 온보딩 모드 문서만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.13 회사 Gmail 운영/결제 이전 문서만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.12 고객/직원 흐름과 상품 이미지 다양화 수정만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.11 운영 콘솔 시간표기/가독성 수정만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."

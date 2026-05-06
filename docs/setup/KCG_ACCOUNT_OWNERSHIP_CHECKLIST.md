@@ -9,8 +9,22 @@ This checklist records ownership and migration status only. Do not write passwor
 - Permanent representative company account: `kcgoldx@gmail.com`
 - Personal account role after migration: backup owner / co-admin
 - Optional future domain mailbox: `admin@kcgold.co.kr` only if KCG later chooses Google Workspace or another custom-domain mail provider
+- Minimal required mode: junyoung logs in to `kcgoldx@gmail.com`; Codex handles non-secret org/team/project setup, verification, and checklist updates after login
+- Paid services mode: company card/payment is entered only when a paid server/API/billing plan is actually needed
 - Public site effect: none
 - Search effect: none; robots/noindex remains blocked until separate approval
+
+## Do Now / Defer
+
+| Category | Status | Owner | Rule |
+| --- | --- | --- | --- |
+| `kcgoldx@gmail.com` browser login | user-only | junyoung/company | Log in directly; do not paste password, MFA, cookies, or recovery codes into Codex. |
+| Human security prompts | user-only | junyoung/company | Complete MFA/passkey/CAPTCHA/phone/email/terms/transfer confirmations when they appear. |
+| Vercel company workspace/project transfer prep | codex-doable after login | codex | Create/verify safe non-secret team/project setup and run validation without exposing env values. |
+| Supabase company organization/project transfer prep | codex-doable after login | codex | Create/verify safe non-secret org setup and run health checks without exposing service keys. |
+| Company card/payment entry | user-only later | junyoung/company | Only when Vercel/Supabase/API billing is actually selected or required. |
+| Google Workspace / `@kcgold.co.kr` mail | deferred | shared | Not required for current server/API billing or public-site operation. |
+| GitHub paid Team | deferred | shared | Not required for the current public repo unless governance/private-repo needs change. |
 
 ## Account Security Checklist
 
@@ -27,10 +41,10 @@ This checklist records ownership and migration status only. Do not write passwor
 
 | Service | Target Account / Org / Team | Current Known State | Billing Status | Recovery Method Type | Transfer Status | Next Step |
 | --- | --- | --- | --- | --- | --- | --- |
-| Google representative account | `kcgoldx@gmail.com` | Chosen as permanent KCG representative Gmail | Company decision/user-only | Password manager + 2SV + passkey + recovery phone/email | Prepare/verify | Secure account and save recovery materials outside Codex. |
-| Vercel | `KCG` or `Korea Center Gold Exchange` team under `kcgoldx@gmail.com` | Project `kcg-confirm-preview` currently runs production domains | Company card only if/when needed; Pro optional | Team owner + backup owner | Planned | Create team, invite backup owner, then transfer project after checks. |
-| Supabase | `Korea Center Gold Exchange` organization under `kcgoldx@gmail.com` | Project ref `ehmsqlfxxydnebzjfarr` currently backs production data | Plan/billing compatibility must be checked before transfer | Org owner + backup owner | Planned | Create org, invite backup owner, then transfer project if target org is ready. |
-| GitHub | Org slug candidate `kcgold`, `korea-center-gold`, or `kcgold-exchange` | Repo `junyoung8753/kcg-site` is public | Paid Team not required for current public repo unless governance needs change | Org owner + backup owner | Planned | Create org and transfer repo only after Vercel/Supabase are stable. |
+| Google representative account | `kcgoldx@gmail.com` | Chosen as permanent KCG representative Gmail | Company decision/user-only | Password manager + 2SV + passkey + recovery phone/email | Login/security prompts user-only | Junyoung logs in and completes security prompts; Codex verifies visible non-secret status after login. |
+| Vercel | `KCG` or `Korea Center Gold Exchange` team under `kcgoldx@gmail.com` | Project `kcg-confirm-preview` currently runs production domains | Company card only if transfer/operation requires it or Pro is chosen later | Team owner + backup owner | Codex-doable after login | Codex creates/verifies team, invites backup owner where possible, prepares transfer, and runs post-transfer checks. |
+| Supabase | `Korea Center Gold Exchange` organization under `kcgoldx@gmail.com` | Project ref `ehmsqlfxxydnebzjfarr` currently backs production data | Pay only if plan/usage/transfer requirements require it | Org owner + backup owner | Codex-doable after login | Codex creates/verifies org, invites backup owner where possible, prepares project transfer, and checks `/api/health`. |
+| GitHub | Org slug candidate `kcgold`, `korea-center-gold`, or `kcgold-exchange` | Repo `junyoung8753/kcg-site` is public | Paid Team not required for current public repo unless governance needs change | Org owner + backup owner | Deferred unless ownership/Git integration requires it | Codex prepares org/repo transfer only after Vercel/Supabase are stable or when it becomes necessary. |
 | Cafe24 / domain DNS | Company-owned Cafe24/domain account | `kcgold.co.kr` and `www.kcgold.co.kr` point to Vercel | Existing domain/DNS billing must stay active | Account recovery + backup owner | Planned | Keep DNS stable; do not delete Vercel A records. |
 | Google Workspace / custom domain mail | Optional later `admin@kcgold.co.kr` | Previous checkout path exists but is no longer default | Paid optional | Workspace admin + recovery owner | Deferred | Buy only if KCG wants `@kcgold.co.kr` mail. |
 
@@ -79,9 +93,15 @@ Final external verification:
 
 ## User-Only Decisions Still Required
 
-- Confirm `kcgoldx@gmail.com` security and recovery are complete.
-- Decide whether to create/buy Vercel team billing now or only when the project transfer requires it.
-- Decide whether to pay for Vercel Pro if automatic price checks must run more than the Hobby daily posture.
-- Decide whether to create/buy Google Workspace or another `@kcgold.co.kr` mail provider later.
-- Approve any project/repo/org transfer prompt.
+- Log in to `kcgoldx@gmail.com`.
+- Complete MFA/passkey/CAPTCHA/phone/email/terms/transfer prompts personally.
+- Enter company card/payment details only when KCG actually chooses or needs a paid server/API/billing plan.
 - Approve public search indexing/noindex release separately when the site is ready.
+
+## Codex-Doable After Login
+
+- Create/verify company Vercel workspace and Supabase organization if the signed-in service flow allows it without paid commitment.
+- Prepare Vercel/Supabase transfer checks and run post-transfer validation.
+- Verify live site health, robots/noindex, sitemap posture, and `/api/health`.
+- Update this checklist with non-secret status only.
+- Defer Google Workspace, GitHub paid Team, Vercel Pro, Supabase paid plan, and paid market-data API until they are specifically needed.

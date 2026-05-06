@@ -9,10 +9,53 @@ This is the no-secret runbook for moving KCG site operations, ownership, and fut
 - Permanent representative company account: `kcgoldx@gmail.com`
 - Personal account role after migration: backup owner / co-admin only
 - Optional future domain mailbox: `admin@kcgold.co.kr` or other `@kcgold.co.kr` addresses if KCG later chooses Google Workspace or another paid mail service
+- Minimal required mode: junyoung signs in to `kcgoldx@gmail.com`; Codex handles the rest of the non-secret setup, checks, docs, and transfer preparation wherever the service UI/CLI allows it
+- Paid services mode: pay only when a server/API/billing dependency actually requires it, not just because an account checklist exists
 - Public site behavior: no change
 - Search posture: robots/noindex stays blocked until separate public-search approval
 - Payment/trading posture: no checkout, cart, live trading, or online payment behavior is added by this plan
 - Secret posture: Vercel env vars, Supabase service-role keys, admin password, recovery codes, and card details stay outside Git/docs/chat
+
+## Minimal Required Mode
+
+Junyoung's current instruction is simple: after `kcgoldx@gmail.com` is logged in, Codex should create, connect, verify, and document as much as possible without making junyoung repeat service-by-service setup work.
+
+### Junyoung Only
+
+Only these remain human-only:
+
+1. Sign in to `kcgoldx@gmail.com` in the browser or official service OAuth flow.
+2. Complete MFA, passkey, CAPTCHA, phone/email verification, terms acceptance, and transfer-approval prompts when they appear.
+3. Enter a company card only when KCG actually chooses a paid server/API/billing plan.
+4. Approve public search indexing/noindex release separately later, if and when launch is ready.
+
+Do not paste passwords, MFA codes, recovery codes, cookies, OAuth tokens, service-role keys, card details, or password-manager exports into Codex.
+
+### Codex Handles After Login
+
+Codex should handle the following without asking junyoung to repeat the plan:
+
+1. Open and prepare the relevant Google, Vercel, Supabase, GitHub, and Cafe24 pages or official CLI flows.
+2. Fill safe non-secret organization/team/project names when the UI allows it.
+3. Create or verify the company Vercel team/workspace and Supabase organization if they are available without paid commitment.
+4. Prepare project transfer checks and run post-transfer verification commands.
+5. Keep the no-secret ownership checklist updated with status, owners, billing posture, and verification notes.
+6. Keep `kcgold.co.kr`, `www.kcgold.co.kr`, `kcg-confirm-preview.vercel.app`, Supabase data, Vercel env-secret boundaries, and robots/noindex blocking intact.
+
+### Pay Only When Needed
+
+For later server/API paid billing, the minimal necessary set is:
+
+- Vercel billing/team ownership only if project transfer, production operations, higher cron frequency, or platform limits require it.
+- Supabase organization/project billing only if database/storage/API usage or transfer requirements require it.
+- External market-data API billing only if KCG chooses a paid provider for quota, history, bid/ask, reliability, or contractual display needs.
+
+Not required for server/API billing right now:
+
+- Google Workspace or `admin@kcgold.co.kr` custom-domain mail.
+- GitHub Team paid plan for the current public repo.
+- Vercel Pro while once-daily Hobby cron is enough.
+- Metals.Dev or another paid market API while the current reference-data posture is enough.
 
 ## Goal
 
@@ -25,9 +68,9 @@ Use `kcgoldx@gmail.com` as the durable KCG operating identity for SaaS ownership
 5. Preserve `kcgold.co.kr`, `www.kcgold.co.kr`, `kcg-confirm-preview.vercel.app`, Supabase data, Vercel env secrets, and robots/noindex blocking throughout the transfer.
 6. Leave Google Workspace as an optional later paid domain-mail decision, not a launch blocker.
 
-## First Items To Create
+## First Items To Create Or Verify
 
-Junyoung or the company should create these without sharing secret values with Codex:
+Codex can maintain the no-secret repo checklist after login. Junyoung/company should only touch vault, payment, and recovery materials directly:
 
 1. Password-manager item for `kcgoldx@gmail.com`
    - Suggested vault item title: `KCG - 대표 운영 Gmail - kcgoldx@gmail.com`
@@ -46,14 +89,14 @@ Junyoung or the company should create these without sharing secret values with C
 
 ## Human-Only Steps
 
-Only junyoung or an authorized company person should complete these:
+Only junyoung or an authorized company person should complete these. Everything else in this runbook is Codex-doable after login unless the service blocks automation or requests a legal/payment/security confirmation:
 
 1. Sign in to `kcgoldx@gmail.com` and confirm the account is company-controlled.
 2. Set or verify Google 2-Step Verification, passkey, recovery phone, and recovery email.
 3. Save Google backup/recovery codes only in the password manager and offline backup.
-4. Accept service terms for Google, Vercel, Supabase, GitHub, Cafe24, and any payment provider.
-5. Enter company card/payment details where needed.
-6. Approve organization creation, project transfer, billing transfer, and ownership prompts.
+4. Accept service terms only when a service asks for human acceptance.
+5. Enter company card/payment details only when KCG actually chooses a paid server/API/billing plan.
+6. Approve organization creation, project transfer, billing transfer, and ownership prompts when the service requires human confirmation.
 7. Complete email/phone/MFA/CAPTCHA/passkey challenges.
 8. Decide later whether to buy Google Workspace or another custom-domain mailbox for `@kcgold.co.kr`.
 9. Decide later whether to approve public search indexing/noindex release.
@@ -118,8 +161,8 @@ Recommended target:
 
 Plan:
 
-1. Create the company Vercel team/workspace under `kcgoldx@gmail.com`.
-2. Add company billing only if Vercel requires it or if KCG chooses Pro later.
+1. After junyoung signs in to `kcgoldx@gmail.com`, Codex creates or verifies the company Vercel team/workspace where the UI/CLI allows non-secret setup.
+2. Add company billing only if Vercel requires it for the transfer/operation or if KCG chooses Pro later.
 3. Keep Vercel Pro optional for now. The current Hobby cron posture is acceptable while automatic checks are at most once per day.
 4. Transfer project `kcg-confirm-preview` to the company team after verifying the target team is ready.
 5. Confirm transferred items:
@@ -170,8 +213,8 @@ Pre-transfer checks:
 
 Plan:
 
-1. Sign in to Supabase with `kcgoldx@gmail.com`.
-2. Create target organization `Korea Center Gold Exchange`.
+1. Junyoung signs in to Supabase with `kcgoldx@gmail.com`; Codex handles non-secret setup after the login/MFA/terms prompts are complete.
+2. Create or verify target organization `Korea Center Gold Exchange`.
 3. Invite junyoung personal Supabase account as Owner/Admin.
 4. From the current source org, start transfer of project `ehmsqlfxxydnebzjfarr` to the company org.
 5. Complete human approval prompts.
@@ -211,7 +254,7 @@ Recommended target:
 
 Plan:
 
-1. Create or verify the company GitHub user/org.
+1. Create or verify the company GitHub user/org only when repo ownership or Vercel Git integration needs it.
 2. Add junyoung personal GitHub account as Owner before transferring the repo.
 3. Keep GitHub Team paid plan optional for now. A public repo does not require paid Team features unless KCG needs private repos, advanced governance, or extra seats/features.
 4. Transfer `junyoung8753/kcg-site` only after Vercel/Supabase transfer has settled.
@@ -290,7 +333,7 @@ Confirm:
 ## Do Not Do Without Separate Approval
 
 - Do not enter card data.
-- Do not buy Vercel Pro, Supabase paid plans, GitHub Team, Google Workspace, or any paid provider plan.
+- Do not buy Vercel Pro, Supabase paid plans, GitHub Team, Google Workspace, or any paid provider plan unless junyoung explicitly says that server/API billing time has arrived and completes the human-only card/payment step.
 - Do not remove robots/noindex/search blocking.
 - Do not rotate or expose production secrets in chat/docs/Git.
 - Do not delete DNS records unless their purpose is confirmed and junyoung approves the replacement.
