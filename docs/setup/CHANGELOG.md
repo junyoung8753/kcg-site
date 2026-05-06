@@ -8,6 +8,47 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.13 - Company Gmail ownership and billing migration plan
+
+- Date: `2026-05-06 KST`
+- Commit: pending until this documentation/control-plane pass is committed.
+- Deploy Status: local docs/control-plane reflected only until commit/push/deploy. This version does not change public UI, product data, admin runtime behavior, robots/noindex, Vercel env secrets, checkout/cart/payment, or live trading behavior.
+- 사람이 읽는 요약: `kcgoldx@gmail.com`을 회사의 영구 대표 운영 계정으로 확정한 기준을 문서화했습니다. 기존 `admin@kcgold.co.kr` Google Workspace 결제 대기 흐름은 기본 경로가 아니라, 나중에 도메인 메일이 필요할 때 선택하는 유료 옵션으로 낮췄습니다. Vercel, Supabase, GitHub, Cafe24/DNS, 결제수단을 어떤 순서로 회사 계정으로 넘기고 무엇을 사람만 처리해야 하는지 비밀값 없이 정리했습니다.
+- Summary: Converts the company account migration runbook from a paused Google Workspace-first path into a permanent `kcgoldx@gmail.com` operating-account plan, adds a no-secret ownership checklist, and records user-only account security/billing/approval steps without changing the public site.
+- Changed:
+  - Rewrote `docs/setup/COMPANY_ACCOUNT_MIGRATION_RUNBOOK.md` around `kcgoldx@gmail.com` as the permanent representative company Gmail.
+  - Added `docs/setup/KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md` for service ownership, recovery method type, billing status, transfer readiness, and post-transfer verification without storing secrets.
+  - Clarified that Google Workspace / `admin@kcgold.co.kr` is optional later domain-mail work, not a current launch blocker.
+  - Documented safe migration order for Google account security, Vercel team/project transfer, Supabase organization/project transfer, GitHub organization/repo transfer, and Cafe24/DNS/mail boundaries.
+  - Updated the durable user-only action queue so account security, payment entry, MFA/passkey, company card, and transfer approval prompts remain human-only.
+  - Added audit guardrails so the current account-migration docs cannot silently drift back to a Workspace-first or secret-recording flow.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: 없음.
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 회사 Gmail 기반 운영/결제 이전 runbook, ownership checklist, handoff/status/task trace, no-secret user-action queue.
+  - 배포된 것: pending until final verification/commit/deploy.
+  - 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 사진/공임/최종 판매정책 확정, 최종 admin secret rotation, 실제 SaaS 계정 이전 실행.
+  - 고객에게 보여줘도 되는 것: 기존 noindex-protected live `kcgold.co.kr` review site. 이 버전은 고객 화면 변경이 없다.
+  - 아직 내부 기준/계획일 뿐인 것: Vercel/Supabase/GitHub/Cafe24 계정 이전 실행, company card entry, Workspace/custom-domain mail purchase, final search launch approval.
+- Verification:
+  - Passed: `npm run audit:site` (`1162 checks, 1 skipped`; rendered URL checks intentionally skipped because this is a docs/control-plane pass without a local `SITE_AUDIT_URL`).
+  - Passed: `npm run release:trace` (reports `v0.2.13`, branch `codex/kcg-launch-readiness-catalog-20260427`, and current uncommitted status before commit).
+  - Passed: `npm run tasks:dashboard` (`64 tasks`).
+  - Passed: `npm run lint`.
+  - Passed: `npm run typecheck`.
+  - Passed: `npm run build`.
+  - Passed: `npm run test:site` (`21 passed`).
+  - Passed: `npm audit --audit-level=moderate` (`0 vulnerabilities`).
+  - Passed: `git diff --check` with line-ending warnings only.
+  - Runtime route screenshots are not required for this docs/control-plane pass because no public/admin UI source changed.
+- Rollback Hint: `v0.2.13 전으로 되돌려줘`
+- Remaining User-only:
+  - Secure `kcgoldx@gmail.com` with 2-Step Verification, passkey/security recovery where practical, recovery phone/email, and offline backup codes.
+  - Create password-manager entries for KCG Google, Vercel, Supabase, GitHub, Cafe24/domain DNS, and billing notes without sharing secret values with Codex.
+  - Create/approve the company Vercel team, Supabase organization, and GitHub organization when ready.
+  - Enter any company card/payment details personally.
+  - Approve any Vercel/Supabase/GitHub project or repo transfer prompts.
+  - Approve robots/noindex release and search indexing only when final public launch is ready.
+
 ## v0.2.12 - Pre-launch customer flow and catalog image QA
 
 - Date: `2026-05-06 KST`

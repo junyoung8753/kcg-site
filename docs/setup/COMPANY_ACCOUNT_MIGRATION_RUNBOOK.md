@@ -1,174 +1,138 @@
 # KCG Company Account Migration Runbook
 
-Last updated: 2026-05-03 KST.
+Last updated: 2026-05-06 KST.
 
-This runbook is the no-secret handoff for moving KCG site operations from junyoung's personal accounts to company-owned accounts. Do not record passwords, payment details, recovery codes, OAuth tokens, service-role keys, cookies, or MFA codes in this file.
+This is the no-secret runbook for moving KCG site operations, ownership, and future billing away from junyoung's personal accounts and into company-controlled accounts. Do not record passwords, card numbers, payment details, recovery codes, OAuth tokens, service-role keys, cookies, MFA codes, passkeys, or password-manager exports in this file.
+
+## Current Decision
+
+- Permanent representative company account: `kcgoldx@gmail.com`
+- Personal account role after migration: backup owner / co-admin only
+- Optional future domain mailbox: `admin@kcgold.co.kr` or other `@kcgold.co.kr` addresses if KCG later chooses Google Workspace or another paid mail service
+- Public site behavior: no change
+- Search posture: robots/noindex stays blocked until separate public-search approval
+- Payment/trading posture: no checkout, cart, live trading, or online payment behavior is added by this plan
+- Secret posture: Vercel env vars, Supabase service-role keys, admin password, recovery codes, and card details stay outside Git/docs/chat
 
 ## Goal
 
-This work is paused pending the company's email/account decision. When junyoung later says `Google Workspace 결제했어` or `Zoho로 하자`, Codex should be able to continue without rediscovering the setup:
+Use `kcgoldx@gmail.com` as the durable KCG operating identity for SaaS ownership, billing, and account recovery:
 
-1. Verify Google Workspace and company email are active.
-2. Finish Google Workspace domain DNS records in Cafe24.
-3. Create or verify company-owned Supabase, Vercel, and GitHub organization/workspace/account access.
-4. Transfer or reconnect the KCG production project/repo with no secret leakage.
-5. Re-verify `kcgold.co.kr`, admin access, Supabase storage, noindex/robots, and build/deploy readiness.
+1. Secure `kcgoldx@gmail.com` with strong Google account recovery and MFA.
+2. Create a no-secret ownership checklist for KCG operating services.
+3. Prepare company-controlled Vercel, Supabase, and GitHub ownership.
+4. Transfer or reconnect the current KCG site project/repo only after the target account/team/org is ready.
+5. Preserve `kcgold.co.kr`, `www.kcgold.co.kr`, `kcg-confirm-preview.vercel.app`, Supabase data, Vercel env secrets, and robots/noindex blocking throughout the transfer.
+6. Leave Google Workspace as an optional later paid domain-mail decision, not a launch blocker.
 
-## Current Signup Status
+## First Items To Create
 
-Google Workspace signup is prepared in the persistent Codex login browser.
+Junyoung or the company should create these without sharing secret values with Codex:
 
-- Business name: `주식회사 한국센터금거래소`
-- Employee range: `2~9명`
-- Country/region: `대한민국`
-- Existing domain: `kcgold.co.kr`
-- First admin email username: `admin`
-- Intended admin mailbox: `admin@kcgold.co.kr`
-- Current blocker: company decision on paid Google Workspace vs. a free/low-cost mail option.
-- Selected plan on the Google checkout screen: `Business Starter`
-- Visible checkout amount on 2026-05-03 KST: `US$7.56 / user / month + applicable tax`, shown as monthly recurring.
-- Payment blocker: junyoung or the company must complete payment. Codex should not enter card details or click the final paid confirmation.
-- Free/low-cost alternatives noted for company decision:
-  - Zoho Mail Free: real custom-domain mailbox for one domain and up to 5 users, but limited compared with Google Workspace.
-  - Cloudflare Email Routing: free receive-only forwarding, but not a full send/receive mailbox unless combined with another SMTP/mail provider and usually requires Cloudflare-managed DNS.
-  - Google Workspace Business Starter: paid, but cleanest for Gmail/Admin/OAuth and long-term company operations.
+1. Password-manager item for `kcgoldx@gmail.com`
+   - Suggested vault item title: `KCG - 대표 운영 Gmail - kcgoldx@gmail.com`
+   - Store Google password, passkey/MFA notes, recovery method notes, and offline recovery-code location.
+   - Do not paste the password, backup codes, TOTP seed, cookies, or card details into Codex.
+2. Password-manager entries for service ownership
+   - `KCG - Vercel`
+   - `KCG - Supabase`
+   - `KCG - GitHub`
+   - `KCG - Cafe24 / Domain DNS`
+   - `KCG - Billing / Company card notes`
+3. No-secret checklist in this repo
+   - File: `docs/setup/KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md`
+   - It records service name, account/team/org name, owner, recovery method type, billing status, and transfer status only.
+   - It never records passwords, keys, recovery codes, card numbers, or MFA values.
 
-## User-Only Steps
+## Human-Only Steps
 
-Only junyoung or the company should do these:
+Only junyoung or an authorized company person should complete these:
 
-1. Enter and keep the `admin@kcgold.co.kr` password in a password manager.
-2. Confirm Google Workspace terms and trial/subscription terms.
-3. Complete phone/email/passkey/MFA/CAPTCHA/security verification.
-4. Enter payment method or approve paid subscription.
-5. Approve company ownership, billing, and transfer prompts for Google Workspace, Supabase, Vercel, and GitHub.
-6. Decide whether to expose the public site to search engines. Until then, keep robots/noindex blocked.
+1. Sign in to `kcgoldx@gmail.com` and confirm the account is company-controlled.
+2. Set or verify Google 2-Step Verification, passkey, recovery phone, and recovery email.
+3. Save Google backup/recovery codes only in the password manager and offline backup.
+4. Accept service terms for Google, Vercel, Supabase, GitHub, Cafe24, and any payment provider.
+5. Enter company card/payment details where needed.
+6. Approve organization creation, project transfer, billing transfer, and ownership prompts.
+7. Complete email/phone/MFA/CAPTCHA/passkey challenges.
+8. Decide later whether to buy Google Workspace or another custom-domain mailbox for `@kcgold.co.kr`.
+9. Decide later whether to approve public search indexing/noindex release.
 
-Codex should do everything else: navigate setup screens, fill non-secret fields, inspect required DNS values, prepare Cafe24 records, run CLI checks, verify app health, and document results.
+Codex can prepare pages, fill safe non-secret fields, run official CLIs, verify status after login, compare settings, and update no-secret documentation.
 
-## Google Workspace After Payment
+## Migration Order
 
-### Domain Verification
+Use this sequence to reduce service lockout and broken deployments.
 
-Google may ask for one or more DNS records. Use the values shown in Google Admin, not guessed values.
+### Phase 0 - Baseline Verification
 
-Likely record types:
-
-- `TXT` verification record at root `kcgold.co.kr`
-- Sometimes `CNAME` verification record
-
-Cafe24 DNS rule:
-
-- Preserve existing `A` records for website:
-  - `kcgold.co.kr -> 76.76.21.21`
-  - `www.kcgold.co.kr -> 76.76.21.21`
-- Do not delete Vercel domain records.
-- Do not delete existing mail/security records unless Google explicitly requires replacement and junyoung approves.
-
-Verification commands after adding records:
+Before any account transfer:
 
 ```powershell
-Resolve-DnsName kcgold.co.kr -Type TXT
-Resolve-DnsName kcgold.co.kr -Type MX
+git status --short --branch
+npm run release:trace
+npx vercel inspect https://kcgold.co.kr/
 npm run check:external -- --strict-domain
 ```
 
-### Gmail Activation
+Expected pre-transfer posture:
 
-Google's current Workspace MX setup uses:
+- `kcgold.co.kr` is live through the existing Vercel project.
+- `/api/health` reports `mode=supabase`.
+- `/api/health` reports `indexing=disabled`.
+- `/robots.txt` includes `Disallow: /`.
+- `/sitemap.xml` remains empty or non-indexing before public launch.
 
-```text
-Type: MX
-Host/Name: @ or kcgold.co.kr
-Priority: 1
-Value: smtp.google.com
-```
+### Phase 1 - Google Account Security
 
-After MX is active, Google Admin should be used to activate Gmail for the domain.
+Target account: `kcgoldx@gmail.com`
 
-Optional mail-auth records after Gmail works:
+Required:
 
-- SPF:
-  - Host: `@`
-  - TXT value: `v=spf1 include:_spf.google.com ~all`
-- DKIM:
-  - Generate inside Google Admin > Gmail authentication.
-  - Add the exact TXT record Google provides.
-- DMARC:
-  - Start with monitor mode only:
-  - Host: `_dmarc`
-  - TXT value: `v=DMARC1; p=none; rua=mailto:admin@kcgold.co.kr`
-  - Tighten later only after mail flow is stable.
+- 2-Step Verification enabled
+- Passkey or security-key recovery path enabled where practical
+- Recovery phone set
+- Recovery email set
+- Backup codes generated and stored outside Codex/Git/chat
+- Password-manager item created
 
-## Recommended Company Accounts
+Codex boundary:
 
-### Google Workspace
+- Codex may open the Google account security page and verify visible non-secret status after junyoung completes login.
+- Codex must not ask for or enter passwords, MFA codes, recovery codes, cookies, or vault exports.
 
-Use one paid Google Workspace user first:
-
-- `admin@kcgold.co.kr`
-
-Create aliases or groups later if needed:
-
-- `info@kcgold.co.kr`
-- `contact@kcgold.co.kr`
-- `billing@kcgold.co.kr`
-- `no-reply@kcgold.co.kr`
-
-Aliases/groups are preferred over extra paid users unless a real separate inbox/person is needed.
-
-### Supabase
+### Phase 2 - Vercel
 
 Current state:
 
-- Project ref: `ehmsqlfxxydnebzjfarr`
-- Current personal org: `junyoung8753's Project`
-- Production app already uses Supabase and `/api/health` has reported `mode=supabase`.
+- Vercel project: `kcg-confirm-preview`
+- Current production aliases: `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`
+- Current owner context: personal Vercel account/team
+- Production env vars are encrypted in Vercel and must not be exported into docs/chat/Git.
 
-After company email/payment:
+Recommended target:
 
-1. Sign in to Supabase as `admin@kcgold.co.kr` using the company Google account if available.
-2. Create a company organization, recommended display name:
-   - `Korea Center Gold Exchange`
-   - or `한국센터금거래소`
-3. Invite junyoung's personal Supabase user as Owner/Admin for continuity.
-4. From the current personal org, transfer project `ehmsqlfxxydnebzjfarr` to the company org.
-5. Confirm project ref, database URL, storage, and API keys did not unexpectedly change.
-6. If service-role keys rotate during transfer, update Vercel env only through Vercel dashboard/CLI secret flow. Never commit keys.
+- Vercel team/workspace display name: `KCG` or `Korea Center Gold Exchange`
+- Login/owner basis: `kcgoldx@gmail.com`
+- Add junyoung personal Vercel account as Owner/Admin for continuity.
 
-Validation:
+Plan:
 
-```powershell
-npx supabase projects list
-npx supabase link --project-ref ehmsqlfxxydnebzjfarr
-npx supabase db query --linked -f supabase/schema.sql
-Invoke-WebRequest https://kcgold.co.kr/api/health | Select-Object -ExpandProperty Content
-```
-
-### Vercel
-
-Current state:
-
-- Personal Vercel user: `junyoung8753-2361`
-- Project: `kcg-confirm-preview`
-- Custom domains: `kcgold.co.kr`, `www.kcgold.co.kr`
-- Env vars are set in production, encrypted in Vercel.
-
-After company billing/team:
-
-1. Create a company Vercel team/workspace under the company account.
-2. Add junyoung personal account as Owner/Admin.
-3. Transfer project `kcg-confirm-preview` to the company team.
-4. Confirm transferred items:
+1. Create the company Vercel team/workspace under `kcgoldx@gmail.com`.
+2. Add company billing only if Vercel requires it or if KCG chooses Pro later.
+3. Keep Vercel Pro optional for now. The current Hobby cron posture is acceptable while automatic checks are at most once per day.
+4. Transfer project `kcg-confirm-preview` to the company team after verifying the target team is ready.
+5. Confirm transferred items:
    - domains
    - aliases
    - env vars
    - deployments
    - cron jobs
    - Git link
-5. Reconnect GitHub integration if the project transfer breaks it.
+6. Reconnect GitHub integration if the transfer breaks it.
+7. Enable usage/spend alerts where Vercel exposes them for the selected plan.
 
-Validation:
+Validation after Vercel transfer:
 
 ```powershell
 npx vercel whoami
@@ -178,89 +142,170 @@ npx vercel env ls production
 npm run check:external -- --strict-domain
 ```
 
-### GitHub
+Secret rule:
+
+- `npx vercel env ls production` may list variable names and scopes only. Do not print secret values.
+- If env values must be rotated, use Vercel dashboard/CLI secret flow only.
+
+### Phase 3 - Supabase
+
+Current state:
+
+- Project ref: `ehmsqlfxxydnebzjfarr`
+- Current org context: personal Supabase org
+- Production app already uses Supabase and `/api/health` reports `mode=supabase` on live verification.
+
+Recommended target:
+
+- Supabase organization display name: `Korea Center Gold Exchange`
+- Owner login basis: `kcgoldx@gmail.com`
+- Add junyoung personal Supabase account as Owner/Admin for continuity.
+
+Pre-transfer checks:
+
+- Current account has owner permission on the source org/project.
+- Target company org exists and can receive a project transfer.
+- Billing/plan compatibility is understood before accepting transfer.
+- Project roles, integrations, log drains, and any organization-scoped add-ons are reviewed.
+
+Plan:
+
+1. Sign in to Supabase with `kcgoldx@gmail.com`.
+2. Create target organization `Korea Center Gold Exchange`.
+3. Invite junyoung personal Supabase account as Owner/Admin.
+4. From the current source org, start transfer of project `ehmsqlfxxydnebzjfarr` to the company org.
+5. Complete human approval prompts.
+6. Confirm the project ref, API URL, DB, auth/storage posture, and tables still work.
+7. If service-role keys change, update Vercel env only through Vercel dashboard/CLI secret flow. Never commit keys.
+
+Validation after Supabase transfer:
+
+```powershell
+npx supabase projects list
+npx supabase link --project-ref ehmsqlfxxydnebzjfarr
+Invoke-WebRequest https://kcgold.co.kr/api/health | Select-Object -ExpandProperty Content
+```
+
+Expected `/api/health` values:
+
+- `mode=supabase`
+- `deployment=production`
+- `indexing=disabled`
+
+### Phase 4 - GitHub
 
 Current state:
 
 - Repo: `junyoung8753/kcg-site`
-- Visibility: public for now.
+- Visibility: public for now
+- Current branch: `codex/kcg-launch-readiness-catalog-20260427`
 
-Recommended company structure:
+Recommended target:
 
-1. Create a GitHub organization after company email is active.
-2. Suggested org slugs, choose the first available:
-   - `kcgold`
-   - `korea-center-gold`
-   - `kcgold-exchange`
-3. Add junyoung personal GitHub account as Owner.
-4. Transfer repo `junyoung8753/kcg-site` into the organization.
+- GitHub organization slug candidates, in order:
+  1. `kcgold`
+  2. `korea-center-gold`
+  3. `kcgold-exchange`
+- Owner basis: `kcgoldx@gmail.com`
+- Add junyoung personal GitHub account as Owner.
+
+Plan:
+
+1. Create or verify the company GitHub user/org.
+2. Add junyoung personal GitHub account as Owner before transferring the repo.
+3. Keep GitHub Team paid plan optional for now. A public repo does not require paid Team features unless KCG needs private repos, advanced governance, or extra seats/features.
+4. Transfer `junyoung8753/kcg-site` only after Vercel/Supabase transfer has settled.
 5. Re-check Vercel Git integration after transfer.
+6. Re-check GitHub Actions, repository settings, branch protection, and remote URL.
 
-Validation:
+Validation after GitHub transfer:
 
 ```powershell
 gh auth status
-gh repo view junyoung8753/kcg-site
+gh repo view <company-org>/kcg-site
 git remote -v
 git fetch --all --prune
 ```
 
-After repo transfer, update `origin` only if GitHub changes the canonical remote:
+If GitHub changes the canonical remote:
 
 ```powershell
 git remote set-url origin https://github.com/<company-org>/kcg-site.git
 git fetch --all --prune
 ```
 
-Do not move private company knowledge into this public-style site repo.
+Do not move private company knowledge, private documents, customer data, secrets, or unapproved internal material into this public-style site repo.
 
-## What Codex Should Do When Junyoung Says `플랜 결제 했어`
+### Phase 5 - Domain And Mail
 
-1. Open the persistent login browser and verify `admin@kcgold.co.kr` Google Admin is signed in.
-2. Continue Google Admin setup.
-3. Capture exact Google-provided DNS verification/MX/DKIM records.
-4. Open Cafe24 DNS and add only required DNS records.
-5. Verify DNS propagation with `Resolve-DnsName`.
-6. Activate Gmail in Google Admin when Google confirms DNS.
-7. Create or verify company Supabase organization; transfer project if approved.
-8. Create or verify company Vercel team; transfer project if approved.
-9. Create or verify GitHub org; transfer repo if approved.
-10. Re-run external and app checks:
+Current decision:
+
+- Keep `kcgoldx@gmail.com` as the company representative email for now.
+- Do not force Google Workspace before launch.
+- Do not touch current Vercel website A records for mail setup.
+
+Optional later domain-mail path:
+
+1. If KCG wants `@kcgold.co.kr` mail, choose Google Workspace Business Starter or another mail provider.
+2. Create the first domain mailbox such as `admin@kcgold.co.kr`.
+3. Add only provider-supplied DNS records in Cafe24.
+4. Preserve website records:
+   - `kcgold.co.kr -> 76.76.21.21`
+   - `www.kcgold.co.kr -> 76.76.21.21`
+5. Add SPF/DKIM/DMARC only with provider-provided values.
+6. Start DMARC in monitor mode before enforcing.
+
+Google Workspace note:
+
+- A previous Google Workspace signup flow reached checkout for `admin@kcgold.co.kr`.
+- That flow is no longer the default path.
+- Google Workspace / `admin@kcgold.co.kr` is optional later domain-mail work.
+- Continue it only if junyoung says to buy Workspace/custom-domain mail.
+
+DNS verification commands after mail changes:
 
 ```powershell
+Resolve-DnsName kcgold.co.kr -Type MX
+Resolve-DnsName kcgold.co.kr -Type TXT
 npm run check:external -- --strict-domain
+```
+
+## Full Post-Migration Site Verification
+
+Run after any Vercel/Supabase/GitHub transfer that could affect production:
+
+```powershell
 $env:SITE_AUDIT_URL='https://kcgold.co.kr'; npm run audit:site
 $env:SITE_AUDIT_URL='https://kcgold.co.kr'; npm run test:site
+npm run check:external -- --strict-domain
 ```
 
-11. Confirm search remains blocked:
+Confirm:
 
-```powershell
-Invoke-WebRequest https://kcgold.co.kr/robots.txt | Select-Object -ExpandProperty Content
-Invoke-WebRequest https://kcgold.co.kr/sitemap.xml | Select-Object -ExpandProperty Content
-Invoke-WebRequest https://kcgold.co.kr/api/health | Select-Object -ExpandProperty Content
-```
-
-Expected pre-launch posture:
-
-- `/robots.txt` includes `Disallow: /`
-- `/sitemap.xml` remains empty or non-indexing
-- `/api/health` reports `indexing: disabled`
+- `https://kcgold.co.kr/robots.txt` still includes `Disallow: /`
+- `https://kcgold.co.kr/sitemap.xml` remains empty or non-indexing before launch
+- `https://kcgold.co.kr/api/health` reports `mode=supabase` and `indexing=disabled`
+- Admin secret values were not printed, copied, exported into docs, or committed
 
 ## Do Not Do Without Separate Approval
 
-- Do not enter payment card data.
-- Do not buy a paid Workspace/Vercel/Supabase/GitHub plan without explicit approval.
+- Do not enter card data.
+- Do not buy Vercel Pro, Supabase paid plans, GitHub Team, Google Workspace, or any paid provider plan.
 - Do not remove robots/noindex/search blocking.
 - Do not rotate or expose production secrets in chat/docs/Git.
 - Do not delete DNS records unless their purpose is confirmed and junyoung approves the replacement.
-- Do not scrape competitor sites for automatic KCG prices.
+- Do not add checkout/cart/payment/live trading behavior.
+- Do not scrape competitor prices, images, copy, or APIs.
 
 ## Official Reference Links
 
 - Google Workspace pricing: https://workspace.google.com/pricing?hl=ko
-- Google Workspace MX records: https://support.google.com/a/answer/9047148
-- Google Workspace payment plans: https://support.google.com/a/answer/1247360
-- Supabase project transfer: https://supabase.com/docs/guides/platform/project-transfer
+- Google Workspace edition guide: https://support.google.com/a/answer/6043576
+- Vercel cron usage and pricing: https://vercel.com/docs/cron-jobs/usage-and-pricing
+- Vercel pricing: https://vercel.com/pricing
 - Vercel project transfer: https://vercel.com/docs/projects/transferring-projects
+- Supabase project transfer: https://supabase.com/docs/guides/platform/project-transfer
+- Supabase billing: https://supabase.com/docs/guides/platform/billing-on-supabase
+- GitHub moving work to an organization: https://docs.github.com/en/account-and-profile/how-tos/account-management/moving-your-work-to-an-organization
 - GitHub repository transfer: https://docs.github.com/en/repositories/creating-and-managing-repositories/transferring-a-repository
+- GitHub billing roles: https://docs.github.com/en/billing/reference/billing-roles

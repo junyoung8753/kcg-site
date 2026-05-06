@@ -8,8 +8,8 @@ This file is the short, durable context for a new Codex chat, another PC, or a f
 
 - 초보자는 먼저 `docs/setup/PROJECT_STATUS_FOR_BEGINNER.md`를 보면 된다. 이 문서는 현재 버전, 작업 브랜치, 백업 기준, 실제 사이트 반영 여부, 쉬운 Codex 요청 문장을 1-2분 안에 읽을 수 있게 정리한다.
 - `branch` = 작업 줄기, `HEAD` = 현재 코드 기준점, `rollback` = 이전 상태로 되돌리기, `backup branch` = 되돌리기용 책갈피, `dirty state` = 아직 정리되지 않은 변경사항.
-- 이번 `v0.2.12`는 공개 런칭 전 고객/직원 관점에서 시세표 읽기, 상품/매입 선택, 서비스 FAQ, 상품 이미지 반복감을 다시 보강하는 작업이다. 검색 노출/noindex 해제는 포함하지 않는다.
-- 되돌릴 때는 "v0.2.12 전으로 되돌려줘" 또는 "v0.2.11 운영 콘솔 시간표기/가독성 수정만 되돌리는 계획을 먼저 보여줘"라고 말하면 된다.
+- 이번 `v0.2.13`은 `kcgoldx@gmail.com`을 회사 영구 대표 운영 계정으로 확정한 기준과 Vercel/Supabase/GitHub/Cafe24/결제 이전 순서를 비밀값 없이 정리한 문서/운영 계획 작업이다. 고객 화면, 검색 노출/noindex, 결제/장바구니, 실시간 거래, secret/env는 바꾸지 않는다.
+- 되돌릴 때는 "v0.2.13 전으로 되돌려줘" 또는 "v0.2.12 고객/직원 흐름과 상품 이미지 다양화 수정만 되돌리는 계획을 먼저 보여줘"라고 말하면 된다.
 
 Junyoung's current preferred workflow is local-first. Codex Cloud is not the default right now because it has been inconvenient and unreliable for current KCG work. Keep Cloud docs as a future option and use `docs/setup/CLOUD_ONLY_WORKFLOW.md` only when junyoung explicitly asks for Codex Cloud or wants to avoid computer-specific setup.
 
@@ -17,20 +17,20 @@ If the old KCG project chat disappears from the Codex app UI, do not treat that 
 
 ## Current Version Snapshot
 
-- Current KCG site version: `v0.2.12`
-- Latest change: `Pre-launch customer flow and catalog image QA`
+- Current KCG site version: `v0.2.13`
+- Latest change: `Company Gmail ownership and billing migration plan`
 - Local check URL: `http://127.0.0.1:3300`
-- Reflection status: `v0.2.12` is a public customer-flow and catalog-image QA pass before search launch. It strengthens `/prices` pre-call guidance, `/products` buy/sell/bulk selection, `/services` FAQ, and product-card image variety while preserving robots/noindex blocking. Confirm current state with `git status --short --branch`, `npm run release:trace`, and required validation commands before handoff.
-- 실제 사이트 화면이 바뀌는 것: `/prices` 전화 전 확인 안내, `/products` 상단 살 때/팔 때/대량 선택 기준, `/products` 상품 카드 이미지 다양화, `/services` FAQ.
-- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 없음.
-- 배포된 것: `v0.2.12` customer/staff flow and catalog image QA is committed, pushed, production deployed, and live-verified on `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app`.
-- 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 운영자료 확정, Vercel Pro 또는 외부 scheduler 결정.
+- Reflection status: `v0.2.13` is a docs/control-plane pass for company Gmail ownership and future billing/account transfer. It makes `kcgoldx@gmail.com` the permanent representative operating account, adds a no-secret ownership checklist, and demotes Google Workspace / `admin@kcgold.co.kr` to an optional later domain-mail path. It preserves `v0.2.12` public customer-flow UI, robots/noindex blocking, Vercel env secrets, and no checkout/payment/live-trading boundaries. Confirm current state with `git status --short --branch`, `npm run release:trace`, and required validation commands before handoff.
+- 실제 사이트 화면이 바뀌는 것: 없음.
+- 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: `COMPANY_ACCOUNT_MIGRATION_RUNBOOK.md`, `KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md`, handoff/status/task trace, no-secret user-action queue.
+- 배포된 것: `v0.2.12` customer/staff flow and catalog image QA remains committed, pushed, production deployed, and live-verified on `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app`. `v0.2.13` is a documentation/control-plane update until final commit/push/deploy verification is recorded.
+- 아직 배포 안 된 것: 검색 노출/noindex 해제, 실제 상품 운영자료 확정, Vercel Pro 또는 외부 scheduler 결정, 실제 SaaS 계정 이전 실행.
 - 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` review site. Search exposure remains blocked.
-- 아직 내부 기준/계획일 뿐인 것: real product/store/staff photography replacement, final product prices/공임/판매정책, final admin secret rotation, search launch approval.
-- Latest QA: local `v0.2.12` validation passed on 2026-05-06 KST. Passed: `npm run audit:site` (`1131 checks, 1 skipped` before rendered URL checks), `npm run lint`, `npm run typecheck`, `npm run tasks:dashboard` (`62 tasks`), `npm run build`, targeted Playwright product first-viewport/typography regression (`2 passed`), `npm run test:site` (`21 passed`), `npm run screenshot:site`, visual screenshot inspection for home/prices/products/services mobile and desktop key views, `npm run qa:site` (rendered audit `1191 checks, 0 skipped`; Playwright `21 passed`; npm audit `0 vulnerabilities`), standalone `npm audit --audit-level=moderate` (`0 vulnerabilities`), and `git diff --check` with line-ending warnings only. Live verification passed after production deploy: `npx vercel inspect https://kcgold.co.kr/`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`1191 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`21 passed`), and `npm run check:external -- --strict-domain` with robots/noindex blocking still active.
+- 아직 내부 기준/계획일 뿐인 것: real product/store/staff photography replacement, final product prices/공임/판매정책, final admin secret rotation, search launch approval, actual Vercel/Supabase/GitHub/Cafe24 ownership transfer, company card entry, optional Workspace/custom-domain mail purchase.
+- Latest QA: local `v0.2.13` docs/control-plane validation passed on 2026-05-06 KST. Passed: `npm run audit:site` (`1162 checks, 1 skipped` because rendered URL checks were not requested), `npm run release:trace`, `npm run tasks:dashboard` (`64 tasks`), `npm run lint`, `npm run typecheck`, `npm run build`, `npm run test:site` (`21 passed`), `npm audit --audit-level=moderate` (`0 vulnerabilities`), and `git diff --check` with line-ending warnings only. Last completed runtime QA remains local/live `v0.2.12` validation on 2026-05-06 KST, including product-card image variety and robots/noindex blocking. Because `v0.2.13` does not change public/admin UI source, screenshot QA is not required unless later source changes are added.
 - Change ledger: `docs/setup/CHANGELOG.md`
 - Broader rollback bookmark: `backup/pre-v0.2.4-operations-product-audit`
-- Rollback phrase: `v0.2.12 전으로 되돌려줘`
+- Rollback phrase: `v0.2.13 전으로 되돌려줘`
 
 ## Current Source Of Truth
 
@@ -102,7 +102,7 @@ KCG should not be a generic mall, broad trading platform, or multi-option design
 
 - `docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md` is the current runbook for Cafe24/Vercel domain connection, Supabase setup, Gold API/Metals.Dev/KRX decisions, TradingView widget boundaries, and post-connection verification.
 - `docs/setup/AUTO_PRICE_OPERATIONS_BRIEF.md` is the plain-language operations brief for explaining automatic KCG posted-price checks, Gold API/Metals.Dev reference data, Vercel Hobby Cron limits, Vercel Pro/external scheduler options, and why competitor scraping is not part of the implementation.
-- `docs/setup/COMPANY_ACCOUNT_MIGRATION_RUNBOOK.md` is the no-secret runbook for moving KCG operations from junyoung's personal accounts to company-owned Google Workspace, Supabase, Vercel, and GitHub accounts. Google Workspace signup is prepared for `admin@kcgold.co.kr`; after junyoung completes password/terms/payment and says `플랜 결제 했어`, continue from that runbook.
+- `docs/setup/COMPANY_ACCOUNT_MIGRATION_RUNBOOK.md` is the no-secret runbook for moving KCG operations from junyoung's personal accounts to company-owned accounts using `kcgoldx@gmail.com` as the permanent representative Gmail. `docs/setup/KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md` tracks service ownership, recovery method type, billing status, and transfer readiness without secrets. Google Workspace / `admin@kcgold.co.kr` is optional later domain-mail work, not the default migration path.
 - Default market data remains `MARKET_DATA_PROVIDER=auto` with no `METALS_DEV_API_KEY`, which means Gold API free current reference prices are used before fallback data. Do not pay for Metals.Dev until bid/ask, history charts, quota, or reliability justify it. TradingView is used only through its official embeddable widget for chart context; keep attribution visible and do not extract the widget data into KCG tables or storage.
 - KRX Open API has 금시장 일별매매정보, but KRX usage terms and market-data distribution rules must be confirmed before public commercial display. Do not mix KRX values into KCG posted prices or "실시간 참고시세" until approval/contract scope is clear.
 - Supabase production data now uses the checked-in `supabase/schema.sql` and `supabase/seed.sql`. Vercel production env has the public Supabase URL and server-only key set only through dashboard/CLI secret flows. Do not commit or paste service-role/secret keys.

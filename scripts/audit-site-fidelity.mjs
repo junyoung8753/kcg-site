@@ -392,6 +392,8 @@ expectFile(".agents/skills/kcg-site-quality/SKILL.md", { minBytes: 1_500 });
 expectFile("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", { minBytes: 3_000 });
 expectFile("docs/setup/OPEN_TASKS.md", { minBytes: 2_000 });
 expectFile("docs/setup/CHANGELOG.md", { minBytes: 1_500 });
+expectFile("docs/setup/COMPANY_ACCOUNT_MIGRATION_RUNBOOK.md", { minBytes: 4_000 });
+expectFile("docs/setup/KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md", { minBytes: 2_000 });
 expectFile("docs/setup/CONTACT_CHANNELS_RUNBOOK.md", { minBytes: 1_000 });
 expectFile("docs/setup/DOMAIN_SUPABASE_MARKET_RUNBOOK.md", { minBytes: 4_000 });
 expectFile("docs/setup/PRODUCT_OPERATIONS_CHECKLIST.md", { minBytes: 2_000 });
@@ -427,6 +429,11 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.13 - Company Gmail ownership and billing migration plan",
+  "kcgoldx@gmail.com",
+  "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
+  "Google Workspace / `admin@kcgold.co.kr` is optional later domain-mail work",
+  "v0.2.13 전으로 되돌려줘",
   "## v0.2.12 - Pre-launch customer flow and catalog image QA",
   "Price-first operational guidance",
   "전화 전 확인",
@@ -482,17 +489,18 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.12`",
-  "Pre-launch customer flow and catalog image QA",
+  "Current KCG site version: `v0.2.13`",
+  "Company Gmail ownership and billing migration plan",
   "existing-api-integration-audit-2026-05-05.md",
-  "실제 사이트 화면이 바뀌는 것: `/prices` 전화 전 확인 안내",
+  "실제 사이트 화면이 바뀌는 것: 없음.",
+  "kcgoldx@gmail.com",
   "backup/pre-v0.2.4-operations-product-audit",
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
-  "v0.2.12",
-  "고객/직원 관점",
-  "실제 사이트 화면이 바뀐 것: `/prices` 전화 전 확인 안내",
+  "v0.2.13",
+  "kcgoldx@gmail.com",
+  "실제 사이트 화면이 바뀐 것: 없음",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",
   "MEDIUM",
@@ -501,6 +509,29 @@ expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "그대로 복사해서 Codex에게 말하면 되는 문장",
   "검증 전 push/deploy 하지 않음",
   "검색 노출/noindex 해제하지 않음",
+]);
+expectText("docs/setup/COMPANY_ACCOUNT_MIGRATION_RUNBOOK.md", [
+  "Permanent representative company account: `kcgoldx@gmail.com`",
+  "Optional future domain mailbox",
+  "Do not record passwords",
+  "Password-manager item for `kcgoldx@gmail.com`",
+  "Vercel team/workspace display name",
+  "Project ref: `ehmsqlfxxydnebzjfarr`",
+  "GitHub organization slug candidates",
+  "Google Workspace / `admin@kcgold.co.kr` is optional later domain-mail work",
+  "Do not remove robots/noindex/search blocking",
+  "Do not add checkout/cart/payment/live trading behavior",
+]);
+expectText("docs/setup/KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md", [
+  "Permanent representative company account: `kcgoldx@gmail.com`",
+  "Service Ownership Matrix",
+  "Google 2-Step Verification",
+  "Vercel",
+  "Supabase",
+  "GitHub",
+  "Cafe24 / domain DNS",
+  "Do not write passwords",
+  "User-Only Decisions Still Required",
 ]);
 expectText("docs/setup/QA_REPORT_2026-05-05.md", [
   "Public site | 9380 / 10000",
@@ -1409,8 +1440,9 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.12` is a public customer-flow and catalog-image QA pass",
+  "Reflection status: `v0.2.13` is a docs/control-plane pass",
   "product-card image variety",
+  "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
   "docs/setup/CHANGELOG.md",
   "docs/quality/ai-site-production-playbook.md",
   "docs/quality/data-source-compliance.md",
@@ -1464,6 +1496,9 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-060",
   "KCG-TODO-061",
   "KCG-TODO-062",
+  "KCG-TODO-063",
+  "KCG-TODO-064",
+  "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
   "tasks:dashboard",
   "user-only",
   "codex",
