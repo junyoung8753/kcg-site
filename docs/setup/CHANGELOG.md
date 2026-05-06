@@ -8,6 +8,49 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.15 - Company Vercel and Supabase ownership start
+
+- Date: `2026-05-06 KST`
+- Commit: implementation commit is created after this verification pass.
+- Deploy Status: committed and pushed after verification. Production deploy is blocked until the existing Vercel project `kcg-confirm-preview` is transferred or re-authorized for the company Vercel context, because junyoung explicitly stopped using the previous personal Vercel CLI session. No public UI, robots/noindex, DNS, env secret, checkout/cart/payment, or live trading behavior changed.
+- 사람이 읽는 요약: 기존 개인 Vercel/Supabase CLI 세션을 더 이상 운영 경로로 쓰지 않도록 정리하고, `kcgoldx@gmail.com` 회사 계정 기준으로 실제 가능한 생성 작업을 진행했습니다. Vercel CLI는 회사 계정 `kcgoldx-7259`로 전환됐고 팀 `KCG`(`kcgoldx`)가 생성됐습니다. Supabase CLI도 회사 계정 쪽으로 전환됐고 조직 `Korea Center Gold Exchange`가 생성됐습니다. 기존 live Vercel 프로젝트와 기존 production Supabase project는 아직 이전 소유 범위에 있으므로 회사 CLI에서는 보이지 않으며, personal CLI 재로그인 없이 강제 배포/이전을 진행하지 않습니다.
+- Summary: Starts the actual company-account transition by removing the old personal CLI operating path, creating/verifying the company Vercel team and Supabase organization, and documenting the remaining transfer boundary without changing the public site.
+- Changed:
+  - Bumped the release trace to `v0.2.15`.
+  - Recorded that Vercel CLI now reports `kcgoldx-7259`.
+  - Recorded company Vercel team `KCG` with slug `kcgoldx` (`vercel.com/kcgoldx`).
+  - Recorded that `kcgoldx` and `kcgoldx-7259s-projects` currently have no Vercel projects, so `kcg-confirm-preview` is still not transferred.
+  - Recorded Supabase company organizations: auto-created `kcgoldx@gmail.com's Org` and created target organization `Korea Center Gold Exchange` (`raqltqjuqcrusylilnqs`).
+  - Recorded that company Supabase CLI has no projects yet, so production project `ehmsqlfxxydnebzjfarr` is still not transferred.
+  - Added the explicit rule: Do not restore the old personal CLI sessions for routine KCG deploy/admin work.
+  - Updated account ownership checklist, handoff/status docs, open tasks, user-only action queue, and audit guardrails so future work does not instruct Codex to keep using the previous personal Vercel/Supabase CLI sessions.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: 없음.
+  - 실제 사이트 화면은 아직 안 바뀌고, 문서/기준만 바뀐 것: 회사 Vercel/Supabase CLI 기준 상태, 새 팀/조직 생성 결과, 기존 live 프로젝트/DB 이전 전 경계, 배포 차단 사유.
+  - 배포된 것: 없음. 회사 Vercel CLI는 아직 기존 live 프로젝트 권한이 없어 production deploy/inspect를 실행할 수 없다.
+  - 아직 배포 안 된 것: `v0.2.15` 문서/기준 변경의 live 반영, 기존 Vercel project transfer, 기존 Supabase project transfer, 검색 노출/noindex 해제, 유료 서버/API 결제.
+  - 고객에게 보여줘도 되는 것: 기존 noindex-protected live `kcgold.co.kr` review site. 이 버전은 고객 화면 변경이 없다.
+  - 아직 내부 기준/계획일 뿐인 것: 기존 `kcg-confirm-preview`를 회사 Vercel team으로 이전, 기존 Supabase project `ehmsqlfxxydnebzjfarr`를 회사 Supabase org로 이전, 유료 결제 필요 여부 판단.
+- Verification:
+  - Passed: `npm run audit:site` (`1205 checks, 1 skipped`; rendered URL checks intentionally skipped because this is a docs/control-plane pass).
+  - Passed: `npm run release:trace` (reports `v0.2.15`, branch `codex/kcg-launch-readiness-catalog-20260427`, and expected uncommitted status before commit).
+  - Passed: `npm run tasks:dashboard` (`67 tasks`).
+  - Passed: `npm run lint`.
+  - Passed: `npm run typecheck`.
+  - Passed: `npm run build`.
+  - Passed: `npm run test:site` (`21 passed`).
+  - Passed: `npm audit --audit-level=moderate` (`0 vulnerabilities`).
+  - Passed: `git diff --check` with line-ending warnings only.
+  - Passed: `npm run check:external -- --strict-domain`; live `/api/health` still reports `mode=supabase`, `deployment=production`, `indexing=disabled`, `adminAuth=env-password`; robots remain blocked and sitemap remains empty.
+  - Passed: CLI ownership checks: `npx vercel whoami` -> `kcgoldx-7259`; `npx vercel teams ls` shows `KCG`; `npx vercel project ls --scope kcgoldx` and `--scope kcgoldx-7259s-projects` show no projects; `npx supabase orgs list` shows `kcgoldx@gmail.com's Org` and `Korea Center Gold Exchange`; `npx supabase projects list` shows no projects.
+  - Expected blocked check: `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx` fails with `Can't find the deployment ... under the context "kcgoldx"` because the live project has not been transferred. This is now treated as the expected company-only CLI boundary, not a reason to restore the personal CLI session.
+  - Runtime route screenshots are not required for this docs/control-plane pass because no public/admin UI source changed.
+- Rollback Hint: `v0.2.15 전으로 되돌려줘`
+- Remaining User-only:
+  - If Vercel project transfer asks for card, paid plan, or ownership approval, junyoung/company must decide and complete that human-only step; do not paste card or approval secrets into chat.
+  - If Supabase project transfer asks for terms, owner approval, billing compatibility, or card, junyoung/company must decide and complete that human-only step; do not paste tokens, service keys, or card data into chat.
+  - Approve robots/noindex release and search indexing only when final public launch is ready.
+
 ## v0.2.14 - Minimal company account onboarding mode
 
 - Date: `2026-05-06 KST`

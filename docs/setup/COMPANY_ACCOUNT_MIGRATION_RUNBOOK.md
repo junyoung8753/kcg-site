@@ -7,14 +7,35 @@ This is the no-secret runbook for moving KCG site operations, ownership, and fut
 ## Current Decision
 
 - Permanent representative company account: `kcgoldx@gmail.com`
-- Personal account role after migration: backup owner / co-admin only
+- Personal account role after migration: backup owner / co-admin only; do not use the previous personal Vercel/Supabase CLI sessions as the routine operating path
 - Optional future domain mailbox: `admin@kcgold.co.kr` or other `@kcgold.co.kr` addresses if KCG later chooses Google Workspace or another paid mail service
-- Minimal required mode: junyoung signs in to `kcgoldx@gmail.com`; Codex handles the rest of the non-secret setup, checks, docs, and transfer preparation wherever the service UI/CLI allows it
+- Minimal required mode: use the company account/session path for new setup, checks, docs, and transfer preparation wherever the service UI/CLI allows it
 - Paid services mode: pay only when a server/API/billing dependency actually requires it, not just because an account checklist exists
 - Public site behavior: no change
 - Search posture: robots/noindex stays blocked until separate public-search approval
 - Payment/trading posture: no checkout, cart, live trading, or online payment behavior is added by this plan
 - Secret posture: Vercel env vars, Supabase service-role keys, admin password, recovery codes, and card details stay outside Git/docs/chat
+
+## Current Progress - 2026-05-06 KST
+
+Completed without payment or secrets:
+
+- Removed the previous personal Vercel CLI session from the routine operating path.
+- Vercel CLI now reports company account `kcgoldx-7259`.
+- Created/verified Vercel team `KCG` with slug `kcgoldx`.
+- Confirmed no Vercel projects exist yet under `kcgoldx` or `kcgoldx-7259s-projects`.
+- Confirmed the existing live deployment cannot be inspected under `kcgoldx` because `kcg-confirm-preview` has not been transferred.
+- Removed the previous personal Supabase CLI token from the routine operating path.
+- Supabase CLI now sees company-side organizations.
+- Created/verified Supabase organization `Korea Center Gold Exchange` with org id `raqltqjuqcrusylilnqs`.
+- Confirmed the company Supabase context has no projects yet.
+
+Still not changed:
+
+- Existing Vercel project `kcg-confirm-preview` still owns the live domains and is not in the company Vercel team yet.
+- Existing Supabase project `ehmsqlfxxydnebzjfarr` still backs the production site and is not in the company Supabase organization yet.
+- No Vercel env values, Supabase service-role keys, DNS records, robots/noindex, checkout/cart/payment, or live trading behavior changed.
+- Do not restore the old personal CLI sessions just to deploy; first transfer or authorize the company account.
 
 ## Minimal Required Mode
 
@@ -24,8 +45,8 @@ Junyoung's current instruction is simple: after `kcgoldx@gmail.com` is logged in
 
 Only these remain human-only:
 
-1. Sign in to `kcgoldx@gmail.com` in the browser or official service OAuth flow.
-2. Complete MFA, passkey, CAPTCHA, phone/email verification, terms acceptance, and transfer-approval prompts when they appear.
+1. Complete MFA, passkey, CAPTCHA, phone/email verification, terms acceptance, and transfer-approval prompts when they appear.
+2. Approve or decline payment-method requirements if Vercel/Supabase blocks project transfer without one.
 3. Enter a company card only when KCG actually chooses a paid server/API/billing plan.
 4. Approve public search indexing/noindex release separately later, if and when launch is ready.
 
@@ -37,8 +58,8 @@ Codex should handle the following without asking junyoung to repeat the plan:
 
 1. Open and prepare the relevant Google, Vercel, Supabase, GitHub, and Cafe24 pages or official CLI flows.
 2. Fill safe non-secret organization/team/project names when the UI allows it.
-3. Create or verify the company Vercel team/workspace and Supabase organization if they are available without paid commitment.
-4. Prepare project transfer checks and run post-transfer verification commands.
+3. Create or verify the company Vercel team/workspace and Supabase organization if they are available without paid commitment. This is complete for Vercel `KCG` and Supabase `Korea Center Gold Exchange`.
+4. Prepare project transfer checks and run post-transfer verification commands after the existing project access is granted or transferred.
 5. Keep the no-secret ownership checklist updated with status, owners, billing posture, and verification notes.
 6. Keep `kcgold.co.kr`, `www.kcgold.co.kr`, `kcg-confirm-preview.vercel.app`, Supabase data, Vercel env-secret boundaries, and robots/noindex blocking intact.
 
@@ -150,7 +171,9 @@ Current state:
 
 - Vercel project: `kcg-confirm-preview`
 - Current production aliases: `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`
-- Current owner context: personal Vercel account/team
+- Current owner context: existing personal Vercel account/team for the live project; local CLI operating context is now company account `kcgoldx-7259`
+- Company team created: `KCG` (`kcgoldx`)
+- Company team project list: empty
 - Production env vars are encrypted in Vercel and must not be exported into docs/chat/Git.
 
 Recommended target:
@@ -161,7 +184,7 @@ Recommended target:
 
 Plan:
 
-1. After junyoung signs in to `kcgoldx@gmail.com`, Codex creates or verifies the company Vercel team/workspace where the UI/CLI allows non-secret setup.
+1. Company Vercel team/workspace exists as `KCG` (`kcgoldx`).
 2. Add company billing only if Vercel requires it for the transfer/operation or if KCG chooses Pro later.
 3. Keep Vercel Pro optional for now. The current Hobby cron posture is acceptable while automatic checks are at most once per day.
 4. Transfer project `kcg-confirm-preview` to the company team after verifying the target team is ready.
@@ -189,13 +212,16 @@ Secret rule:
 
 - `npx vercel env ls production` may list variable names and scopes only. Do not print secret values.
 - If env values must be rotated, use Vercel dashboard/CLI secret flow only.
+- Until `kcg-confirm-preview` is transferred or company access is granted, `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx` is expected to fail because the live deployment is not in the company context.
 
 ### Phase 3 - Supabase
 
 Current state:
 
 - Project ref: `ehmsqlfxxydnebzjfarr`
-- Current org context: personal Supabase org
+- Current org context: existing production project is still in the previous personal Supabase org; local CLI operating context is now company-side and sees `Korea Center Gold Exchange`
+- Company organization created: `Korea Center Gold Exchange` (`raqltqjuqcrusylilnqs`)
+- Company project list: empty
 - Production app already uses Supabase and `/api/health` reports `mode=supabase` on live verification.
 
 Recommended target:
@@ -213,8 +239,8 @@ Pre-transfer checks:
 
 Plan:
 
-1. Junyoung signs in to Supabase with `kcgoldx@gmail.com`; Codex handles non-secret setup after the login/MFA/terms prompts are complete.
-2. Create or verify target organization `Korea Center Gold Exchange`.
+1. Company Supabase login exists in the CLI.
+2. Target organization `Korea Center Gold Exchange` exists.
 3. Invite junyoung personal Supabase account as Owner/Admin.
 4. From the current source org, start transfer of project `ehmsqlfxxydnebzjfarr` to the company org.
 5. Complete human approval prompts.
