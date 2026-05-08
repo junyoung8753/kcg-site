@@ -683,7 +683,7 @@ expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "이미지 성격",
   "KCG_PUBLIC_SEARCH_APPROVED=1",
   "상담 기준 공임",
-  "현재 source에는 들어갔지만 live에는 아직 안 보이는 화면 변경",
+  "이번 배포에 포함되어 live에서도 보이는 이전 source 변경",
   "모바일 하단 고정 CTA에는 `상담` 버튼",
   "backup/pre-v0.2.4-operations-product-audit",
   "LOW",

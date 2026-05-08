@@ -99,6 +99,9 @@ const defaultProductImagesBySlug: Record<string, string> = {
 };
 
 const replaceablePlaceholderImages = new Set([
+  "/products/kcg-generated-goldbar-lineup-20260508.webp",
+  "/products/kcg-generated-goldbar-detail-20260508.webp",
+  "/campaign/kcg-generated-goldbar-banner-20260508.webp",
   "/products/kcg-product-minimal-bars-20260506.webp",
   "/products/kcg-product-gold-silver-catalog-20260503.webp",
   "/campaign/kcg-home-price-desk-20260506.webp",

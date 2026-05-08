@@ -11,23 +11,27 @@ Versioning rule before public launch: `0.x.x`.
 ## v0.2.29 - Generated KCG gold-bar representative assets
 
 - Date: `2026-05-08 KST`
-- Commit: local working tree only until this pass is intentionally committed and pushed.
-- Deploy Status: local source/UI/QA guardrail update in progress. By explicit junyoung instruction on 2026-05-08 KST, the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview` is restored as the temporary free deployment path until company transfer is practical. No search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX data call, raw KCG photo copy, real product-photo approval, or real price/product data change is included.
+- Commit: committed and pushed in this pass. Primary release commit: `0d4d391`; follow-up commit records the live Supabase legacy-image mapping fix.
+- Deploy Status: committed, pushed, and production deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview` as the temporary free deployment path until company transfer is practical. Current production deployment id: `dpl_Fuik6ANNi8sW6q2NTkJ7Y8kRYXvf`. This is a noindex-protected review deployment; no search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX data call, raw KCG photo copy, real product-photo approval, or real price/product data change is included.
 - 사람이 읽는 요약: Junyoung이 준 KCG 골드바 참고 폴더를 원본 그대로 쓰지 않고, 골드바 문양·크기·라인업 느낌을 참고한 새 생성 WebP 3종을 만들어 홈 배너, 상품 hero/promo, 골드바 상품 대표 이미지에 연결했습니다. 이미지는 계속 `상담용 대표 이미지`이며 실제 상품사진·포장·재고·가격 증거가 아닙니다.
 - Summary: Adds generated KCG-style gold-bar representative assets and wires them through the public banner/catalog/product surfaces, admin provenance, mock/seed data, and audit/test guardrails while preserving raw-photo, real-price, search, payment, and infrastructure boundaries.
 - Changed:
   - Added `public/campaign/kcg-generated-goldbar-banner-20260508.webp`, `public/products/kcg-generated-goldbar-lineup-20260508.webp`, and `public/products/kcg-generated-goldbar-detail-20260508.webp`.
   - `/` home carousel first slide, `src/app/layout.tsx` social image, `/products` hero, product promo banner, and gold-bar product rows now use generated KCG-style representative assets.
-  - `src/lib/product-presenter.ts` remaps older gold-bar placeholder image URLs to generated representative images by slug while preserving custom non-placeholder admin URLs.
+  - `src/lib/product-presenter.ts` remaps older gold-bar placeholder image URLs and generated representative placeholders to slug-specific generated images while preserving custom non-placeholder admin URLs. This keeps existing production Supabase rows from collapsing all gold bars to the same lineup image.
   - `/admin/products` classifies the generated assets as `대표/생성` with `실사진 확인 필요`.
   - `docs/brand/generated-goldbar-assets-2026-05-08.md`, the replacement map, product operations checklist, and open task ledger record `KCG-TODO-081` as done while keeping these representative-only assets outside real product proof.
 - 실제 사이트 반영 여부:
-  - 실제 사이트 화면이 바뀌는 것: source 기준 홈 첫 배너, `/products` hero/promo, 골드바 상품 카드/상세 대표 이미지.
-  - 실제 사이트 화면은 아직 안 바뀐 것: commit/push/production deploy가 끝나기 전까지는 source-only.
-  - 배포된 것: final QA 후 기존 personal Hobby project `kcg-confirm-preview`로 production deploy 예정.
+  - 실제 사이트 화면이 바뀌는 것: live 기준 홈 첫 배너, `/products` hero/promo, 골드바 상품 카드/상세 대표 이미지.
+  - 실제 사이트 화면은 아직 안 바뀐 것: 실제 상품사진·포장·재고 증거, 실제 제품 가격/공임/운영자료, 검색 공개 상태.
+  - 배포된 것: 기존 personal Hobby project `kcg-confirm-preview` production deployment `dpl_Fuik6ANNi8sW6q2NTkJ7Y8kRYXvf`.
   - 아직 배포 안 된 것: 기존 Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
 - Verification:
-  - Pending in this pass until `npm run qa:site`, targeted Playwright checks, screenshot refresh, and rendered visual inspection complete.
+  - Passed local source/runtime checks: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`1543 checks, 1 skipped`), `npm run build`, `npm run test:site` (`25 passed`), `npm audit --audit-level=moderate`, and `git diff --check` with Windows line-ending warnings only.
+  - Passed visual/admin evidence refresh: `npm run screenshot:site`, `npm run screenshot:admin`; inspected `home-mobile-viewport.png`, `home-desktop-viewport.png`, `products-mobile-viewport.png`, `products-mobile.png`, `admin-products-mobile.png`, and `admin-launch-mobile.png`.
+  - Passed full local launch-candidate gate: `npm run qa:site` with rendered audit `1603 checks, 0 skipped` and Playwright `25 passed`.
+  - Passed review and safety scans: `codex review --uncommitted` found no clear behavioral regression; secret scan found only placeholder references in `.env.example`, docs, and scripts.
+  - Passed live deploy checks after production deployment: `npx vercel inspect https://kcgold.co.kr/` reported `dpl_Fuik6ANNi8sW6q2NTkJ7Y8kRYXvf` ready; `npm run check:release-state`, `npm run check:external -- --strict-domain`, and `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` all passed. A live Playwright rerun initially exposed production Supabase legacy-image repetition, which was fixed by treating generated representative placeholders as slug-remappable before the final live rerun.
 - Rollback Hint: `v0.2.29 전으로 되돌려줘`
 - Remaining User-only:
   - Approve whether these generated assets are acceptable as representative-only launch imagery or whether real KCG product photos must replace them before public search launch.
