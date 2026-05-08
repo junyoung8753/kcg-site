@@ -101,15 +101,19 @@ export function getLaunchReadiness() {
     },
     {
       key: "launch-approval",
-      title: "공개 승인",
-      level: publicSearchApproved ? "warning" : "pass",
+      title: "공개 승인 게이트",
+      level: publicSearchApproved && searchExposureStatus === "enabled" ? "pass" : "warning",
       summary:
-        publicSearchApproved
-          ? "KCG_PUBLIC_SEARCH_APPROVED가 켜져 있습니다. 공개 직전 승인과 live 외부 QA를 재확인해야 합니다."
-          : "검색 공개 승인 env가 없어 공개 직전 별도 승인 단계가 남아 있습니다.",
+        publicSearchApproved && searchExposureStatus === "enabled"
+          ? "KCG_PUBLIC_SEARCH_APPROVED가 켜져 있고 검색 공개 조건이 모두 맞습니다."
+          : publicSearchApproved
+            ? "KCG_PUBLIC_SEARCH_APPROVED는 켜져 있지만 검색 공개 조건을 아직 다시 확인해야 합니다."
+            : "검색 공개 승인 env가 없어 공개 직전 별도 승인 단계가 남아 있습니다.",
       action:
-        publicSearchApproved
+        publicSearchApproved && searchExposureStatus === "enabled"
           ? `현재 배포 단계(${deployment})에서 도메인, 법적 표시, 관리자 비밀값, robots/sitemap 상태를 재확인합니다.`
+          : publicSearchApproved
+            ? `현재 배포 단계(${deployment})에서 남은 공개 차단 조건을 해결하기 전까지 robots/noindex 흐름을 유지합니다.`
           : "검색 공개 승인 전까지 KCG_PUBLIC_SEARCH_APPROVED를 설정하지 않고 preview/noindex 흐름을 유지합니다.",
     },
   ];

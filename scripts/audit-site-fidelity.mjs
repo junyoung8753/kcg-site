@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -74,6 +74,42 @@ function expectMissing(relativePath) {
   }
 
   record(passes, "file absent", relativePath);
+}
+
+const rawKakaoTalkFileNamePattern = /^KakaoTalk_\d{8}_\d+(?:_\d{2})?\.(?:jpe?g|png|webp)$/i;
+
+function expectNoRawKakaoTalkFiles(relativeDirectories) {
+  for (const relativeDirectory of relativeDirectories) {
+    const absoluteDirectory = resolve(rootDir, relativeDirectory);
+    if (!existsSync(absoluteDirectory)) {
+      record(failures, "missing directory", relativeDirectory);
+      continue;
+    }
+
+    let foundRawFiles = 0;
+    const visit = (absolutePath, relativePath) => {
+      for (const entry of readdirSync(absolutePath, { withFileTypes: true })) {
+        const childAbsolutePath = resolve(absolutePath, entry.name);
+        const childRelativePath = `${relativePath}/${entry.name}`;
+
+        if (entry.isDirectory()) {
+          visit(childAbsolutePath, childRelativePath);
+          continue;
+        }
+
+        if (entry.isFile() && rawKakaoTalkFileNamePattern.test(entry.name)) {
+          foundRawFiles += 1;
+          record(failures, "raw KakaoTalk public file", childRelativePath);
+        }
+      }
+    };
+
+    visit(absoluteDirectory, relativeDirectory);
+
+    if (foundRawFiles === 0) {
+      record(passes, "raw KakaoTalk file scan", `${relativeDirectory} has no raw KakaoTalk filenames`);
+    }
+  }
 }
 
 function expectText(relativePath, patterns) {
@@ -333,6 +369,7 @@ async function expectUrlStatus(pathname, expectedStatus) {
   "public/campaign/kcg-visit-desk-20260427.jpg",
   "public/campaign/kcg-advisor-counter-20260430.png",
   "public/campaign/kcg-advisor-counter-20260430.webp",
+  "public/campaign/kcg-generated-goldbar-banner-20260508.webp",
   "public/campaign/kcg-home-price-desk-20260506.webp",
   "public/campaign/kcg-home-human-consultation-20260506.webp",
   "public/campaign/kcg-home-product-keyvisual-20260503.webp",
@@ -350,6 +387,8 @@ async function expectUrlStatus(pathname, expectedStatus) {
   "public/products/kcg-b2b-bulk-consulting-20260427-v2.jpg",
   "public/products/kcg-b2b-gift-packaging-20260430.png",
   "public/products/kcg-b2b-gift-packaging-20260430.webp",
+  "public/products/kcg-generated-goldbar-lineup-20260508.webp",
+  "public/products/kcg-generated-goldbar-detail-20260508.webp",
   "public/products/kcg-product-minimal-bars-20260506.webp",
   "public/products/kcg-product-gold-silver-catalog-20260503.webp",
   "public/products/kcg-product-jewelry-buying-20260503.webp",
@@ -370,6 +409,7 @@ expectFile("public/image-options/2026-05-06/generated/manifest.json", { minBytes
   "public/campaign/kcg-brand-gold-bars-20260427-v4.webp",
   "public/campaign/kcg-main-desk-photo-20260427-v3.webp",
   "public/campaign/kcg-advisor-counter-20260430.webp",
+  "public/campaign/kcg-generated-goldbar-banner-20260508.webp",
   "public/campaign/kcg-home-price-desk-20260506.webp",
   "public/campaign/kcg-home-human-consultation-20260506.webp",
   "public/campaign/kcg-home-product-keyvisual-20260503.webp",
@@ -379,6 +419,8 @@ expectFile("public/image-options/2026-05-06/generated/manifest.json", { minBytes
   "public/company/kcg-company-heritage-20260430.webp",
   "public/products/kcg-jewelry-buying-tray-20260430.webp",
   "public/products/kcg-b2b-gift-packaging-20260430.webp",
+  "public/products/kcg-generated-goldbar-lineup-20260508.webp",
+  "public/products/kcg-generated-goldbar-detail-20260508.webp",
   "public/products/kcg-product-minimal-bars-20260506.webp",
   "public/products/kcg-product-gold-silver-catalog-20260503.webp",
   "public/products/kcg-product-jewelry-buying-20260503.webp",
@@ -411,6 +453,9 @@ expectFile("docs/setup/LAUNCH_BRIEFING.md", { minBytes: 2_000 });
 expectFile("docs/setup/QA_REPORT_2026-05-05.md", { minBytes: 1_500 });
 expectFile("docs/brand/campaign-image-prompts.md", { minBytes: 1_000 });
 expectFile("docs/brand/image-review-2026-05-03.md", { minBytes: 2_000 });
+expectFile("docs/brand/generated-goldbar-assets-2026-05-08.md", { minBytes: 1_000 });
+expectFile("docs/brand/kcg-image-intake-2026-05-08.md", { minBytes: 2_000 });
+expectFile("docs/brand/product-image-replacement-map-2026-05-08.md", { minBytes: 2_500 });
 expectFile("docs/brand/font-license.md", { minBytes: 800 });
 expectFile("src/app/fonts/PretendardVariable.woff2", { minBytes: 1_500_000 });
 expectFile("scripts/render-open-tasks-dashboard.mjs", { minBytes: 5_000 });
@@ -431,6 +476,22 @@ expectMissing("public/campaign/kcg-main-commerce-banner-20260427-v2.jpg");
 expectMissing("public/campaign/KakaoTalk_20260207_230604937.jpg");
 expectMissing("public/products/KakaoTalk_20260207_230604937.jpg");
 expectMissing("public/services/KakaoTalk_20260207_230604937.jpg");
+expectMissing("public/brand/KakaoTalk_20260427_125126082.png");
+expectMissing("public/brand/KakaoTalk_20260427_125126082_01.png");
+expectMissing("public/products/KakaoTalk_20260508_091553653.png");
+expectMissing("public/products/KakaoTalk_20260508_091553653_01.png");
+expectMissing("public/products/KakaoTalk_20260508_091553653_02.png");
+expectMissing("public/products/KakaoTalk_20260508_091553653_03.png");
+expectMissing("public/products/KakaoTalk_20260508_091603752.jpg");
+expectMissing("public/products/KakaoTalk_20260508_091613735.jpg");
+expectMissing("public/products/KakaoTalk_20260508_110154617.jpg");
+expectMissing("public/products/KakaoTalk_20260508_110154617_01.jpg");
+expectMissing("public/products/KakaoTalk_20260508_110154617_02.jpg");
+expectMissing("public/products/KakaoTalk_20260508_110154617_03.jpg");
+expectMissing("public/products/KakaoTalk_20260508_110154617_04.jpg");
+expectMissing("public/products/KakaoTalk_20260508_110154617_05.jpg");
+expectMissing("public/products/KakaoTalk_20260508_110154617_06.jpg");
+expectNoRawKakaoTalkFiles(["public"]);
 
 expectText("package.json", [
   "\"check:external\": \"node scripts/check-external-services.mjs\"",
@@ -442,6 +503,29 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.29 - Generated KCG gold-bar representative assets",
+  "kcg-generated-goldbar-banner-20260508.webp",
+  "Generated KCG gold-bar representative assets",
+  "generated KCG-style gold-bar representative assets",
+  "KCG-TODO-081",
+  "v0.2.29 전으로 되돌려줘",
+  "## v0.2.28 - Public catalog representative-image clarity",
+  "상담용 대표 이미지",
+  "실물 색상과 패키지는 현장 확인 후 안내합니다.",
+  "representative before real-photo approval",
+  "KCG-TODO-080",
+  "v0.2.28 전으로 되돌려줘",
+  "## v0.2.27 - Product image replacement map QA",
+  "docs/brand/product-image-replacement-map-2026-05-08.md",
+  "No public image was replaced",
+  "do not use raw KakaoTalk filenames in public paths",
+  "KCG-TODO-079",
+  "v0.2.27 전으로 되돌려줘",
+  "## v0.2.26 - KCG image intake guardrail QA",
+  "docs/brand/kcg-image-intake-2026-05-08.md",
+  "No files were copied into public",
+  "metadata and visual review only",
+  "v0.2.26 전으로 되돌려줘",
   "## v0.2.18 - Inquiry assistant and KRX no-scraping boundary",
   "거래 상담 도우미",
   "store: false",
@@ -530,30 +614,73 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
-  "Current KCG site version: `v0.2.20`",
-  "Search approval guard and release-state QA",
+  "Current KCG site version: `v0.2.29`",
+  "Generated KCG gold-bar representative assets",
+  "docs/brand/generated-goldbar-assets-2026-05-08.md",
+  "kcg-generated-goldbar-banner-20260508.webp",
+  "Current KCG site version: `v0.2.28`",
+  "Public catalog representative-image clarity",
+  "상담용 대표 이미지",
+  "real-photo approval",
+  "Current KCG site version: `v0.2.27`",
+  "Product image replacement map QA",
+  "docs/brand/product-image-replacement-map-2026-05-08.md",
+  "generated separate representative WebP assets",
+  "raw KakaoTalk filenames",
+  "docs/brand/kcg-image-intake-2026-05-08.md",
+  "no raw source files were copied into public",
+  "metadata and visual review only",
+  "raw KakaoTalk filenames",
+  "admin-products-mobile.png",
+  "이미지 확인 필터",
+  "실사진 확인",
+  "교체 대상",
+  "운영 상태 구분",
+  "소스 QA",
+  "라이브 리뷰 반영",
+  "공개 검색 런칭",
+  "이미지 성격",
+  "대표/생성",
   "KCG_PUBLIC_SEARCH_APPROVED=1",
   "npm run check:release-state",
   "상담 도우미",
-  "npx vercel project ls --scope kcgoldx",
-  "cannot find the deployment",
+  "junyoung8753-2361s-projects/kcg-confirm-preview",
+  "temporary free deployment path",
   "KRX_API_APPROVAL_RUNBOOK.md",
   "existing-api-integration-audit-2026-05-05.md",
   "데스크톱 오른쪽 하단 `상담 도우미` 버튼",
   "모바일 하단 고정 CTA의 `상담` 버튼",
   "kcgoldx@gmail.com",
-  "kcgoldx-7259",
-  "Korea Center Gold Exchange",
-  "Do not restore previous personal CLI sessions",
+  "personal Vercel Hobby project",
+  "company transfer",
+  "temporary free deployment path",
   "backup/pre-v0.2.4-operations-product-audit",
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
+  "v0.2.29",
+  "v0.2.28",
+  "v0.2.27",
+  "v0.2.26",
+  "v0.2.25",
+  "v0.2.24",
   "v0.2.20",
   "v0.2.18",
   "kcgoldx@gmail.com",
   "상담 도우미",
-  "이번 `v0.2.20`에서 실제 사이트 화면이 새로 바뀌는 것",
+  "이번 `v0.2.29`에서 source 기준 실제 사이트 화면이 새로 바뀌는 것",
+  "kcg-generated-goldbar-banner-20260508.webp",
+  "KCG-TODO-081",
+  "상담용 대표 이미지",
+  "docs/brand/product-image-replacement-map-2026-05-08.md",
+  "docs/brand/kcg-image-intake-2026-05-08.md",
+  "raw KakaoTalk 파일",
+  "이미지 확인 필터",
+  "실사진 확인",
+  "교체 대상",
+  "운영 상태 구분",
+  "라이브 리뷰 반영",
+  "이미지 성격",
   "KCG_PUBLIC_SEARCH_APPROVED=1",
   "상담 기준 공임",
   "현재 source에는 들어갔지만 live에는 아직 안 보이는 화면 변경",
@@ -722,6 +849,7 @@ expectText("scripts/capture-site-screenshots.mjs", [
   "products-mobile-viewport.png",
   "services-mobile-viewport.png",
   "KCG_ADMIN_SCREENSHOTS_ONLY",
+  "admin-products-mobile.png",
   "계산 설정 열기",
   'select[name="autoSource"]',
 ]);
@@ -732,11 +860,11 @@ expectText("scripts/capture-admin-screenshots.mjs", [
 ]);
 
 expectText("src/components/market/price-lineup.tsx", [
-  "/campaign/kcg-home-price-desk-20260506.webp",
+  "/campaign/kcg-generated-goldbar-banner-20260508.webp",
   "/campaign/kcg-home-human-consultation-20260506.webp",
   "/campaign/kcg-home-seoul-retail-20260506.webp",
   "/campaign/kcg-old-gold-process-20260506.webp",
-  "한국센터금거래소 가격 데스크와 골드바 실버바 상담 이미지",
+  "한국센터금거래소 골드바 상담용 대표 배너 이미지",
   "한국센터금거래소 상담원과 고객 상담 장면",
   "종로 귀금속 매장 분위기 이미지",
   "고금 주얼리 매입 절차 상담 이미지",
@@ -904,6 +1032,14 @@ expectText("tests/site-fidelity.spec.ts", [
   "KRX Open API (승인 전 사용 불가)",
   'option[value="krx"]',
   "admin products uses a compact list-and-editor management surface",
+  "이미지 성격",
+  "이미지 확인 필터",
+  "대표/생성",
+  "실사진 확인 필요",
+  "needs-real-photo",
+  "replace-placeholder",
+  "admin-product-row-14k-jewelry-buying",
+  "admin-product-mobile-image-note-14k-jewelry-buying",
   "product quick links sync same-route category query",
   "고시가 / 3.75g 기준",
   "품목별로 볼 기준만 확인합니다.",
@@ -913,7 +1049,7 @@ expectText("tests/site-fidelity.spec.ts", [
   "USD/KRW",
   "단위: 3.75g",
   "한국센터금거래소 상담원과 고객 상담 장면",
-  "한국센터금거래소 가격 데스크와 골드바 실버바 상담 이미지",
+  "한국센터금거래소 골드바 상담용 대표 배너 이미지",
   "const explicitAdminPassword = process.env.KCG_TEST_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD",
   'const adminPassword = explicitAdminPassword || (isExternalAuditUrl ? undefined : "0000")',
 ]);
@@ -1053,7 +1189,7 @@ expectText("src/app/layout.tsx", [
   "PretendardVariable.woff2",
   "canExposeToSearch",
   "summary_large_image",
-  "kcg-home-price-desk-20260506.webp",
+  "kcg-generated-goldbar-banner-20260508.webp",
   "application/ld+json",
   "JewelryStore",
   "sameAs",
@@ -1108,6 +1244,13 @@ expectText("src/app/admin/launch/page.tsx", [
   "dynamic = \"force-dynamic\"",
   "오픈 전 점검판",
   "임시값은 화면에 보이더라도",
+  "data-testid=\"admin-release-stage-map\"",
+  "운영 상태 구분",
+  "소스 QA",
+  "라이브 리뷰 반영",
+  "공개 검색 런칭",
+  "npm run check:release-state",
+  "robots/noindex 유지",
   "지금 미리 가능한 준비",
   "공개 직전 별도 승인 필요",
   "data-testid=\"admin-public-launch-approval\"",
@@ -1198,7 +1341,7 @@ expectText("src/app/(site)/services/page.tsx", [
 ]);
 expectText("src/app/(site)/products/page.tsx", [
   "상품/매입",
-  "/products/kcg-product-minimal-bars-20260506.webp",
+  "/products/kcg-generated-goldbar-lineup-20260508.webp",
   "탭에서 품목을 고르고 기준가를 확인합니다.",
   "골드바, 실버바, 순금제품, 고금 매입 항목을 바로 볼 수 있습니다.",
   "decisionPaths",
@@ -1289,6 +1432,7 @@ expectText("src/components/products/product-catalog.tsx", [
   "2xl:block",
   "KC 랩그로운 다이아몬드",
   "getProductImageSrc",
+  "kcg-generated-goldbar-banner-20260508.webp",
   "kcg-old-gold-process-20260506.webp",
   "kcg-product-corporate-consulting-20260506.webp",
 ]);
@@ -1303,6 +1447,9 @@ expectText("src/lib/product-presenter.ts", [
   "if (imageUrl?.startsWith(\"/\"))",
   "legacyProductImageReplacements",
   "replaceablePlaceholderImages",
+  "kcg-generated-goldbar-lineup-20260508.webp",
+  "kcg-generated-goldbar-detail-20260508.webp",
+  "kcg-generated-goldbar-banner-20260508.webp",
   "kcg-product-minimal-bars-20260506.webp",
   "kcg-product-gold-silver-catalog-20260503.webp",
   "kcg-home-product-keyvisual-20260503.webp",
@@ -1342,6 +1489,9 @@ expectNoText("src/components/products/product-catalog.tsx", [
   expectNoText(relativePath, ["사진과 가격 문구", "등록해 운영", "관리자에서"]),
 );
 expectText("src/lib/product-presenter.ts", [
+  "/products/kcg-generated-goldbar-lineup-20260508.webp",
+  "/products/kcg-generated-goldbar-detail-20260508.webp",
+  "/campaign/kcg-generated-goldbar-banner-20260508.webp",
   "/products/kcg-product-minimal-bars-20260506.webp",
   "/products/kcg-product-gold-silver-catalog-20260503.webp",
   "/campaign/kcg-home-product-keyvisual-20260503.webp",
@@ -1362,7 +1512,9 @@ expectText("src/mock/products.ts", [
   "기업 기념품 제작",
   "현재 고시가 기준 참고가",
   "custom_order",
-  "/products/kcg-product-minimal-bars-20260506.webp",
+  "/products/kcg-generated-goldbar-lineup-20260508.webp",
+  "/products/kcg-generated-goldbar-detail-20260508.webp",
+  "/campaign/kcg-generated-goldbar-banner-20260508.webp",
   "/products/kcg-product-gold-silver-catalog-20260503.webp",
   "/campaign/kcg-home-product-keyvisual-20260503.webp",
   "/products/kcg-product-jewelry-buying-20260503.webp",
@@ -1380,7 +1532,9 @@ expectText("supabase/seed.sql", [
   "순금 돌반지 3.75g",
   "18K 주얼리 매입",
   "귀금속 매입 절차 안내",
-  "/products/kcg-product-minimal-bars-20260506.webp",
+  "/products/kcg-generated-goldbar-lineup-20260508.webp",
+  "/products/kcg-generated-goldbar-detail-20260508.webp",
+  "/campaign/kcg-generated-goldbar-banner-20260508.webp",
   "/products/kcg-product-gold-silver-catalog-20260503.webp",
   "/campaign/kcg-home-product-keyvisual-20260503.webp",
   "/products/kcg-product-jewelry-buying-20260503.webp",
@@ -1396,13 +1550,33 @@ expectText("src/actions/product-actions.ts", ["upsertProductAction", "revalidate
 expectText("src/app/admin/products/page.tsx", [
   "상품 관리",
   "ProductManagementTable",
+  "ProductImageFilterPanel",
   "data-testid=\"admin-product-table\"",
+  "data-testid=\"admin-product-image-filter\"",
+  "getImageProvenance",
+  "이미지 성격",
+  "이미지 확인 필터",
+  "대표/생성",
+  "실사진 확인 필요",
+  "needs-real-photo",
+  "replace-placeholder",
+  "admin-product-row-${product.slug}",
+  "admin-product-mobile-image-note-${product.slug}",
+  "/products/kcg-generated-goldbar-lineup-20260508.webp",
+  "/products/kcg-generated-goldbar-detail-20260508.webp",
+  "/campaign/kcg-generated-goldbar-banner-20260508.webp",
+  "/products/kcg-jewelry-buying-tray-20260430.webp",
+  "실사진은 파일명만으로 확정하지 않습니다.",
   "편집 열기",
   "연동 시세",
   "중량(g)",
   "상담 기준 공임",
   "수동 가격",
   "upsertProductAction",
+]);
+expectNoText("src/app/admin/products/page.tsx", [
+  'imageUrl.startsWith("/products/kcg-")',
+  'imageUrl.startsWith("/campaign/")',
 ]);
 expectText("supabase/schema.sql", [
   "price_daily_snapshots",
@@ -1597,8 +1771,19 @@ expectText("docs/quality/ai-site-production-playbook.md", [
 expectCurrentHandoffMatchesLatestRelease();
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "npm run screenshot:admin",
-  "Reflection status: `v0.2.20` adds an explicit public-search approval gate",
-  "Product/catalog surfaces now distribute approved placeholders by slug",
+  "Reflection status: `v0.2.29` applies generated KCG-style gold-bar representative assets",
+  "Reflection status: `v0.2.28` makes the public catalog safer before real-photo approval",
+  "상담용 대표 이미지",
+  "actual product photo, packaging, stock, crop, and final-use decisions",
+  "Reflection status: `v0.2.27` maps current public product image usage",
+  "docs/brand/product-image-replacement-map-2026-05-08.md",
+  "generated separate representative WebP assets",
+  "raw KakaoTalk filenames",
+  "Reflection status: `v0.2.26` makes KCG image replacement safer before public use",
+  "docs/brand/kcg-image-intake-2026-05-08.md",
+  "raw KakaoTalk filenames",
+  "Gold-bar product/catalog surfaces use",
+  "Other category surfaces still distribute approved placeholders by slug",
   "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
   "KRX_API_APPROVAL_RUNBOOK.md",
   "docs/setup/CHANGELOG.md",
@@ -1617,16 +1802,15 @@ expectText("docs/setup/CURRENT_HANDOFF.md", [
   "Public Launch Terms",
   "Repository visibility decision as of 2026-04-27 KST",
   "Junyoung has approved deploying completed, verified KCG site changes by default",
-  "Do not restore previous personal CLI sessions",
-  "kcgoldx-7259",
-  "Korea Center Gold Exchange",
-  "npx vercel project ls --scope kcgoldx",
-  "live-behind-source",
+  "temporary personal-Hobby deployment",
+  "temporary personal-Hobby deployment",
+  "junyoung8753-2361s-projects/kcg-confirm-preview",
+  "company Vercel/Supabase ownership transfer",
   "Current image source folder",
-  "kcg-home-price-desk-20260506.webp",
+  "kcg-generated-goldbar-banner-20260508.webp",
   "kcg-old-gold-process-20260506.webp",
   "505-88-03567",
-  "The home carousel now starts with `kcg-home-price-desk-20260506.webp`",
+  "The home carousel now starts with `kcg-generated-goldbar-banner-20260508.webp`",
   "Stable Review Deploy Boundary",
 ]);
 expectNoText("docs/setup/CURRENT_HANDOFF.md", ["Gabia", "Whois DNS"]);
@@ -1669,10 +1853,28 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-070",
   "KCG-TODO-071",
   "KCG-TODO-072",
+  "KCG-TODO-074",
+  "KCG-TODO-075",
+  "KCG-TODO-076",
+  "KCG-TODO-077",
+  "KCG-TODO-078",
+  "KCG-TODO-079",
+  "KCG-TODO-080",
+  "product image replacement map",
+  "public product images as representative",
+  "상담용 대표 이미지",
+  "KCG-TODO-054",
+  "admin product image provenance",
+  "admin launch release-stage visibility",
+  "admin product image follow-up filters",
+  "mobile admin product image evidence",
+  "KCG image intake classification guardrail",
+  "raw KakaoTalk filenames",
+  "실사진 확인 필요",
   "KRX_API_APPROVAL_RUNBOOK.md",
   "KCG_ACCOUNT_OWNERSHIP_CHECKLIST.md",
-  "company-session-first mode",
-  "kcgoldx-7259",
+  "temporary free deploy path",
+  "junyoung8753-2361s-projects/kcg-confirm-preview",
   "Korea Center Gold Exchange",
   "tasks:dashboard",
   "user-only",
@@ -1732,7 +1934,22 @@ expectText("docs/setup/PRODUCT_OPERATIONS_CHECKLIST.md", [
   "/admin/products",
   "현재 고시가 기준 참고가",
   "Real Photo Replacement Priority",
+  "docs/brand/product-image-replacement-map-2026-05-08.md",
+  "상담용 대표 이미지",
   "Do not use `구매하기`, `결제하기`, `주문하기`, `장바구니`",
+]);
+expectText("src/components/products/product-catalog.tsx", [
+  "상담용 대표 이미지",
+  "실물 색상과 패키지는 현장 확인 후 안내합니다.",
+]);
+expectText("src/app/(site)/products/[slug]/page.tsx", [
+  "상담용 대표 이미지",
+  "실제 상품 사진·포장·재고는 전화 상담과 현장 확인 후 안내합니다.",
+]);
+expectText("tests/site-fidelity.spec.ts", [
+  "public product images are labeled as representative before real-photo approval",
+  "실물 색상과 패키지는 현장 확인 후 안내",
+  "실제 상품 사진·포장·재고는 전화 상담과 현장 확인 후 안내합니다.",
 ]);
 expectText("docs/setup/LAUNCH_BRIEFING.md", [
   "가격 확인 → 상품/매입 범위 확인 → 전화 문의 → 본사·매장 확인",
@@ -1768,6 +1985,32 @@ expectText("docs/brand/campaign-image-prompts.md", [
   "large white haze",
   "Old gold and jewelry buying card",
   "No readable personal documents",
+]);
+expectText("docs/brand/kcg-image-intake-2026-05-08.md", [
+  "KCG Image Intake 2026-05-08",
+  "C:\\Users\\junyo\\Documents\\File-Hub\\30_Media\\Images\\KCG 이미지",
+  "metadata and visual review only",
+  "No raw source files were copied into `public/`",
+  "KakaoTalk_20260427_125126082.png",
+  "KakaoTalk_20260427_125126082_01.png",
+  "KakaoTalk_20260508_091553653.png",
+  "KakaoTalk_20260508_091603752.jpg",
+  "KakaoTalk_20260508_110154617.jpg",
+  "logo candidate",
+  "gold-bar product-photo candidate",
+  "approval required",
+  "Do not use as final product proof",
+]);
+expectText("docs/brand/product-image-replacement-map-2026-05-08.md", [
+  "Product Image Replacement Map 2026-05-08",
+  "KCG-TODO-054",
+  "No public image was replaced",
+  "approval-first",
+  "current public image",
+  "recommended KCG candidate group",
+  "KakaoTalk_20260508_091603752.jpg",
+  "KakaoTalk_20260508_091553653.png",
+  "do not use raw KakaoTalk filenames in public paths",
 ]);
 expectText("docs/research/gold-exchange-benchmark-2026-04-25.md", [
   "KCG Direction Chosen",

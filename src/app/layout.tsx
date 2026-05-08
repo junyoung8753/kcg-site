@@ -12,10 +12,10 @@ const pretendard = localFont({
 });
 
 const socialImage = {
-  url: "/campaign/kcg-home-price-desk-20260506.webp",
-  width: 1672,
-  height: 941,
-  alt: "한국센터금거래소 가격 데스크와 금거래 상담 이미지",
+  url: "/campaign/kcg-generated-goldbar-banner-20260508.webp",
+  width: 1717,
+  height: 916,
+  alt: "한국센터금거래소 골드바 상담용 대표 배너 이미지",
 };
 
 const structuredData = {

@@ -1,6 +1,6 @@
 # KCG Product Operations Checklist
 
-Last updated: 2026-05-05 KST.
+Last updated: 2026-05-08 KST.
 
 This checklist is for preparing the public `상품/매입` catalog before launch. Do not record passwords, Supabase keys, customer data, or unapproved internal price rules here.
 
@@ -28,6 +28,12 @@ Use `/admin/products` to prepare each item.
 | 안내 문구 | Public note shown near price/details | Must not promise fixed transaction value |
 
 ## Real Photo Replacement Priority
+
+Use `docs/brand/product-image-replacement-map-2026-05-08.md` before changing public product image URLs. It maps the current public image paths to approval-required KCG candidate groups and keeps actual real-photo replacement blocked until KCG approves the file, crop, and final-use classification. The generated KCG-style gold-bar assets from `v0.2.29` are recorded in `docs/brand/generated-goldbar-assets-2026-05-08.md` and remain representative-only.
+
+Until that approval happens, keep the public catalog clarification from v0.2.28: product list/detail images are `상담용 대표 이미지`, and actual product photo, packaging, stock, color, crop, and final-use classification are confirmed by phone/on-site consultation.
+
+For admin follow-up, use the `/admin/products` image filters and mobile row summaries before replacing anything: `실사진 확인` surfaces representative/generated images, `교체 대상` surfaces legacy placeholders, and raw KakaoTalk-style paths must stay `원본 KakaoTalk`/`권한 확인` until the file, source, crop, and final-use classification are approved.
 
 1. 골드바: actual KCG gold bars by weight, packaging, certificate envelope.
 2. 실버바: actual silver bar inventory or approved KCG-generated asset.

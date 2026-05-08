@@ -1,6 +1,6 @@
 # KCG Campaign Image Prompts
 
-Last updated: 2026-05-06 KST.
+Last updated: 2026-05-08 KST.
 
 This document is the source of truth for KCG campaign, product, service, and visit-guide image generation. It intentionally describes the image itself and avoids brittle layout instructions such as price-table placement, empty space, black boxes, UI overlays, or left/right panel slots.
 
@@ -14,12 +14,15 @@ This document is the source of truth for KCG campaign, product, service, and vis
 ## Current Asset Decisions
 
 - Public UI should reference the optimized `.webp` versions of the large generated assets. Keep original generated sources in File-Hub and review folders, not as the business source of truth.
-- `public/campaign/kcg-home-price-desk-20260506.webp`: current home first-slide and social image. It introduces the v0.2.10 `Graphite Desk + Seoul Retail + Human Consultation` direction with a darker price desk, metal products, and screen-like price context while the actual price/copy remains DOM-managed.
+- `public/campaign/kcg-generated-goldbar-banner-20260508.webp`: current home first-slide, social image, and products promo banner. It is generated from the 2026-05-08 KCG gold-bar reference direction and remains representative imagery, not real product/stock/price proof.
+- `public/products/kcg-generated-goldbar-lineup-20260508.webp`: current gold-bar category/product lineup representative image and `/products` hero.
+- `public/products/kcg-generated-goldbar-detail-20260508.webp`: current gold-bar product card/detail representative image.
+- `public/campaign/kcg-home-price-desk-20260506.webp`: previous home first-slide and social image. It introduced the v0.2.10 `Graphite Desk + Seoul Retail + Human Consultation` direction with a darker price desk, metal products, and screen-like price context while the actual price/copy remains DOM-managed.
 - `public/campaign/kcg-home-human-consultation-20260506.webp`: current home consultation slide. It uses AI-generated generic 상담원/고객 context without real staff/customer identity, competitor marks, or fake KCG signage.
 - `public/campaign/kcg-home-seoul-retail-20260506.webp`: current Seoul retail / visit mood image for home/about surfaces. It references Jongno jewelry-district retail atmosphere without competitor signs or invented storefront logos.
 - `public/campaign/kcg-price-guide-visual-20260506.webp`: current price-table reading guide visual for `/prices`; all labels and guidance are separate HTML text.
 - `public/campaign/kcg-old-gold-process-20260506.webp`: current old-gold buying/process image for home/services/catalog surfaces. It shows sorting and consultation tools without fake certificates, appraisal documents, or guaranteed-quote claims.
-- `public/products/kcg-product-minimal-bars-20260506.webp`: current gold/silver catalog candidate for graphite/ceramic product table surfaces.
+- `public/products/kcg-product-minimal-bars-20260506.webp`: previous gold/silver catalog candidate for graphite/ceramic product table surfaces.
 - `public/products/kcg-product-pure-gold-gifts-20260506.webp`: current 순금제품 candidate; it separates pure-gold gifts from bullion and avoids holiday-ad exaggeration.
 - `public/products/kcg-product-corporate-consulting-20260506.webp`: current B2B/corporate consultation candidate with meeting-table atmosphere and no fake contracts or certificate seals.
 - `public/image-options/2026-05-06/generated`: current v0.2.10 review folder with source PNG copies, optimized WebPs, contact sheet, and manifest.

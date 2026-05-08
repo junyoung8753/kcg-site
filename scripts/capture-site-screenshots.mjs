@@ -22,6 +22,7 @@ const adminScreenshotFiles = [
   "admin-prices-auto-desktop.png",
   "admin-prices-auto-mobile.png",
   "admin-announcements-desktop.png",
+  "admin-products-mobile.png",
   "admin-products-desktop.png",
 ];
 const adminPassword =
@@ -347,6 +348,13 @@ try {
         { width: 1440, height: 1800 },
         "admin-announcements-desktop.png",
         "공지 관리",
+      );
+      await captureAdminRoute(
+        page,
+        "/admin/products",
+        { width: 390, height: 1800 },
+        "admin-products-mobile.png",
+        "상품 관리",
       );
       await captureAdminRoute(
         page,

@@ -8,6 +8,306 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.29 - Generated KCG gold-bar representative assets
+
+- Date: `2026-05-08 KST`
+- Commit: local working tree only until this pass is intentionally committed and pushed.
+- Deploy Status: local source/UI/QA guardrail update in progress. By explicit junyoung instruction on 2026-05-08 KST, the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview` is restored as the temporary free deployment path until company transfer is practical. No search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX data call, raw KCG photo copy, real product-photo approval, or real price/product data change is included.
+- 사람이 읽는 요약: Junyoung이 준 KCG 골드바 참고 폴더를 원본 그대로 쓰지 않고, 골드바 문양·크기·라인업 느낌을 참고한 새 생성 WebP 3종을 만들어 홈 배너, 상품 hero/promo, 골드바 상품 대표 이미지에 연결했습니다. 이미지는 계속 `상담용 대표 이미지`이며 실제 상품사진·포장·재고·가격 증거가 아닙니다.
+- Summary: Adds generated KCG-style gold-bar representative assets and wires them through the public banner/catalog/product surfaces, admin provenance, mock/seed data, and audit/test guardrails while preserving raw-photo, real-price, search, payment, and infrastructure boundaries.
+- Changed:
+  - Added `public/campaign/kcg-generated-goldbar-banner-20260508.webp`, `public/products/kcg-generated-goldbar-lineup-20260508.webp`, and `public/products/kcg-generated-goldbar-detail-20260508.webp`.
+  - `/` home carousel first slide, `src/app/layout.tsx` social image, `/products` hero, product promo banner, and gold-bar product rows now use generated KCG-style representative assets.
+  - `src/lib/product-presenter.ts` remaps older gold-bar placeholder image URLs to generated representative images by slug while preserving custom non-placeholder admin URLs.
+  - `/admin/products` classifies the generated assets as `대표/생성` with `실사진 확인 필요`.
+  - `docs/brand/generated-goldbar-assets-2026-05-08.md`, the replacement map, product operations checklist, and open task ledger record `KCG-TODO-081` as done while keeping these representative-only assets outside real product proof.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: source 기준 홈 첫 배너, `/products` hero/promo, 골드바 상품 카드/상세 대표 이미지.
+  - 실제 사이트 화면은 아직 안 바뀐 것: commit/push/production deploy가 끝나기 전까지는 source-only.
+  - 배포된 것: final QA 후 기존 personal Hobby project `kcg-confirm-preview`로 production deploy 예정.
+  - 아직 배포 안 된 것: 기존 Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Pending in this pass until `npm run qa:site`, targeted Playwright checks, screenshot refresh, and rendered visual inspection complete.
+- Rollback Hint: `v0.2.29 전으로 되돌려줘`
+- Remaining User-only:
+  - Approve whether these generated assets are acceptable as representative-only launch imagery or whether real KCG product photos must replace them before public search launch.
+  - Approve any actual real-photo file, crop, category placement, and final-use classification before real product-photo replacement.
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Confirm final product prices/공임/운영자료 before public search launch.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
+## v0.2.28 - Public catalog representative-image clarity
+
+- Date: `2026-05-08 KST`
+- Commit: local working tree only until this pass is intentionally committed and pushed.
+- Deploy Status: local source/UI/QA guardrail update only. Production deploy remains blocked because the company Vercel account `kcgoldx-7259` still reports no projects under `npx vercel project ls --scope kcgoldx`; no search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX data call, real product/photo replacement, or real price/product data change is included.
+- 사람이 읽는 요약: 실제 KCG 상품사진으로 교체하기 전까지 public `/products` 목록과 상품 상세 이미지가 `상담용 대표 이미지`임을 작게 안내해, 고객이 생성/대표 이미지를 최종 실상품 사진·포장·재고 증거로 오해하지 않게 했습니다.
+- Summary: Adds a restrained representative-image clarification to the public product catalog and detail page, backed by a Playwright guard. This improves customer trust while keeping the catalog consultation-first and leaving all real photo/price decisions blocked for KCG approval.
+- Changed:
+  - `/products` now shows a single catalog-level note: `상담용 대표 이미지` and `실물 색상과 패키지는 현장 확인 후 안내합니다.`
+  - `/products/[slug]` now labels the hero image as `상담용 대표 이미지` and explains that actual product photo, packaging, and stock are confirmed by phone/on-site consultation.
+  - `tests/site-fidelity.spec.ts` adds a rendered guard so public product images remain clarified before real-photo approval, while checkout/payment words remain absent.
+  - The Codex-doable clarification is recorded as done under `KCG-TODO-080`; actual real-photo, crop, stock, and price/product decisions remain under user-only/shared tasks.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: source 기준 `/products` 목록과 상품 상세의 이미지 설명 문구.
+  - 실제 사이트 화면은 아직 안 바뀐 것: 기존 live project가 company Vercel scope에서 보이지 않아 `v0.2.18`부터 `v0.2.28`까지의 source 화면/문서 변경은 production live에 미반영.
+  - 배포된 것: 없음.
+  - 아직 배포 안 된 것: 상담 도우미, search approval health fields, release-state checker, admin launch approval gate wording, admin product image provenance/filter/mobile evidence, KCG image intake/replacement-map guardrails, public catalog representative-image clarity, admin launch release-stage map, 기존 Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed TDD RED: `npm run test:site -- --grep "representative before real-photo approval"` failed because `상담용 대표 이미지` was absent.
+  - Passed TDD GREEN: the same targeted Playwright test passed after adding the public catalog/detail clarification.
+  - Passed product wording regression: `npm run test:site -- --grep "public routes avoid repeated phone and consultation wording|mobile products route exposes a consultation catalog"` passed, confirming the new note does not break the consultation-wording repetition guard or checkout/cart boundary.
+  - Fixed Codex review P2 findings from this pass: raw `/products/KakaoTalk_*.jpg|png|webp` paths now classify as `원본 KakaoTalk`/`권한 확인` in `/admin/products`; the raw-path guard test now asserts the actual branch order before generic `/products/` handling; `scripts/audit-site-fidelity.mjs` now scans the whole `public` tree by raw KakaoTalk filename pattern, not only the known 2026-05-08 list; the mobile admin image status moved into a mobile-only visible row list; and the same mobile row now keeps price-basis visibility.
+  - Passed review-response RED/GREEN: `npm run test:site -- --grep "mobile admin products keeps image follow-up"` failed while the note sat outside the visible mobile row, then passed after the mobile-only list fix; `npm run test:site -- --grep "admin products|mobile admin products|raw KCG"` also passed after adding the pattern scan and mobile price-basis assertion.
+  - Passed final review rerun: `codex review --uncommitted` completed after the review-response fixes with no clear behavioral regression found.
+  - Passed full local QA after review fixes: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`1509 checks, 1 skipped`), `npm run build`, `npm run test:site` (`25 passed`), `npm run qa:site` with rendered audit (`1569 checks, 0 skipped`), Playwright (`25 passed`), screenshot refresh, and npm audit (`0 vulnerabilities`).
+  - Passed admin/public visual evidence refresh: `$env:SITE_SCREENSHOT_PORT='3070'; npm run screenshot:admin`, `admin-products-mobile.png`, `admin-products-desktop.png`, product list/detail screenshots, `home-mobile-viewport.png`, and `prices-mobile-viewport.png` were visually inspected.
+  - Passed release/external checks: `npm run check:release-state` kept search exposure guarded with expected live-behind-source warnings, `npm run check:external -- --strict-domain` passed, `npm run release:trace` reported `v0.2.28`, standalone `npm audit --audit-level=moderate` found `0 vulnerabilities`, and `git diff --check` reported line-ending warnings only.
+- Rollback Hint: `v0.2.28 전으로 되돌려줘`
+- Remaining User-only:
+  - Approve which KCG logo/gold-bar image can become public, decide crop, and confirm whether it is final product proof or only representative/catalog imagery.
+  - Do not treat a filename, logo, or gold-bar photo as final real product proof without junyoung approval.
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Confirm final product prices/공임/운영자료 before public search launch.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
+## v0.2.27 - Product image replacement map QA
+
+- Date: `2026-05-08 KST`
+- Commit: local working tree only until this pass is intentionally committed and pushed.
+- Deploy Status: local source/documentation/QA guardrail update only. Production deploy remains blocked because the company Vercel account `kcgoldx-7259` still reports no projects under `npx vercel project ls --scope kcgoldx`; no search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX data call, or real product/photo data change is included.
+- 사람이 읽는 요약: 현재 public product image 사용처와 Junyoung이 제공한 KCG 골드바 후보 파일을 승인 전 replacement map으로 연결했습니다. 실제 이미지는 교체하지 않았고, `KCG-TODO-054`는 Codex 준비는 되었지만 실제 공개 교체는 승인/크롭/최종 사용 분류가 필요한 user-only/shared 상태로 남겼습니다.
+- Summary: Adds `docs/brand/product-image-replacement-map-2026-05-08.md` so KCG can decide which current catalog/product placeholders should later use approved KCG gold-bar derivatives, without copying raw files or changing public image URLs.
+- Changed:
+  - Added `docs/brand/product-image-replacement-map-2026-05-08.md` with current public image roles, product slug replacement priority, and candidate use boundaries.
+  - `scripts/audit-site-fidelity.mjs` now requires the replacement map and key safety text such as `No public image was replaced`, `approval-first`, and `do not use raw KakaoTalk filenames in public paths`.
+  - `KCG-TODO-054` is reclassified as approval-blocked for actual replacement, while the Codex-doable replacement map is recorded as done under `KCG-TODO-079`.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: 없음. 이번 변경은 문서/guardrail만 추가한다.
+  - 실제 사이트 화면은 아직 안 바뀐 것: 기존 live project가 company Vercel scope에서 보이지 않아 `v0.2.18`부터 `v0.2.27`까지의 source 화면/문서 변경은 production live에 미반영.
+  - 배포된 것: 없음.
+  - 아직 배포 안 된 것: 상담 도우미, search approval health fields, release-state checker, admin launch approval gate wording, admin product image provenance/filter/mobile evidence, KCG image intake/replacement-map guardrails, admin launch release-stage map, 기존 Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed TDD RED: `npm run audit:site` failed because `docs/brand/product-image-replacement-map-2026-05-08.md` did not exist after the new guardrail was added.
+  - Passed TDD GREEN: `npm run audit:site` passed after adding the replacement map and exact safety text.
+  - Passed final source audit: `npm run audit:site` (`1471 checks, 1 skipped`).
+  - Passed final full QA: `npm run qa:site` with lint, typecheck, build, rendered audit (`1531 checks, 0 skipped`), Playwright (`23 passed`), screenshot refresh, and npm audit (`0 vulnerabilities`).
+  - Passed admin screenshot evidence refresh: `npm run screenshot:admin` regenerated `admin-products-mobile.png` and `admin-products-desktop.png`; Playwright keeps the mobile admin image-status row summary under test.
+  - Passed release/external checks: `npm run check:release-state` kept search exposure guarded with expected live-behind-source warnings, `npm run check:external -- --strict-domain` passed, `npm run release:trace` reported `v0.2.27`, standalone `npm audit --audit-level=moderate` found `0 vulnerabilities`, and `git diff --check` reported line-ending warnings only.
+- Rollback Hint: `v0.2.27 전으로 되돌려줘`
+- Remaining User-only:
+  - Approve which KCG logo/gold-bar image can become public, decide crop, and confirm whether it is final product proof or only representative/catalog imagery.
+  - Do not treat a filename, logo, or gold-bar photo as final real product proof without junyoung approval.
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Confirm final product prices/공임/운영자료 before public search launch.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
+## v0.2.26 - KCG image intake guardrail QA
+
+- Date: `2026-05-08 KST`
+- Commit: local working tree only until this pass is intentionally committed and pushed.
+- Deploy Status: local source/documentation/QA guardrail update only. Production deploy remains blocked because the company Vercel account `kcgoldx-7259` still reports no projects under `npx vercel project ls --scope kcgoldx`; no search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX data call, or real product/photo data change is included.
+- 사람이 읽는 요약: Junyoung이 제공한 `C:\Users\junyo\Documents\File-Hub\30_Media\Images\KCG 이미지` 폴더의 KCG 로고/골드바 후보를 승인 전 intake 문서로 분류하고, raw KakaoTalk 파일이 `public/brand` 또는 `public/products`로 바로 들어오지 못하도록 source audit guardrail을 추가했습니다.
+- Summary: Adds `docs/brand/kcg-image-intake-2026-05-08.md` and a source audit guardrail so KCG logo/gold-bar files are tracked as candidates before any public replacement, without copying them into the repo or treating them as approved final product proof.
+- Changed:
+  - Added `docs/brand/kcg-image-intake-2026-05-08.md` with metadata and visual review notes for KCG logo, lockup, clean gold-bar cutouts, web-size gold-bar lineups, and phone product photos.
+  - `scripts/audit-site-fidelity.mjs` now requires the intake document and blocks raw KakaoTalk filenames in the served `public` tree.
+  - The intake doc explicitly says `No files were copied into public`, `metadata and visual review only`, `approval required`, and `Do not use as final product proof`.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: 없음. 이번 변경은 문서/guardrail만 추가한다.
+  - 실제 사이트 화면은 아직 안 바뀐 것: 기존 live project가 company Vercel scope에서 보이지 않아 `v0.2.18`부터 `v0.2.26`까지의 source 화면/문서 변경은 production live에 미반영.
+  - 배포된 것: 없음.
+  - 아직 배포 안 된 것: 상담 도우미, search approval health fields, release-state checker, admin launch approval gate wording, admin product image provenance/filter/mobile evidence, KCG image intake guardrail, admin launch release-stage map, 기존 Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed TDD RED: `npm run audit:site` failed after the new guardrail was added because `docs/brand/kcg-image-intake-2026-05-08.md` did not exist yet.
+  - Passed TDD GREEN: `npm run audit:site` passed after adding the intake document and confirming raw KakaoTalk files were absent from the served `public` tree.
+  - Passed full local launch QA: `npm run qa:site` passed with lint, typecheck, source audit, build, rendered site fidelity audit (`1502 checks, 0 skipped`), Playwright (`23 passed`), screenshot refresh, and `npm audit` (`0 vulnerabilities`).
+  - Passed admin evidence refresh: `npm run screenshot:admin` refreshed admin screenshots, including `admin-products-mobile.png`.
+- Rollback Hint: `v0.2.26 전으로 되돌려줘`
+- Remaining User-only:
+  - Approve which KCG logo/gold-bar image can become public, decide crop, and confirm whether it is final product proof or only representative/catalog imagery.
+  - Do not treat a filename, logo, or gold-bar photo as final real product proof without junyoung approval.
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Confirm final product prices/공임/운영자료 before public search launch.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
+## v0.2.25 - Admin product mobile image evidence QA
+
+- Date: `2026-05-08 KST`
+- Commit: local working tree only until this pass is intentionally committed and pushed.
+- Deploy Status: local source/admin UI and QA evidence update only. Production deploy remains blocked because the company Vercel account `kcgoldx-7259` still reports no projects under `npx vercel project ls --scope kcgoldx`; no search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX data call, or real product/photo data change is included.
+- 사람이 읽는 요약: `/admin/products` 모바일 화면에서 상품명 줄 안에 `대표/생성`과 `실사진 확인 필요` 같은 이미지 후속 확인 상태가 바로 보이도록 보강하고, `npm run screenshot:admin`이 `admin-products-mobile.png`도 캡처하도록 했습니다.
+- Summary: Adds mobile-visible product image follow-up badges and a dedicated admin products mobile screenshot artifact so staff can review image provenance without relying on horizontal table scrolling.
+- Changed:
+  - `/admin/products` mobile rows now include an `admin-product-mobile-image-note-*` summary inside the visible product-name cell.
+  - `npm run screenshot:admin` now captures both `admin-products-mobile.png` and `admin-products-desktop.png`.
+  - Source audit now requires the admin products mobile screenshot artifact path.
+  - Added a Playwright mobile guard for the `14K 주얼리 매입` image follow-up row summary.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: source 기준 `/admin/products` 모바일 행 요약과 admin screenshot evidence set.
+  - 실제 사이트 화면은 아직 안 바뀐 것: 기존 live project가 company Vercel scope에서 보이지 않아 `v0.2.18`부터 `v0.2.25`까지의 source 화면 변경은 production live에 미반영.
+  - 배포된 것: 없음.
+  - 아직 배포 안 된 것: 상담 도우미, search approval health fields, release-state checker, admin launch approval gate wording, admin product image provenance/filter/mobile evidence, admin launch release-stage map, 기존 Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed TDD RED: `npm run audit:site` failed because `scripts/capture-site-screenshots.mjs` did not include `admin-products-mobile.png`.
+  - Passed TDD GREEN: `npm run audit:site` passed after adding the mobile admin products screenshot capture.
+  - Passed Playwright RED/GREEN: `npm run test:site -- --grep "mobile admin products"` first failed because `admin-product-mobile-image-note-14k-jewelry-buying` was absent, then passed after rebuilding with the mobile-visible image note.
+  - Final full QA is recorded in the current handoff after this pass.
+- Rollback Hint: `v0.2.25 전으로 되돌려줘`
+- Remaining User-only:
+  - Provided KCG gold-bar/logo files still need visual approval and public-safe classification before any public replacement.
+  - Do not treat a filename, logo, or gold-bar photo as final real product proof without junyoung approval.
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Confirm final product prices/공임/운영자료 before public search launch.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
+## v0.2.24 - Admin product image follow-up filter QA
+
+- Date: `2026-05-08 KST`
+- Commit: local working tree only until this pass is intentionally committed and pushed.
+- Deploy Status: local source/admin UI update only. Production deploy remains blocked because the company Vercel account `kcgoldx-7259` still reports no projects under `npx vercel project ls --scope kcgoldx`; no search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX data call, or real product/photo data change is included.
+- 사람이 읽는 요약: `/admin/products`에 `이미지 확인 필터`를 추가해 운영자가 `실사진 확인`, `교체 대상`, `권한 검증`, `이미지 없음` 상품만 좁혀 볼 수 있게 했습니다. Junyoung이 제공한 KCG 이미지 폴더는 목록과 해상도만 확인했고, 파일을 repo/public로 복사하거나 실제 상품사진으로 확정하지 않았습니다.
+- Summary: Adds an admin-only product image follow-up filter so staff can find representative/generated images, legacy placeholders, external/unknown paths, and missing images before real-photo replacement, without changing public products, prices, images, search exposure, or storage schema.
+- Changed:
+  - `/admin/products` now shows `이미지 확인 필터`.
+  - The filter links cover `전체`, `실사진 확인`, `교체 대상`, `권한 검증`, and `이미지 없음`.
+  - Filtered table state is reflected as `이미지 필터: ...` / `목록 필터: ...`.
+  - Product rows get stable `admin-product-row-*` test IDs for image follow-up assertions.
+  - Added a Playwright assertion that the `교체 대상` filter isolates the legacy placeholder row without showing unrelated gold-bar rows.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: source 기준 `/admin/products`의 운영자용 이미지 확인 필터.
+  - 실제 사이트 화면은 아직 안 바뀐 것: 기존 live project가 company Vercel scope에서 보이지 않아 `v0.2.18`부터 `v0.2.24`까지의 source 화면 변경은 production live에 미반영.
+  - 배포된 것: 없음.
+  - 아직 배포 안 된 것: 상담 도우미, search approval health fields, release-state checker, admin launch approval gate wording, admin product image provenance/filter, admin launch release-stage map, 기존 Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed TDD RED after build: `npm run test:site -- --grep "admin products"` failed before implementation because `이미지 확인 필터` was absent.
+  - Passed targeted GREEN after rebuild: `npm run test:site -- --grep "admin products"` passed after adding the filter and changing the table helper copy to `목록 필터: ...` to avoid duplicate exact text matches.
+  - Passed source audit: `npm run audit:site` (`1400 checks, 1 skipped`) before rendered-route checks.
+  - Passed full local launch QA: `npm run qa:site` passed with lint, typecheck, rendered site fidelity audit (`1460 checks, 0 skipped`), Playwright (`22 passed`), screenshot refresh, and `npm audit` (`0 vulnerabilities`).
+  - Passed admin screenshot refresh: `npm run screenshot:admin`; visually inspected `output/screenshots/admin-products-desktop.png` and confirmed the filter chips plus product image follow-up rows are visible.
+  - Passed release/external checks: `npm run check:release-state`, `npm run check:external -- --strict-domain`, and `npm run release:trace`.
+- Rollback Hint: `v0.2.24 전으로 되돌려줘`
+- Remaining User-only:
+  - Provided KCG gold-bar/logo files still need visual approval and public-safe classification before any public replacement.
+  - Do not treat a filename, logo, or gold-bar photo as final real product proof without junyoung approval.
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Confirm final product prices/공임/운영자료 before public search launch.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
+## v0.2.23 - Admin launch release-stage map QA
+
+- Date: `2026-05-08 KST`
+- Commit: local working tree only until this pass is intentionally committed and pushed.
+- Deploy Status: local source/admin UI update only. Production deploy remains blocked because the company Vercel account `kcgoldx-7259` still reports no projects under `npx vercel project ls --scope kcgoldx`; no search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX data call, or real product data change is included.
+- 사람이 읽는 요약: `/admin/launch`에 `운영 상태 구분` 패널을 추가해 `소스 QA`, `라이브 리뷰 반영`, `공개 검색 런칭`을 같은 공개 준비로 착각하지 않게 했습니다. source가 통과해도 live review URL 반영은 `npm run check:release-state`로 따로 확인하고, public search launch는 여전히 junyoung 명시 승인과 `KCG_PUBLIC_SEARCH_APPROVED=1` 전까지 `robots/noindex 유지`가 기본입니다.
+- Summary: Adds a release-stage map to the admin launch dashboard so operators distinguish local/source QA, live review reflection, and public search launch approval without weakening robots/noindex, secrets, DNS, payment, trading, or data-source boundaries.
+- Changed:
+  - `/admin/launch` now shows `운영 상태 구분`.
+  - The new panel separates `소스 QA`, `라이브 리뷰 반영`, and `공개 검색 런칭`.
+  - The live reflection step explicitly points operators to `npm run check:release-state`.
+  - The public search launch step states that `robots/noindex 유지` remains the default before final user approval.
+  - Added a Playwright assertion that the release-stage map and its protected copy remain visible.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: source 기준 `/admin/launch`의 운영 상태 구분 패널.
+  - 실제 사이트 화면은 아직 안 바뀐 것: 기존 live project가 company Vercel scope에서 보이지 않아 `v0.2.18`부터 `v0.2.23`까지의 source 화면 변경은 production live에 미반영.
+  - 배포된 것: 없음.
+  - 아직 배포 안 된 것: 상담 도우미, search approval health fields, release-state checker, admin launch approval gate wording, admin product image provenance, admin launch release-stage map, 기존 Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed TDD RED: `npm run test:site -- --grep "admin launch dashboard"` failed before implementation because `운영 상태 구분` was absent.
+  - Passed TDD GREEN after rebuild: `npm run build`, then `npm run test:site -- --grep "admin launch dashboard"` passed.
+  - Passed: `npm run audit:site` (`1381 checks, 1 skipped`) before rendered-route checks.
+  - Passed: `npm run test:site` (`22 passed`) after cleaning a process-overlap retry.
+  - Passed: `npm run qa:site`; rendered audit `1441 checks, 0 skipped`, Playwright `22 passed`, screenshot refresh, and npm audit `0 vulnerabilities`.
+  - Passed: `npm run screenshot:admin`; visually inspected `admin-launch-desktop.png`.
+  - Passed: `npm run check:release-state`, `npm run check:external -- --strict-domain`, and `npm run release:trace`.
+  - Note: one full QA attempt overlapped with a still-running orphaned QA/build/screenshot process and produced `127.0.0.1:3037` connection-refused Playwright failures. After waiting for the orphaned process to finish, standalone Playwright and the final full QA rerun passed without code changes.
+- Rollback Hint: `v0.2.23 전으로 되돌려줘`
+- Remaining User-only:
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Provide and approve real KCG product/store/staff photos and final product prices/공임/운영자료 when ready.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
+## v0.2.22 - Admin product image provenance QA
+
+- Date: `2026-05-08 KST`
+- Commit: local working tree only until this pass is intentionally committed and pushed.
+- Deploy Status: local source/admin UI update only. Production deploy remains blocked because the company Vercel account `kcgoldx-7259` still reports no projects under `npx vercel project ls --scope kcgoldx`; no search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX data call, or real product data change is included.
+- 사람이 읽는 요약: `/admin/products`의 상품 목록에서 이미지가 단순 `있음/없음`으로 보이던 것을 `이미지 성격`으로 바꿔 운영자가 `대표/생성`, `기존 placeholder`, `외부 URL`, `이미지 없음`, `로컬 이미지/검증 필요`를 구분할 수 있게 했습니다. 파일명만으로 실사진을 확정하지 않는다는 안내를 함께 노출해 실제 상품 사진 교체 전 운영 실수를 줄입니다.
+- Summary: Adds an admin product-image provenance badge and regression guard so staff can distinguish curated approved representative/generated catalog images from real-photo follow-up work without changing public prices, product data, images, search exposure, or storage schema.
+- Changed:
+  - `/admin/products` table column `이미지` is now `이미지 성격`.
+  - Only the curated approved representative/generated image path allow-list shows `대표/생성` with `실사진 확인 필요`.
+  - Legacy placeholder URLs, external URLs, missing images, and unknown local image paths show conservative review labels.
+  - Prefix catch-alls such as `/products/kcg-*` and `/campaign/*` are blocked so future admin-entered local images do not look pre-approved by filename alone.
+  - The admin table states that real photos are not confirmed by filename alone.
+  - Added a Playwright assertion that `/admin/products` exposes `이미지 성격`, `대표/생성`, `실사진 확인 필요`, and the real-photo caution copy.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: source 기준 `/admin/products` 상품 목록의 이미지 provenance 표시와 안내문.
+  - 실제 사이트 화면은 아직 안 바뀐 것: 기존 live project가 company Vercel scope에서 보이지 않아 `v0.2.18`부터 `v0.2.22`까지의 source 화면 변경은 production live에 미반영.
+  - 배포된 것: 없음.
+  - 아직 배포 안 된 것: 상담 도우미, search approval health fields, release-state checker, admin launch approval gate wording, admin product image provenance, 기존 Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed TDD RED: `npm run test:site -- --grep "admin products uses"` failed before implementation because `이미지 성격` was absent.
+  - Passed TDD GREEN after rebuild: `npm run build`, then `npm run test:site -- --grep "admin products uses"` passed.
+  - Passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`1364 checks, 1 skipped`), `npm run build`, `npm run test:site` (`22 passed`), `SITE_SCREENSHOT_PORT=3045 npm run screenshot:site`, `SITE_SCREENSHOT_PORT=3046 npm run screenshot:admin`, `SITE_SCREENSHOT_PORT=3045 npm run qa:site` (rendered audit `1424 checks, 0 skipped`; Playwright `22 passed`; screenshot refresh; npm audit `0 vulnerabilities`), standalone `npm audit --audit-level=moderate`, and `git diff --check` with line-ending warnings only.
+  - Passed with expected warnings: `npm run check:release-state`; live is reachable and not search-indexable, while missing `v0.2.18+` inquiry and `v0.2.20+` search fields are classified as live-behind-source.
+  - Passed: `npm run check:external -- --strict-domain`; live remains `mode=supabase`, `deployment=production`, `indexing=disabled`, robots blocked, sitemap empty, and both KCG domains resolve to Vercel.
+  - Passed: `npm run release:trace`; v0.2.22 is local working tree only until committed/pushed and production deploy remains blocked by company Vercel project visibility.
+  - Visually inspected: `output/screenshots/admin-products-desktop.png`; the table shows `이미지 성격`, `대표/생성`, and `실사진 확인 필요` without layout breakage.
+- Rollback Hint: `v0.2.22 전으로 되돌려줘`
+- Remaining User-only:
+  - Provide and approve real KCG product/store/staff photos when ready; this change only classifies current image provenance and does not import real photos.
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Confirm final product prices/공임/운영자료 before public search launch.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
+## v0.2.21 - Admin launch approval gate wording QA
+
+- Date: `2026-05-08 KST`
+- Commit: local working tree only until this pass is intentionally committed and pushed.
+- Deploy Status: local source/admin QA update only. Production deploy remains blocked because the company Vercel account `kcgoldx-7259` still reports no projects under `npx vercel project ls --scope kcgoldx`; no search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX data call, or real product data change is included.
+- 사람이 읽는 요약: `/admin/launch`의 아래쪽 세부 점검에서 검색 공개 승인 env가 없는 상태가 `공개 승인 통과`처럼 보일 수 있던 문구를 `공개 승인 게이트`와 `확인 필요`로 바꿨습니다. 검색 공개 승인 전에는 `KCG_PUBLIC_SEARCH_APPROVED=1`을 설정하지 않고 robots/noindex 차단을 유지한다는 의미가 더 분명해졌습니다.
+- Summary: Makes the admin launch-readiness detail item distinguish an active public-search approval gate from actual public-search approval, and adds a Playwright regression so the missing approval env no longer reads as a passed approval.
+- Changed:
+  - `/admin/launch` detail item title is now `공개 승인 게이트`.
+  - Missing `KCG_PUBLIC_SEARCH_APPROVED=1` is now a `warning` state instead of a `pass` state in launch readiness scoring.
+  - If the approval env is later enabled, the gate only passes when the search exposure status is actually `enabled`; otherwise it stays review-needed.
+  - Added a Playwright assertion that the admin launch dashboard shows `공개 승인 게이트` with `확인 필요`.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: source 기준 `/admin/launch` 세부 점검 문구와 badge 상태.
+  - 실제 사이트 화면은 아직 안 바뀐 것: 기존 live project가 company Vercel scope에서 보이지 않아 `v0.2.18`부터 `v0.2.21`까지의 source 화면 변경은 production live에 미반영.
+  - 배포된 것: 없음.
+  - 아직 배포 안 된 것: 상담 도우미, search approval health fields, release-state checker, admin launch approval gate wording, 기존 Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed: `npm run qa:site`; source/rendered audit `1409 checks, 0 skipped`, Playwright `22 passed`, screenshot refresh, and npm audit `0 vulnerabilities`.
+  - Passed: `npm run screenshot:admin`; captured and inspected `/admin`, `/admin/launch` mobile/desktop, `/admin/prices` manual/auto, `/admin/announcements`, and `/admin/products` screenshots.
+  - Passed with expected warnings: `npm run check:release-state`; live is reachable and not search-indexable, while missing `v0.2.18+` inquiry and `v0.2.20+` search fields are classified as live-behind-source.
+  - Passed: `npm run check:external -- --strict-domain`; live remains `mode=supabase`, `deployment=production`, `indexing=disabled`, robots blocked, sitemap empty, and both KCG domains resolve to Vercel.
+  - Visually inspected: `home-mobile-viewport.png`, `home-desktop-viewport.png`, `prices-mobile-viewport.png`, `products-mobile-viewport.png`, `services-mobile-viewport.png`, `admin-launch-mobile.png`, `admin-launch-desktop.png`, and `admin-prices-auto-mobile.png`.
+- Rollback Hint: `v0.2.21 전으로 되돌려줘`
+- Remaining User-only:
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Provide real KCG product/store/staff photos and final product prices/공임/운영자료 when ready.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
 ## v0.2.20 - Search approval guard and release-state QA
 
 - Date: `2026-05-06 KST`

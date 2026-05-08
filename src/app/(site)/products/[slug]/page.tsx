@@ -59,6 +59,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               sizes="(min-width: 1024px) 48vw, 100vw"
               priority
             />
+            <div className="absolute left-4 top-4 rounded-full border border-white/70 bg-white/90 px-3 py-1.5 text-xs font-bold text-[#5f5200] shadow-sm">
+              상담용 대표 이미지
+            </div>
+            <div className="absolute inset-x-4 bottom-4 rounded-[0.75rem] bg-[#15191b]/78 px-4 py-3 text-sm font-semibold leading-6 text-white">
+              실제 상품 사진·포장·재고는 전화 상담과 현장 확인 후 안내합니다.
+            </div>
           </div>
           <div className="flex flex-col justify-center border-y border-[#dfe6e4] py-8">
             <div className="flex flex-wrap gap-2">

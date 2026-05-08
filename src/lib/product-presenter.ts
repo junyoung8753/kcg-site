@@ -67,21 +67,21 @@ export function getProductPriceBasisLabel(priceBasis: ProductPriceBasis) {
 }
 
 export function getProductFallbackImage(category: ProductCategory) {
-  if (category === "gold_bar") return "/products/kcg-product-minimal-bars-20260506.webp";
+  if (category === "gold_bar") return "/products/kcg-generated-goldbar-lineup-20260508.webp";
   if (category === "silver_bar") return "/products/kcg-silver-gift-20260427-v2.jpg";
   if (category === "pure_gold") return "/products/kcg-product-pure-gold-gifts-20260506.webp";
   if (category === "jewelry") return "/campaign/kcg-old-gold-process-20260506.webp";
   if (category === "purchase_guide") return "/campaign/kcg-old-gold-process-20260506.webp";
   if (category === "custom_order") return "/products/kcg-product-corporate-consulting-20260506.webp";
-  return "/products/kcg-product-minimal-bars-20260506.webp";
+  return "/products/kcg-generated-goldbar-lineup-20260508.webp";
 }
 
 const defaultProductImagesBySlug: Record<string, string> = {
-  "kcg-gold-bar-1g": "/products/kcg-product-minimal-bars-20260506.webp",
-  "investment-gold-bar-consulting": "/products/kcg-product-gold-silver-catalog-20260503.webp",
-  "kcg-gold-bar-10g": "/campaign/kcg-home-price-desk-20260506.webp",
-  "kcg-gold-bar-37-5g": "/campaign/kcg-home-product-keyvisual-20260503.webp",
-  "kcg-gold-bar-100g": "/products/kcg-product-b2b-consulting-20260503.webp",
+  "kcg-gold-bar-1g": "/products/kcg-generated-goldbar-lineup-20260508.webp",
+  "investment-gold-bar-consulting": "/products/kcg-generated-goldbar-detail-20260508.webp",
+  "kcg-gold-bar-10g": "/campaign/kcg-generated-goldbar-banner-20260508.webp",
+  "kcg-gold-bar-37-5g": "/products/kcg-generated-goldbar-lineup-20260508.webp",
+  "kcg-gold-bar-100g": "/products/kcg-generated-goldbar-detail-20260508.webp",
   "kcg-silver-bar-100g": "/products/kcg-silver-gift-20260427-v2.jpg",
   "kcg-silver-bar-500g": "/campaign/kcg-hero-metal-bars.jpg",
   "kcg-silver-bar-1kg": "/products/kcg-product-gold-silver-catalog-20260503.webp",
@@ -100,7 +100,10 @@ const defaultProductImagesBySlug: Record<string, string> = {
 
 const replaceablePlaceholderImages = new Set([
   "/products/kcg-product-minimal-bars-20260506.webp",
+  "/products/kcg-product-gold-silver-catalog-20260503.webp",
   "/campaign/kcg-home-price-desk-20260506.webp",
+  "/campaign/kcg-home-product-keyvisual-20260503.webp",
+  "/products/kcg-product-b2b-consulting-20260503.webp",
   "/products/kcg-silver-gift-20260427-v2.jpg",
   "/campaign/kcg-hero-metal-bars.jpg",
   "/products/kcg-product-pure-gold-gifts-20260506.webp",
@@ -109,7 +112,7 @@ const replaceablePlaceholderImages = new Set([
 ]);
 
 const legacyProductImageReplacements: Record<string, string> = {
-  "/products/kcg-gold-bar-catalog-20260427-v2.jpg": "/products/kcg-product-minimal-bars-20260506.webp",
+  "/products/kcg-gold-bar-catalog-20260427-v2.jpg": "/products/kcg-generated-goldbar-lineup-20260508.webp",
   "/products/kcg-old-gold-jewelry-20260427-v2.jpg": "/campaign/kcg-old-gold-process-20260506.webp",
   "/products/kcg-b2b-bulk-consulting-20260427-v2.jpg": "/products/kcg-product-corporate-consulting-20260506.webp",
   "/products/kcg-pure-gold-products-20260427-v2.jpg": "/products/kcg-product-pure-gold-gifts-20260506.webp",

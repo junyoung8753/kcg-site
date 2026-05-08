@@ -58,6 +58,45 @@ export default function AdminLaunchPage() {
         </div>
       </section>
 
+      <section className="space-y-4" data-testid="admin-release-stage-map">
+        <div className="admin-panel p-6">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-gold-soft)]">
+            Release State
+          </p>
+          <h3 className="mt-3 font-display text-xl text-[var(--admin-ink)]">운영 상태 구분</h3>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--admin-muted)]">
+            소스 QA, 라이브 리뷰 반영, 공개 검색 런칭은 서로 다른 단계입니다. 배포가 되어도 검색 공개
+            승인이 된 것은 아니며, 검색 공개 전까지는 robots/noindex 차단을 유지합니다.
+          </p>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-3">
+          <article className="admin-panel p-5">
+            <p className="text-sm font-semibold text-[var(--admin-muted)]">Codex 가능</p>
+            <h4 className="mt-2 text-lg font-bold text-[var(--admin-ink)]">소스 QA</h4>
+            <p className="mt-3 text-sm leading-7 text-[var(--admin-muted)]">
+              로컬 source와 screenshot을 검증합니다. 완료 기준은 lint, typecheck, audit, build, Playwright,
+              screenshot, npm audit 통과입니다.
+            </p>
+          </article>
+          <article className="admin-panel p-5">
+            <p className="text-sm font-semibold text-[var(--admin-muted)]">반영 확인</p>
+            <h4 className="mt-2 text-lg font-bold text-[var(--admin-ink)]">라이브 리뷰 반영</h4>
+            <p className="mt-3 text-sm leading-7 text-[var(--admin-muted)]">
+              배포 후 stable URL의 <span className="font-mono">/api/health</span>가 source 시대와 맞는지{" "}
+              <span className="font-mono">npm run check:release-state</span>로 확인합니다.
+            </p>
+          </article>
+          <article className="admin-panel p-5">
+            <p className="text-sm font-semibold text-[#8a2c20]">junyoung 승인 필요</p>
+            <h4 className="mt-2 text-lg font-bold text-[var(--admin-ink)]">공개 검색 런칭</h4>
+            <p className="mt-3 text-sm leading-7 text-[var(--admin-muted)]">
+              실가격·실상품·최종 비밀값 확인 전에는 robots/noindex 유지가 기본입니다. 검색 공개는
+              <span className="font-mono"> KCG_PUBLIC_SEARCH_APPROVED=1</span>과 별도 명시 승인이 필요합니다.
+            </p>
+          </article>
+        </div>
+      </section>
+
       <section className="grid gap-4 lg:grid-cols-2">
         <div className="admin-panel p-6">
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-gold-soft)]">

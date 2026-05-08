@@ -1,7 +1,9 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 
 const campaignAlts = [
-  "한국센터금거래소 가격 데스크와 골드바 실버바 상담 이미지",
+  "한국센터금거래소 골드바 상담용 대표 배너 이미지",
   "한국센터금거래소 상담원과 고객 상담 장면",
   "종로 귀금속 매장 분위기 이미지",
   "고금 주얼리 매입 절차 상담 이미지",
@@ -10,6 +12,7 @@ const explicitAdminPassword = process.env.KCG_TEST_ADMIN_PASSWORD || process.env
 const auditUrl = process.env.SITE_AUDIT_URL;
 const isExternalAuditUrl = auditUrl ? !/^https?:\/\/(127\.0\.0\.1|localhost|\[::1\])(?::\d+)?/i.test(auditUrl) : false;
 const adminPassword = explicitAdminPassword || (isExternalAuditUrl ? undefined : "0000");
+const repoRoot = process.cwd();
 
 async function expectNoHorizontalOverflow(page: Page) {
   const overflow = await page.evaluate(
@@ -575,18 +578,19 @@ test("mobile products route exposes a consultation catalog without checkout", as
   const productImageSources = await page.locator("main img[alt$='이미지']").evaluateAll((images) =>
     images.map((image) => (image instanceof HTMLImageElement ? image.currentSrc || image.src : "")),
   );
-  expect(productImageSources.some((src) => src.includes("kcg-product-minimal-bars-20260506"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-generated-goldbar-lineup-20260508"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-generated-goldbar-detail-20260508"))).toBe(true);
+  expect(productImageSources.some((src) => src.includes("kcg-generated-goldbar-banner-20260508"))).toBe(true);
   expect(productImageSources.some((src) => src.includes("kcg-product-gold-silver-catalog-20260503"))).toBe(true);
   expect(productImageSources.some((src) => src.includes("kcg-home-product-keyvisual-20260503"))).toBe(true);
   expect(productImageSources.some((src) => src.includes("kcg-product-jewelry-buying-20260503"))).toBe(true);
   expect(productImageSources.some((src) => src.includes("kcg-old-gold-process-20260506"))).toBe(true);
   expect(productImageSources.some((src) => src.includes("kcg-product-corporate-consulting-20260506"))).toBe(true);
-  expect(productImageSources.some((src) => src.includes("kcg-home-price-desk-20260506"))).toBe(true);
   expect(new Set(productImageSources).size).toBeGreaterThanOrEqual(6);
   const firstProductImageSources = await page.locator("main article img").evaluateAll((images) =>
     images.slice(0, 6).map((image) => (image instanceof HTMLImageElement ? image.currentSrc || image.src : "")),
   );
-  expect(new Set(firstProductImageSources).size).toBeGreaterThanOrEqual(5);
+  expect(new Set(firstProductImageSources).size).toBeGreaterThanOrEqual(4);
   await expect(page.locator("main")).not.toContainText("방문 상담");
   await expect(page.locator("main")).not.toContainText("관리자에서");
   await expect(page.locator("main")).not.toContainText("등록해 운영");
@@ -597,6 +601,21 @@ test("mobile products route exposes a consultation catalog without checkout", as
   await expect(page.locator("main")).not.toContainText("바로 구매");
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
+});
+
+test("public product images are labeled as representative before real-photo approval", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 1400 });
+  await page.goto("/products", { waitUntil: "domcontentloaded" });
+
+  await expect(page.getByText("상담용 대표 이미지").first()).toBeVisible();
+  await expect(page.locator("main")).toContainText("실물 색상과 패키지는 현장 확인 후 안내");
+
+  await page.goto("/products/investment-gold-bar-consulting", { waitUntil: "domcontentloaded" });
+  await expect(page.getByText("상담용 대표 이미지").first()).toBeVisible();
+  await expect(page.locator("main")).toContainText("실제 상품 사진·포장·재고는 전화 상담과 현장 확인 후 안내합니다.");
+  await expect(page.locator("main")).not.toContainText("구매하기");
+  await expect(page.locator("main")).not.toContainText("결제하기");
+  await expectNoHorizontalOverflow(page);
 });
 
 test("mobile products route reaches catalog controls in the first viewport", async ({ page }) => {
@@ -977,11 +996,21 @@ test("admin launch dashboard separates pre-launch work from public-launch approv
   await expect(page).toHaveURL(/\/admin\/launch/);
 
   await expect(page.getByRole("heading", { name: "오픈 전 점검판" })).toBeVisible();
+  const releaseStageMap = page.getByTestId("admin-release-stage-map");
+  await expect(releaseStageMap.getByRole("heading", { name: "운영 상태 구분" })).toBeVisible();
+  await expect(releaseStageMap.getByRole("heading", { name: "소스 QA" })).toBeVisible();
+  await expect(releaseStageMap.getByRole("heading", { name: "라이브 리뷰 반영" })).toBeVisible();
+  await expect(releaseStageMap.getByRole("heading", { name: "공개 검색 런칭" })).toBeVisible();
+  await expect(releaseStageMap.getByText("npm run check:release-state")).toBeVisible();
+  await expect(releaseStageMap.getByText("robots/noindex 유지")).toBeVisible();
   await expect(page.getByRole("heading", { name: "지금 미리 가능한 준비" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "공개 직전 별도 승인 필요" })).toBeVisible();
   await expect(page.getByText("Production 배포 승인")).toBeVisible();
   await expect(page.getByText("KCG_PUBLIC_SEARCH_APPROVED=1 명시 승인 env 설정")).toBeVisible();
   await expect(page.getByText("robots/noindex 해제와 검색 색인 승인")).toBeVisible();
+  const launchApprovalGate = page.getByRole("heading", { name: "공개 승인 게이트" }).locator("xpath=ancestor::article");
+  await expect(launchApprovalGate).toBeVisible();
+  await expect(launchApprovalGate).toContainText("확인 필요");
   const publicLaunchPanel = page.getByTestId("admin-public-launch-approval");
   await expectReadableTextContrast(publicLaunchPanel.getByRole("heading", { name: "공개 직전 별도 승인 필요" }));
   await expectReadableTextContrast(publicLaunchPanel.getByText("Production 배포 승인"));
@@ -1111,6 +1140,7 @@ test("admin prices exposes automatic price operation and compact manual editor",
 
 test("admin products uses a compact list-and-editor management surface", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
+  await page.context().clearCookies();
   await page.goto("/admin/products", { waitUntil: "domcontentloaded" });
   await expect(page).toHaveURL(/\/admin\/login\?next=%2Fadmin%2Fproducts/);
 
@@ -1122,15 +1152,108 @@ test("admin products uses a compact list-and-editor management surface", async (
 
   await expect(page.getByRole("heading", { name: "상품 관리" })).toBeVisible();
   const productTable = page.getByTestId("admin-product-table");
+  const desktopProductGrid = productTable.getByTestId("admin-product-desktop-grid");
   await expect(productTable).toBeVisible();
-  await expect(productTable.getByText("공개상태")).toBeVisible();
-  await expect(productTable.getByText("카테고리")).toBeVisible();
-  await expect(productTable.getByText("가격 기준")).toBeVisible();
-  await expect(productTable.getByText("중량")).toBeVisible();
-  await expect(productTable.getByText("이미지")).toBeVisible();
-  await expect(productTable.getByText("정렬")).toBeVisible();
+  await expect(desktopProductGrid.getByText("공개상태")).toBeVisible();
+  await expect(desktopProductGrid.getByText("카테고리")).toBeVisible();
+  await expect(desktopProductGrid.getByText("가격 기준")).toBeVisible();
+  await expect(desktopProductGrid.getByText("중량")).toBeVisible();
+  await expect(desktopProductGrid.getByText("이미지 성격")).toBeVisible();
+  await expect(desktopProductGrid.getByText("대표/생성").first()).toBeVisible();
+  await expect(desktopProductGrid.locator("p", { hasText: "실사진 확인 필요" }).first()).toBeVisible();
+  await expect(page.getByText("실사진은 파일명만으로 확정하지 않습니다.")).toBeVisible();
+  await expect(page.getByText("이미지 확인 필터")).toBeVisible();
+  await expect(page.getByRole("link", { name: /실사진 확인/ })).toHaveAttribute(
+    "href",
+    /image=needs-real-photo/,
+  );
+  await page.getByRole("link", { name: /교체 대상/ }).click();
+  await expect(page).toHaveURL(/image=replace-placeholder/);
+  await expect(page.getByText("이미지 필터: 교체 대상")).toBeVisible();
+  const filteredProductTable = page.getByTestId("admin-product-table");
+  const filteredDesktopGrid = filteredProductTable.getByTestId("admin-product-desktop-grid");
+  await expect(filteredDesktopGrid.getByText("순금 카드 1g")).toBeVisible();
+  await expect(filteredDesktopGrid.locator("p", { hasText: "교체 대상" }).first()).toBeVisible();
+  await expect(filteredDesktopGrid.getByText("KCG 골드바 1g")).not.toBeVisible();
+  await page.getByRole("link", { name: /전체/ }).click();
+  await expect(page).toHaveURL(/\/admin\/products(?:\?|$)/);
+  const jewelryBuyingRow = desktopProductGrid.getByTestId("admin-product-row-14k-jewelry-buying");
+  await expect(jewelryBuyingRow).toContainText("14K 주얼리 매입");
+  await expect(jewelryBuyingRow).toContainText("대표/생성");
+  await expect(jewelryBuyingRow).toContainText("실사진 확인 필요");
+  await expect(desktopProductGrid.getByText("정렬")).toBeVisible();
   await expect(page.getByText("편집 열기").first()).toBeVisible();
 
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleElementEscapesViewport(page);
+});
+
+test("mobile admin products keeps image follow-up status in the visible row summary", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.context().clearCookies();
+  await page.goto("/admin/products", { waitUntil: "domcontentloaded" });
+  await expect(page).toHaveURL(/\/admin\/login\?next=%2Fadmin%2Fproducts/);
+
+  if (!adminPassword) return;
+
+  await page.getByLabel("관리자 비밀번호").fill(adminPassword);
+  await page.getByRole("button", { name: "관리자 페이지로 이동" }).click();
+  await expect(page).toHaveURL(/\/admin\/products/);
+
+  await expect(page.getByTestId("admin-product-image-filter")).toBeVisible();
+  const jewelryBuyingMobileRow = page.getByTestId("admin-product-mobile-row-14k-jewelry-buying");
+  await expect(jewelryBuyingMobileRow).toContainText("14K 팔 때");
+  const jewelryBuyingMobileNote = page.getByTestId("admin-product-mobile-image-note-14k-jewelry-buying");
+  await expect(jewelryBuyingMobileNote).toBeVisible();
+  await expect(jewelryBuyingMobileNote).toContainText("대표/생성");
+  await expect(jewelryBuyingMobileNote).toContainText("실사진 확인 필요");
+  const mobileNoteBox = await jewelryBuyingMobileNote.boundingBox();
+  const viewportWidth = page.viewportSize()?.width ?? 390;
+  expect(mobileNoteBox?.x ?? 9999).toBeLessThan(120);
+  expect((mobileNoteBox?.x ?? 0) + (mobileNoteBox?.width ?? 9999)).toBeLessThanOrEqual(
+    viewportWidth - 16,
+  );
+
+  await expectNoHorizontalOverflow(page);
+  await expectNoVisibleElementEscapesViewport(page);
+});
+
+test("raw KCG intake filenames stay warning-only in admin and audit guards", () => {
+  const adminProductsSource = readFileSync(
+    path.join(repoRoot, "src/app/admin/products/page.tsx"),
+    "utf8",
+  );
+  const auditSource = readFileSync(
+    path.join(repoRoot, "scripts/audit-site-fidelity.mjs"),
+    "utf8",
+  );
+
+  const rawGuardIndex = adminProductsSource.indexOf("if (isRawKakaoTalkImagePath(imageUrl))");
+  const localFallbackIndex = adminProductsSource.indexOf('imageUrl.startsWith("/products/")');
+  expect(rawGuardIndex).toBeGreaterThanOrEqual(0);
+  expect(localFallbackIndex).toBeGreaterThan(rawGuardIndex);
+  expect(adminProductsSource).toContain('label: "원본 KakaoTalk"');
+  expect(adminProductsSource).toContain('provenance.label === "원본 KakaoTalk"');
+  expect(auditSource).toContain("function expectNoRawKakaoTalkFiles");
+  expect(auditSource).toContain('expectNoRawKakaoTalkFiles(["public"])');
+
+  const rawPublicProductPaths = [
+    "public/products/KakaoTalk_20260508_091553653.png",
+    "public/products/KakaoTalk_20260508_091553653_01.png",
+    "public/products/KakaoTalk_20260508_091553653_02.png",
+    "public/products/KakaoTalk_20260508_091553653_03.png",
+    "public/products/KakaoTalk_20260508_091603752.jpg",
+    "public/products/KakaoTalk_20260508_091613735.jpg",
+    "public/products/KakaoTalk_20260508_110154617.jpg",
+    "public/products/KakaoTalk_20260508_110154617_01.jpg",
+    "public/products/KakaoTalk_20260508_110154617_02.jpg",
+    "public/products/KakaoTalk_20260508_110154617_03.jpg",
+    "public/products/KakaoTalk_20260508_110154617_04.jpg",
+    "public/products/KakaoTalk_20260508_110154617_05.jpg",
+    "public/products/KakaoTalk_20260508_110154617_06.jpg",
+  ];
+
+  for (const rawPath of rawPublicProductPaths) {
+    expect(auditSource).toContain(`expectMissing("${rawPath}")`);
+  }
 });

@@ -1,6 +1,6 @@
 # KCG Project Status For Beginner
 
-Last updated: 2026-05-06 KST.
+Last updated: 2026-05-08 KST.
 
 This file is for junyoung when Git, branch, version, handoff, changelog, rollback, and open tasks feel confusing. It explains the current KCG site status in plain language.
 
@@ -19,26 +19,29 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## Current Snapshot
 
-- 현재 공식 작업 버전: `v0.2.20`
+- 현재 공식 작업 버전: `v0.2.29`
 - 현재 작업 브랜치: `codex/kcg-launch-readiness-catalog-20260427`
-- 이번 작업 버전: `v0.2.20`
-- 직전 버전: `v0.2.19`
-- 작업 전 HEAD: `241a159`
+- 이번 작업 버전: `v0.2.29`
+- 직전 버전: `v0.2.28`
+- 작업 전 HEAD: `96603a3`
 - 백업 브랜치: `backup/pre-v0.2.4-operations-product-audit` (`v0.2.4`와 `v0.2.5` 문서 보강 전으로 크게 돌아가는 책갈피)
 
 ## 실제 사이트 반영 여부
 
-- 이번 `v0.2.20`에서 실제 사이트 화면이 새로 바뀌는 것: `/admin/launch` 공개 승인 checklist에 `KCG_PUBLIC_SEARCH_APPROVED=1` 단계가 추가되고, admin 상품 편집의 `임시 공임` label이 `상담 기준 공임`으로 바뀐다.
-- 현재 source에는 들어갔지만 live에는 아직 안 보이는 화면 변경: `v0.2.18` 상담 도우미. 데스크톱 오른쪽 하단에 `상담 도우미` 버튼이 생기고, 모바일 하단 고정 CTA에는 `상담` 버튼이 추가된다. 열면 시세표 보는 법, 고금 매입, 방문 준비, KRX 구분 같은 기본 문의를 저장 없이 안내한다.
-- 실제 사이트 화면은 아직 안 바뀌고, source 기준만 바뀐 것: `v0.2.20` 검색 승인 health fields, `npm run check:release-state`, `v0.2.19` Vercel 이전 기록, OpenAI API key, SMS 자동 발송, Kakao 공식 채널 URL, KRX/Koscom 승인·계약 경로는 준비 기준만 추가됐다.
-- 배포된 것: 아직 없음. `v0.2.18`, `v0.2.19`, `v0.2.20`은 회사 Vercel CLI가 기존 live 프로젝트 권한을 갖기 전까지 production deploy를 하지 않는다. 기존 live site는 `v0.2.14` 문서 배포와 `v0.2.12` 고객/직원 흐름 화면을 유지한다.
-- 아직 배포 안 된 것: `v0.2.18` 상담 도우미, `v0.2.19` Vercel 이전 기록, `v0.2.20` 검색 승인 guard/health fields, inquiry health fields, 검색 노출/noindex 해제, KRX API 승인/키/env/실제 provider 연결, 실제 상품 사진/공임/최종 판매정책 확정, 기존 Vercel project transfer, 기존 Supabase project transfer, final admin secret rotation, 유료 서버/API 결제는 아직 별도 작업.
+- 이번 `v0.2.29`에서 source 기준 실제 사이트 화면이 새로 바뀌는 것: 홈 첫 배너, `/products` hero/promo, 골드바 상품 카드/상세 대표 이미지가 새 생성 WebP 3종으로 보인다. 이미지는 계속 `상담용 대표 이미지`이고, raw KakaoTalk 원본을 복사한 것이 아니며, 실제 상품사진·포장·재고·가격 증거가 아니다.
+- 이전 snapshot text: 이번 `v0.2.28`에서 실제 사이트 화면이 새로 바뀌는 것: source 기준 `/products` 목록과 상품 상세 이미지에 `상담용 대표 이미지` 안내가 보인다. 실제 상품사진·포장·재고 증거로 확정하지 않았다.
+- 이전 snapshot text: 이번 `v0.2.27`에서 실제 사이트 화면이 새로 바뀌는 것: 없음. 현재 public product image 사용처와 KCG 골드바 후보 파일은 `docs/brand/product-image-replacement-map-2026-05-08.md`에 승인 전 replacement map으로 정리했다. 실제 이미지는 아직 repo/public로 복사하거나 public image URL로 연결하지 않았고, 실제 상품사진으로 확정하지 않았다.
+- 이전 snapshot text: 이번 `v0.2.26`에서 실제 사이트 화면이 새로 바뀌는 것: 없음. Junyoung이 제공한 `KCG 이미지` 폴더는 `docs/brand/kcg-image-intake-2026-05-08.md`에 승인 전 후보로 정리했고, raw KakaoTalk 파일이 served `public` tree 어디에도 바로 들어오지 못하도록 audit guardrail을 추가했다.
+- 현재 source에는 들어갔지만 live에는 아직 안 보이는 화면 변경: `v0.2.18` 상담 도우미. 데스크톱 오른쪽 하단에 `상담 도우미` 버튼이 생기고, 모바일 하단 고정 CTA에는 `상담` 버튼이 추가된다. 열면 시세표 보는 법, 고금 매입, 방문 준비, KRX 구분 같은 기본 문의를 저장 없이 안내한다. `v0.2.20`에는 `/admin/launch` 공개 승인 checklist의 `KCG_PUBLIC_SEARCH_APPROVED=1` 단계와 admin 상품 편집의 `상담 기준 공임` label도 포함된다. `v0.2.21`에는 `/admin/launch` 공개 승인 세부 항목이 `공개 승인 게이트`로 보이는 guard도 포함된다. `v0.2.22`에는 `/admin/products`의 `이미지 성격` 구분이 들어갔고, `v0.2.23`에는 `운영 상태 구분`에서 `소스 QA`, `라이브 리뷰 반영`, `공개 검색 런칭`을 나눠 보는 화면이 들어갔다.
+- 실제 사이트 화면은 아직 live에 안 바뀌고, source 기준만 바뀐 것: `v0.2.29` generated gold-bar representative assets, `v0.2.28` public catalog representative-image clarity, `v0.2.27` product image replacement map, `v0.2.26` KCG image intake guardrail, `v0.2.25` admin product mobile image evidence, `v0.2.24` admin product image follow-up filter(`이미지 확인 필터`, `실사진 확인`, `교체 대상`), `v0.2.23` admin launch release-stage map, `v0.2.22` admin product image provenance, `v0.2.21` admin launch approval gate wording, `v0.2.20` 검색 승인 health fields, `npm run check:release-state`, `v0.2.19` Vercel 이전 기록, OpenAI API key, SMS 자동 발송, Kakao 공식 채널 URL, KRX/Koscom 승인·계약 경로는 준비 기준만 추가됐다.
+- 배포된 것: final QA 후 이번 `v0.2.29`를 기존 개인 Vercel Hobby project `kcg-confirm-preview`로 production deploy한다. 이 배포는 무료 review deploy이고 검색 공개가 아니다.
+- 아직 배포 안 된 것: 기존 Vercel project transfer, 기존 Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제, KRX API 승인/키/env/실제 provider 연결, 실제 KCG 이미지 승인/크롭/공개 사용 결정, 실제 상품 사진/공임/최종 판매정책 확정, 유료 서버/API 결제는 아직 별도 작업.
 - 내가 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` 검토 화면. 검색 노출은 아직 차단.
-- 아직 내부 기준/계획일 뿐인 것: `kcgoldx@gmail.com`으로 진행할 KRX/Koscom 승인 결과, KRX 공개·상업 표시 범위, 실제 상품 사진/공임/최종 판매정책/검색 노출 승인, 회사 Vercel/Supabase 기존 프로젝트 이전 실행, 유료 서버/API가 필요할 때 회사 카드 입력, 선택적 Google Workspace/domain-mail 결제
-- 이번 작업에서 건드린 범위: 검색 공개 positive approval guard, `/api/health` 검색 승인 상태, `/admin/launch` 승인 checklist, `npm run check:release-state`, fallback/mock/seed 상품 공임 문구, handoff/open tasks/changelog/status 정리, `audit:site` guardrail, `package.json`, `package-lock.json`
-- 절대 건드리지 않은 범위: 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, SMS 발송, Kakao credential, OpenAI key/env 입력, Vercel env/secret, 실제 KRX API 호출, 실제 KRX key/env 입력, Supabase schema
+- 아직 내부 기준/계획일 뿐인 것: `kcgoldx@gmail.com`으로 진행할 KRX/Koscom 승인 결과, KRX 공개·상업 표시 범위, 실제 KCG 이미지 승인/크롭/공개 사용 결정, product image replacement map 승인 결정, 실제 상품 사진/공임/최종 판매정책/검색 노출 승인, 회사 Vercel/Supabase 기존 프로젝트 이전 실행, 유료 서버/API가 필요할 때 회사 카드 입력, 선택적 Google Workspace/domain-mail 결제
+- 이번 작업에서 건드린 범위: 새 생성 골드바 대표 WebP 3종(`kcg-generated-goldbar-banner-20260508.webp`, `kcg-generated-goldbar-lineup-20260508.webp`, `kcg-generated-goldbar-detail-20260508.webp`), 홈/상품/골드바 이미지 경로, admin 이미지 성격 분류, product presenter/mock/seed 이미지 경로, `KCG-TODO-081`, handoff/changelog/status 정리, `package.json`, `package-lock.json`
+- 절대 건드리지 않은 범위: raw KakaoTalk 원본 복사, 실제 상품 사진 승인/교체, 실제 가격/상품 데이터 확정, 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, SMS 발송, Kakao credential, OpenAI key/env 입력, Vercel env/secret, 실제 KRX API 호출, 실제 KRX key/env 입력, Supabase schema
 - 배포 기본값: 2026-05-06 KST 기준 junyoung은 KCG 사이트 변경을 완료·검증하면 live 배포까지 진행하라고 지시했다. 단, 검색 노출/noindex 해제, 결제/장바구니/실시간 거래, secret/env 변경, 되돌리기 어려운 인프라 변경은 여전히 별도 승인 대상이다.
-- 이번 검증 결과: `v0.2.20`은 lint, typecheck, source audit, build, Playwright 22개, public/admin screenshot, full `qa:site`, npm audit, live external audit, strict external check를 통과했다. 기존 Vercel 계정 `junyoung8753-2361`은 회사 Vercel team `KCG`의 `MEMBER`이고, 회사 계정 `kcgoldx-7259`는 계속 `OWNER`다. 하지만 company CLI에서 `npx vercel project ls --scope kcgoldx`는 프로젝트 없음으로 나오고, `npx vercel inspect https://kcgold.co.kr/ --scope kcgoldx`도 기존 live 배포를 찾지 못한다. 따라서 company CLI에서 기존 project가 보이기 전까지 production deploy는 권한/결제 eligibility 전까지 막혀 있다. Supabase도 회사 org는 보이지만 project list는 비어 있다.
+- 이번 검증 결과: `v0.2.29`은 이번 패스에서 최종 QA를 재실행해 기록한다. 현재 배포 경로는 무료 유지를 위해 개인 Vercel Hobby project로 복구됐다: `npx vercel whoami`는 `junyoung8753-2361`, `npx vercel project inspect kcg-confirm-preview`는 기존 project를 찾고, `npx vercel inspect https://kcgold.co.kr/`는 production deployment를 찾는다. 회사 Vercel/Supabase 이전은 별도 blocked/shared task로 남긴다.
 
 ## Easy Words
 
@@ -56,8 +59,8 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 | 구분 | 이름 | 쉬운 설명 | 내가 봐야 하는 경우 |
 |---|---|---|---|
-| 현재 작업 버전 | `v0.2.20` | 검색 공개 명시 승인 gate와 live/source 상태 점검을 추가한 버전 | 이번 변경 확인 |
-| 이전 버전 | `v0.2.19` | Vercel 기존 프로젝트 이전 시도와 무료 team blocker를 기록한 버전 | 비교/이전 상태 확인 |
+| 현재 작업 버전 | `v0.2.29` | 생성 골드바 대표 이미지를 홈/상품/골드바 상담용 이미지에 적용한 버전 | 이번 변경 확인 |
+| 이전 버전 | `v0.2.28` | public 상품 이미지가 승인 전 `상담용 대표 이미지`임을 고객에게 안내하는 버전 | 비교/이전 상태 확인 |
 | 백업 브랜치 | `backup/pre-v0.2.4-operations-product-audit` | `v0.2.4`와 `v0.2.5` 문서 보강 전으로 돌아가는 책갈피 | 크게 되돌릴 때 |
 | 현재 작업 브랜치 | `codex/kcg-launch-readiness-catalog-20260427` | 지금 Codex가 작업 중인 줄기 | 상태 확인 |
 | handoff | `CURRENT_HANDOFF.md` | 다음 작업자에게 넘기는 현재 상태 메모 | 이어서 작업할 때 |
@@ -91,6 +94,15 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## 되돌리기 요청 문장
 
+- "v0.2.29 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
+- "v0.2.28 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
+- "v0.2.27 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
+- "v0.2.26 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
+- "v0.2.25 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
+- "v0.2.24 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
+- "v0.2.23 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
+- "v0.2.22 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
+- "v0.2.21 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.20 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.19 Vercel 이전 기록만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.18 상담 도우미만 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."

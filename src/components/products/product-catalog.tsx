@@ -33,7 +33,7 @@ const promoBanners = [
     title: "오늘 고시 시세",
     body: "살 때·팔 때 기준을 먼저 확인하세요.",
     href: "/prices",
-    image: "/campaign/kcg-home-price-desk-20260506.webp",
+    image: "/campaign/kcg-generated-goldbar-banner-20260508.webp",
   },
   {
     title: "고금·주얼리 매입",
@@ -327,6 +327,9 @@ export function ProductCatalog({ products, prices }: ProductCatalogProps) {
               </select>
             </div>
           </div>
+          <p className="mt-3 border-l-2 border-[#ffcc00] bg-[#fbf8eb] px-3 py-2 text-xs leading-5 text-[#5f6967] sm:text-sm">
+            <span className="font-semibold text-[#15191b]">상담용 대표 이미지</span>입니다. 실물 색상과 패키지는 현장 확인 후 안내합니다.
+          </p>
 
           <div className="mt-5 grid gap-y-8 gap-x-6 sm:mt-7 sm:grid-cols-2 lg:grid-cols-3">
             {visibleProducts.map((product, index) => {

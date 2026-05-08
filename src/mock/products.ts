@@ -13,7 +13,7 @@ export const mockProducts: Product[] = [
     shortDescription: "소액 실물 보유용 1g 순금 골드바",
     description:
       "KCG 골드바 1g은 소액 실물 보유와 선물 수요를 위한 순금 제품입니다. 표시 가격은 현재 회사 고시 시세와 상담 기준 공임을 기준으로 계산한 참고가입니다.",
-    imageUrl: "/products/kcg-product-minimal-bars-20260506.webp",
+    imageUrl: "/products/kcg-generated-goldbar-lineup-20260508.webp",
     specs: ["순금 999.9", "중량 1g", "보증서·패키지 확인"],
     status: "active",
     displayOrder: 10,
@@ -38,7 +38,7 @@ export const mockProducts: Product[] = [
     shortDescription: "1돈 기준 투자·선물용 순금 골드바",
     description:
       "가장 많이 찾는 3.75g 단위 골드바입니다. 가격은 현재 회사 고시가와 상담 기준 공임 기준 참고가이며, 재고와 브랜드·포장 상태는 문의 후 확인합니다.",
-    imageUrl: "/products/kcg-product-gold-silver-catalog-20260503.webp",
+    imageUrl: "/products/kcg-generated-goldbar-detail-20260508.webp",
     specs: ["순금 999.9", "중량 3.75g", "1돈 단위 상담"],
     status: "active",
     displayOrder: 20,
@@ -63,7 +63,7 @@ export const mockProducts: Product[] = [
     shortDescription: "중량감 있는 실물 보유용 10g 골드바",
     description:
       "10g 단위 골드바는 투자용 실물 보유와 선물 수요에 모두 대응하는 중량입니다. 현재 고시가 기준 참고가를 먼저 확인하고 수급 가능 여부를 문의해 주세요.",
-    imageUrl: "/campaign/kcg-home-price-desk-20260506.webp",
+    imageUrl: "/campaign/kcg-generated-goldbar-banner-20260508.webp",
     specs: ["순금 999.9", "중량 10g", "수량별 수급 확인"],
     status: "active",
     displayOrder: 30,
@@ -88,7 +88,7 @@ export const mockProducts: Product[] = [
     shortDescription: "10돈 기준 고중량 순금 골드바",
     description:
       "37.5g 골드바는 고중량 실물 보유 수요에 맞춘 상품입니다. 현재 고시가 기준 참고가와 별도로 수급·공임 조건 확인이 필요합니다.",
-    imageUrl: "/campaign/kcg-home-product-keyvisual-20260503.webp",
+    imageUrl: "/products/kcg-generated-goldbar-lineup-20260508.webp",
     specs: ["순금 999.9", "중량 37.5g", "고중량 수급 확인"],
     status: "inquiry_required",
     displayOrder: 40,
@@ -113,7 +113,7 @@ export const mockProducts: Product[] = [
     shortDescription: "법인·고액 실물 보유 상담용 100g 골드바",
     description:
       "100g 골드바는 수량, 브랜드, 납기, 서류 필요 여부를 함께 확인해야 하는 고중량 상품입니다. 화면 가격은 현재 고시가 기준 참고가입니다.",
-    imageUrl: "/products/kcg-product-b2b-consulting-20260503.webp",
+    imageUrl: "/products/kcg-generated-goldbar-detail-20260508.webp",
     specs: ["순금 999.9", "중량 100g", "법인·대량 상담 가능"],
     status: "inquiry_required",
     displayOrder: 50,
