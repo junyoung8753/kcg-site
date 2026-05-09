@@ -10,9 +10,9 @@ Versioning rule before public launch: `0.x.x`.
 
 ## v0.2.30 - Admin price input lineup parity
 
-- Date: `2026-05-08 KST`
-- Commit: local working tree after final local verification; commit/push/deploy are performed after this source trace is complete.
-- Deploy Status: final local QA passed and production review deployment is the next step for this pass. No search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX production data call, raw KCG photo copy, real product-photo approval, or real price/product data change is included.
+- Date: `2026-05-09 KST`
+- Commit: committed and pushed. Primary release commit: `28b7e90`.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_8hTZ3f1pLu3nnoN4W48F2KMA8Lyb` is aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app`. This is a noindex-protected review deployment. No search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX production data call, raw KCG photo copy, real product-photo approval, or real price/product data change is included.
 - 사람이 읽는 요약: `/admin/prices`의 직접 시세 입력표를 고객 화면 메인 시세표와 같은 품목명, 순서, `내가 살 때 / 내가 팔 때` 배열로 바꿨습니다. 관리자는 이제 순금·18K·14K·백금·은 행 안에서 현재 공개가, 새 입력값, 차액, 노출, 비고를 바로 확인하며 어느 공개 가격을 바꾸는지 알 수 있습니다.
 - Summary: Aligns the admin manual price-entry table with the public KCG price lineup, backed by a shared `priceLineupRows` definition, Playwright regression coverage, and a launch-candidate QA note.
 - Changed:
@@ -27,15 +27,16 @@ Versioning rule before public launch: `0.x.x`.
 - 실제 사이트 반영 여부:
   - 실제 사이트 화면이 바뀌는 것: source 기준 `/admin/prices` 직접 입력표 구조와 직원용 입력 흐름.
   - 실제 사이트 화면은 안 바뀌는 것: public 고객 시세표 값/계산, public 상품/이미지, 실제 상품사진, 실제 제품 가격/공임/운영자료, 검색 공개 상태.
-  - 배포된 것: 아직 없음. 최종 검증 후 기존 live review domains로 배포 대상이다.
-  - 아직 배포 안 된 것: `v0.2.30` admin UI 변경, 기존 Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+  - 배포된 것: `v0.2.30` admin UI 변경이 기존 live review domains에 production review deploy 됐다.
+  - 아직 배포 안 된 것: 기존 Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
 - Verification:
   - TDD RED passed as expected: `npm run test:site -- --grep "admin prices exposes automatic price operation"` failed before implementation because the public-lineup admin editor guidance was absent.
   - TDD GREEN passed after implementation and build: `npm run lint`, `npm run typecheck`, `npm run build`, and targeted `npm run test:site -- --grep "admin prices exposes automatic price operation"` passed.
-  - Passed final local source/runtime checks: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`1587 checks, 1 skipped` source-only run), `npm run build`, `npm run test:site` (`25 passed`), `npm run screenshot:site`, `npm run screenshot:admin`, `npm run qa:site`, `npm audit --audit-level=moderate`, and `git diff --check` with Windows line-ending warnings only.
-  - `npm run qa:site` passed with rendered audit `1647 checks, 0 skipped`, Playwright `25 passed`, refreshed public screenshots, and npm audit `0 vulnerabilities`.
+  - Passed final local source/runtime checks: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`1590 checks, 1 skipped` source-only run), `npm run build`, `npm run test:site` (`25 passed`), `npm run screenshot:site`, `npm run screenshot:admin`, `npm run qa:site`, `npm audit --audit-level=moderate`, and `git diff --check` with Windows line-ending warnings only.
+  - `npm run qa:site` passed with rendered audit `1650 checks, 0 skipped`, Playwright `25 passed`, refreshed public screenshots, and npm audit `0 vulnerabilities`.
   - Rendered manual admin proof after screenshot refresh: `/admin/prices` direct editor headers are `품목 / 내가 살 때 (VAT포함) / 내가 팔 때 (현장 기준)`, first 순금 row shows both current public prices and editable cells, and document-level horizontal overflow was `false`.
   - Refreshed screenshot evidence includes `home-mobile-viewport.png`, `home-desktop-viewport.png`, `prices-mobile-viewport.png`, `products-mobile-viewport.png`, `admin-prices-manual-desktop.png`, `admin-prices-auto-desktop.png`, `admin-prices-auto-mobile.png`, `admin-launch-mobile.png`, and `admin-products-mobile.png`.
+  - Passed production review deploy checks on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr/` reported deployment `dpl_8hTZ3f1pLu3nnoN4W48F2KMA8Lyb` ready and aliased, `npm run check:release-state` passed with search exposure guarded, `npm run check:external -- --strict-domain` passed, live `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` passed with `1650 checks, 0 skipped`, and live `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` passed with `25 passed`.
 - Rollback Hint: `v0.2.30 전으로 되돌려줘`
 - Remaining User-only:
   - Approve whether generated gold-bar assets are acceptable as representative-only launch imagery or whether real KCG product photos must replace them before public search launch.

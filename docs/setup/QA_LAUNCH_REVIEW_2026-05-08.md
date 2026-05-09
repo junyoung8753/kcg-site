@@ -36,15 +36,16 @@ Serious Korean gold-exchange price desk: company posted prices stay first, image
 
 - Passed: `npm run lint`
 - Passed: `npm run typecheck`
-- Passed: `npm run audit:site` with source-only audit `1587 checks, 1 skipped`
+- Passed: `npm run audit:site` with source-only audit `1590 checks, 1 skipped`
 - Passed: `npm run build`
 - Passed: `npm run test:site` with Playwright `25 passed`
 - Passed: `npm run screenshot:site`
 - Passed: `npm run screenshot:admin`
-- Passed: `npm run qa:site` with rendered audit `1647 checks, 0 skipped`, Playwright `25 passed`, screenshot refresh, and npm audit `0 vulnerabilities`
+- Passed: `npm run qa:site` with rendered audit `1650 checks, 0 skipped`, Playwright `25 passed`, screenshot refresh, and npm audit `0 vulnerabilities`
 - Passed: `npm audit --audit-level=moderate` with `0 vulnerabilities`
 - Passed: `git diff --check` with Windows line-ending warnings only
 - Rendered admin evidence after final screenshot refresh: `admin-prices-manual-desktop.png`, `admin-prices-auto-desktop.png`, and `admin-prices-auto-mobile.png` exist under `output/screenshots`; Playwright extraction confirmed the direct editor headers `품목 / 내가 살 때 (VAT포함) / 내가 팔 때 (현장 기준)`.
+- Passed production review deploy verification on `https://kcgold.co.kr`: deployment `dpl_8hTZ3f1pLu3nnoN4W48F2KMA8Lyb` is ready and aliased; release-state and external checks pass with search exposure guarded; live rendered audit passed `1650 checks, 0 skipped`; live Playwright passed `25 passed`.
 
 ## Remaining User-Only Or Shared Work
 
