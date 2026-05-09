@@ -1,5 +1,55 @@
 import type { PriceCategory } from "@/types/price";
 
+export type PriceLineupRow = {
+  id: string;
+  title: string;
+  subtitle: string;
+  sellCategory?: PriceCategory;
+  buyCategory?: PriceCategory;
+  sellText?: string;
+  buyNote?: string;
+};
+
+export const priceLineupRows: PriceLineupRow[] = [
+  {
+    id: "gold-24k",
+    title: "순금시세",
+    subtitle: "24K · 3.75g 기준",
+    sellCategory: "gold_24k_sell",
+    buyCategory: "gold_24k_buy",
+  },
+  {
+    id: "gold-18k",
+    title: "18K 금시세",
+    subtitle: "18K · 3.75g 기준",
+    sellText: "제품시세적용",
+    buyCategory: "gold_18k_buy",
+  },
+  {
+    id: "gold-14k",
+    title: "14K 금시세",
+    subtitle: "14K · 3.75g 기준",
+    sellText: "제품시세적용",
+    buyCategory: "gold_14k_buy",
+  },
+  {
+    id: "platinum",
+    title: "백금시세",
+    subtitle: "백금 · 3.75g 기준",
+    sellCategory: "platinum_sell",
+    buyCategory: "platinum_buy",
+    buyNote: "(자사백금바기준)",
+  },
+  {
+    id: "silver",
+    title: "은시세",
+    subtitle: "은 · 3.75g 기준",
+    sellCategory: "silver_sell",
+    buyCategory: "silver_buy",
+    buyNote: "(자사실버바기준)",
+  },
+];
+
 export function getPriceReferenceLabel(category: PriceCategory) {
   switch (category) {
     case "gold_24k_sell":

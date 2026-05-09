@@ -503,6 +503,12 @@ expectText("package.json", [
 ]);
 expectLatestChangelogVersionMatchesPackage();
 expectText("docs/setup/CHANGELOG.md", [
+  "## v0.2.30 - Admin price input lineup parity",
+  "고객 화면의 시세표와 같은 품목명, 순서, 살 때/팔 때 배열",
+  "priceLineupRows",
+  "KCG-TODO-082",
+  "docs/setup/QA_LAUNCH_REVIEW_2026-05-08.md",
+  "v0.2.30 전으로 되돌려줘",
   "## v0.2.29 - Generated KCG gold-bar representative assets",
   "kcg-generated-goldbar-banner-20260508.webp",
   "Generated KCG gold-bar representative assets",
@@ -614,6 +620,11 @@ expectText("docs/setup/CHANGELOG.md", [
 ]);
 expectText("docs/setup/CURRENT_HANDOFF.md", [
   "PROJECT_STATUS_FOR_BEGINNER.md",
+  "Current KCG site version: `v0.2.30`",
+  "Admin price input lineup parity",
+  "고객 화면의 시세표와 같은 품목명, 순서, 살 때/팔 때 배열",
+  "KCG-TODO-082",
+  "docs/setup/QA_LAUNCH_REVIEW_2026-05-08.md",
   "Current KCG site version: `v0.2.29`",
   "Generated KCG gold-bar representative assets",
   "docs/brand/generated-goldbar-assets-2026-05-08.md",
@@ -658,6 +669,7 @@ expectText("docs/setup/CURRENT_HANDOFF.md", [
 ]);
 expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "지금 내가 보면 되는 것",
+  "v0.2.30",
   "v0.2.29",
   "v0.2.28",
   "v0.2.27",
@@ -668,6 +680,10 @@ expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "v0.2.18",
   "kcgoldx@gmail.com",
   "상담 도우미",
+  "이번 `v0.2.30`에서 source 기준 실제 사이트 화면이 새로 바뀌는 것",
+  "고객 화면의 시세표와 같은 품목명, 순서, 살 때/팔 때 배열",
+  "KCG-TODO-082",
+  "QA_LAUNCH_REVIEW_2026-05-08.md",
   "이번 `v0.2.29`에서 source 기준 실제 사이트 화면이 새로 바뀌는 것",
   "kcg-generated-goldbar-banner-20260508.webp",
   "KCG-TODO-081",
@@ -693,6 +709,19 @@ expectText("docs/setup/PROJECT_STATUS_FOR_BEGINNER.md", [
   "그대로 복사해서 Codex에게 말하면 되는 문장",
   "검증 전 push/deploy 하지 않음",
   "검색 노출/noindex 해제하지 않음",
+]);
+expectText("docs/setup/QA_LAUNCH_REVIEW_2026-05-08.md", [
+  "KCG Launch-Candidate Rendered QA",
+  "Customer",
+  "Staff",
+  "Mobile",
+  "Admin",
+  "Visual quality",
+  "Data source",
+  "Launch readiness",
+  "hasPublicLineupLabels=false",
+  "TDD RED",
+  "TDD GREEN",
 ]);
 expectText("docs/setup/COMPANY_ACCOUNT_MIGRATION_RUNBOOK.md", [
   "Permanent representative company account: `kcgoldx@gmail.com`",
@@ -822,6 +851,9 @@ expectText("docs/setup/OPEN_TASKS.md", [
   "KCG-TODO-055",
   "KCG-TODO-060",
   "KCG-TODO-072",
+  "KCG-TODO-082",
+  "Align admin manual price entry with the public price lineup",
+  "Completed in v0.2.30",
   "KCG_PUBLIC_SEARCH_APPROVED=1",
   "existing-api-integration-audit-2026-05-05.md",
   "실제 제품 사진",
@@ -883,7 +915,7 @@ expectText("src/components/market/price-lineup.tsx", [
   "bg-[rgba(38,39,39,0.96)]",
   "bg-[rgba(13,13,13,0.98)]",
   "order-1 relative z-0 overflow-hidden",
-  "24K · 3.75g 기준",
+  "priceLineupRows",
   "시세는 고시 시각 기준이며 실제 거래 금액",
 ]);
 expectNoText("src/components/market/price-lineup.tsx", [
@@ -1028,7 +1060,7 @@ expectText("tests/site-fidelity.spec.ts", [
   "expectNoVisibleElementEscapesViewport",
   "expectMobileBottomBarDoesNotCover",
   "inquiry assistant answers safe questions and protects personal data",
-  "admin prices exposes automatic price operation",
+  "admin prices exposes automatic price operation and public-lineup manual editor",
   "KRX Open API (승인 전 사용 불가)",
   'option[value="krx"]',
   "admin products uses a compact list-and-editor management surface",
@@ -1277,7 +1309,26 @@ expectText("src/app/admin/prices/page.tsx", [
   "auto-on-saved",
   "auto-off-saved",
 ]);
+expectText("src/lib/price-presenter.ts", [
+  "priceLineupRows",
+  "id: \"gold-24k\"",
+  "sellCategory: \"gold_24k_sell\"",
+  "buyCategory: \"gold_24k_buy\"",
+  "sellText: \"제품시세적용\"",
+  "buyNote: \"(자사백금바기준)\"",
+  "buyNote: \"(자사실버바기준)\"",
+]);
 expectText("src/app/admin/prices/price-mode-workspace.tsx", [
+  "priceLineupRows",
+  "고객 화면의 시세표와 같은 품목명, 순서, 살 때/팔 때 배열",
+  "data-testid={`admin-price-lineup-row-${row.id}`}",
+  "data-testid={`admin-price-cell-${price.category}`}",
+  "내가 살 때 (VAT포함)",
+  "내가 팔 때 (현장 기준)",
+  "차액 {deltaLabel}",
+  "inputMode=\"numeric\"",
+  "min={1}",
+  "required",
   "자동시세 ON",
   "자동시세 OFF",
   "data-testid=\"admin-price-mode-switch\"",

@@ -1067,7 +1067,7 @@ test("admin announcements actions stay readable in the light console", async ({ 
   await expectNoVisibleElementEscapesViewport(page);
 });
 
-test("admin prices exposes automatic price operation and compact manual editor", async ({ page }) => {
+test("admin prices exposes automatic price operation and public-lineup manual editor", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   await page.goto("/admin/prices", { waitUntil: "domcontentloaded" });
   await expect(page).toHaveURL(/\/admin\/login\?next=%2Fadmin%2Fprices/);
@@ -1126,12 +1126,22 @@ test("admin prices exposes automatic price operation and compact manual editor",
   const editor = page.getByTestId("admin-price-editor");
   await expect(modeToggle).toHaveAttribute("aria-pressed", "false");
   await expect(modeToggle).toContainText("자동시세 OFF");
+  await expect(editor.getByText("고객 화면의 시세표와 같은 품목명, 순서, 살 때/팔 때 배열로 입력합니다.")).toBeVisible();
   await expect(editor.getByRole("columnheader", { name: "품목" })).toBeVisible();
-  await expect(editor.getByRole("columnheader", { name: "현재 공개가" })).toBeVisible();
-  await expect(editor.getByRole("columnheader", { name: "새 입력값" })).toBeVisible();
-  await expect(editor.getByRole("columnheader", { name: "차액" })).toBeVisible();
-  await expect(editor.getByRole("columnheader", { name: "노출" })).toBeVisible();
-  await expect(editor.getByRole("columnheader", { name: "비고" })).toBeVisible();
+  await expect(editor.getByRole("columnheader", { name: "내가 살 때 (VAT포함)" })).toBeVisible();
+  await expect(editor.getByRole("columnheader", { name: "내가 팔 때 (현장 기준)" })).toBeVisible();
+  await expect(editor.getByTestId("admin-price-lineup-row-gold-24k")).toContainText("순금시세");
+  await expect(editor.getByTestId("admin-price-lineup-row-gold-24k")).toContainText("24K · 3.75g 기준");
+  await expect(editor.getByTestId("admin-price-cell-gold_24k_sell")).toContainText("현재 공개가");
+  await expect(editor.getByTestId("admin-price-cell-gold_24k_sell").locator('input[name^="value:"]')).toHaveAttribute(
+    "required",
+    "",
+  );
+  await expect(editor.getByTestId("admin-price-cell-gold_24k_buy")).toContainText("현재 공개가");
+  await expect(editor.getByTestId("admin-price-cell-gold_24k_buy").locator('input[name^="value:"]')).toBeVisible();
+  await expect(editor.getByTestId("admin-price-lineup-row-gold-18k")).toContainText("18K 금시세");
+  await expect(editor.getByTestId("admin-price-static-sell-gold-18k")).toContainText("제품시세적용");
+  await expect(editor.getByTestId("admin-price-cell-gold_18k_buy").locator('input[name^="value:"]')).toBeVisible();
   await expect(editor.getByText("최근 시세 조정 이력")).toBeVisible();
 
   await expectNoHorizontalOverflow(page);

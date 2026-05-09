@@ -10,11 +10,13 @@ import {
 } from "@/actions/price-actions";
 import { AdminSubmitButton } from "@/components/admin/admin-submit-button";
 import { formatDateTimeKorean, formatDateTimeLocalKorean } from "@/lib/format";
+import { priceLineupRows, type PriceLineupRow } from "@/lib/price-presenter";
 import type {
   PriceAutoSettings,
   PriceAutoSuggestion,
   PriceFreshness,
   PriceHistoryEntry,
+  PriceCategory,
   PriceRecord,
 } from "@/types/price";
 
@@ -38,6 +40,25 @@ function formatSigned(value: number) {
   if (value === 0) return "0";
   const prefix = value > 0 ? "+" : "";
   return `${prefix}${formatWon(value)}`;
+}
+
+function formatDraftDelta(currentValue: number, draftValue: string) {
+  if (draftValue.trim() === "") return "입력 필요";
+  const parsed = Number(draftValue);
+  if (!Number.isFinite(parsed)) return "입력 확인";
+  const delta = Math.round(parsed) - currentValue;
+  if (delta === 0) return "변동 없음";
+  return formatSigned(delta);
+}
+
+function getDraftDeltaTone(currentValue: number, draftValue: string) {
+  if (draftValue.trim() === "") return "text-[#8a2c20]";
+  const parsed = Number(draftValue);
+  if (!Number.isFinite(parsed)) return "text-[#8a2c20]";
+  const delta = Math.round(parsed) - currentValue;
+  if (delta > 0) return "text-[#9a3a20]";
+  if (delta < 0) return "text-[#1d6287]";
+  return "text-[var(--admin-muted)]";
 }
 
 function formatRate(value: number) {
@@ -840,6 +861,144 @@ function AutoModePanel({
   );
 }
 
+function PriceStaticCell({
+  row,
+  side,
+  text,
+}: {
+  row: PriceLineupRow;
+  side: "sell" | "buy";
+  text: string;
+}) {
+  return (
+    <div
+      data-testid={`admin-price-static-${side}-${row.id}`}
+      className="rounded-xl border border-dashed border-[var(--admin-line-strong)] bg-[#f7f4e9] px-4 py-4"
+    >
+      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--admin-muted)]">
+        고객 화면 표시
+      </p>
+      <p className="mt-2 text-lg font-extrabold text-[var(--admin-ink)]">{text}</p>
+      <p className="mt-1 text-xs leading-5 text-[var(--admin-muted)]">
+        이 칸은 메인 시세표에서 가격 입력 없이 문구로 표시됩니다.
+      </p>
+    </div>
+  );
+}
+
+function PriceEditableCell({
+  price,
+  draftValue,
+  onDraftChange,
+}: {
+  price: PriceRecord;
+  draftValue: string;
+  onDraftChange: (id: string, value: string) => void;
+}) {
+  const deltaLabel = formatDraftDelta(price.value, draftValue);
+  const deltaTone = getDraftDeltaTone(price.value, draftValue);
+
+  return (
+    <div
+      data-testid={`admin-price-cell-${price.category}`}
+      className="rounded-xl border border-[var(--admin-line)] bg-white px-4 py-4"
+    >
+      <input type="hidden" name="priceIds" value={price.id} />
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--admin-muted)]">
+            현재 공개가
+          </p>
+          <p className="mt-1 text-xl font-extrabold tabular-nums text-[var(--admin-ink)]">
+            {formatWon(price.value)}
+          </p>
+        </div>
+        <label className="inline-flex items-center gap-2 rounded-full border border-[var(--admin-line)] bg-[#fbf7e8] px-3 py-1.5 text-xs font-bold text-[var(--admin-ink)]">
+          <input name={`visible:${price.id}`} type="checkbox" defaultChecked={price.isVisible} />
+          노출
+        </label>
+      </div>
+      <label className="mt-4 block text-sm font-bold text-[var(--admin-ink)]">
+        새 입력값
+        <input
+          name={`value:${price.id}`}
+          type="number"
+          inputMode="numeric"
+          min={1}
+          step={1}
+          required
+          value={draftValue}
+          onChange={(event) => onDraftChange(price.id, event.currentTarget.value)}
+          className="admin-input mt-2 max-w-[12rem] tabular-nums"
+        />
+      </label>
+      <p className={`mt-2 text-sm font-extrabold tabular-nums ${deltaTone}`}>
+        차액 {deltaLabel}
+      </p>
+      <label className="mt-4 block text-sm font-bold text-[var(--admin-ink)]">
+        비고
+        <textarea
+          name={`note:${price.id}`}
+          defaultValue={price.note || ""}
+          rows={2}
+          className="admin-input mt-2 min-w-72"
+        />
+      </label>
+    </div>
+  );
+}
+
+function PriceLineupEditorRow({
+  row,
+  priceByCategory,
+  draftValues,
+  onDraftChange,
+}: {
+  row: PriceLineupRow;
+  priceByCategory: Map<PriceCategory, PriceRecord>;
+  draftValues: Record<string, string>;
+  onDraftChange: (id: string, value: string) => void;
+}) {
+  const sellPrice = row.sellCategory ? priceByCategory.get(row.sellCategory) : undefined;
+  const buyPrice = row.buyCategory ? priceByCategory.get(row.buyCategory) : undefined;
+
+  return (
+    <tr data-testid={`admin-price-lineup-row-${row.id}`}>
+      <td className="min-w-[15rem] bg-[#fbf7e8]/45">
+        <p className="text-lg font-extrabold tracking-[-0.018em] text-[var(--admin-ink)]">{row.title}</p>
+        <p className="mt-1 text-xs font-semibold text-[var(--admin-muted)]">{row.subtitle}</p>
+      </td>
+      <td className="min-w-[22rem]">
+        {sellPrice ? (
+          <PriceEditableCell
+            price={sellPrice}
+            draftValue={draftValues[sellPrice.id] ?? String(sellPrice.value)}
+            onDraftChange={onDraftChange}
+          />
+        ) : row.sellText ? (
+          <PriceStaticCell row={row} side="sell" text={row.sellText} />
+        ) : (
+          <PriceStaticCell row={row} side="sell" text="문의" />
+        )}
+      </td>
+      <td className="min-w-[22rem]">
+        {buyPrice ? (
+          <PriceEditableCell
+            price={buyPrice}
+            draftValue={draftValues[buyPrice.id] ?? String(buyPrice.value)}
+            onDraftChange={onDraftChange}
+          />
+        ) : (
+          <PriceStaticCell row={row} side="buy" text="문의" />
+        )}
+        {row.buyNote ? (
+          <p className="mt-2 text-xs font-semibold text-[var(--admin-muted)]">{row.buyNote}</p>
+        ) : null}
+      </td>
+    </tr>
+  );
+}
+
 function PriceEditor({
   prices,
   history,
@@ -858,6 +1017,13 @@ function PriceEditor({
   const currentAnnouncedAt = prices[0]?.announcedAt ?? new Date().toISOString();
   const announcedAtInputRef = useRef<HTMLInputElement>(null);
   const defaultAnnouncedAt = formatDateTimeLocalKorean(new Date());
+  const priceByCategory = new Map(prices.map((price) => [price.category, price] as const));
+  const [draftValues, setDraftValues] = useState<Record<string, string>>(() =>
+    Object.fromEntries(prices.map((price) => [price.id, String(price.value)])),
+  );
+  const handleDraftChange = (id: string, value: string) => {
+    setDraftValues((current) => ({ ...current, [id]: value }));
+  };
 
   return (
     <form
@@ -871,7 +1037,10 @@ function PriceEditor({
             직접 입력
           </p>
           <h3 className="mt-1 text-2xl font-extrabold text-[var(--admin-ink)]">시세 직접 입력</h3>
-          <p className="admin-help mt-2">자동시세가 꺼져 있을 때만 이 표에서 공개 시세를 직접 저장합니다.</p>
+          <p className="admin-help mt-2">
+            고객 화면의 시세표와 같은 품목명, 순서, 살 때/팔 때 배열로 입력합니다.
+            자동시세가 꺼져 있을 때만 이 표에서 공개 시세를 직접 저장합니다.
+          </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="text-sm font-semibold text-[var(--admin-muted)]">
@@ -945,46 +1114,19 @@ function PriceEditor({
           <thead>
             <tr>
               <th>품목</th>
-              <th>현재 공개가</th>
-              <th>새 입력값</th>
-              <th>차액</th>
-              <th>노출</th>
-              <th>비고</th>
+              <th>내가 살 때 (VAT포함)</th>
+              <th>내가 팔 때 (현장 기준)</th>
             </tr>
           </thead>
           <tbody>
-            {prices.map((price) => (
-              <tr key={price.id}>
-                <td>
-                  <input type="hidden" name="priceIds" value={price.id} />
-                  <p className="font-extrabold text-[var(--admin-ink)]">{price.label}</p>
-                  <p className="mt-1 text-xs text-[var(--admin-muted)]">{price.unit}</p>
-                </td>
-                <td className="font-bold tabular-nums">{formatWon(price.value)}</td>
-                <td>
-                  <input
-                    name={`value:${price.id}`}
-                    type="number"
-                    defaultValue={price.value}
-                    className="admin-input w-36"
-                  />
-                </td>
-                <td className="text-[var(--admin-muted)]">저장 후 계산</td>
-                <td>
-                  <label className="inline-flex items-center gap-2 font-semibold text-[var(--admin-ink)]">
-                    <input name={`visible:${price.id}`} type="checkbox" defaultChecked={price.isVisible} />
-                    노출
-                  </label>
-                </td>
-                <td>
-                  <textarea
-                    name={`note:${price.id}`}
-                    defaultValue={price.note || ""}
-                    rows={2}
-                    className="admin-input min-w-72"
-                  />
-                </td>
-              </tr>
+            {priceLineupRows.map((row) => (
+              <PriceLineupEditorRow
+                key={row.id}
+                row={row}
+                priceByCategory={priceByCategory}
+                draftValues={draftValues}
+                onDraftChange={handleDraftChange}
+              />
             ))}
           </tbody>
         </table>

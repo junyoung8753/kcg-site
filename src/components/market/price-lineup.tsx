@@ -4,21 +4,12 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatNumber, formatWon } from "@/lib/format";
-import { getPriceTradeGuide } from "@/lib/price-presenter";
+import { getPriceTradeGuide, priceLineupRows } from "@/lib/price-presenter";
 import { homeDeskNotes, siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 import type { PriceCategory, PriceHistoryEntry, PriceRecord } from "@/types/price";
 
 export type PriceLineupVisualMode = "campaign" | "signboard";
-
-type LineupRow = {
-  title: string;
-  subtitle: string;
-  sellCategory?: PriceCategory;
-  buyCategory?: PriceCategory;
-  sellText?: string;
-  buyNote?: string;
-};
 
 type LineupVisualStyle = {
   openButton: string;
@@ -40,41 +31,6 @@ type LineupVisualStyle = {
   noteText: string;
   emptyText: string;
 };
-
-const rows: LineupRow[] = [
-  {
-    title: "순금시세",
-    subtitle: "24K · 3.75g 기준",
-    sellCategory: "gold_24k_sell",
-    buyCategory: "gold_24k_buy",
-  },
-  {
-    title: "18K 금시세",
-    subtitle: "18K · 3.75g 기준",
-    sellText: "제품시세적용",
-    buyCategory: "gold_18k_buy",
-  },
-  {
-    title: "14K 금시세",
-    subtitle: "14K · 3.75g 기준",
-    sellText: "제품시세적용",
-    buyCategory: "gold_14k_buy",
-  },
-  {
-    title: "백금시세",
-    subtitle: "백금 · 3.75g 기준",
-    sellCategory: "platinum_sell",
-    buyCategory: "platinum_buy",
-    buyNote: "(자사백금바기준)",
-  },
-  {
-    title: "은시세",
-    subtitle: "은 · 3.75g 기준",
-    sellCategory: "silver_sell",
-    buyCategory: "silver_buy",
-    buyNote: "(자사실버바기준)",
-  },
-];
 
 const campaignSlides = [
   {
@@ -360,7 +316,7 @@ export function PriceLineup({
                 </div>
 
                 <div className={cn("px-4 pb-4 pt-1 sm:px-8 sm:pb-4", style.rowsWrap)}>
-                  {rows.map((row) => {
+                  {priceLineupRows.map((row) => {
                     const sell = row.sellCategory ? priceByCategory.get(row.sellCategory) : undefined;
                     const buy = row.buyCategory ? priceByCategory.get(row.buyCategory) : undefined;
 

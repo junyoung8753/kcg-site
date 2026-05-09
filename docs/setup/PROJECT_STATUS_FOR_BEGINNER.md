@@ -19,29 +19,30 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## Current Snapshot
 
-- 현재 공식 작업 버전: `v0.2.29`
+- 현재 공식 작업 버전: `v0.2.30`
 - 현재 작업 브랜치: `codex/kcg-launch-readiness-catalog-20260427`
-- 이번 작업 버전: `v0.2.29`
-- 직전 버전: `v0.2.28`
-- 작업 전 HEAD: `96603a3`
+- 이번 작업 버전: `v0.2.30`
+- 직전 버전: `v0.2.29`
+- 작업 전 HEAD: `0d4d391` 이후 v0.2.29 live 보정 커밋 기준
 - 백업 브랜치: `backup/pre-v0.2.4-operations-product-audit` (`v0.2.4`와 `v0.2.5` 문서 보강 전으로 크게 돌아가는 책갈피)
 
 ## 실제 사이트 반영 여부
 
-- 이번 `v0.2.29`에서 source 기준 실제 사이트 화면이 새로 바뀌는 것(배포 후 live에서도 보이는 것): 홈 첫 배너, `/products` hero/promo, 골드바 상품 카드/상세 대표 이미지가 새 생성 WebP 3종으로 보인다. 기존 Supabase 상품 행의 예전 골드바 이미지 경로도 slug별 생성 이미지로 분산된다. 이미지는 계속 `상담용 대표 이미지`이고, raw KakaoTalk 원본을 복사한 것이 아니며, 실제 상품사진·포장·재고·가격 증거가 아니다.
+- 이번 `v0.2.30`에서 source 기준 실제 사이트 화면이 새로 바뀌는 것: `/admin/prices` 직접 입력표가 고객 화면의 시세표와 같은 품목명, 순서, 살 때/팔 때 배열로 보인다. 관리자는 각 칸에서 현재 공개가, 새 입력값, 차액, 노출, 비고를 함께 보며 어떤 고객-facing 가격을 바꾸는지 알 수 있고, 가격 입력칸은 빈 값 저장을 막는 native 숫자 입력 guard를 가진다.
+- 이전 snapshot text: 이번 `v0.2.29`에서 source 기준 실제 사이트 화면이 새로 바뀌는 것(배포 후 live에서도 보이는 것): 홈 첫 배너, `/products` hero/promo, 골드바 상품 카드/상세 대표 이미지가 새 생성 WebP 3종(`kcg-generated-goldbar-banner-20260508.webp`, `kcg-generated-goldbar-lineup-20260508.webp`, `kcg-generated-goldbar-detail-20260508.webp`)으로 보인다. 기존 Supabase 상품 행의 예전 골드바 이미지 경로도 slug별 생성 이미지로 분산된다. 이미지는 계속 `상담용 대표 이미지`이고, raw KakaoTalk 원본을 복사한 것이 아니며, 실제 상품사진·포장·재고·가격 증거가 아니다. `KCG-TODO-081`에 완료 기록이 있다.
 - 이전 snapshot text: 이번 `v0.2.28`에서 실제 사이트 화면이 새로 바뀌는 것: source 기준 `/products` 목록과 상품 상세 이미지에 `상담용 대표 이미지` 안내가 보인다. 실제 상품사진·포장·재고 증거로 확정하지 않았다.
 - 이전 snapshot text: 이번 `v0.2.27`에서 실제 사이트 화면이 새로 바뀌는 것: 없음. 현재 public product image 사용처와 KCG 골드바 후보 파일은 `docs/brand/product-image-replacement-map-2026-05-08.md`에 승인 전 replacement map으로 정리했다. 실제 이미지는 아직 repo/public로 복사하거나 public image URL로 연결하지 않았고, 실제 상품사진으로 확정하지 않았다.
 - 이전 snapshot text: 이번 `v0.2.26`에서 실제 사이트 화면이 새로 바뀌는 것: 없음. Junyoung이 제공한 `KCG 이미지` 폴더는 `docs/brand/kcg-image-intake-2026-05-08.md`에 승인 전 후보로 정리했고, raw KakaoTalk 파일이 served `public` tree 어디에도 바로 들어오지 못하도록 audit guardrail을 추가했다.
 - 이번 배포에 포함되어 live에서도 보이는 이전 source 변경: `v0.2.18` 상담 도우미와 모바일 하단 고정 CTA에는 `상담` 버튼, `v0.2.20` `KCG_PUBLIC_SEARCH_APPROVED=1` 공개 승인 checklist와 `상담 기준 공임` label, `v0.2.21` 공개 승인 게이트 guard, `v0.2.22` `/admin/products`의 `이미지 성격` 구분, `v0.2.23` `/admin/launch` 운영 상태 구분(`소스 QA`, `라이브 리뷰 반영`, `공개 검색 런칭`), `v0.2.24` `/admin/products`의 `이미지 확인 필터`(`실사진 확인`, `교체 대상`, `권한 검증`, `이미지 없음`), `v0.2.25` admin products 모바일 이미지 근거, `v0.2.28` public `상담용 대표 이미지` 안내.
 - 실제 사이트 화면은 아직 live에 안 바뀌고, source 기준만 바뀐 것: OpenAI API key, SMS 자동 발송, Kakao 공식 채널 URL, KRX/Koscom 승인·계약 경로는 준비 기준만 추가됐다.
-- 배포된 것: 이번 `v0.2.29`는 기존 개인 Vercel Hobby project `kcg-confirm-preview`로 production deploy 됐다. 현재 배포 id는 `npx vercel inspect https://kcgold.co.kr/`로 확인하고, 무료 review deploy이며 검색 공개가 아니다.
+- 배포된 것: `v0.2.29`는 기존 개인 Vercel Hobby project `kcg-confirm-preview`로 production deploy 됐다. 이번 `v0.2.30`은 final local QA를 통과했고 live review 배포 단계다. 현재 배포 id는 `npx vercel inspect https://kcgold.co.kr/`로 확인하고, 무료 review deploy이며 검색 공개가 아니다.
 - 아직 배포 안 된 것: 기존 Vercel project transfer, 기존 Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제, KRX API 승인/키/env/실제 provider 연결, 실제 KCG 이미지 승인/크롭/공개 사용 결정, 실제 상품 사진/공임/최종 판매정책 확정, 유료 서버/API 결제는 아직 별도 작업.
 - 내가 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` 검토 화면. 검색 노출은 아직 차단.
 - 아직 내부 기준/계획일 뿐인 것: `kcgoldx@gmail.com`으로 진행할 KRX/Koscom 승인 결과, KRX 공개·상업 표시 범위, 실제 KCG 이미지 승인/크롭/공개 사용 결정, product image replacement map 승인 결정, 실제 상품 사진/공임/최종 판매정책/검색 노출 승인, 회사 Vercel/Supabase 기존 프로젝트 이전 실행, 유료 서버/API가 필요할 때 회사 카드 입력, 선택적 Google Workspace/domain-mail 결제
-- 이번 작업에서 건드린 범위: 새 생성 골드바 대표 WebP 3종(`kcg-generated-goldbar-banner-20260508.webp`, `kcg-generated-goldbar-lineup-20260508.webp`, `kcg-generated-goldbar-detail-20260508.webp`), 홈/상품/골드바 이미지 경로, admin 이미지 성격 분류, product presenter/mock/seed 이미지 경로, `KCG-TODO-081`, handoff/changelog/status 정리, `package.json`, `package-lock.json`
+- 이번 작업에서 건드린 범위: `/admin/prices` 직접 입력표, 공용 `priceLineupRows`, admin Playwright guard, `docs/setup/QA_LAUNCH_REVIEW_2026-05-08.md`, `KCG-TODO-082`, handoff/changelog/status 정리, `package.json`, `package-lock.json`
 - 절대 건드리지 않은 범위: raw KakaoTalk 원본 복사, 실제 상품 사진 승인/교체, 실제 가격/상품 데이터 확정, 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, SMS 발송, Kakao credential, OpenAI key/env 입력, Vercel env/secret, 실제 KRX API 호출, 실제 KRX key/env 입력, Supabase schema
 - 배포 기본값: 2026-05-06 KST 기준 junyoung은 KCG 사이트 변경을 완료·검증하면 live 배포까지 진행하라고 지시했다. 단, 검색 노출/noindex 해제, 결제/장바구니/실시간 거래, secret/env 변경, 되돌리기 어려운 인프라 변경은 여전히 별도 승인 대상이다.
-- 이번 검증 결과: `v0.2.29`은 local `lint`, `typecheck`, `audit:site`, `build`, `test:site`, `npm audit`, `screenshot:site`, `screenshot:admin`, `qa:site`를 통과했다. Live 기준 `npx vercel inspect https://kcgold.co.kr/`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site`도 통과했다. Live Playwright에서 production Supabase legacy image repetition이 한 번 잡혀 코드 보정 후 최종 live test를 다시 돌린다. 회사 Vercel/Supabase 이전은 별도 blocked/shared task로 남긴다.
+- 이번 검증 결과: `v0.2.30`은 targeted TDD guard에서 RED/GREEN을 확인했고, local `lint`, `typecheck`, `audit:site`, `build`, `test:site`, `screenshot:site`, `screenshot:admin`, `qa:site`, `npm audit`, `git diff --check`를 통과했다. `qa:site` rendered audit은 `1647 checks, 0 skipped`, Playwright는 `25 passed`다. 이전 `v0.2.29`은 local `lint`, `typecheck`, `audit:site`, `build`, `test:site`, `npm audit`, `screenshot:site`, `screenshot:admin`, `qa:site`를 통과했다. 회사 Vercel/Supabase 이전은 별도 blocked/shared task로 남긴다.
 
 ## Easy Words
 
@@ -59,8 +60,8 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 | 구분 | 이름 | 쉬운 설명 | 내가 봐야 하는 경우 |
 |---|---|---|---|
-| 현재 작업 버전 | `v0.2.29` | 생성 골드바 대표 이미지를 홈/상품/골드바 상담용 이미지에 적용한 버전 | 이번 변경 확인 |
-| 이전 버전 | `v0.2.28` | public 상품 이미지가 승인 전 `상담용 대표 이미지`임을 고객에게 안내하는 버전 | 비교/이전 상태 확인 |
+| 현재 작업 버전 | `v0.2.30` | 관리자 직접 시세입력표를 고객 메인 시세표 구조와 맞춘 버전 | 이번 변경 확인 |
+| 이전 버전 | `v0.2.29` | 생성 골드바 대표 이미지를 홈/상품/골드바 상담용 이미지에 적용한 버전 | 비교/이전 상태 확인 |
 | 백업 브랜치 | `backup/pre-v0.2.4-operations-product-audit` | `v0.2.4`와 `v0.2.5` 문서 보강 전으로 돌아가는 책갈피 | 크게 되돌릴 때 |
 | 현재 작업 브랜치 | `codex/kcg-launch-readiness-catalog-20260427` | 지금 Codex가 작업 중인 줄기 | 상태 확인 |
 | handoff | `CURRENT_HANDOFF.md` | 다음 작업자에게 넘기는 현재 상태 메모 | 이어서 작업할 때 |
@@ -94,6 +95,7 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## 되돌리기 요청 문장
 
+- "v0.2.30 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.29 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.28 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."
 - "v0.2.27 전으로 되돌리는 계획을 먼저 보여줘. 바로 실행하지는 마."

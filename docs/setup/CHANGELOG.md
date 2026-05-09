@@ -8,6 +8,44 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.30 - Admin price input lineup parity
+
+- Date: `2026-05-08 KST`
+- Commit: local working tree after final local verification; commit/push/deploy are performed after this source trace is complete.
+- Deploy Status: final local QA passed and production review deployment is the next step for this pass. No search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX production data call, raw KCG photo copy, real product-photo approval, or real price/product data change is included.
+- 사람이 읽는 요약: `/admin/prices`의 직접 시세 입력표를 고객 화면 메인 시세표와 같은 품목명, 순서, `내가 살 때 / 내가 팔 때` 배열로 바꿨습니다. 관리자는 이제 순금·18K·14K·백금·은 행 안에서 현재 공개가, 새 입력값, 차액, 노출, 비고를 바로 확인하며 어느 공개 가격을 바꾸는지 알 수 있습니다.
+- Summary: Aligns the admin manual price-entry table with the public KCG price lineup, backed by a shared `priceLineupRows` definition, Playwright regression coverage, and a launch-candidate QA note.
+- Changed:
+  - `src/lib/price-presenter.ts` now exports `priceLineupRows`, the shared public/admin row order for 순금, 18K, 14K, 백금, and 은.
+  - `src/components/market/price-lineup.tsx` now reads the public lineup rows from the shared presenter instead of a private local array.
+  - Admin copy now states the exact operating rule: `고객 화면의 시세표와 같은 품목명, 순서, 살 때/팔 때 배열`.
+  - `src/app/admin/prices/price-mode-workspace.tsx` rebuilds the direct-entry editor as `품목 / 내가 살 때 (VAT포함) / 내가 팔 때 (현장 기준)`, with per-cell current public price, new input, live 차액 display, 노출 checkbox, and 비고 field while preserving the existing form names used by `updatePricesAction`.
+  - Direct price inputs now use browser-native numeric guards (`required`, `min=1`, `step=1`) so an emptied price field is blocked before manual save.
+  - `tests/site-fidelity.spec.ts` now verifies the admin manual editor has the public-lineup row/column structure, `제품시세적용` static cells, and the native required guard on price inputs.
+  - `docs/setup/QA_LAUNCH_REVIEW_2026-05-08.md` records the current rendered QA findings by customer, staff, mobile, admin, visual quality, data source, and launch-readiness categories.
+  - `KCG-TODO-082` records this admin price-entry parity pass as the Codex-doable launch-candidate improvement.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: source 기준 `/admin/prices` 직접 입력표 구조와 직원용 입력 흐름.
+  - 실제 사이트 화면은 안 바뀌는 것: public 고객 시세표 값/계산, public 상품/이미지, 실제 상품사진, 실제 제품 가격/공임/운영자료, 검색 공개 상태.
+  - 배포된 것: 아직 없음. 최종 검증 후 기존 live review domains로 배포 대상이다.
+  - 아직 배포 안 된 것: `v0.2.30` admin UI 변경, 기존 Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - TDD RED passed as expected: `npm run test:site -- --grep "admin prices exposes automatic price operation"` failed before implementation because the public-lineup admin editor guidance was absent.
+  - TDD GREEN passed after implementation and build: `npm run lint`, `npm run typecheck`, `npm run build`, and targeted `npm run test:site -- --grep "admin prices exposes automatic price operation"` passed.
+  - Passed final local source/runtime checks: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`1587 checks, 1 skipped` source-only run), `npm run build`, `npm run test:site` (`25 passed`), `npm run screenshot:site`, `npm run screenshot:admin`, `npm run qa:site`, `npm audit --audit-level=moderate`, and `git diff --check` with Windows line-ending warnings only.
+  - `npm run qa:site` passed with rendered audit `1647 checks, 0 skipped`, Playwright `25 passed`, refreshed public screenshots, and npm audit `0 vulnerabilities`.
+  - Rendered manual admin proof after screenshot refresh: `/admin/prices` direct editor headers are `품목 / 내가 살 때 (VAT포함) / 내가 팔 때 (현장 기준)`, first 순금 row shows both current public prices and editable cells, and document-level horizontal overflow was `false`.
+  - Refreshed screenshot evidence includes `home-mobile-viewport.png`, `home-desktop-viewport.png`, `prices-mobile-viewport.png`, `products-mobile-viewport.png`, `admin-prices-manual-desktop.png`, `admin-prices-auto-desktop.png`, `admin-prices-auto-mobile.png`, `admin-launch-mobile.png`, and `admin-products-mobile.png`.
+- Rollback Hint: `v0.2.30 전으로 되돌려줘`
+- Remaining User-only:
+  - Approve whether generated gold-bar assets are acceptable as representative-only launch imagery or whether real KCG product photos must replace them before public search launch.
+  - Approve any actual real-photo file, crop, category placement, and final-use classification before real product-photo replacement.
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Confirm final product prices/공임/운영자료 before public search launch.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
 ## v0.2.29 - Generated KCG gold-bar representative assets
 
 - Date: `2026-05-08 KST`
