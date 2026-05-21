@@ -20,6 +20,13 @@ import type {
   UpdatePriceInput,
 } from "@/types/price";
 import type { Product, ProductUpsertInput } from "@/types/product";
+import type {
+  SiteAsset,
+  SiteAssetInput,
+  SiteAssetUsage,
+  SiteAssetUsageInput,
+  SiteAssetUsageSlot,
+} from "@/types/media";
 import { getDefaultPriceAutoSettings } from "@/lib/price-auto";
 import type { SiteRepository } from "./repository";
 
@@ -128,6 +135,7 @@ type SupabaseProductRow = {
   short_description: string;
   description: string;
   image_url: string | null;
+  image_asset_id?: string | null;
   specs: string[] | null;
   status: Product["status"];
   display_order: number | null;
@@ -141,6 +149,43 @@ type SupabaseProductRow = {
   price_note: string | null;
   public_note: string | null;
   created_at: string;
+  updated_at: string;
+};
+
+type SupabaseSiteAssetRow = {
+  id: string;
+  asset_id: string;
+  file_path: string;
+  public_url: string;
+  storage_bucket: string;
+  storage_path: string;
+  original_filename: string;
+  mime_type: string;
+  size_bytes: number;
+  checksum: string;
+  image_source_type: SiteAsset["imageSourceType"];
+  approval_status: SiteAsset["approvalStatus"];
+  allowed_usage: SiteAsset["allowedUsage"] | null;
+  related_sku: string[] | null;
+  sku_match: string;
+  page_usage: string[] | null;
+  section_usage: string[] | null;
+  alt_text: string;
+  aspect_ratio: string;
+  mobile_crop_rule: string;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+type SupabaseSiteAssetUsageRow = {
+  id: string;
+  usage_key: SiteAssetUsageSlot;
+  asset_id: string;
+  page_path: string;
+  section_usage: string;
+  sort_order: number;
+  is_active: boolean;
   updated_at: string;
 };
 
@@ -273,6 +318,13 @@ function isMissingColumnError(error: unknown) {
   );
 }
 
+function isMissingRpcError(error: unknown) {
+  if (!error || typeof error !== "object") return false;
+  const maybeError = error as { code?: string; message?: string };
+  const message = maybeError.message || "";
+  return maybeError.code === "42883" || maybeError.code === "PGRST202" || /function .* does not exist/i.test(message);
+}
+
 function getKoreaDateKey(value = new Date()) {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Seoul",
@@ -312,6 +364,7 @@ function mapProduct(row: SupabaseProductRow): Product {
     shortDescription: row.short_description,
     description: row.description,
     imageUrl: row.image_url,
+    imageAssetId: row.image_asset_id ?? null,
     specs: row.specs ?? [],
     status: row.status,
     displayOrder: row.display_order ?? 0,
@@ -327,6 +380,215 @@ function mapProduct(row: SupabaseProductRow): Product {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+}
+
+function mapSiteAsset(row: SupabaseSiteAssetRow): SiteAsset {
+  return {
+    id: row.id,
+    assetId: row.asset_id,
+    filePath: row.file_path,
+    publicUrl: row.public_url,
+    storageBucket: row.storage_bucket,
+    storagePath: row.storage_path,
+    originalFilename: row.original_filename,
+    mimeType: row.mime_type,
+    sizeBytes: row.size_bytes,
+    checksum: row.checksum,
+    imageSourceType: row.image_source_type,
+    approvalStatus: row.approval_status,
+    allowedUsage: row.allowed_usage ?? [],
+    relatedSku: row.related_sku ?? [],
+    skuMatch: row.sku_match,
+    pageUsage: row.page_usage ?? [],
+    sectionUsage: row.section_usage ?? [],
+    altText: row.alt_text,
+    aspectRatio: row.aspect_ratio,
+    mobileCropRule: row.mobile_crop_rule,
+    notes: row.notes,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function mapSiteAssetUsage(row: SupabaseSiteAssetUsageRow): SiteAssetUsage {
+  return {
+    id: row.id,
+    usageKey: row.usage_key,
+    assetId: row.asset_id,
+    pagePath: row.page_path,
+    sectionUsage: row.section_usage,
+    sortOrder: row.sort_order,
+    isActive: row.is_active,
+    updatedAt: row.updated_at,
+  };
+}
+
+const fallbackMediaBucket = "site-assets-meta";
+const fallbackAssetsPath = "site-assets.json";
+const fallbackUsagesPath = "site-asset-usages.json";
+
+type FallbackSiteAssetsPayload = {
+  assets: SiteAsset[];
+  updatedAt: string;
+};
+
+type FallbackSiteAssetUsagesPayload = {
+  usages: SiteAssetUsage[];
+  updatedAt: string;
+};
+
+function createLocalId() {
+  return globalThis.crypto?.randomUUID?.() ?? `local-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function isMissingStorageObjectError(error: unknown) {
+  if (!error || typeof error !== "object") return false;
+  const maybeError = error as { message?: string; status?: number | string; statusCode?: number | string };
+  const status = Number(maybeError.statusCode ?? maybeError.status);
+  const message = maybeError.message || "";
+  return status === 400 || status === 404 || /not found|does not exist/i.test(message);
+}
+
+function isImageAssetIdPersistenceError(error: unknown) {
+  if (!error || typeof error !== "object") return false;
+  const maybeError = error as { code?: string; message?: string };
+  const message = maybeError.message || "";
+  return isMissingColumnError(error) || (maybeError.code === "23503" && /image_asset_id|site_assets/i.test(message));
+}
+
+async function ensureFallbackMediaBucket() {
+  const client = getSupabaseAdminClient();
+  const bucketOptions = {
+    public: false,
+    fileSizeLimit: 512 * 1024,
+    allowedMimeTypes: ["application/json"],
+  };
+  const { data: bucket, error } = await client.storage.getBucket(fallbackMediaBucket);
+
+  if (!error && bucket) {
+    const storedLimit = Number(bucket.file_size_limit ?? bucketOptions.fileSizeLimit);
+    const storedMimeTypes = new Set(bucket.allowed_mime_types ?? bucketOptions.allowedMimeTypes);
+    const mimeTypesMatch = bucketOptions.allowedMimeTypes.every((mimeType) => storedMimeTypes.has(mimeType));
+    if (bucket.public || storedLimit !== bucketOptions.fileSizeLimit || !mimeTypesMatch) {
+      const { error: updateError } = await client.storage.updateBucket(fallbackMediaBucket, bucketOptions);
+      if (updateError) throw updateError;
+    }
+    return;
+  }
+
+  if (error && !isMissingStorageObjectError(error)) throw error;
+
+  const { error: createError } = await client.storage.createBucket(fallbackMediaBucket, bucketOptions);
+  if (createError && !/already exists|duplicate/i.test(createError.message || "")) {
+    throw createError;
+  }
+}
+
+async function readFallbackJson<T>(path: string, fallback: T): Promise<T> {
+  await ensureFallbackMediaBucket();
+  const client = getSupabaseAdminClient();
+  const { data, error } = await client.storage.from(fallbackMediaBucket).download(path);
+  if (error) {
+    if (isMissingStorageObjectError(error)) return fallback;
+    throw error;
+  }
+
+  try {
+    return JSON.parse(await data.text()) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+async function writeFallbackJson(path: string, payload: unknown) {
+  await ensureFallbackMediaBucket();
+  const { error } = await getSupabaseAdminClient()
+    .storage
+    .from(fallbackMediaBucket)
+    .upload(path, JSON.stringify(payload, null, 2), {
+      contentType: "application/json",
+      upsert: true,
+    });
+  if (error) throw error;
+}
+
+async function readFallbackSiteAssets() {
+  const payload = await readFallbackJson<FallbackSiteAssetsPayload>(fallbackAssetsPath, {
+    assets: [],
+    updatedAt: new Date(0).toISOString(),
+  });
+  return payload.assets.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+}
+
+async function writeFallbackSiteAsset(input: SiteAssetInput) {
+  const nowIso = new Date().toISOString();
+  const existing = await readFallbackSiteAssets();
+  const asset: SiteAsset = {
+    id: createLocalId(),
+    assetId: input.assetId,
+    filePath: input.filePath,
+    publicUrl: input.publicUrl,
+    storageBucket: input.storageBucket,
+    storagePath: input.storagePath,
+    originalFilename: input.originalFilename,
+    mimeType: input.mimeType,
+    sizeBytes: input.sizeBytes,
+    checksum: input.checksum,
+    imageSourceType: input.imageSourceType,
+    approvalStatus: input.approvalStatus,
+    allowedUsage: input.allowedUsage,
+    relatedSku: input.relatedSku,
+    skuMatch: input.skuMatch,
+    pageUsage: input.pageUsage,
+    sectionUsage: input.sectionUsage,
+    altText: input.altText,
+    aspectRatio: input.aspectRatio,
+    mobileCropRule: input.mobileCropRule,
+    notes: input.notes,
+    createdAt: nowIso,
+    updatedAt: nowIso,
+  };
+  const nextAssets = [asset, ...existing.filter((item) => item.assetId !== asset.assetId)].slice(0, 250);
+  await writeFallbackJson(fallbackAssetsPath, { assets: nextAssets, updatedAt: nowIso } satisfies FallbackSiteAssetsPayload);
+  return asset;
+}
+
+async function readFallbackSiteAssetUsages() {
+  const payload = await readFallbackJson<FallbackSiteAssetUsagesPayload>(fallbackUsagesPath, {
+    usages: [],
+    updatedAt: new Date(0).toISOString(),
+  });
+  return payload.usages.sort((a, b) => a.sortOrder - b.sortOrder);
+}
+
+async function writeFallbackSiteAssetUsage(input: SiteAssetUsageInput) {
+  const nowIso = new Date().toISOString();
+  const existing = await readFallbackSiteAssetUsages();
+  const usage: SiteAssetUsage = {
+    id: createLocalId(),
+    usageKey: input.usageKey,
+    assetId: input.assetId,
+    pagePath: input.pagePath,
+    sectionUsage: input.sectionUsage,
+    sortOrder: input.sortOrder,
+    isActive: input.isActive,
+    updatedAt: nowIso,
+  };
+  const nextUsages = [
+    usage,
+    ...existing.filter(
+      (item) =>
+        item.usageKey !== input.usageKey ||
+        item.assetId !== input.assetId ||
+        item.sectionUsage !== input.sectionUsage,
+    ),
+  ].slice(0, 250);
+  await writeFallbackJson(fallbackUsagesPath, { usages: nextUsages, updatedAt: nowIso } satisfies FallbackSiteAssetUsagesPayload);
+  return {
+    success: true,
+    message: "이미지 연결이 저장되었습니다.",
+    mode: "supabase",
+  } satisfies RepositoryMutationResult;
 }
 
 export class SupabaseRepository implements SiteRepository {
@@ -440,71 +702,84 @@ export class SupabaseRepository implements SiteRepository {
     const client = getSupabaseAdminClient();
     const prices = await this.getPrices();
     const nowIso = new Date().toISOString();
+    const categories = prices.map((price) => price.category);
 
-    for (const price of prices) {
-      const { data: existingHistory, error: historyLookupError } = await client
-        .from("price_history")
-        .select("id")
-        .eq("category", price.category)
-        .limit(1);
+    if (!prices.length) {
+      return {
+        success: true,
+        message: "현재 고시 시세 기준 이력 보관 상태를 확인했습니다.",
+        mode: "supabase",
+      } satisfies RepositoryMutationResult;
+    }
 
-      if (historyLookupError) {
-        if (isMissingTableError(historyLookupError)) {
-          return {
-            success: false,
-            message: "시세 이력 테이블이 아직 적용되지 않았습니다.",
-            mode: "supabase",
-          } satisfies RepositoryMutationResult;
-        }
-        throw historyLookupError;
+    const { data: existingHistory, error: historyLookupError } = await client
+      .from("price_history")
+      .select("category")
+      .in("category", categories);
+
+    if (historyLookupError) {
+      if (isMissingTableError(historyLookupError)) {
+        return {
+          success: false,
+          message: "시세 이력 테이블이 아직 적용되지 않았습니다.",
+          mode: "supabase",
+        } satisfies RepositoryMutationResult;
       }
+      throw historyLookupError;
+    }
 
-      if (!existingHistory?.length) {
-        const { error: insertError } = await client.from("price_history").insert({
-          price_id: price.id,
-          category: price.category,
-          label: price.label,
-          previous_value: price.value,
-          new_value: price.value,
-          changed_at: price.announcedAt || nowIso,
-          changed_by: changedBy,
-          note: price.note ?? "현재 공개 시세 기준으로 이력 보관을 시작했습니다.",
-          change_origin: "system",
-          source: "baseline",
-          metadata: {
-            reason: "initial_price_history_baseline",
-          },
-        });
-
-        if (insertError) {
-          if (isMissingColumnError(insertError)) break;
-          throw insertError;
-        }
-      }
-
-      const { error: snapshotError } = await client.from("price_daily_snapshots").upsert(
-        {
-          snapshot_date: getKoreaDateKey(new Date(price.announcedAt || nowIso)),
-          price_id: price.id,
-          category: price.category,
-          label: price.label,
-          value: price.value,
-          announced_at: price.announcedAt || nowIso,
-          source: "baseline",
+    const existingCategories = new Set(
+      ((existingHistory ?? []) as Array<{ category: string | null }>).map((row) => row.category),
+    );
+    const missingHistoryRows = prices
+      .filter((price) => !existingCategories.has(price.category))
+      .map((price) => ({
+        price_id: price.id,
+        category: price.category,
+        label: price.label,
+        previous_value: price.value,
+        new_value: price.value,
+        changed_at: price.announcedAt || nowIso,
+        changed_by: changedBy,
+        note: price.note ?? "현재 공개 시세 기준으로 이력 보관을 시작했습니다.",
+        change_origin: "system",
+        source: "baseline",
+        metadata: {
+          reason: "initial_price_history_baseline",
         },
-        { onConflict: "snapshot_date,category" },
-      );
+      }));
 
-      if (snapshotError) {
-        if (isMissingTableError(snapshotError)) {
-          return {
-            success: false,
-            message: "일별 시세 스냅샷 테이블이 아직 적용되지 않았습니다.",
-            mode: "supabase",
-          } satisfies RepositoryMutationResult;
-        }
-        throw snapshotError;
+    if (missingHistoryRows.length) {
+      const { error: insertError } = await client.from("price_history").insert(missingHistoryRows);
+
+      if (insertError && !isMissingColumnError(insertError)) {
+        throw insertError;
       }
+    }
+
+    const snapshotRows = prices.map((price) => ({
+      snapshot_date: getKoreaDateKey(new Date(price.announcedAt || nowIso)),
+      price_id: price.id,
+      category: price.category,
+      label: price.label,
+      value: price.value,
+      announced_at: price.announcedAt || nowIso,
+      source: "baseline",
+    }));
+    const { error: snapshotError } = await client.from("price_daily_snapshots").upsert(
+      snapshotRows,
+      { onConflict: "snapshot_date,category" },
+    );
+
+    if (snapshotError) {
+      if (isMissingTableError(snapshotError)) {
+        return {
+          success: false,
+          message: "일별 시세 스냅샷 테이블이 아직 적용되지 않았습니다.",
+          mode: "supabase",
+        } satisfies RepositoryMutationResult;
+      }
+      throw snapshotError;
     }
 
     return {
@@ -803,6 +1078,15 @@ export class SupabaseRepository implements SiteRepository {
   async updatePrices(input: UpdatePriceInput[]) {
     const client = getSupabaseAdminClient();
     const ids = input.map((item) => item.id);
+
+    if (!ids.length) {
+      return {
+        success: true,
+        message: "시세가 저장되었습니다.",
+        mode: "supabase",
+      } satisfies RepositoryMutationResult;
+    }
+
     const { data: currentRows, error: currentError } = await client
       .from("prices")
       .select("*")
@@ -816,70 +1100,90 @@ export class SupabaseRepository implements SiteRepository {
       (currentRows as SupabasePriceRow[]).map((row) => [row.id, row] as const),
     );
 
-    for (const item of input) {
-      const current = rows.get(item.id);
+    const { error: rpcError } = await client.rpc("kcg_update_prices_atomic", { items: input });
 
-      if (!current) {
-        continue;
-      }
+    if (!rpcError) {
+      return {
+        success: true,
+        message: "시세가 저장되었습니다.",
+        mode: "supabase",
+      } satisfies RepositoryMutationResult;
+    }
 
-      const { error: updateError } = await client
-        .from("prices")
-        .update({
-          value: item.value,
-          note: item.note,
-          is_visible: item.isVisible,
-          announced_at: item.announcedAt,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", item.id);
+    if (!isMissingRpcError(rpcError)) {
+      throw rpcError;
+    }
 
+    const nowIso = new Date().toISOString();
+    const updateJobs = input
+      .filter((item) => rows.has(item.id))
+      .map((item) =>
+        client
+          .from("prices")
+          .update({
+            value: item.value,
+            note: item.note,
+            is_visible: item.isVisible,
+            announced_at: item.announcedAt,
+            updated_at: nowIso,
+          })
+          .eq("id", item.id),
+      );
+
+    const updateResults = await Promise.all(updateJobs);
+
+    for (const { error: updateError } of updateResults) {
       if (updateError) {
         throw updateError;
       }
+    }
 
-      if (
-        current.value !== item.value ||
-        current.note !== item.note ||
-        current.announced_at !== item.announcedAt
-      ) {
-        const { error: historyError } = await client.from("price_history").insert({
-          price_id: item.id,
-          category: current.category,
-          label: current.label,
-          previous_value: current.value,
-          new_value: item.value,
-          changed_at: new Date().toISOString(),
-          changed_by: item.changedBy,
-          note: item.note,
-          change_origin: item.changeOrigin ?? "manual",
-          source: item.source ?? null,
-          metadata: item.metadata ?? {},
-        });
+    const changedItems = input
+      .map((item) => ({ item, current: rows.get(item.id) }))
+      .filter(
+        (entry): entry is { item: UpdatePriceInput; current: SupabasePriceRow } =>
+          Boolean(entry.current) &&
+          (entry.current?.value !== entry.item.value ||
+            entry.current.note !== entry.item.note ||
+            entry.current.announced_at !== entry.item.announcedAt),
+      );
 
-        if (historyError) {
-          throw historyError;
-        }
+    if (changedItems.length) {
+      const historyRows = changedItems.map(({ item, current }) => ({
+        price_id: item.id,
+        category: current.category,
+        label: current.label,
+        previous_value: current.value,
+        new_value: item.value,
+        changed_at: nowIso,
+        changed_by: item.changedBy,
+        note: item.note,
+        change_origin: item.changeOrigin ?? "manual",
+        source: item.source ?? null,
+        metadata: item.metadata ?? {},
+      }));
+      const { error: historyError } = await client.from("price_history").insert(historyRows);
 
-        const snapshotDate = getKoreaDateKey(new Date(item.announcedAt));
-        const { error: snapshotError } = await client.from("price_daily_snapshots").upsert(
-          {
-            snapshot_date: snapshotDate,
-            price_id: item.id,
-            category: current.category,
-            label: current.label,
-            value: item.value,
-            announced_at: item.announcedAt,
-            source: item.source ?? item.changeOrigin ?? "manual",
-          },
-          { onConflict: "snapshot_date,category" },
-        );
+      if (historyError) {
+        throw historyError;
+      }
 
-        if (snapshotError) {
-          if (!isMissingTableError(snapshotError)) {
-            throw snapshotError;
-          }
-        }
+      const snapshotRows = changedItems.map(({ item, current }) => ({
+        snapshot_date: getKoreaDateKey(new Date(item.announcedAt)),
+        price_id: item.id,
+        category: current.category,
+        label: current.label,
+        value: item.value,
+        announced_at: item.announcedAt,
+        source: item.source ?? item.changeOrigin ?? "manual",
+      }));
+      const { error: snapshotError } = await client.from("price_daily_snapshots").upsert(
+        snapshotRows,
+        { onConflict: "snapshot_date,category" },
+      );
+
+      if (snapshotError && !isMissingTableError(snapshotError)) {
+        throw snapshotError;
       }
     }
 
@@ -944,6 +1248,14 @@ export class SupabaseRepository implements SiteRepository {
 
   async upsertProduct(input: ProductUpsertInput) {
     const client = getSupabaseAdminClient();
+    const previous = input.id
+      ? await client.from("products").select("*").eq("id", input.id).maybeSingle()
+      : { data: null, error: null };
+
+    if (previous.error) {
+      throw previous.error;
+    }
+
     const payload = {
       category: input.category,
       subcategory: input.subcategory,
@@ -952,6 +1264,7 @@ export class SupabaseRepository implements SiteRepository {
       short_description: input.shortDescription,
       description: input.description,
       image_url: input.imageUrl,
+      image_asset_id: input.imageAssetId,
       specs: input.specs,
       status: input.status,
       display_order: input.displayOrder,
@@ -966,12 +1279,18 @@ export class SupabaseRepository implements SiteRepository {
       public_note: input.publicNote,
       updated_at: new Date().toISOString(),
     };
+    const payloadWithoutImageAssetId = { ...payload };
+    delete (payloadWithoutImageAssetId as Partial<typeof payload>).image_asset_id;
+    let persistedPayload: typeof payload = payload;
 
     if (input.id) {
       const { error } = await client.from("products").update(payload).eq("id", input.id);
 
       if (error) {
-        throw error;
+        if (!isImageAssetIdPersistenceError(error)) throw error;
+        const retry = await client.from("products").update(payloadWithoutImageAssetId).eq("id", input.id);
+        if (retry.error) throw retry.error;
+        persistedPayload = payloadWithoutImageAssetId;
       }
     } else {
       const { error } = await client.from("products").insert({
@@ -980,13 +1299,143 @@ export class SupabaseRepository implements SiteRepository {
       });
 
       if (error) {
-        throw error;
+        if (!isImageAssetIdPersistenceError(error)) throw error;
+        const retry = await client.from("products").insert({
+          ...payloadWithoutImageAssetId,
+          created_at: new Date().toISOString(),
+        });
+        if (retry.error) throw retry.error;
+        persistedPayload = payloadWithoutImageAssetId;
       }
+    }
+
+    const { error: historyError } = await client.from("product_change_history").insert({
+      product_id: input.id ?? null,
+      slug: input.slug,
+      changed_by: "관리자",
+      change_type: input.id ? "update" : "insert",
+      previous_payload: previous.data ?? null,
+      next_payload: persistedPayload,
+    });
+
+    if (historyError && !isMissingTableError(historyError)) {
+      throw historyError;
     }
 
     return {
       success: true,
       message: "상품 정보가 저장되었습니다.",
+      mode: "supabase",
+    } satisfies RepositoryMutationResult;
+  }
+
+  async getSiteAssets() {
+    const client = getSupabaseAdminClient();
+    const { data, error } = await client
+      .from("site_assets")
+      .select("*")
+      .order("updated_at", { ascending: false });
+
+    if (error) {
+      if (isMissingTableError(error)) return readFallbackSiteAssets();
+      throw error;
+    }
+
+    return (data as SupabaseSiteAssetRow[]).map(mapSiteAsset);
+  }
+
+  async getSiteAssetUsages() {
+    const client = getSupabaseAdminClient();
+    const { data, error } = await client
+      .from("site_asset_usages")
+      .select("*")
+      .order("usage_key", { ascending: true })
+      .order("sort_order", { ascending: true });
+
+    if (error) {
+      if (isMissingTableError(error)) return readFallbackSiteAssetUsages();
+      throw error;
+    }
+
+    return (data as SupabaseSiteAssetUsageRow[]).map(mapSiteAssetUsage);
+  }
+
+  async createSiteAsset(input: SiteAssetInput) {
+    const client = getSupabaseAdminClient();
+    const nowIso = new Date().toISOString();
+    const payload = {
+      asset_id: input.assetId,
+      file_path: input.filePath,
+      public_url: input.publicUrl,
+      storage_bucket: input.storageBucket,
+      storage_path: input.storagePath,
+      original_filename: input.originalFilename,
+      mime_type: input.mimeType,
+      size_bytes: input.sizeBytes,
+      checksum: input.checksum,
+      image_source_type: input.imageSourceType,
+      approval_status: input.approvalStatus,
+      allowed_usage: input.allowedUsage,
+      related_sku: input.relatedSku,
+      sku_match: input.skuMatch,
+      page_usage: input.pageUsage,
+      section_usage: input.sectionUsage,
+      alt_text: input.altText,
+      aspect_ratio: input.aspectRatio,
+      mobile_crop_rule: input.mobileCropRule,
+      notes: input.notes,
+      created_at: nowIso,
+      updated_at: nowIso,
+    };
+    const { data, error } = await client
+      .from("site_assets")
+      .insert(payload)
+      .select("*")
+      .single();
+
+    if (error) {
+      if (isMissingTableError(error)) return writeFallbackSiteAsset(input);
+      throw error;
+    }
+
+    const created = mapSiteAsset(data as SupabaseSiteAssetRow);
+    const { error: historyError } = await client.from("media_change_history").insert({
+      asset_id: created.id,
+      changed_by: "관리자",
+      change_type: "upload",
+      payload,
+    });
+
+    if (historyError && !isMissingTableError(historyError)) {
+      throw historyError;
+    }
+
+    return created;
+  }
+
+  async upsertSiteAssetUsage(input: SiteAssetUsageInput) {
+    const client = getSupabaseAdminClient();
+    const { error } = await client.from("site_asset_usages").upsert(
+      {
+        usage_key: input.usageKey,
+        asset_id: input.assetId,
+        page_path: input.pagePath,
+        section_usage: input.sectionUsage,
+        sort_order: input.sortOrder,
+        is_active: input.isActive,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "usage_key,asset_id,section_usage" },
+    );
+
+    if (error) {
+      if (isMissingTableError(error)) return writeFallbackSiteAssetUsage(input);
+      throw error;
+    }
+
+    return {
+      success: true,
+      message: "이미지 사용 위치가 저장되었습니다.",
       mode: "supabase",
     } satisfies RepositoryMutationResult;
   }

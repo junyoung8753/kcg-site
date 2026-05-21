@@ -43,7 +43,7 @@
 
 html {
   background: #f7fbf8;
-  scroll-padding-bottom: calc(6.25rem + env(safe-area-inset-bottom));
+  scroll-padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
 }
 
 body {
@@ -128,6 +128,17 @@ a {
 .kcg-price-primary {
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.025em;
+}
+
+.kcg-number-token {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  word-break: normal;
+}
+
+.kcg-action-token {
+  white-space: nowrap;
+  word-break: keep-all;
 }
 
 .kcg-data-label {

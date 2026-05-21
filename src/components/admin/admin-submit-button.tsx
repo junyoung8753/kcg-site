@@ -22,9 +22,10 @@ export function AdminSubmitButton({
       {...props}
       disabled={disabled || pending}
       aria-busy={pending}
+      data-admin-pending={pending ? "true" : "false"}
       className={`${className} disabled:cursor-wait disabled:opacity-60`}
     >
-      {pending ? pendingLabel : children}
+      <span aria-live="polite">{pending ? pendingLabel : children}</span>
     </button>
   );
 }

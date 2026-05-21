@@ -32,13 +32,13 @@ export function TradeStandardPanel({
           <div className="mt-6 flex flex-wrap gap-3">
             <a
               href={`tel:${siteConfig.contact.phone}`}
-              className="inline-flex h-11 items-center justify-center rounded-full bg-[#ffcc00] px-5 text-sm font-semibold text-[#171717] transition hover:bg-[#f2bf00]"
+              className="kcg-action-token inline-flex h-11 items-center justify-center rounded-full bg-[#ffcc00] px-5 text-sm font-semibold text-[#171717] transition hover:bg-[#f2bf00]"
             >
               전화 문의 {siteConfig.contact.phone}
             </a>
             <Link
               href="/about"
-              className="inline-flex h-11 items-center justify-center rounded-full border border-[#d7e0dd] bg-white px-5 text-sm font-semibold text-[#171717] transition hover:bg-[#fbfdfc]"
+              className="kcg-action-token inline-flex h-11 items-center justify-center rounded-full border border-[#d7e0dd] bg-white px-5 text-sm font-semibold text-[#171717] transition hover:bg-[#fbfdfc]"
             >
               거래 절차 보기
             </Link>
@@ -83,7 +83,7 @@ export function TradeStandardPanel({
                   href={link.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex rounded-full border border-[#d7e0dd] bg-white px-3 py-1.5 text-xs font-semibold text-[#171717] transition hover:bg-[#fff7d2]"
+                  className="kcg-action-token inline-flex rounded-full border border-[#d7e0dd] bg-white px-3 py-1.5 text-xs font-semibold text-[#171717] transition hover:bg-[#fff7d2]"
                 >
                   {link.label}
                 </a>

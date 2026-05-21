@@ -209,7 +209,7 @@ export const visitChecklist = [
 
 export const tradeStandardPrinciples = [
   {
-    title: "살 때와 팔 때 기준 분리",
+    title: "내가 살 때와 내가 팔 때 기준 분리",
     description:
       "회사 고시 시세는 매입·판매 기준을 분리해 안내하고, 자동 참고 시세와 실제 거래 기준을 혼동하지 않도록 표시합니다.",
   },
@@ -266,7 +266,7 @@ export const consultationScenarios = [
   {
     title: "시세만 먼저 확인할 때",
     description: "회사 고시 시세와 자동 참고 시세를 구분해서 보고, 실제 거래 전에는 기준 시각을 다시 확인합니다.",
-    checklist: ["고시 시각", "살 때·팔 때 구분", "현장 확정 여부"],
+    checklist: ["고시 시각", "내가 살 때·내가 팔 때 구분", "현장 확정 여부"],
   },
 ] as const;
 
@@ -277,21 +277,21 @@ export const serviceGuides = [
   },
   {
     title: "판매·수급 상담",
-    description: "순금 제품 판매, 골드바·실버바 수급, 투자용 문의, 상속 정리, 법인 보유 귀금속 상담이 가능합니다.",
+    description: "1돈·2돈·3돈·5돈·10돈 골드바 수급, 투자용 문의, 상속 정리, 법인 보유 귀금속 상담이 가능합니다.",
   },
   {
     title: "B2B 사전 문의 품목",
-    description: "기업 선물, 대량 수량, 기념품, 특수 중량 상품은 수급과 제작 일정 확인 후 상담 범위를 안내합니다.",
+    description: "대량 수량, 법인 보유분, 특수 중량 상품은 수급과 일정 확인 후 상담 범위를 안내합니다.",
   },
 ] as const;
 
 export const serviceExamples = {
   gold_bar: ["1돈·5돈·10돈 단위 문의", "보유 골드바 매입 상담", "대량·법인 보유분 상담"],
   silver_bar: ["실버바 중량별 문의", "기업 증정용 실버 제품", "기념 실버·은메달 상담"],
-  pure_gold: ["순금 돌반지·카드 상담", "순금 선물 제품 문의", "공임·포장 조건 확인"],
+  pure_gold: ["공개 상품 준비 전", "상담 가능 여부 별도 확인", "운영 승인 후 노출"],
   jewelry: ["고금·예물 정리 상담", "파손 제품 및 부속 확인", "18K·14K 매입 기준 문의"],
   purchase_guide: ["신분증 지참", "보증서·영수증 지참 시 상담 원활", "현장 계근·순도 확인 후 정산"],
-  custom_order: ["기업 기념품 제작 문의", "순금 메달·배지 상담", "단체 증정용 품목 협의"],
+  custom_order: ["대량 골드바 문의", "법인 보유분 상담", "특수 중량 조건 협의"],
 } as const;
 
 export const serviceFaqs = [
@@ -303,7 +303,7 @@ export const serviceFaqs = [
   {
     question: "고금매입은 시세표의 어느 금액을 보면 되나요?",
     answer:
-      "고객이 팔 때 기준을 먼저 참고하시면 됩니다. 실제 상담 금액은 순도, 중량, 부속, 제품 상태를 현장에서 확인한 뒤 최종 안내합니다.",
+      "고객 기준의 `내가 팔 때` 금액을 먼저 참고하시면 됩니다. 실제 상담 금액은 순도, 중량, 부속, 제품 상태를 현장에서 확인한 뒤 최종 안내합니다.",
   },
   {
     question: "고금은 사진만으로 견적이 가능한가요?",
@@ -382,7 +382,7 @@ export const serviceCategories = [
   {
     key: "gold_bar",
     title: "골드바",
-    description: "투자용 골드바와 순금 제품 판매 상담",
+    description: "1·2·3·5·10돈 골드바 판매 상담",
   },
   {
     key: "silver_bar",
@@ -392,11 +392,11 @@ export const serviceCategories = [
   {
     key: "pure_gold",
     title: "순금제품",
-    description: "순금 돌반지, 순금 카드, 기념 메달 상담",
+    description: "운영 승인 전 공개 상품 노출 보류",
   },
   {
     key: "jewelry",
-    title: "고금·주얼리",
+    title: "고금 주얼리",
     description: "예물, 고금, 파손 제품, 18K·14K 귀금속 상담",
   },
   {
@@ -407,6 +407,6 @@ export const serviceCategories = [
   {
     key: "custom_order",
     title: "B2B 대량 상담",
-    description: "법인 보유분, 기념품, 기업 선물, 특수 중량 상품 상담",
+    description: "대량 골드바, 법인 보유분, 특수 중량 상품 상담",
   },
 ] as const;

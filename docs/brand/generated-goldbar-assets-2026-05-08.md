@@ -2,9 +2,11 @@
 
 This record documents the Codex-generated KCG-style gold-bar assets requested by junyoung on 2026-05-08 KST.
 
+2026-05-11 status: these generated assets are retained for rollback/reference, but the current public home first slide, social image, `/products` hero, and gold-bar product images now use the real KCG-derived derivatives recorded in `docs/brand/kcg-real-image-assets-2026-05-11.md`.
+
 Reference-only source folder:
 
-`C:\Users\junyo\Documents\File-Hub\30_Media\Images\KCG 이미지`
+`C:\Users\junyo\Documents\File-Hub\80_보관\사진_영상\Images\KCG 이미지`
 
 The source folder was used only for visual direction: gold-bar proportions, size lineup, clean white product-background grammar, and restrained counter/banner composition. The raw KakaoTalk files were not copied into `public/`, and the generated files below are not real KCG product photos.
 

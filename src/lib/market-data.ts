@@ -445,9 +445,9 @@ function buildMarketBriefs(
     {
       id: "market-brief-1",
       title: "오늘의 고시 시세와 자동 참고 시세를 함께 확인하실 수 있습니다.",
-      summary: `국제 금 시세는 ${goldSpot.price.toFixed(2)} USD/T.oz 기준이며, 순금 3.75g 참고가는 ${goldDomestic.krwPerDon.toLocaleString(
-        "ko-KR",
-      )}원으로 계산됩니다.`,
+      summary: `국제 금 시세는 ${goldSpot.price.toFixed(
+        2,
+      )} USD/T.oz 기준이며, 원화 거래 금액은 회사 고시 시세표와 현장 확인을 우선합니다.`,
       publishedAt: updatedAt,
       tone: capabilities.change && goldSpot.changePercent > 0 ? "watch" : "steady",
     },

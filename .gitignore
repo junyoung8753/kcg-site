@@ -67,3 +67,4 @@ next-env.d.ts
 # Claude Code local settings / personal notes
 .claude/settings.local.json
 CLAUDE.local.md
+.env*.local

@@ -1,0 +1,1033 @@
+[
+  {
+    "asset_id": "brand-symbol-kcg-logo",
+    "file_path": "/brand/kcg-logo.png",
+    "image_source_type": "C",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "brand_identity",
+      "admin_reference"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "global",
+      "/company"
+    ],
+    "section_usage": [
+      "header",
+      "footer",
+      "company-hero-mark"
+    ],
+    "alt_text": "KCG 로고",
+    "aspect_ratio": "logo",
+    "mobile_crop_rule": "Do not crop; render as contained brand mark.",
+    "hash_or_checksum": "sha256:2d4ad6dea5d04929ddd725329fe5ceac660c32783c9c0edc4b17f6108e974f0f",
+    "notes": "Approved KCG brand symbol. Existing path is locked; do not move to generated/approved."
+  },
+  {
+    "asset_id": "brand-lockup-kcg",
+    "file_path": "/brand/kcg-lockup.png",
+    "image_source_type": "C",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "brand_identity",
+      "admin_reference"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "global"
+    ],
+    "section_usage": [
+      "header",
+      "footer"
+    ],
+    "alt_text": "한국센터금거래소 로고",
+    "aspect_ratio": "lockup",
+    "mobile_crop_rule": "Do not crop; preserve full lockup.",
+    "hash_or_checksum": "sha256:5abbd5a5aeedb9a3f2f70263a9207df46bee5e8c32c7f7898c062842939c6d44",
+    "notes": "Approved KCG lockup. Existing path is locked; do not move to generated/approved."
+  },
+  {
+    "asset_id": "brand-signboard-clean",
+    "file_path": "/brand/signboard-clean.jpg",
+    "image_source_type": "C",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "hero",
+      "brand_identity"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "/prices"
+    ],
+    "section_usage": [
+      "price-lineup-signboard"
+    ],
+    "alt_text": "한국센터금거래소 간판 이미지",
+    "aspect_ratio": "wide",
+    "mobile_crop_rule": "Use object-cover only where the signboard text stays readable.",
+    "hash_or_checksum": "sha256:d6eef9a6b0d17912f35ec527037b5d6b98d1e3beaa4bc7981580bea3dd6daca5",
+    "notes": "Approved editorial signboard asset for signboard visual mode."
+  },
+  {
+    "asset_id": "hero-goldbar-lineup-reflection-20260517",
+    "file_path": "/campaign/kcg-approved-goldbar-lineup-reflection-20260517.jpg",
+    "image_source_type": "A2",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "hero",
+      "social_preview",
+      "admin_reference"
+    ],
+    "related_sku": [
+      "goldbar-lineup-1don-2don-3don-5don-10don"
+    ],
+    "sku_match": "lineup",
+    "page_usage": [
+      "/",
+      "opengraph"
+    ],
+    "section_usage": [
+      "home-campaign-slider"
+    ],
+    "alt_text": "KCG 골드바 1돈 2돈 3돈 5돈 10돈 라인업 배너",
+    "aspect_ratio": "wide",
+    "mobile_crop_rule": "Keep bars and KCG marks inside the center safe area; do not crop into individual weight labels.",
+    "hash_or_checksum": "sha256:7a82c8527f0b44633f081674d0d3334b6aba8dad6ed6f3346aa9ee44692073e0",
+    "notes": "A2 approved product render example. It is official product/campaign material and must not be removed just because it is not a raw photo."
+  },
+  {
+    "asset_id": "hero-human-consultation-20260506",
+    "file_path": "/campaign/kcg-home-human-consultation-20260506.webp",
+    "image_source_type": "E",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "hero",
+      "company_hero"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "/",
+      "/company"
+    ],
+    "section_usage": [
+      "home-campaign-slider",
+      "company-hero"
+    ],
+    "alt_text": "KCG 상담 분위기 이미지",
+    "aspect_ratio": "wide",
+    "mobile_crop_rule": "Prefer table and consultation context; avoid face-close crop as proof of a real employee.",
+    "hash_or_checksum": "sha256:ac4886d8e0311f9c87054689521c56763d892b8462b8e35157ebe1ab135e664e",
+    "notes": "Virtual consultation atmosphere. Do not label the people as real KCG staff or customers."
+  },
+  {
+    "asset_id": "hero-seoul-retail-20260506",
+    "file_path": "/campaign/kcg-home-seoul-retail-20260506.webp",
+    "image_source_type": "C",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "hero",
+      "store_guide_hero"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "/",
+      "/about"
+    ],
+    "section_usage": [
+      "home-campaign-slider",
+      "store-guide-hero"
+    ],
+    "alt_text": "종로 귀금속 매장 방문 분위기 이미지",
+    "aspect_ratio": "wide",
+    "mobile_crop_rule": "Keep visit-prep atmosphere visible; do not imply this is a verified exterior photo.",
+    "hash_or_checksum": "sha256:35c0e8423877d6258db47e5d2a53db1d720ae2da8ab0291de047ea4fd7ce4f2c",
+    "notes": "Editorial/store-guide atmosphere image for visit preparation."
+  },
+  {
+    "asset_id": "service-old-gold-process-20260506",
+    "file_path": "/campaign/kcg-old-gold-process-20260506.webp",
+    "image_source_type": "D",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "service_hero",
+      "category_card"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "/services"
+    ],
+    "section_usage": [
+      "service-hero",
+      "buying-process"
+    ],
+    "alt_text": "고금과 주얼리 매입 절차 상담 데스크",
+    "aspect_ratio": "wide",
+    "mobile_crop_rule": "Keep hands, tray, and desk context visible; avoid over-dark crop.",
+    "hash_or_checksum": "sha256:810ae32d73b100b8d78450eabfe3c6a30bda97443f8682427ed719f19849c678",
+    "notes": "Service process image for buying and consultation flow."
+  },
+  {
+    "asset_id": "goldbar-lineup-no-reflection-20260517",
+    "file_path": "/products/kcg-approved-goldbar-lineup-no-reflection-20260517.jpg",
+    "image_source_type": "A2",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "product_card",
+      "product_detail",
+      "product_guide",
+      "category_card",
+      "admin_reference"
+    ],
+    "related_sku": [
+      "bulk-gold-bar-consulting",
+      "goldbar-don-guide"
+    ],
+    "sku_match": "lineup",
+    "page_usage": [
+      "/products",
+      "/products/bulk-gold-bar-consulting"
+    ],
+    "section_usage": [
+      "product-hero",
+      "product-card",
+      "product-detail",
+      "goldbar-don-guide"
+    ],
+    "alt_text": "KCG 골드바 1돈 2돈 3돈 5돈 10돈 라인업 이미지",
+    "aspect_ratio": "lineup",
+    "mobile_crop_rule": "Render with object-contain; do not crop bars or weight labels.",
+    "hash_or_checksum": "sha256:dbd9ef3d7de5594c63e569dbe2b68c98bad37b650622a64b9eed0c05da23c73f",
+    "notes": "Approved A2 lineup render. Existing path is locked."
+  },
+  {
+    "asset_id": "goldbar-1don-20260517",
+    "file_path": "/products/kcg-approved-goldbar-1don-20260517.jpg",
+    "image_source_type": "A2",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "product_card",
+      "product_detail",
+      "product_guide",
+      "admin_reference"
+    ],
+    "related_sku": [
+      "investment-gold-bar-consulting",
+      "goldbar-don-guide-1don"
+    ],
+    "sku_match": "exact",
+    "page_usage": [
+      "/products",
+      "/products/investment-gold-bar-consulting"
+    ],
+    "section_usage": [
+      "product-card",
+      "product-detail",
+      "goldbar-don-guide"
+    ],
+    "alt_text": "KCG 골드바 1돈 이미지",
+    "aspect_ratio": "4:5",
+    "mobile_crop_rule": "Object-cover may be used inside fixed guide tile if the full bar remains legible.",
+    "hash_or_checksum": "sha256:fce91f1618e914d11f229612611582ab9890d91d33f279b01788c0be3b178d8d",
+    "notes": "Approved A2 SKU render for the 1돈 guide tile and product card/detail. Existing path is locked."
+  },
+  {
+    "asset_id": "goldbar-2don-20260517",
+    "file_path": "/products/kcg-approved-goldbar-2don-20260517.jpg",
+    "image_source_type": "A2",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "product_card",
+      "product_detail",
+      "product_guide",
+      "admin_reference"
+    ],
+    "related_sku": [
+      "kcg-gold-bar-2don",
+      "goldbar-don-guide-2don"
+    ],
+    "sku_match": "exact",
+    "page_usage": [
+      "/products",
+      "/products/kcg-gold-bar-2don"
+    ],
+    "section_usage": [
+      "product-card",
+      "product-detail",
+      "goldbar-don-guide"
+    ],
+    "alt_text": "KCG 골드바 2돈 이미지",
+    "aspect_ratio": "4:5",
+    "mobile_crop_rule": "Object-cover may be used inside fixed guide tile if the full bar remains legible.",
+    "hash_or_checksum": "sha256:ab2ab7263da1b93645f799b2838e421f37144faae4f9ec7289b31417c2366b01",
+    "notes": "Approved A2 SKU render for the 2돈 guide tile and product card/detail. Existing path is locked."
+  },
+  {
+    "asset_id": "goldbar-3don-20260517",
+    "file_path": "/products/kcg-approved-goldbar-3don-20260517.jpg",
+    "image_source_type": "A2",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "product_card",
+      "product_detail",
+      "product_guide",
+      "admin_reference"
+    ],
+    "related_sku": [
+      "kcg-gold-bar-3don",
+      "goldbar-don-guide-3don"
+    ],
+    "sku_match": "exact",
+    "page_usage": [
+      "/products",
+      "/products/kcg-gold-bar-3don"
+    ],
+    "section_usage": [
+      "product-card",
+      "product-detail",
+      "goldbar-don-guide"
+    ],
+    "alt_text": "KCG 골드바 3돈 이미지",
+    "aspect_ratio": "4:5",
+    "mobile_crop_rule": "Object-cover may be used inside fixed guide tile if the full bar remains legible.",
+    "hash_or_checksum": "sha256:422940aadb4e52155013292e771bb450f74c8a042c238f5cc9703b6f03d4461b",
+    "notes": "Approved A2 SKU render for the 3돈 guide tile and product card/detail. Existing path is locked."
+  },
+  {
+    "asset_id": "goldbar-5don-20260517",
+    "file_path": "/products/kcg-approved-goldbar-5don-20260517.jpg",
+    "image_source_type": "A2",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "product_card",
+      "product_detail",
+      "product_guide",
+      "admin_reference"
+    ],
+    "related_sku": [
+      "kcg-gold-bar-5don",
+      "goldbar-don-guide-5don"
+    ],
+    "sku_match": "exact",
+    "page_usage": [
+      "/products",
+      "/products/kcg-gold-bar-5don"
+    ],
+    "section_usage": [
+      "product-card",
+      "product-detail",
+      "goldbar-don-guide"
+    ],
+    "alt_text": "KCG 골드바 5돈 이미지",
+    "aspect_ratio": "4:5",
+    "mobile_crop_rule": "Object-cover may be used inside fixed guide tile if the full bar remains legible.",
+    "hash_or_checksum": "sha256:4cc8138a837be1865de3e3d16e65fd37a4f22f9139c3de0e38a38809a6ac76ca",
+    "notes": "Approved A2 SKU render for the 5돈 guide tile and product card/detail. Existing path is locked."
+  },
+  {
+    "asset_id": "goldbar-10don-20260517",
+    "file_path": "/products/kcg-approved-goldbar-10don-20260517.jpg",
+    "image_source_type": "A2",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "product_card",
+      "product_detail",
+      "product_guide",
+      "admin_reference"
+    ],
+    "related_sku": [
+      "kcg-gold-bar-37-5g",
+      "goldbar-don-guide-10don"
+    ],
+    "sku_match": "exact",
+    "page_usage": [
+      "/products",
+      "/products/kcg-gold-bar-37-5g"
+    ],
+    "section_usage": [
+      "product-card",
+      "product-detail",
+      "goldbar-don-guide"
+    ],
+    "alt_text": "KCG 골드바 10돈 이미지",
+    "aspect_ratio": "4:5",
+    "mobile_crop_rule": "Object-cover may be used inside fixed guide tile if the full bar remains legible.",
+    "hash_or_checksum": "sha256:2d260e2aa6e212eca123bacc829561ba3749bf660d87d321349520663f6e18a3",
+    "notes": "Approved A2 SKU render for the 10돈 guide tile and product card/detail. Existing path is locked."
+  },
+  {
+    "asset_id": "goldbar-product-1g-20260514",
+    "file_path": "/products/kcg-real-photo-goldbar-product-1g-20260514.jpg",
+    "image_source_type": "A1",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "product_card",
+      "product_detail",
+      "admin_reference"
+    ],
+    "related_sku": [
+      "kcg-gold-bar-1g"
+    ],
+    "sku_match": "exact",
+    "page_usage": [
+      "/products",
+      "/products/kcg-gold-bar-1g"
+    ],
+    "section_usage": [
+      "product-card",
+      "product-detail"
+    ],
+    "alt_text": "KCG 골드바 1g 실물 기준 이미지",
+    "aspect_ratio": "1:1",
+    "mobile_crop_rule": "Use object-contain; keep the entire 1g product visible.",
+    "hash_or_checksum": "sha256:8fe97e2a026e3ded4c53f940c357e7181b04fda297c1a1aa8647089325b8369d",
+    "notes": "Locked approved goldbar SKU image. Do not replace, delete, move, or placeholder."
+  },
+  {
+    "asset_id": "goldbar-product-3-75g-20260514",
+    "file_path": "/products/kcg-real-photo-goldbar-product-3-75g-20260514.jpg",
+    "image_source_type": "A1",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "product_card",
+      "product_detail",
+      "admin_reference"
+    ],
+    "related_sku": [
+      "investment-gold-bar-consulting"
+    ],
+    "sku_match": "exact",
+    "page_usage": [
+      "/products",
+      "/products/investment-gold-bar-consulting"
+    ],
+    "section_usage": [
+      "product-card",
+      "product-detail"
+    ],
+    "alt_text": "KCG 골드바 1돈 3.75g 실물 기준 이미지",
+    "aspect_ratio": "1:1",
+    "mobile_crop_rule": "Use object-contain; keep the 1돈 product and mark visible.",
+    "hash_or_checksum": "sha256:3b74c6842dcf111f346b689c9bcddb233deb45acab89a5f57cef791deb8f9363",
+    "notes": "Locked approved goldbar SKU image. Do not replace, delete, move, or placeholder."
+  },
+  {
+    "asset_id": "goldbar-product-10g-20260514",
+    "file_path": "/products/kcg-real-photo-goldbar-product-10g-20260514.jpg",
+    "image_source_type": "A1",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "product_card",
+      "product_detail",
+      "admin_reference"
+    ],
+    "related_sku": [
+      "kcg-gold-bar-10g"
+    ],
+    "sku_match": "exact",
+    "page_usage": [
+      "/products",
+      "/products/kcg-gold-bar-10g"
+    ],
+    "section_usage": [
+      "product-card",
+      "product-detail"
+    ],
+    "alt_text": "KCG 골드바 10g 실물 기준 이미지",
+    "aspect_ratio": "1:1",
+    "mobile_crop_rule": "Use object-contain; keep the entire 10g product visible.",
+    "hash_or_checksum": "sha256:5f65623b3027abdf0db3b19c7d51905b0134b38d35c7ef3dd9633d70cc1c62ac",
+    "notes": "Locked approved goldbar SKU image. Do not replace, delete, move, or placeholder."
+  },
+  {
+    "asset_id": "goldbar-product-37-5g-20260514",
+    "file_path": "/products/kcg-real-photo-goldbar-product-37-5g-20260514.jpg",
+    "image_source_type": "A1",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "product_card",
+      "product_detail",
+      "admin_reference"
+    ],
+    "related_sku": [
+      "kcg-gold-bar-37-5g"
+    ],
+    "sku_match": "exact",
+    "page_usage": [
+      "/products",
+      "/products/kcg-gold-bar-37-5g"
+    ],
+    "section_usage": [
+      "product-card",
+      "product-detail"
+    ],
+    "alt_text": "KCG 골드바 10돈 37.5g 실물 기준 이미지",
+    "aspect_ratio": "1:1",
+    "mobile_crop_rule": "Use object-contain; keep the 10돈 product and mark visible.",
+    "hash_or_checksum": "sha256:0037ce7b6182d0a42d6366f0ffe700238ffa12352a9cadb6dd174387dd6dbe6c",
+    "notes": "Locked approved goldbar SKU image. Do not replace, delete, move, or placeholder."
+  },
+  {
+    "asset_id": "goldbar-product-100g-20260514",
+    "file_path": "/products/kcg-real-photo-goldbar-product-100g-20260514.jpg",
+    "image_source_type": "A1",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "product_card",
+      "product_detail",
+      "admin_reference"
+    ],
+    "related_sku": [
+      "kcg-gold-bar-100g"
+    ],
+    "sku_match": "exact",
+    "page_usage": [
+      "/products",
+      "/products/kcg-gold-bar-100g"
+    ],
+    "section_usage": [
+      "product-card",
+      "product-detail"
+    ],
+    "alt_text": "KCG 골드바 100g 실물 기준 이미지",
+    "aspect_ratio": "1:1",
+    "mobile_crop_rule": "Use object-contain; keep the entire 100g product visible.",
+    "hash_or_checksum": "sha256:40a23b970d0a05ec39e2418ac67d72933c45d2da8e05587771467dcf2af48884",
+    "notes": "Locked approved goldbar SKU image. Do not replace, delete, move, or placeholder."
+  },
+  {
+    "asset_id": "category-pure-gold-gifts-20260506",
+    "file_path": "/products/kcg-product-pure-gold-gifts-20260506.webp",
+    "image_source_type": "B",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "category_card",
+      "b2b_category"
+    ],
+    "related_sku": [
+      "pure-gold-gift-consulting",
+      "corporate-gift-production"
+    ],
+    "sku_match": "category_only",
+    "page_usage": [
+      "/products",
+      "/products/pure-gold-gift-consulting",
+      "/products/corporate-gift-production"
+    ],
+    "section_usage": [
+      "product-card",
+      "product-detail"
+    ],
+    "alt_text": "KCG 순금 선물 제품 상담 이미지",
+    "aspect_ratio": "category",
+    "mobile_crop_rule": "Use as representative category image only; do not imply exact SKU appearance.",
+    "hash_or_checksum": "sha256:71ffd6c4d3ddd6a4d45b0f02201eaa43ac2b30f1f5ce53d5abc319c031f6aa62",
+    "notes": "Category representative. Not allowed for exact individual no-photo products such as pure-gold-card-1g."
+  },
+  {
+    "asset_id": "category-jewelry-buying-20260503",
+    "file_path": "/products/kcg-product-jewelry-buying-20260503.webp",
+    "image_source_type": "B",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "category_card"
+    ],
+    "related_sku": [
+      "old-gold-jewelry-buying",
+      "pure-gold-baby-ring-buying",
+      "18k-jewelry-buying",
+      "14k-jewelry-buying",
+      "platinum-silver-buying",
+      "corporate-precious-metal-buying"
+    ],
+    "sku_match": "category_only",
+    "page_usage": [
+      "/products"
+    ],
+    "section_usage": [
+      "product-card",
+      "product-detail"
+    ],
+    "alt_text": "KCG 고금·주얼리 매입 상담 이미지",
+    "aspect_ratio": "category",
+    "mobile_crop_rule": "Use as representative buying category image; crop for tray/consultation context.",
+    "hash_or_checksum": "sha256:ee84373d4f9625cc636886a58e6b2d939d2d1d93d40dd5162a218da27be9a568",
+    "notes": "Category representative for buying consultation, not exact product proof."
+  },
+  {
+    "asset_id": "placeholder-image-pending",
+    "file_path": "placeholder:image-pending",
+    "image_source_type": "F",
+    "approval_status": "approved",
+    "allowed_usage": [
+      "product_placeholder"
+    ],
+    "related_sku": [
+      "pure-gold-baby-ring-3-75g",
+      "pure-gold-card-1g",
+      "pure-gold-commemorative-medal"
+    ],
+    "sku_match": "pending",
+    "page_usage": [
+      "/products",
+      "/products/pure-gold-baby-ring-3-75g",
+      "/products/pure-gold-card-1g",
+      "/products/pure-gold-commemorative-medal"
+    ],
+    "section_usage": [
+      "product-card",
+      "product-detail"
+    ],
+    "alt_text": "이미지 준비중",
+    "aspect_ratio": "ui-placeholder",
+    "mobile_crop_rule": "No image crop. Render text placeholder with stable square card height.",
+    "hash_or_checksum": "not_applicable",
+    "notes": "Used only when an individual product lacks an approved A1/A2 asset."
+  },
+  {
+    "asset_id": "candidate-hero-price-desk-20260517-01",
+    "file_path": "/assets/generated/candidates/hero/kcg-candidate-hero-20260517-01.webp",
+    "image_source_type": "C",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-hero"
+    ],
+    "alt_text": "밝은 가격 상담 데스크 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep the desk, soft gold accent, and open right-side breathing room inside the center safe area.",
+    "hash_or_checksum": "sha256:4eab38777ecde6d12a4b69461fa8443c6d6c59488f6dba99b70f34c3229eed1f",
+    "notes": "Hero expansion candidate. Bright price-desk mood with no embedded price text and no fake certificate."
+  },
+  {
+    "asset_id": "candidate-hero-phone-consult-20260517-02",
+    "file_path": "/assets/generated/candidates/hero/kcg-candidate-hero-20260517-02.webp",
+    "image_source_type": "E",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-hero"
+    ],
+    "alt_text": "밝은 전화 상담 분위기 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep the handset, note sheet, and side-angle shoulder silhouette visible without face close-up.",
+    "hash_or_checksum": "sha256:f64affdf91768410d8cc7f38bc2bcf77812d22023a126121118585c612c44e8e",
+    "notes": "Virtual-people candidate. Face is not a proof point; no name tag, title, testimonial, or staff claim."
+  },
+  {
+    "asset_id": "candidate-hero-visit-prep-20260517-03",
+    "file_path": "/assets/generated/candidates/hero/kcg-candidate-hero-20260517-03.webp",
+    "image_source_type": "C",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-hero"
+    ],
+    "alt_text": "방문 준비와 상담 예약 분위기 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep the visit-prep objects centered; do not imply this is a verified store exterior.",
+    "hash_or_checksum": "sha256:062a32554c7a8f7b94a127d83c1577d3f50ea71e549d05c0ab8368f8de234614",
+    "notes": "Hero/store-guide bridge candidate for visit preparation without fake storefront."
+  },
+  {
+    "asset_id": "candidate-hero-consultation-table-20260517-04",
+    "file_path": "/assets/generated/candidates/hero/kcg-candidate-hero-20260517-04.webp",
+    "image_source_type": "E",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-hero"
+    ],
+    "alt_text": "상담 테이블과 손 중심 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Prefer hands and table context; avoid cropped faces or real-person proof cues.",
+    "hash_or_checksum": "sha256:fab7834652b8eb8837a7a5cc568d79a1af7b8bd03ff266f927c6f90ce094ba67",
+    "notes": "Virtual consultation atmosphere candidate with hands and documents, no fake appraisal certificate."
+  },
+  {
+    "asset_id": "candidate-hero-product-case-20260517-05",
+    "file_path": "/assets/generated/candidates/hero/kcg-candidate-hero-20260517-05.webp",
+    "image_source_type": "C",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-hero"
+    ],
+    "alt_text": "제품 케이스와 상담 데스크 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep the generic product case abstract; do not imply exact SKU contents.",
+    "hash_or_checksum": "sha256:3c1a6f99a24655a0c7e96e709e54b01ab6d18224e5c0c20c4acf64662c34fda9",
+    "notes": "Hero expansion candidate for product consultation, not an individual product proof image."
+  },
+  {
+    "asset_id": "candidate-service-document-check-20260517-01",
+    "file_path": "/assets/generated/candidates/service/kcg-candidate-service-20260517-01.webp",
+    "image_source_type": "D",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-service"
+    ],
+    "alt_text": "서류 확인과 상담 절차 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep documents abstract and unreadable; no fake certificate or stamp.",
+    "hash_or_checksum": "sha256:0f02ea0e4ca41c022ef9bb0f9f64b5b97a07c62d79d4f4b00e788239dadc625d",
+    "notes": "Service candidate for consultation process and intake guidance."
+  },
+  {
+    "asset_id": "candidate-service-purity-check-20260517-02",
+    "file_path": "/assets/generated/candidates/service/kcg-candidate-service-20260517-02.webp",
+    "image_source_type": "D",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-service"
+    ],
+    "alt_text": "순도 확인 절차 분위기 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep tools and tray visible; avoid repeated scale-only framing.",
+    "hash_or_checksum": "sha256:e7bd72ede27fe16023c91d71f0337ac3107d0e24be8e67613f85077b1257b283",
+    "notes": "Service candidate for inspection flow. No exact product or fake assay result."
+  },
+  {
+    "asset_id": "candidate-service-phone-intake-20260517-03",
+    "file_path": "/assets/generated/candidates/service/kcg-candidate-service-20260517-03.webp",
+    "image_source_type": "E",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-service"
+    ],
+    "alt_text": "전화 접수와 방문 안내 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Side-angle only; keep face secondary and the phone/document workflow primary.",
+    "hash_or_checksum": "sha256:f9302f55dc5f1655e677089d3665bc3c57e64907d05db5d2323d134e9941c59b",
+    "notes": "Virtual-people service candidate. No actual employee implication."
+  },
+  {
+    "asset_id": "candidate-service-product-case-20260517-04",
+    "file_path": "/assets/generated/candidates/service/kcg-candidate-service-20260517-04.webp",
+    "image_source_type": "D",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-service"
+    ],
+    "alt_text": "제품 케이스 확인 절차 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep generic case and checklist composition; no exact SKU or warranty implication.",
+    "hash_or_checksum": "sha256:3958d5171109fbe5ac29901a10db48be4f35dbaa9b66fb614d7514ef43e05f5d",
+    "notes": "Service candidate for packaging/intake step with non-SKU product case."
+  },
+  {
+    "asset_id": "candidate-store-guide-visit-kit-20260517-01",
+    "file_path": "/assets/generated/candidates/store-guide/kcg-candidate-store-guide-20260517-01.webp",
+    "image_source_type": "C",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-store-guide"
+    ],
+    "alt_text": "방문 준비물과 상담 예약 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep visit-prep objects clear; do not fake a real KCG storefront.",
+    "hash_or_checksum": "sha256:97edd2e10507e752543976ca408c3e031fcf645b6934de6a6460c36568b6bc6f",
+    "notes": "Store-guide candidate for what to prepare before visiting."
+  },
+  {
+    "asset_id": "candidate-store-guide-counter-20260517-02",
+    "file_path": "/assets/generated/candidates/store-guide/kcg-candidate-store-guide-20260517-02.webp",
+    "image_source_type": "C",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-store-guide"
+    ],
+    "alt_text": "방문 상담 카운터 분위기 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Use generic reception/counter mood; no signage that implies verified interior.",
+    "hash_or_checksum": "sha256:ad6c839ff14a18d7df70572a31a55f1b6d6a59604fa78a3bf9e64d9beaf617f7",
+    "notes": "Store-guide candidate. Generic visit guidance, not a real store interior claim."
+  },
+  {
+    "asset_id": "candidate-store-guide-map-desk-20260517-03",
+    "file_path": "/assets/generated/candidates/store-guide/kcg-candidate-store-guide-20260517-03.webp",
+    "image_source_type": "C",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-store-guide"
+    ],
+    "alt_text": "지도와 방문 동선 안내 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep map abstract with no fake address or store sign.",
+    "hash_or_checksum": "sha256:d1a8d2cfa1977d4b945fa7bc657e512aa253222db941f95dc89e8ce3436c0a4c",
+    "notes": "Store-guide candidate for location-prep mood. No fake map text."
+  },
+  {
+    "asset_id": "candidate-company-transparent-operation-20260517-01",
+    "file_path": "/assets/generated/candidates/company/kcg-candidate-company-20260517-01.webp",
+    "image_source_type": "C",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-company"
+    ],
+    "alt_text": "투명한 운영과 기록 관리 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep records abstract and unreadable; no fake license or certificate.",
+    "hash_or_checksum": "sha256:8a2332ce560e94c19ea0f857c0ef90af3bf1f0dcf72c9c18752171c160d01774",
+    "notes": "Company candidate for transparent operation, avoiding goldbar wallpaper."
+  },
+  {
+    "asset_id": "candidate-company-consultation-management-20260517-02",
+    "file_path": "/assets/generated/candidates/company/kcg-candidate-company-20260517-02.webp",
+    "image_source_type": "E",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-company"
+    ],
+    "alt_text": "상담 관리와 방문 응대 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Use over-the-shoulder/side composition; no face close-up or real staff implication.",
+    "hash_or_checksum": "sha256:f47c3703c679f025d1d1b28ed7fc9eb84919d0e5c85c926a60e7ef5aee94be92",
+    "notes": "Virtual-people company candidate. No employee, customer, or expert guarantee claim."
+  },
+  {
+    "asset_id": "candidate-company-material-control-20260517-03",
+    "file_path": "/assets/generated/candidates/company/kcg-candidate-company-20260517-03.webp",
+    "image_source_type": "C",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-company"
+    ],
+    "alt_text": "자산 관리와 상담 운영 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep material cases generic and non-SKU; avoid vault/luxury/investment mood.",
+    "hash_or_checksum": "sha256:76716d61647851840e340335eb0ca0967e04307f181d05da6a9f8ce3d7fdb335",
+    "notes": "Company candidate for controlled, practical operation. No casino/luxury effect."
+  },
+  {
+    "asset_id": "candidate-hero-photo-consultation-20260517-06",
+    "file_path": "/assets/generated/candidates/hero/kcg-candidate-hero-photo-20260517-06.webp",
+    "image_source_type": "E",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-hero"
+    ],
+    "alt_text": "밝은 상담 데스크 실사형 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep the consultation desk and right-side negative space; avoid treating the person as actual KCG staff.",
+    "hash_or_checksum": "sha256:2db67ea628c9165bff0b076a9ab2282696c4077984acf3dd298b3ad70f4a03e2",
+    "notes": "Built-in image generation output. Candidate only; includes no readable price text, staff claim, or exact SKU proof."
+  },
+  {
+    "asset_id": "candidate-hero-photo-negative-space-20260517-07",
+    "file_path": "/assets/generated/candidates/hero/kcg-candidate-hero-photo-20260517-07.webp",
+    "image_source_type": "E",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-hero"
+    ],
+    "alt_text": "홈 배너 확장용 밝은 상담 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep the clean right side available for overlay copy; keep faces cropped out.",
+    "hash_or_checksum": "sha256:f64fb4d934f71c8b8529f61e8203dd30253256f1708761c1f6a845cf2f9d4bc3",
+    "notes": "Built-in image generation output for hero slide expansion. Candidate only; not operationally connected."
+  },
+  {
+    "asset_id": "candidate-service-photo-jewelry-check-20260517-05",
+    "file_path": "/assets/generated/candidates/service/kcg-candidate-service-photo-20260517-05.webp",
+    "image_source_type": "D",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-service"
+    ],
+    "alt_text": "고금 주얼리 확인 절차 실사형 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep tray, hands, and inspection context visible; avoid cropped face and fake appraisal proof.",
+    "hash_or_checksum": "sha256:6bc3a2321aaa65d5c42d46b96bb8543a0da9dc497eddc55e095b408c2cd9c457",
+    "notes": "Built-in image generation output for service replacement candidate. Candidate only; tiny interface details are treated as non-readable background texture."
+  },
+  {
+    "asset_id": "candidate-store-guide-photo-visit-prep-20260517-04",
+    "file_path": "/assets/generated/candidates/store-guide/kcg-candidate-store-guide-photo-20260517-04.webp",
+    "image_source_type": "C",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-store-guide"
+    ],
+    "alt_text": "방문 준비 안내 실사형 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep visit-prep objects and abstract map; do not imply verified KCG storefront or exact address.",
+    "hash_or_checksum": "sha256:fa3032ce3f96a41b6678279edf2afb498a881cfc29eece1a1453ab9407922e60",
+    "notes": "Built-in image generation output for store-guide replacement candidate. Candidate only; no operational link."
+  },
+  {
+    "asset_id": "candidate-company-photo-operations-20260517-04",
+    "file_path": "/assets/generated/candidates/company/kcg-candidate-company-photo-20260517-04.webp",
+    "image_source_type": "E",
+    "approval_status": "candidate",
+    "allowed_usage": [
+      "candidate_preview"
+    ],
+    "related_sku": [],
+    "sku_match": "not_applicable",
+    "page_usage": [
+      "candidate-preview"
+    ],
+    "section_usage": [
+      "candidate-company"
+    ],
+    "alt_text": "투명 운영과 상담 관리 실사형 후보 이미지",
+    "aspect_ratio": "16:9",
+    "mobile_crop_rule": "Keep documents abstract and unreadable; do not imply a fake license, certificate, or actual employee.",
+    "hash_or_checksum": "sha256:fdce87c15301707ae5829f4504ab5af1514c830b1c18810092112166d148c91d",
+    "notes": "Built-in image generation output for company replacement candidate. Candidate only; no approval implied."
+  }
+]

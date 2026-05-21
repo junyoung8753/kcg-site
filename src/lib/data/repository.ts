@@ -14,6 +14,7 @@ import type {
   UpdatePriceInput,
 } from "@/types/price";
 import type { Product, ProductUpsertInput } from "@/types/product";
+import type { SiteAsset, SiteAssetInput, SiteAssetUsage, SiteAssetUsageInput } from "@/types/media";
 
 export interface SiteRepository {
   getPrices(options?: { visibleOnly?: boolean }): Promise<PriceRecord[]>;
@@ -43,4 +44,8 @@ export interface SiteRepository {
   ): Promise<RepositoryMutationResult>;
   deleteAnnouncement(id: string): Promise<RepositoryMutationResult>;
   upsertProduct(input: ProductUpsertInput): Promise<RepositoryMutationResult>;
+  getSiteAssets(): Promise<SiteAsset[]>;
+  getSiteAssetUsages(): Promise<SiteAssetUsage[]>;
+  createSiteAsset(input: SiteAssetInput): Promise<SiteAsset>;
+  upsertSiteAssetUsage(input: SiteAssetUsageInput): Promise<RepositoryMutationResult>;
 }

@@ -4,12 +4,17 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatNumber, formatWon } from "@/lib/format";
-import { getPriceTradeGuide, priceLineupRows } from "@/lib/price-presenter";
+import { priceLineupRows } from "@/lib/price-presenter";
 import { homeDeskNotes, siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 import type { PriceCategory, PriceHistoryEntry, PriceRecord } from "@/types/price";
 
 export type PriceLineupVisualMode = "campaign" | "signboard";
+export type CampaignSlide = {
+  image: string;
+  alt: string;
+  objectPosition?: string;
+};
 
 type LineupVisualStyle = {
   openButton: string;
@@ -32,28 +37,25 @@ type LineupVisualStyle = {
   emptyText: string;
 };
 
-const campaignSlides = [
+const defaultCampaignSlides: CampaignSlide[] = [
   {
-    image: "/campaign/kcg-generated-goldbar-banner-20260508.webp",
-    alt: "한국센터금거래소 골드바 상담용 대표 배너 이미지",
-    objectPosition: "64% center",
+    image: "/campaign/kcg-approved-goldbar-lineup-reflection-20260517.jpg",
+    alt: "KCG 골드바 1돈 2돈 3돈 5돈 10돈 라인업 배너",
+    objectPosition: "50% center",
   },
   {
     image: "/campaign/kcg-home-human-consultation-20260506.webp",
-    alt: "한국센터금거래소 상담원과 고객 상담 장면",
+    alt: "KCG 상담과 방문 준비 이미지",
     objectPosition: "58% center",
   },
   {
     image: "/campaign/kcg-home-seoul-retail-20260506.webp",
-    alt: "종로 귀금속 매장 분위기 이미지",
+    alt: "KCG 종로 매장 방문 안내 이미지",
     objectPosition: "50% center",
   },
-  {
-    image: "/campaign/kcg-old-gold-process-20260506.webp",
-    alt: "고금 주얼리 매입 절차 상담 이미지",
-    objectPosition: "52% center",
-  },
-] as const;
+];
+
+const lineupBasisLabel = "3.75g 기준";
 
 const lineupStyle = {
   openButton:
@@ -89,11 +91,12 @@ function getChangeTone(diff: number) {
   return "text-white/45";
 }
 
-function formatChangeLine(history: PriceHistoryEntry | null, zeroSymbol: string) {
+function formatChangeLine(history: PriceHistoryEntry | null) {
   if (!history) return null;
   const diff = history.newValue - history.previousValue;
+  if (diff === 0) return null;
   const percent = history.previousValue ? (diff / history.previousValue) * 100 : 0;
-  const symbol = diff < 0 ? "▼" : diff > 0 ? "▲" : zeroSymbol;
+  const symbol = diff < 0 ? "▼" : "▲";
   const signedAmount = `${diff < 0 ? "-" : diff > 0 ? "+" : ""}${formatNumber(Math.abs(diff))}`;
 
   return {
@@ -109,14 +112,12 @@ function PriceCell({
   text,
   note,
   style,
-  zeroSymbol,
 }: {
   price?: PriceRecord;
   history?: PriceHistoryEntry | null;
   text?: string;
   note?: string;
   style: LineupVisualStyle;
-  zeroSymbol: string;
 }) {
   if (text) {
     return (
@@ -130,22 +131,18 @@ function PriceCell({
     return <p className={cn("text-base font-semibold sm:text-xl", style.emptyText)}>문의</p>;
   }
 
-  const change = formatChangeLine(history ?? null, zeroSymbol);
+  const change = formatChangeLine(history ?? null);
 
   return (
     <div>
       <p className={cn("kcg-price-primary text-[1.08rem] font-semibold sm:text-[1.48rem]", style.priceText)}>
         {formatWon(price.value)}
       </p>
-      <p className={cn("mt-0.5 text-[0.68rem] leading-5 sm:text-[0.82rem]", style.metaText)}>
-        {change ? (
-          <>
-            {change.percent} <span className={change.tone}>{change.amount}</span>
-          </>
-        ) : (
-          getPriceTradeGuide(price.category)
-        )}
-      </p>
+      {change ? (
+        <p className={cn("mt-0.5 text-[0.68rem] leading-5 sm:text-[0.82rem]", style.metaText)}>
+          {change.percent} <span className={change.tone}>{change.amount}</span>
+        </p>
+      ) : null}
       {note ? <p className={cn("mt-0.5 text-[0.68rem] leading-5 sm:text-[0.82rem]", style.noteText)}>{note}</p> : null}
     </div>
   );
@@ -160,7 +157,13 @@ export function PriceLineup({
   announcedLabel = "당일 고시 준비중",
   announcedDateLabel = "고시 준비중",
   announcedHeading = "당일 고시 시각",
+  announcementStatusLabel = "회사 고시",
+  announcementNoticeBadgeLabel,
+  announcementNoticeTitle,
+  announcementNoticeBody,
+  announcementIsStale = false,
   krwRate,
+  campaignSlides = defaultCampaignSlides,
 }: {
   prices: PriceRecord[];
   history: PriceHistoryEntry[];
@@ -170,17 +173,23 @@ export function PriceLineup({
   announcedLabel?: string;
   announcedDateLabel?: string;
   announcedHeading?: string;
+  announcementStatusLabel?: string;
+  announcementNoticeBadgeLabel?: string;
+  announcementNoticeTitle?: string;
+  announcementNoticeBody?: string;
+  announcementIsStale?: boolean;
   krwRate?: number;
+  campaignSlides?: CampaignSlide[];
 }) {
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [isSlidePaused, setIsSlidePaused] = useState(false);
-  const [isLineupOpen, setIsLineupOpen] = useState(true);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const hasMultipleCampaignSlides = campaignSlides.length > 1;
+  const activeCampaignSlideIndex =
+    campaignSlides.length > 0 ? activeSlideIndex % campaignSlides.length : 0;
   const priceByCategory = new Map(prices.map((price) => [price.category, price]));
   const style = lineupStyle;
   const wrapperHeightClass = "lg:min-h-[38.5rem]";
   const contentHeightClass = "aspect-[16/9] min-h-0 sm:min-h-[23rem] lg:aspect-auto lg:min-h-[38.5rem]";
-  const zeroChangeSymbol = visualMode === "signboard" ? "-" : "━";
   const visualShellClass = visualMode === "campaign" ? "w-full kcg-full-bleed-campaign" : "mx-auto max-w-[1500px]";
   const wrapperLayoutClass = "relative flex flex-col lg:block";
   const panelPositionClass =
@@ -204,21 +213,18 @@ export function PriceLineup({
     : "자동 참고";
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => setIsHydrated(true));
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
-
-  useEffect(() => {
     if (visualMode !== "campaign") return;
+    if (!hasMultipleCampaignSlides) return;
     if (isSlidePaused) return;
     const timer = window.setInterval(() => {
       setActiveSlideIndex((index) => (index + 1) % campaignSlides.length);
     }, 5600);
 
     return () => window.clearInterval(timer);
-  }, [isSlidePaused, visualMode]);
+  }, [campaignSlides.length, hasMultipleCampaignSlides, isSlidePaused, visualMode]);
 
   const moveSlide = (offset: number) => {
+    if (campaignSlides.length === 0) return;
     setActiveSlideIndex((index) => (index + offset + campaignSlides.length) % campaignSlides.length);
   };
 
@@ -232,14 +238,11 @@ export function PriceLineup({
           <div className={cn(wrapperLayoutClass, wrapperHeightClass)}>
             <div
               data-testid="home-price-lineup-panel"
-              aria-hidden={visualMode === "campaign" && !isLineupOpen}
               className={cn(
                 "transition-[opacity,transform] duration-300",
                 panelPositionClass,
                 style.panelShell,
-                visualMode === "campaign" && !isLineupOpen
-                  ? "hidden opacity-0 lg:invisible lg:block lg:pointer-events-none lg:w-[37vw] lg:-translate-x-8 2xl:w-[42rem]"
-                  : panelOpenClass,
+                panelOpenClass,
               )}
             >
               <div className={style.panelBase} />
@@ -263,6 +266,9 @@ export function PriceLineup({
                     >
                       {lineupTitle}
                     </h1>
+                    <p className={cn("mt-1.5 text-[0.72rem] font-semibold leading-5 sm:text-[0.82rem]", style.dateText)}>
+                      {lineupBasisLabel}
+                    </p>
                     <p
                       className={cn(
                         "mt-3 text-[0.7rem] font-semibold uppercase leading-4 tracking-[0.12em] sm:hidden",
@@ -275,29 +281,52 @@ export function PriceLineup({
                   <p className={cn("text-right text-[0.72rem] sm:text-[0.86rem]", style.dateText)}>
                     {announcedDateLabel}
                   </p>
-                  {visualMode === "campaign" && isHydrated ? (
-                    <button
-                      type="button"
-                      onClick={() => setIsLineupOpen(false)}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/12 bg-white/8 text-xl font-light leading-none text-white/72 transition hover:border-white/28 hover:bg-white/14 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffcc00]"
-                      aria-label="시세표 닫기"
-                    >
-                      ×
-                    </button>
-                  ) : null}
                 </div>
+
+                {announcementNoticeBody ? (
+                  <div
+                    data-testid="price-announcement-notice"
+                    className={cn(
+                      "mx-4 mb-3 border px-4 py-3 text-xs leading-5 sm:mx-8",
+                      visualMode === "campaign"
+                        ? announcementIsStale
+                          ? "border-[#ffcc00]/35 bg-[#332c14]/92 text-[#ffe9a3]"
+                          : "border-white/10 bg-white/7 text-white/72"
+                        : announcementIsStale
+                          ? "border-[#e4ca72] bg-[#fff8d7] text-[#6f5400]"
+                          : "border-[#dfe6e4] bg-white/76 text-[#5f6868]",
+                    )}
+                  >
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span
+                        className={cn(
+                          "inline-flex px-2 py-1 text-[10px] font-black tracking-[0.12em]",
+                          visualMode === "campaign"
+                            ? "bg-[#ffcc00] text-[#15191b]"
+                            : "bg-[#15191b] text-white",
+                        )}
+                      >
+                        {announcementNoticeBadgeLabel || announcementStatusLabel}
+                      </span>
+                      <p className="font-bold">{announcementNoticeTitle || announcedHeading}</p>
+                    </div>
+                    <p className={cn("mt-2", visualMode === "campaign" ? "text-white/76" : "text-[#687171]")}>
+                      {announcementNoticeBody}
+                    </p>
+                  </div>
+                ) : null}
 
                 {visualMode === "signboard" ? (
                   <div className="grid grid-cols-2 gap-2 border-t border-white/10 px-4 pb-3 pt-3 sm:px-8">
                     <a
                       href={`tel:${siteConfig.contact.phone}`}
-                      className="inline-flex h-10 items-center justify-center rounded-full bg-[#ffcc00] px-4 text-sm font-semibold text-[#171717]"
+                      className="kcg-action-token inline-flex h-10 items-center justify-center rounded-full bg-[#ffcc00] px-4 text-sm font-semibold text-[#171717]"
                     >
                       전화
                     </a>
                     <Link
                       href="/about"
-                      className="inline-flex h-10 items-center justify-center rounded-full border border-white/14 bg-white/8 px-4 text-sm font-semibold text-white"
+                      className="kcg-action-token inline-flex h-10 items-center justify-center rounded-full border border-white/14 bg-white/8 px-4 text-sm font-semibold text-white"
                     >
                       오시는 길
                     </Link>
@@ -335,14 +364,12 @@ export function PriceLineup({
                           text={row.sellText}
                           history={getLatestChange(row.sellCategory, history)}
                           style={style}
-                          zeroSymbol={zeroChangeSymbol}
                         />
                         <PriceCell
                           price={buy}
                           history={getLatestChange(row.buyCategory, history)}
                           note={row.buyNote}
                           style={style}
-                          zeroSymbol={zeroChangeSymbol}
                         />
                       </div>
                     );
@@ -362,17 +389,6 @@ export function PriceLineup({
               </div>
             </div>
 
-            {visualMode === "campaign" && !isLineupOpen ? (
-              <button
-                type="button"
-                data-testid="home-price-lineup-restore"
-                onClick={() => setIsLineupOpen(true)}
-                className="absolute left-5 top-5 z-30 inline-flex h-10 items-center justify-center rounded-full border border-[#d8e1df] bg-white/90 px-4 text-sm font-bold text-[#15191b] shadow-[0_12px_30px_rgba(24,32,30,0.16)] backdrop-blur transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffcc00] lg:left-[clamp(7rem,12vw,17rem)]"
-              >
-                시세표 보기
-              </button>
-            ) : null}
-
             {visualMode === "campaign" ? (
               <div
                 data-testid="home-campaign-visual"
@@ -385,10 +401,13 @@ export function PriceLineup({
                 {campaignSlides.map((slide, index) => (
                   <div
                     key={slide.image}
+                    data-testid="home-campaign-slide"
+                    data-active={index === activeCampaignSlideIndex ? "true" : "false"}
+                    data-slide-image={slide.image}
                     className={`absolute inset-0 transition-opacity duration-700 ${
-                      index === activeSlideIndex ? "opacity-100" : "opacity-0"
+                      index === activeCampaignSlideIndex ? "opacity-100" : "opacity-0"
                     }`}
-                    aria-hidden={index !== activeSlideIndex}
+                    aria-hidden={index !== activeCampaignSlideIndex}
                   >
                     <Image
                       src={slide.image}
@@ -404,40 +423,44 @@ export function PriceLineup({
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.03),transparent_34%,rgba(0,0,0,0.02)_100%)]" />
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.16))]" />
 
-                <button
-                  type="button"
-                  onClick={() => moveSlide(-1)}
-                  className="absolute left-5 top-1/2 z-20 hidden h-16 w-12 -translate-y-1/2 items-center justify-center rounded-md bg-white/72 text-3xl font-light text-[#171717] shadow-[0_12px_30px_rgba(0,0,0,0.12)] backdrop-blur transition hover:bg-white lg:inline-flex"
-                  aria-label="이전 슬라이드"
-                >
-                  ‹
-                </button>
-                <button
-                  type="button"
-                  onClick={() => moveSlide(1)}
-                  className="absolute right-5 top-1/2 z-20 hidden h-16 w-12 -translate-y-1/2 items-center justify-center rounded-md bg-white/72 text-3xl font-light text-[#171717] shadow-[0_12px_30px_rgba(0,0,0,0.12)] backdrop-blur transition hover:bg-white lg:inline-flex"
-                  aria-label="다음 슬라이드"
-                >
-                  ›
-                </button>
+                {hasMultipleCampaignSlides ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => moveSlide(-1)}
+                      className="absolute left-5 top-1/2 z-20 hidden h-16 w-12 -translate-y-1/2 items-center justify-center rounded-md bg-white/72 text-3xl font-light text-[#171717] shadow-[0_12px_30px_rgba(0,0,0,0.12)] backdrop-blur transition hover:bg-white lg:inline-flex"
+                      aria-label="이전 슬라이드"
+                    >
+                      ‹
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => moveSlide(1)}
+                      className="absolute right-5 top-1/2 z-20 hidden h-16 w-12 -translate-y-1/2 items-center justify-center rounded-md bg-white/72 text-3xl font-light text-[#171717] shadow-[0_12px_30px_rgba(0,0,0,0.12)] backdrop-blur transition hover:bg-white lg:inline-flex"
+                      aria-label="다음 슬라이드"
+                    >
+                      ›
+                    </button>
 
-                <div className="absolute inset-x-0 bottom-0 z-10 flex justify-end px-5 py-5 sm:px-8 lg:px-10">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-2">
-                      {campaignSlides.map((slide, index) => (
-                        <button
-                          key={slide.image}
-                          type="button"
-                          onClick={() => setActiveSlideIndex(index)}
-                          className={`h-2 rounded-full transition-all ${
-                            index === activeSlideIndex ? "w-11 bg-[#ffcc00]" : "w-3 bg-white/80 hover:bg-white"
-                          }`}
-                          aria-label={`${index + 1}번째 슬라이드 보기`}
-                        />
-                      ))}
+                    <div className="absolute inset-x-0 bottom-0 z-10 flex justify-end px-5 py-5 sm:px-8 lg:px-10">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          {campaignSlides.map((slide, index) => (
+                            <button
+                              key={slide.image}
+                              type="button"
+                              onClick={() => setActiveSlideIndex(index)}
+                              className={`h-2 rounded-full transition-all ${
+                                index === activeCampaignSlideIndex ? "w-11 bg-[#ffcc00]" : "w-3 bg-white/80 hover:bg-white"
+                              }`}
+                              aria-label={`${index + 1}번째 슬라이드 보기`}
+                            />
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  </>
+                ) : null}
               </div>
             ) : (
               <div
@@ -507,6 +530,9 @@ export function PriceLineup({
                       <div>
                         <p className="font-semibold text-[#15191b]">{announcedHeading}</p>
                         <p>{announcedLabel}</p>
+                        {announcementIsStale && announcementNoticeBody ? (
+                          <p className="mt-2 text-xs leading-5 text-[#8a6b00]">{announcementNoticeBody}</p>
+                        ) : null}
                       </div>
                       <div>
                         <p className="font-semibold text-[#15191b]">상담 가능 시간</p>
@@ -524,13 +550,13 @@ export function PriceLineup({
                     <div className="mt-5 grid gap-3 sm:grid-cols-2">
                       <Link
                         href="/prices"
-                        className="inline-flex h-12 items-center justify-center rounded-full bg-[#ffcc00] px-6 text-sm font-semibold text-[#171717] transition hover:bg-[#f2bf00]"
+                        className="kcg-action-token inline-flex h-12 items-center justify-center rounded-full bg-[#ffcc00] px-6 text-sm font-semibold text-[#171717] transition hover:bg-[#f2bf00]"
                       >
                         전체 시세 보기
                       </Link>
                       <a
                         href={`tel:${siteConfig.contact.phone}`}
-                        className="inline-flex h-12 items-center justify-center rounded-full border border-[#d7e0dd] bg-white/84 px-6 text-sm font-semibold text-[#171717] transition hover:bg-white"
+                        className="kcg-action-token inline-flex h-12 items-center justify-center rounded-full border border-[#d7e0dd] bg-white/84 px-6 text-sm font-semibold text-[#171717] transition hover:bg-white"
                       >
                         전화 문의 {siteConfig.contact.phone}
                       </a>
@@ -548,7 +574,9 @@ export function PriceLineup({
           <div className="border-b border-r border-[#dfe7e5] px-6 py-6 xl:border-b-0">
             <p className="kcg-data-label text-[#9a8a00]">고시 시각</p>
             <p className="mt-3 text-base font-bold tracking-[-0.018em] text-[#15191b]">{announcedLabel}</p>
-            <p className="mt-2 kcg-caption text-[#687171]">회사 고시가 우선 기준</p>
+            <p className="mt-2 kcg-caption text-[#687171]">
+              {announcementIsStale ? "거래 전 확인 필요" : announcementStatusLabel} · 회사 고시가 우선 기준
+            </p>
           </div>
           <div className="border-b border-r border-[#dfe7e5] px-6 py-6 xl:border-b-0">
             <p className="kcg-data-label text-[#9a8a00]">국제 참고</p>
@@ -558,11 +586,11 @@ export function PriceLineup({
           <div className="border-b border-r border-[#dfe7e5] px-6 py-6 sm:border-b-0">
             <p className="kcg-data-label text-[#9a8a00]">USD/KRW</p>
             <p className="mt-3 text-base font-bold tracking-[-0.018em] text-[#15191b]">{krwRateLabel}</p>
-            <p className="mt-2 kcg-caption text-[#687171]">국내 환산 기준</p>
+            <p className="mt-2 kcg-caption text-[#687171]">시장 참고 환율</p>
           </div>
           <div className="px-6 py-6">
             <p className="kcg-data-label text-[#9a8a00]">상품/매입</p>
-            <p className="mt-3 text-base font-bold tracking-[-0.018em] text-[#15191b]">{siteConfig.contact.phone}</p>
+            <p className="kcg-number-token mt-3 text-base font-bold tracking-[-0.018em] text-[#15191b]">{siteConfig.contact.phone}</p>
             <p className="mt-2 kcg-caption text-[#687171]">품목·수량 확인</p>
           </div>
         </div>

@@ -10,6 +10,8 @@ import {
 } from "@/actions/price-actions";
 import { AdminSubmitButton } from "@/components/admin/admin-submit-button";
 import { formatDateTimeKorean, formatDateTimeLocalKorean } from "@/lib/format";
+import type { PriceAnnouncementDisplay } from "@/lib/price-announcement";
+import { calculateGoldPurityBuyPrices } from "@/lib/price-formulas";
 import { priceLineupRows, type PriceLineupRow } from "@/lib/price-presenter";
 import type {
   PriceAutoSettings,
@@ -24,6 +26,7 @@ interface AdminPricesWorkspaceProps {
   prices: PriceRecord[];
   settings: PriceAutoSettings;
   suggestion: PriceAutoSuggestion | null;
+  publicPriceStatus: PriceAnnouncementDisplay;
   history: PriceHistoryEntry[];
   freshness: PriceFreshness;
   hasMetalsKey: boolean;
@@ -128,12 +131,12 @@ function getElapsedHoursLabel(value: string | null) {
 function getStaleGuardLabel(settings: PriceAutoSettings, freshness: PriceFreshness) {
   if (!settings.staleGuardEnabled) return "꺼짐";
   const latest = freshness.latestManualChangedAt ?? freshness.latestAnyChangedAt;
-  if (!latest) return "다음 자동 점검 때 ON 전환 가능";
+  if (!latest) return "수동 등록 확인 필요";
   const date = new Date(latest);
   if (Number.isNaN(date.getTime())) return "수동 등록 시각 확인 필요";
   const elapsedHours = (Date.now() - date.getTime()) / 1000 / 60 / 60;
   return elapsedHours >= settings.staleAfterHours
-    ? "다음 자동 점검 때 ON 전환"
+    ? "수동 등록 확인 필요"
     : `${Math.ceil(settings.staleAfterHours - elapsedHours)}시간 여유`;
 }
 
@@ -173,11 +176,16 @@ function AdminActionFeedback({
   if (scope === "auto" && !String(statusCode ?? "").startsWith("auto-")) {
     return null;
   }
-  if (scope === "manual" && !["saved", "demo", "error"].includes(statusCode ?? "")) {
+  if (scope === "manual" && !["saved", "saved-derived", "demo", "error"].includes(statusCode ?? "")) {
     return null;
   }
 
   const tone = getFeedbackTone(statusCode);
+  const savedAtLabel = new Date().toLocaleTimeString("ko-KR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
   const toneClass =
     tone === "danger"
       ? "admin-status-danger"
@@ -188,6 +196,9 @@ function AdminActionFeedback({
   return (
     <div className={`rounded-2xl border px-4 py-3 text-sm leading-6 ${toneClass}`} data-testid={`admin-feedback-${scope ?? "general"}`}>
       <p className="font-semibold">{message}</p>
+      {tone === "success" ? (
+        <p className="mt-1 text-xs font-bold">저장됨 · 확인 시각 {savedAtLabel}</p>
+      ) : null}
       {warnings.length ? (
         <div className="mt-2 space-y-1">
           {warnings.map((warning) => (
@@ -222,10 +233,12 @@ function HiddenAutoSettingsFields({
   settings,
   enabled,
   mode,
+  includeGoldPurityRates = true,
 }: {
   settings: PriceAutoSettings;
   enabled: boolean;
   mode: PriceAutoSettings["mode"];
+  includeGoldPurityRates?: boolean;
 }) {
   return (
     <>
@@ -237,8 +250,12 @@ function HiddenAutoSettingsFields({
       <input type="hidden" name="roundingUnit" value={settings.roundingUnit} />
       <input type="hidden" name="goldSellPremiumRate" value={settings.goldSellPremiumRate} />
       <input type="hidden" name="goldBuyDiscountRate" value={settings.goldBuyDiscountRate} />
-      <input type="hidden" name="gold18kBuyRate" value={settings.gold18kBuyRate} />
-      <input type="hidden" name="gold14kBuyRate" value={settings.gold14kBuyRate} />
+      {includeGoldPurityRates ? (
+        <>
+          <input type="hidden" name="gold18kBuyRate" value={settings.gold18kBuyRate} />
+          <input type="hidden" name="gold14kBuyRate" value={settings.gold14kBuyRate} />
+        </>
+      ) : null}
       <input type="hidden" name="platinumSellPremiumRate" value={settings.platinumSellPremiumRate} />
       <input type="hidden" name="platinumBuyDiscountRate" value={settings.platinumBuyDiscountRate} />
       <input type="hidden" name="silverSellPremiumRate" value={settings.silverSellPremiumRate} />
@@ -276,6 +293,64 @@ function CurrentPriceSnapshot({ prices }: { prices: PriceRecord[] }) {
             <p className="mt-1 text-xl font-extrabold tabular-nums text-[var(--admin-ink)]">{formatWon(price.value)}</p>
           </div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+function PublicPriceStatusPanel({
+  display,
+  settings,
+}: {
+  display: PriceAnnouncementDisplay;
+  settings: PriceAutoSettings;
+}) {
+  return (
+    <section
+      data-testid="admin-public-price-status"
+      className={[
+        "admin-panel p-4 sm:p-5",
+        display.requiresTradeConfirmation ? "border-[#d9ad00]/45 bg-[#fffaf0]" : "",
+      ].join(" ")}
+    >
+      <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-start">
+        <div>
+          <p className="admin-compact-label">고객 화면 고지</p>
+          <h3 className="mt-1 text-xl font-extrabold text-[var(--admin-ink)]">
+            {display.requiresTradeConfirmation ? "거래 전 확인 필요" : "정상 고시 노출"}
+          </h3>
+          <p className="mt-2 text-sm font-semibold leading-7 text-[var(--admin-muted)]">
+            공개 시세표에는 <b className="text-[var(--admin-ink)]">{display.statusLabel}</b> 상태와{" "}
+            <b className="text-[var(--admin-ink)]">{display.valueLabel}</b> 기준 시각이 표시됩니다.
+            화면 금액만으로 거래 확정 답변을 하지 않습니다.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-full border border-[#d9ad00]/45 bg-white px-3 py-1.5 text-xs font-extrabold text-[#6f4b00]">
+            {display.noticeBadgeLabel}
+          </span>
+          <span className="rounded-full border border-[var(--admin-line)] bg-white px-3 py-1.5 text-xs font-extrabold text-[var(--admin-ink)]">
+            {display.operatorActionLabel}
+          </span>
+        </div>
+      </div>
+      <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_0.9fr]">
+        <div className="rounded-xl border border-[#ead48c] bg-white px-4 py-3">
+          <p className="text-sm font-extrabold text-[var(--admin-ink)]">{display.noticeTitle}</p>
+          <p className="mt-2 text-sm font-semibold leading-7 text-[#725100]">
+            {display.noticeBody}
+          </p>
+        </div>
+        <div className="rounded-xl border border-[var(--admin-line)] bg-[#fbfdfb] px-4 py-3">
+          <p className="text-sm font-extrabold text-[var(--admin-ink)]">운영 응대 원칙</p>
+          <p className="mt-2 text-sm leading-7 text-[var(--admin-muted)]">
+            휴무일·영업시간 외 고객 문의는 최근 고시 기준을 설명하되, 실제 적용가는 본사 전화 또는 다음 영업일
+            현장 확인 기준으로 안내합니다.
+          </p>
+          <p className="mt-2 text-xs font-semibold leading-5 text-[var(--admin-muted)]">
+            자동시세 시간 제한: {settings.businessHoursOnly ? "영업시간 외 자동 반영 차단" : "꺼짐 - 운영자가 직접 확인 필요"}
+          </p>
+        </div>
       </div>
     </section>
   );
@@ -367,31 +442,47 @@ function ModeSwitch({
   const modeStatusLabel = canPersist
     ? `저장 상태: ${savedIsAutoOn ? "자동시세 ON" : "자동시세 OFF"}`
     : `미리보기 상태: ${isAutoOn ? "자동시세 ON" : "자동시세 OFF"}`;
-  const modeStatusHelp = canPersist
-    ? "클릭하면 운영 모드가 저장됩니다."
-    : "저장소 미연결: 화면에서만 전환됩니다.";
+  const modeStatusHelp = canPersist ? "토글하면 저장됩니다." : "저장소 미연결: 화면에서만 바뀝니다.";
 
   return (
     <section
       data-testid="admin-price-mode-switch"
-      className="admin-panel p-5 sm:p-6"
+      className="admin-panel px-4 py-3 sm:px-5"
     >
-      <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
-        <div>
-          <p className="admin-compact-label">
-            자동시세
-          </p>
-          <h3 className="mt-1 text-2xl font-extrabold text-[var(--admin-ink)]">
-            {isAutoOn ? "자동 운영 중" : "직접 입력 중"}
-          </h3>
-          <p className="admin-help mt-2 max-w-3xl">
-            ON이면 승인된 참고 데이터와 KCG 산식으로 계산해 안전 기준 통과 시 공개 시세에 반영합니다.
-            OFF이면 아래 표에서 직접 입력한 값만 공개됩니다.
-          </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <div>
+            <p className="admin-compact-label">자동시세 적용</p>
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              <span
+                className={[
+                  "rounded-full border px-3 py-1 text-lg font-extrabold text-[var(--admin-ink)]",
+                  isAutoOn ? "border-[#d1a600] bg-[#fff4be]" : "border-[var(--admin-line)] bg-white",
+                ].join(" ")}
+              >
+                {isAutoOn ? "ON" : "OFF"}
+              </span>
+              <span className="text-sm font-semibold text-[var(--admin-muted)]">
+                {modeStatusLabel}
+              </span>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2 text-xs font-bold text-[var(--admin-muted)]">
+            <span className="rounded-full border border-[var(--admin-line)] bg-white px-3 py-1.5">
+              {isAutoOn ? "자동 계산값 반영 가능" : "직접 입력값 사용"}
+            </span>
+            <span className="rounded-full border border-[var(--admin-line)] bg-white px-3 py-1.5">
+              참고 데이터는 세부 설정에서 확인
+            </span>
+          </div>
         </div>
 
-        <div className="w-full max-w-[430px] space-y-3">
-          <form action={updatePriceAutoSettingsAction}>
+        <div className="w-full max-w-[330px] space-y-2">
+          <form
+            action={updatePriceAutoSettingsAction}
+            data-admin-save-guard="true"
+            data-admin-pending-message="자동시세 모드 저장 중입니다."
+          >
             <HiddenAutoSettingsFields
               settings={settings}
               enabled={nextIsAutoOn}
@@ -410,26 +501,23 @@ function ModeSwitch({
               aria-pressed={isAutoOn}
               aria-label="자동시세 ON/OFF 전환"
               className={[
-                "group flex w-full appearance-none items-center justify-between gap-4 rounded-[1.25rem] border px-5 py-4 text-left transition",
+                "group flex w-full appearance-none items-center justify-between gap-4 rounded-full border px-4 py-3 text-left transition",
                 isAutoOn
                   ? "border-[#d1a600] bg-[#fff4be]"
                   : "border-[var(--admin-line-strong)] bg-white hover:border-[#d1a600] hover:bg-[#fff9df]",
               ].join(" ")}
             >
               <span>
-                <span className="block text-xs font-bold text-[var(--admin-muted)]">
-                  현재 상태
+                <span className="block text-sm font-extrabold text-[var(--admin-ink)]">
+                  현재 {isAutoOn ? "자동시세 ON" : "자동시세 OFF"}
                 </span>
-                <span className="mt-1 block text-lg font-extrabold text-[var(--admin-ink)]">
-                  {isAutoOn ? "자동시세 ON" : "자동시세 OFF"}
-                </span>
-                <span className="mt-1 block text-sm text-[var(--admin-muted)]">
-                  {isAutoOn ? "클릭하면 직접 입력으로 전환" : "클릭하면 자동 운영으로 전환"}
+                <span className="mt-0.5 block text-xs font-semibold text-[var(--admin-muted)]">
+                  {isAutoOn ? "직접 입력으로 전환" : "자동시세 ON으로 전환"} · {modeStatusHelp}
                 </span>
               </span>
               <span
                 className={[
-                  "relative h-8 w-16 shrink-0 rounded-full border transition",
+                  "relative h-7 w-14 shrink-0 rounded-full border transition",
                   isAutoOn
                     ? "border-[#d1a600] bg-[var(--color-gold)]"
                     : "border-[var(--admin-line-strong)] bg-[#dfe7e2]",
@@ -438,16 +526,13 @@ function ModeSwitch({
               >
                 <span
                   className={[
-                    "absolute top-1 h-6 w-6 rounded-full bg-white shadow transition",
-                    isAutoOn ? "left-[2.15rem]" : "left-1",
+                    "absolute top-1 h-5 w-5 rounded-full bg-white shadow transition",
+                    isAutoOn ? "left-[1.9rem]" : "left-1",
                   ].join(" ")}
                 />
               </span>
             </AdminSubmitButton>
           </form>
-          <p className="text-sm leading-6 text-[var(--admin-muted)]">
-            {modeStatusLabel} · {modeStatusHelp}
-          </p>
           {statusMatchesCurrentMode ? (
             <AdminActionFeedback statusCode={statusCode} message={statusMessage} warnings={warnings} scope="mode" />
           ) : null}
@@ -538,16 +623,21 @@ function AutoSettingsForm({
   return (
     <details className="admin-panel-plain p-4">
       <summary className="cursor-pointer text-sm font-extrabold text-[var(--admin-ink)]">
-        계산 설정 열기
+        자동시세 세부 설정
       </summary>
-      <form action={updatePriceAutoSettingsAction} className="mt-4 grid gap-4">
+      <form
+        action={updatePriceAutoSettingsAction}
+        data-admin-save-guard="true"
+        data-admin-pending-message="자동시세 설정 저장 중입니다."
+        className="mt-4 grid gap-4"
+      >
         <input type="hidden" name="autoEnabled" value="on" />
         <input type="hidden" name="autoMode" value="auto_publish" />
         <input type="hidden" name="intervalHours" value={settings.checkIntervalMinutes === 120 ? 2 : 1} />
         <label className="block text-sm text-[var(--admin-muted)]">
           <span className="font-bold text-[var(--admin-ink)]">참고 데이터</span>
           <span className="mt-1 block text-xs leading-5 text-[var(--admin-muted)]">
-            회사 시세를 바로 가져오는 것이 아니라, 아래 산식의 원천 참고값입니다. KRX는 승인·계약 범위 확인 전 선택할 수 없습니다.
+            자동 계산에 쓰는 외부 참고값입니다. KRX는 승인 전 선택할 수 없습니다.
           </span>
           <select
             name="autoSource"
@@ -568,7 +658,7 @@ function AutoSettingsForm({
           <label className="block text-sm text-[var(--admin-muted)]">
           <span className="font-bold text-[var(--admin-ink)]">확인 주기</span>
           <span className="mt-1 block text-xs leading-5 text-[var(--admin-muted)]">
-              자동 작업이 이 시간보다 빨리 다시 실행되면 사이트 시세를 그대로 둡니다.
+            이 시간 안에는 중복 실행하지 않습니다.
           </span>
             <select
               name="checkIntervalMinutes"
@@ -611,17 +701,17 @@ function AutoSettingsForm({
             <input type="hidden" name="staleGuardEnabled" value="off" />
             <input name="staleGuardEnabled" type="checkbox" defaultChecked={settings.staleGuardEnabled} className="mt-1" />
             <span>
-              <span className="block">24시간 미등록 guard</span>
+              <span className="block">24시간 미등록 경고</span>
               <span className="mt-1 block text-xs font-medium leading-5 text-[var(--admin-muted)]">
-                수동 등록이 오래 없으면 다음 자동 점검에서 자동시세를 ON으로 전환합니다.
+                오래 직접 저장하지 않으면 경고만 표시합니다.
               </span>
             </span>
           </label>
           <NumberField
             name="staleAfterHours"
-            label="자동 전환 기준 시간"
+            label="미등록 경고 기준 시간"
             value={settings.staleAfterHours}
-            help="이 시간 이상 직접 저장이 없으면 자동시세 OFF도 다음 점검에서 ON으로 바뀝니다."
+            help="이 시간 이상 직접 저장이 없으면 경고만 남기고 자동시세 OFF는 유지됩니다."
           />
         </div>
 
@@ -677,7 +767,11 @@ function AutoSuggestionPanel({ suggestion }: { suggestion: PriceAutoSuggestion }
         </div>
         <div className="flex flex-wrap gap-2">
           {showReviewActions ? (
-            <form action={applyPriceAutoSuggestionAction}>
+            <form
+              action={applyPriceAutoSuggestionAction}
+              data-admin-save-guard="true"
+              data-admin-pending-message="자동 계산값 반영 중입니다."
+            >
               <input type="hidden" name="suggestionId" value={suggestion.id} />
               <input type="hidden" name="changedBy" value="자동시세 검토 후 반영" />
               <AdminSubmitButton
@@ -688,7 +782,11 @@ function AutoSuggestionPanel({ suggestion }: { suggestion: PriceAutoSuggestion }
               </AdminSubmitButton>
             </form>
           ) : null}
-          <form action={rejectPriceAutoSuggestionAction}>
+          <form
+            action={rejectPriceAutoSuggestionAction}
+            data-admin-save-guard="true"
+            data-admin-pending-message="자동 계산값 폐기 중입니다."
+          >
             <input type="hidden" name="suggestionId" value={suggestion.id} />
             <AdminSubmitButton
               pendingLabel="폐기 중..."
@@ -775,7 +873,11 @@ function AutoModePanel({
                 </p>
                 <h3 className="mt-1 text-xl font-extrabold text-[var(--admin-ink)]">현재 자동 운영 중</h3>
               </div>
-              <form action={generatePriceAutoSuggestionAction}>
+              <form
+                action={generatePriceAutoSuggestionAction}
+                data-admin-save-guard="true"
+                data-admin-pending-message="자동시세 계산 실행 중입니다."
+              >
                 <AdminSubmitButton
                   pendingLabel="계산 중..."
                   className="admin-primary-button"
@@ -809,17 +911,23 @@ function AutoModePanel({
                 <dd className="mt-1 font-extrabold text-[var(--admin-ink)]">{getElapsedHoursLabel(freshness.latestManualChangedAt)}</dd>
               </div>
               <div className="admin-subpanel px-4 py-3">
-                <dt className="text-[var(--admin-muted)]">24시간 미등록 guard</dt>
+                <dt className="text-[var(--admin-muted)]">24시간 미등록 경고</dt>
                 <dd className="mt-1 font-extrabold text-[var(--admin-ink)]">
                   {settings.staleGuardEnabled ? `${settings.staleAfterHours}시간 기준` : "꺼짐"}
                 </dd>
               </div>
             </dl>
-            <p className="admin-help mt-3 text-xs">
-              예약 자동 실행은 현재 Vercel 무료 플랜 기준 하루 1회입니다. 다만 이 화면의 `지금 계산 실행`은
-              즉시 계산하며, 안전 기준을 통과할 때만 공개 시세를 바꿉니다.
-              자동시세를 OFF로 꺼도 수동 등록이 {settings.staleAfterHours}시간 이상 없으면 다음 자동 점검에서 다시 ON이 될 수 있습니다.
-            </p>
+            <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold text-[var(--admin-muted)]">
+              <span className="rounded-full border border-[var(--admin-line)] bg-white px-3 py-1.5">
+                예약 실행: 하루 1회
+              </span>
+              <span className="rounded-full border border-[var(--admin-line)] bg-white px-3 py-1.5">
+                수동 실행: 지금 계산 실행
+              </span>
+              <span className="rounded-full border border-[var(--admin-line)] bg-white px-3 py-1.5">
+                미등록 경고: {settings.staleAfterHours}시간
+              </span>
+            </div>
           </div>
 
           <AutoSettingsForm settings={settings} hasMetalsKey={hasMetalsKey} />
@@ -873,15 +981,13 @@ function PriceStaticCell({
   return (
     <div
       data-testid={`admin-price-static-${side}-${row.id}`}
-      className="rounded-xl border border-dashed border-[var(--admin-line-strong)] bg-[#f7f4e9] px-4 py-4"
+      className="rounded-lg border border-dashed border-[var(--admin-line-strong)] bg-[#f7f4e9] px-3 py-3"
     >
-      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--admin-muted)]">
+      <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--admin-muted)]">
         고객 화면 표시
       </p>
-      <p className="mt-2 text-lg font-extrabold text-[var(--admin-ink)]">{text}</p>
-      <p className="mt-1 text-xs leading-5 text-[var(--admin-muted)]">
-        이 칸은 메인 시세표에서 가격 입력 없이 문구로 표시됩니다.
-      </p>
+      <p className="mt-1 text-base font-extrabold text-[var(--admin-ink)]">{text}</p>
+      <p className="mt-1 text-[0.68rem] leading-4 text-[var(--admin-muted)]">가격 입력 없이 문구로 표시</p>
     </div>
   );
 }
@@ -890,10 +996,14 @@ function PriceEditableCell({
   price,
   draftValue,
   onDraftChange,
+  readOnly = false,
+  helperText,
 }: {
   price: PriceRecord;
   draftValue: string;
   onDraftChange: (id: string, value: string) => void;
+  readOnly?: boolean;
+  helperText?: string;
 }) {
   const deltaLabel = formatDraftDelta(price.value, draftValue);
   const deltaTone = getDraftDeltaTone(price.value, draftValue);
@@ -901,25 +1011,25 @@ function PriceEditableCell({
   return (
     <div
       data-testid={`admin-price-cell-${price.category}`}
-      className="rounded-xl border border-[var(--admin-line)] bg-white px-4 py-4"
+      className="rounded-lg border border-[var(--admin-line)] bg-white px-3 py-3"
     >
       <input type="hidden" name="priceIds" value={price.id} />
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-2">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--admin-muted)]">
-            현재 공개가
+          <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[var(--admin-muted)]">
+            현재
           </p>
-          <p className="mt-1 text-xl font-extrabold tabular-nums text-[var(--admin-ink)]">
+          <p className="mt-0.5 text-base font-extrabold tabular-nums text-[var(--admin-ink)]">
             {formatWon(price.value)}
           </p>
         </div>
-        <label className="inline-flex items-center gap-2 rounded-full border border-[var(--admin-line)] bg-[#fbf7e8] px-3 py-1.5 text-xs font-bold text-[var(--admin-ink)]">
+        <label className="inline-flex items-center gap-1.5 rounded-full border border-[var(--admin-line)] bg-[#fbf7e8] px-2 py-1 text-[0.68rem] font-bold text-[var(--admin-ink)]">
           <input name={`visible:${price.id}`} type="checkbox" defaultChecked={price.isVisible} />
           노출
         </label>
       </div>
-      <label className="mt-4 block text-sm font-bold text-[var(--admin-ink)]">
-        새 입력값
+      <label className="mt-2 block text-xs font-bold text-[var(--admin-ink)]">
+        {readOnly ? "자동 계산값" : "새 입력값"}
         <input
           name={`value:${price.id}`}
           type="number"
@@ -927,21 +1037,30 @@ function PriceEditableCell({
           min={1}
           step={1}
           required
+          readOnly={readOnly}
           value={draftValue}
           onChange={(event) => onDraftChange(price.id, event.currentTarget.value)}
-          className="admin-input mt-2 max-w-[12rem] tabular-nums"
+          className={[
+            "admin-input mt-1 max-w-[11rem] !rounded-lg !px-3 !py-2 text-sm tabular-nums",
+            readOnly ? "bg-[#fbf7e8] text-[var(--admin-ink)]" : "",
+          ].join(" ")}
         />
       </label>
-      <p className={`mt-2 text-sm font-extrabold tabular-nums ${deltaTone}`}>
+      {helperText ? (
+        <p className="mt-1 text-[0.68rem] font-semibold leading-4 text-[#725100]">
+          {helperText}
+        </p>
+      ) : null}
+      <p className={`mt-1 text-xs font-extrabold tabular-nums ${deltaTone}`}>
         차액 {deltaLabel}
       </p>
-      <label className="mt-4 block text-sm font-bold text-[var(--admin-ink)]">
-        비고
-        <textarea
+      <label className="mt-2 block text-xs font-bold text-[var(--admin-ink)]">
+        <span className="sr-only">비고</span>
+        <input
           name={`note:${price.id}`}
           defaultValue={price.note || ""}
-          rows={2}
-          className="admin-input mt-2 min-w-72"
+          placeholder="비고"
+          className="admin-input mt-1 !rounded-lg !px-3 !py-2 text-xs"
         />
       </label>
     </div>
@@ -953,22 +1072,26 @@ function PriceLineupEditorRow({
   priceByCategory,
   draftValues,
   onDraftChange,
+  isGoldPurityAuto,
+  settings,
 }: {
   row: PriceLineupRow;
   priceByCategory: Map<PriceCategory, PriceRecord>;
   draftValues: Record<string, string>;
   onDraftChange: (id: string, value: string) => void;
+  isGoldPurityAuto: boolean;
+  settings: PriceAutoSettings;
 }) {
   const sellPrice = row.sellCategory ? priceByCategory.get(row.sellCategory) : undefined;
   const buyPrice = row.buyCategory ? priceByCategory.get(row.buyCategory) : undefined;
 
   return (
     <tr data-testid={`admin-price-lineup-row-${row.id}`}>
-      <td className="min-w-[15rem] bg-[#fbf7e8]/45">
-        <p className="text-lg font-extrabold tracking-[-0.018em] text-[var(--admin-ink)]">{row.title}</p>
-        <p className="mt-1 text-xs font-semibold text-[var(--admin-muted)]">{row.subtitle}</p>
+      <td className="min-w-[12rem] bg-[#fbf7e8]/45">
+        <p className="text-base font-extrabold text-[var(--admin-ink)]">{row.title}</p>
+        <p className="mt-1 text-[0.72rem] font-semibold text-[var(--admin-muted)]">{row.subtitle}</p>
       </td>
-      <td className="min-w-[22rem]">
+      <td className="min-w-[17rem]">
         {sellPrice ? (
           <PriceEditableCell
             price={sellPrice}
@@ -981,12 +1104,20 @@ function PriceLineupEditorRow({
           <PriceStaticCell row={row} side="sell" text="문의" />
         )}
       </td>
-      <td className="min-w-[22rem]">
+      <td className="min-w-[17rem]">
         {buyPrice ? (
           <PriceEditableCell
             price={buyPrice}
             draftValue={draftValues[buyPrice.id] ?? String(buyPrice.value)}
             onDraftChange={onDraftChange}
+            readOnly={isGoldPurityAuto && (buyPrice.category === "gold_18k_buy" || buyPrice.category === "gold_14k_buy")}
+            helperText={
+              isGoldPurityAuto && buyPrice.category === "gold_18k_buy"
+                ? `순금 팔 때 입력값 × ${settings.gold18kBuyRate} 후 ${settings.roundingUnit.toLocaleString("ko-KR")}원 단위 반올림`
+                : isGoldPurityAuto && buyPrice.category === "gold_14k_buy"
+                  ? `순금 팔 때 입력값 × ${settings.gold14kBuyRate} 후 ${settings.roundingUnit.toLocaleString("ko-KR")}원 단위 반올림`
+                  : undefined
+            }
           />
         ) : (
           <PriceStaticCell row={row} side="buy" text="문의" />
@@ -999,8 +1130,101 @@ function PriceLineupEditorRow({
   );
 }
 
+function ManualGoldPuritySettingsForm({
+  settings,
+  gold24kBuy,
+}: {
+  settings: PriceAutoSettings;
+  gold24kBuy?: PriceRecord;
+}) {
+  const preview =
+    gold24kBuy && gold24kBuy.value > 0
+      ? calculateGoldPurityBuyPrices(gold24kBuy.value, settings)
+      : null;
+  const preservedMode = settings.mode === "auto_publish" ? "auto_publish" : "manual_review";
+
+  return (
+    <form
+      action={updatePriceAutoSettingsAction}
+      data-testid="manual-gold-purity-settings-form"
+      data-admin-save-guard="true"
+      data-admin-pending-message="18K/14K 계수 저장 중입니다."
+      className="rounded-xl border border-[#ead48c] bg-white px-3 py-3"
+    >
+      <HiddenAutoSettingsFields
+        settings={settings}
+        enabled={settings.isEnabled}
+        mode={preservedMode}
+        includeGoldPurityRates={false}
+      />
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="admin-compact-label">환산 계수</p>
+          <h4 className="mt-1 text-base font-extrabold text-[var(--admin-ink)]">
+            24K 팔 때 기준
+          </h4>
+        </div>
+        <AdminSubmitButton pendingLabel="계수 저장 중..." className="admin-secondary-button px-3 py-2 text-xs">
+          계수 저장
+        </AdminSubmitButton>
+      </div>
+
+      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        <NumberField
+          name="gold18kBuyRate"
+          label="18K"
+          value={settings.gold18kBuyRate}
+          step="0.001"
+        />
+        <NumberField
+          name="gold14kBuyRate"
+          label="14K"
+          value={settings.gold14kBuyRate}
+          step="0.001"
+        />
+      </div>
+
+      <div className="mt-3 rounded-lg border border-[#f0df9c] bg-[#fffaf0] px-3 py-2.5">
+          <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[#725100]">
+            현재 24K 기준 미리보기
+          </p>
+          {preview && gold24kBuy ? (
+            <dl className="mt-2 grid grid-cols-3 gap-2 text-xs">
+              <div>
+                <dt className="text-[var(--admin-muted)]">24K</dt>
+                <dd className="mt-1 font-extrabold tabular-nums text-[var(--admin-ink)]">
+                  {formatWon(gold24kBuy.value)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-[var(--admin-muted)]">18K</dt>
+                <dd className="mt-1 font-extrabold tabular-nums text-[var(--admin-ink)]">
+                  {formatWon(preview.gold_18k_buy)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-[var(--admin-muted)]">14K</dt>
+                <dd className="mt-1 font-extrabold tabular-nums text-[var(--admin-ink)]">
+                  {formatWon(preview.gold_14k_buy)}
+                </dd>
+              </div>
+            </dl>
+          ) : (
+            <p className="mt-2 text-sm leading-6 text-[var(--admin-muted)]">
+              24K 팔 때 값이 있으면 계산 결과가 보입니다.
+            </p>
+          )}
+          <p className="mt-2 text-[0.68rem] font-semibold leading-4 text-[#725100]">
+            반올림 단위 {settings.roundingUnit.toLocaleString("ko-KR")}원 적용
+          </p>
+      </div>
+    </form>
+  );
+}
+
 function PriceEditor({
   prices,
+  settings,
   history,
   freshness,
   statusCode,
@@ -1008,6 +1232,7 @@ function PriceEditor({
   warnings,
 }: {
   prices: PriceRecord[];
+  settings: PriceAutoSettings;
   history: PriceHistoryEntry[];
   freshness: PriceFreshness;
   statusCode?: string;
@@ -1018,40 +1243,74 @@ function PriceEditor({
   const announcedAtInputRef = useRef<HTMLInputElement>(null);
   const defaultAnnouncedAt = formatDateTimeLocalKorean(new Date());
   const priceByCategory = new Map(prices.map((price) => [price.category, price] as const));
-  const [draftValues, setDraftValues] = useState<Record<string, string>>(() =>
-    Object.fromEntries(prices.map((price) => [price.id, String(price.value)])),
-  );
+  const gold24kBuy = priceByCategory.get("gold_24k_buy");
+  const gold18kBuy = priceByCategory.get("gold_18k_buy");
+  const gold14kBuy = priceByCategory.get("gold_14k_buy");
+  const applyGoldPurityDraft = (
+    currentDrafts: Record<string, string>,
+    baseValue = gold24kBuy ? currentDrafts[gold24kBuy.id] : undefined,
+  ) => {
+    if (!gold24kBuy || !gold18kBuy || !gold14kBuy) return currentDrafts;
+
+    const baseNumber = Number(baseValue ?? gold24kBuy.value);
+    if (!Number.isFinite(baseNumber) || baseNumber <= 0) return currentDrafts;
+
+    const derived = calculateGoldPurityBuyPrices(baseNumber, settings);
+    return {
+      ...currentDrafts,
+      [gold18kBuy.id]: String(derived.gold_18k_buy),
+      [gold14kBuy.id]: String(derived.gold_14k_buy),
+    };
+  };
+  const [isGoldPurityAuto, setIsGoldPurityAuto] = useState(true);
+  const [draftValues, setDraftValues] = useState<Record<string, string>>(() => {
+    const initialDrafts = Object.fromEntries(prices.map((price) => [price.id, String(price.value)]));
+    return applyGoldPurityDraft(initialDrafts);
+  });
+  const priceEditorFormId = "admin-price-editor-form";
   const handleDraftChange = (id: string, value: string) => {
-    setDraftValues((current) => ({ ...current, [id]: value }));
+    setDraftValues((current) => {
+      const next = { ...current, [id]: value };
+      if (isGoldPurityAuto && gold24kBuy?.id === id) {
+        return applyGoldPurityDraft(next, value);
+      }
+      return next;
+    });
+  };
+  const handleGoldPurityAutoChange = (enabled: boolean) => {
+    setIsGoldPurityAuto(enabled);
+    if (enabled) {
+      setDraftValues((current) => applyGoldPurityDraft(current));
+    }
   };
 
   return (
-    <form
-      action={updatePricesAction}
-      data-testid="admin-price-editor"
-      className="admin-panel p-5 sm:p-6"
-    >
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <div className="grid gap-4">
+      <section
+        data-testid="admin-price-editor"
+        className="admin-panel p-4 sm:p-5"
+      >
+      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,0.52fr)] lg:items-end">
         <div>
           <p className="admin-compact-label">
             직접 입력
           </p>
-          <h3 className="mt-1 text-2xl font-extrabold text-[var(--admin-ink)]">시세 직접 입력</h3>
-          <p className="admin-help mt-2">
-            고객 화면의 시세표와 같은 품목명, 순서, 살 때/팔 때 배열로 입력합니다.
-            자동시세가 꺼져 있을 때만 이 표에서 공개 시세를 직접 저장합니다.
+          <h3 className="mt-1 text-xl font-extrabold text-[var(--admin-ink)]">시세 직접 입력</h3>
+          <p className="admin-help mt-1">
+            고객 화면과 같은 품목 순서로 입력합니다.
           </p>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <label className="text-sm font-semibold text-[var(--admin-muted)]">
+        <div className="grid gap-2 sm:grid-cols-[minmax(13rem,1fr)_minmax(8rem,0.55fr)]">
+          <label className="text-xs font-semibold text-[var(--admin-muted)]">
             기준 시각
             <input
+              form={priceEditorFormId}
               ref={announcedAtInputRef}
               name="announcedAt"
               type="datetime-local"
               defaultValue={defaultAnnouncedAt}
               suppressHydrationWarning
-              className="admin-input mt-2"
+              className="admin-input mt-1 !rounded-lg !px-3 !py-2 text-sm"
             />
             <button
               type="button"
@@ -1060,57 +1319,91 @@ function PriceEditor({
                   announcedAtInputRef.current.value = formatDateTimeLocalKorean(new Date());
                 }
               }}
-              className="mt-2 rounded-full border border-[var(--admin-line-strong)] bg-white px-3 py-1.5 text-xs font-bold text-[var(--admin-ink)] transition hover:border-[#d9ad00] hover:bg-[#fff9df]"
+              className="mt-1 rounded-full border border-[var(--admin-line-strong)] bg-white px-3 py-1 text-[0.7rem] font-bold text-[var(--admin-ink)] transition hover:border-[#d9ad00] hover:bg-[#fff9df]"
             >
               현재 시각 입력
             </button>
-            <span className="mt-1 block text-xs leading-5 text-[var(--admin-muted)]">
-              저장하면 고객 화면의 기준 시각이 이 값으로 바뀝니다. 현재 공개 기준은{" "}
-              {formatDateTimeKorean(currentAnnouncedAt)}입니다.
+            <span className="mt-1 block text-[0.68rem] leading-4 text-[var(--admin-muted)]">
+              현재 공개 기준 {formatDateTimeKorean(currentAnnouncedAt)}
             </span>
           </label>
-          <label className="text-sm font-semibold text-[var(--admin-muted)]">
+          <label className="text-xs font-semibold text-[var(--admin-muted)]">
             변경자
             <input
+              form={priceEditorFormId}
               name="changedBy"
               defaultValue="관리자"
-              className="admin-input mt-2"
+              className="admin-input mt-1 !rounded-lg !px-3 !py-2 text-sm"
             />
           </label>
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-3">
         <AdminActionFeedback statusCode={statusCode} message={statusMessage} warnings={warnings} scope="manual" />
       </div>
 
-      <div className="mt-5 rounded-xl border border-[var(--admin-line)] bg-[#fbfdfb] px-4 py-3 text-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="font-extrabold text-[var(--admin-ink)]">최근 시세 조정 이력</p>
-          <p className="text-[var(--admin-muted)]">
-            이력 {freshness.historyCount.toLocaleString("ko-KR")}건 · 일별 보관 {freshness.dailySnapshotCount.toLocaleString("ko-KR")}건
-          </p>
-        </div>
-        {history.length ? (
-          <div className="mt-3 grid gap-2 md:grid-cols-2">
-            {history.slice(0, 4).map((entry) => (
-              <div key={entry.id} className="rounded-lg border border-[var(--admin-line)] bg-white px-3 py-2">
-                <p className="font-bold text-[var(--admin-ink)]">{entry.label} {formatWon(entry.previousValue)} → {formatWon(entry.newValue)}</p>
-                <p className="mt-1 text-xs text-[var(--admin-muted)]">
-                  {formatDateTimeKorean(entry.changedAt)} · {entry.changeOrigin === "auto" ? "자동시세" : entry.changeOrigin === "system" ? "기준 보관" : "직접 입력"}
-                </p>
-              </div>
-            ))}
+      <div className="mt-4 grid items-start gap-3 xl:grid-cols-[minmax(0,1fr)_minmax(18rem,0.42fr)]">
+        <div
+          data-testid="manual-gold-purity-helper"
+          className="rounded-xl border border-[#ead48c] bg-[#fffaf0] px-3 py-3"
+        >
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="max-w-2xl">
+              <p className="admin-compact-label">18K/14K 자동 계산</p>
+              <h4 className="mt-1 text-base font-extrabold text-[var(--admin-ink)]">
+                순금 팔 때 기준으로 채우기
+              </h4>
+              <p className="mt-1 text-xs font-semibold leading-5 text-[var(--admin-muted)]">
+                순금 팔 때 값을 입력하면 18K/14K 팔 때가 같이 채워집니다.
+              </p>
+            </div>
+            <label className="inline-flex items-center gap-2 rounded-full border border-[#dfc56d] bg-white px-3 py-1.5 text-xs font-extrabold text-[var(--admin-ink)]">
+              <input
+                form={priceEditorFormId}
+                data-testid="manual-gold-purity-auto-toggle"
+                name="goldPurityAuto"
+                type="checkbox"
+                value="on"
+                checked={isGoldPurityAuto}
+                onChange={(event) => handleGoldPurityAutoChange(event.currentTarget.checked)}
+                className="h-4 w-4 accent-[#b08600]"
+              />
+              저장 시 자동 반영
+            </label>
           </div>
-        ) : (
-          <p className="mt-3 leading-6 text-[var(--admin-muted)]">
-            아직 실제 변경 이력이 적습니다. 현재 고시 시세 기준으로 기준값을 보관하고 있으며, 직접 저장하거나 자동 반영되면 이곳에 기록이 쌓입니다.
-          </p>
-        )}
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-[0.7rem] font-bold text-[var(--admin-muted)]">
+            <span className="rounded-full border border-[#ead48c] bg-white px-2.5 py-1">
+              18K × {settings.gold18kBuyRate}
+            </span>
+            <span className="rounded-full border border-[#ead48c] bg-white px-2.5 py-1">
+              14K × {settings.gold14kBuyRate}
+            </span>
+            <span className="rounded-full border border-[#ead48c] bg-white px-2.5 py-1">
+              반올림 {settings.roundingUnit.toLocaleString("ko-KR")}원
+            </span>
+            <button
+              data-testid="manual-gold-purity-apply"
+              type="button"
+              onClick={() => setDraftValues((current) => applyGoldPurityDraft(current))}
+              className="rounded-full border border-[#dfc56d] bg-white px-2.5 py-1 text-[0.7rem] font-extrabold text-[var(--admin-ink)] transition hover:border-[#d9ad00] hover:bg-[#fff4c7]"
+            >
+              현재 24K 값으로 채우기
+            </button>
+          </div>
+        </div>
+        <ManualGoldPuritySettingsForm settings={settings} gold24kBuy={gold24kBuy} />
       </div>
 
-      <div className="mt-5 overflow-x-auto">
-        <table className="admin-table min-w-[980px]">
+      <form
+        id={priceEditorFormId}
+        action={updatePricesAction}
+        data-admin-save-guard="true"
+        data-admin-pending-message="시세 저장 중입니다. 저장 완료 메시지를 확인한 뒤 이동하세요."
+        className="mt-4"
+      >
+      <div className="overflow-x-auto">
+        <table className="admin-table min-w-[820px]">
           <thead>
             <tr>
               <th>품목</th>
@@ -1126,6 +1419,8 @@ function PriceEditor({
                 priceByCategory={priceByCategory}
                 draftValues={draftValues}
                 onDraftChange={handleDraftChange}
+                isGoldPurityAuto={isGoldPurityAuto}
+                settings={settings}
               />
             ))}
           </tbody>
@@ -1134,11 +1429,37 @@ function PriceEditor({
 
       <AdminSubmitButton
         pendingLabel="저장 중..."
-        className="admin-primary-button mt-6"
+        className="admin-primary-button mt-4"
       >
         시세 저장
       </AdminSubmitButton>
-    </form>
+      </form>
+      <details className="mt-4 rounded-xl border border-[var(--admin-line)] bg-[#fbfdfb] px-4 py-3 text-sm">
+        <summary className="cursor-pointer font-extrabold text-[var(--admin-ink)]">
+          최근 시세 조정 이력 · 이력 {freshness.historyCount.toLocaleString("ko-KR")}건
+        </summary>
+        {history.length ? (
+          <div className="mt-3 grid gap-2 md:grid-cols-2">
+            {history.slice(0, 4).map((entry) => (
+              <div key={entry.id} className="rounded-lg border border-[var(--admin-line)] bg-white px-3 py-2">
+                <p className="font-bold text-[var(--admin-ink)]">{entry.label} {formatWon(entry.previousValue)} → {formatWon(entry.newValue)}</p>
+                <p className="mt-1 text-xs text-[var(--admin-muted)]">
+                  {formatDateTimeKorean(entry.changedAt)} · {entry.changeOrigin === "auto" ? "자동시세" : entry.changeOrigin === "system" ? "기준 보관" : "직접 입력"}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 leading-6 text-[var(--admin-muted)]">
+            아직 실제 변경 이력이 적습니다. 직접 저장하거나 자동 반영되면 이곳에 기록이 쌓입니다.
+          </p>
+        )}
+        <p className="mt-2 text-xs text-[var(--admin-muted)]">
+          일별 보관 {freshness.dailySnapshotCount.toLocaleString("ko-KR")}건
+        </p>
+      </details>
+      </section>
+    </div>
   );
 }
 
@@ -1146,6 +1467,7 @@ export function AdminPricesWorkspace({
   prices,
   settings,
   suggestion,
+  publicPriceStatus,
   history,
   freshness,
   hasMetalsKey,
@@ -1158,7 +1480,6 @@ export function AdminPricesWorkspace({
 
   return (
     <>
-      <CurrentPriceSnapshot prices={prices} />
       <ModeSwitch
         settings={settings}
         isAutoOn={isAutoOn}
@@ -1168,7 +1489,6 @@ export function AdminPricesWorkspace({
         statusMessage={statusMessage}
         warnings={warnings}
       />
-      <OperationSummary prices={prices} settings={settings} suggestion={suggestion} freshness={freshness} isAutoOn={isAutoOn} />
       {isAutoOn ? (
         <AutoModePanel
           settings={settings}
@@ -1182,6 +1502,7 @@ export function AdminPricesWorkspace({
       ) : (
         <PriceEditor
           prices={prices}
+          settings={settings}
           history={history}
           freshness={freshness}
           statusCode={statusCode}
@@ -1189,6 +1510,16 @@ export function AdminPricesWorkspace({
           warnings={warnings}
         />
       )}
+      <details className="admin-panel-plain p-4">
+        <summary className="cursor-pointer text-sm font-extrabold text-[var(--admin-ink)]">
+          현재 공개 시세·고객 고지·운영 요약 보기
+        </summary>
+        <div className="mt-4 grid gap-5">
+          <CurrentPriceSnapshot prices={prices} />
+          <PublicPriceStatusPanel display={publicPriceStatus} settings={settings} />
+          <OperationSummary prices={prices} settings={settings} suggestion={suggestion} freshness={freshness} isAutoOn={isAutoOn} />
+        </div>
+      </details>
     </>
   );
 }

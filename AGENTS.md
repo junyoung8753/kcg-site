@@ -111,8 +111,8 @@ Avoid:
 
 - The lead Codex session remains responsible for final design, implementation, verification, and reporting.
 - Use existing skills and tools deliberately: `frontend-skill` for frontend product work, `recursive-improvement` for repeated quality misses, `openai-docs` for current Codex/OpenAI guidance, and Playwright/screenshots for repeatable visual QA.
-- Use actual subagents only when the user explicitly permits delegated agent work and the task is low-risk, parallelizable, and independently reviewable.
-- Spark or smaller helpers may only provide read-only, bounded advice or tiny independently verifiable notes. They must not be final authority for edits, architecture, security, auth, payments, trading, legal/compliance, production deployment, dependency selection, or launch decisions.
+- Use actual subagents only when the user explicitly permits delegated agent work, or when active global/runtime rules allow junyoung's standing read-only helper preference, and the task is low-risk, parallelizable, and independently reviewable. Keep the lead Codex session responsible for final design, code, verification, and reporting.
+- Spark or smaller helpers may only provide read-only, bounded advice or tiny independently verifiable notes. For proactive Spark, prefer the global wrapper path and limit automatic use to local lint/type-error triage; treat UI/status copy, QA wording, screenshot checklist, and duplicate/test-gap suggestions as manual Watch only. Helpers must not be final authority for edits, architecture, security, auth, payments, trading, legal/compliance, production deployment, Vercel/Supabase decisions, dependency selection, launch/search-index release, price auto-publish, or noindex/robots changes.
 - Do not create or change project `.codex/config.toml`, model, reasoning, sandbox, approval, MCP, hook, skill, or custom-agent settings unless the support path is verified and the change is clearly safer than AGENTS-based guidance.
 
 ## Required final report for frontend/design tasks

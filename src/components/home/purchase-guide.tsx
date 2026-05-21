@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/lib/site-config";
 
@@ -14,7 +13,7 @@ const purchaseRows = [
     check: "큐빅·스톤·부속 분리 여부, 파손 및 납땜 상태",
   },
   {
-    item: "골드바·실버바",
+    item: "골드바",
     standard: "제품 종류와 중량별 현장 기준",
     check: "브랜드, 중량, 포장 상태, 수량 확인",
   },
@@ -55,13 +54,13 @@ export function PurchaseGuide({ showExtendedRows = false }: { showExtendedRows?:
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="/prices"
-                className="inline-flex h-12 items-center justify-center rounded-full bg-[#ffcc00] px-6 text-sm font-bold text-[#171717] shadow-[0_14px_32px_rgba(255,204,0,0.22)]"
+                className="kcg-action-token inline-flex h-12 items-center justify-center rounded-full bg-[#ffcc00] px-6 text-sm font-bold text-[#171717] shadow-[0_14px_32px_rgba(255,204,0,0.22)]"
               >
                 시세표 보기
               </Link>
               <a
                 href={`tel:${siteConfig.contact.phone}`}
-                className="inline-flex h-12 items-center justify-center rounded-full border border-[#d8dfdc] bg-white px-6 text-sm font-semibold text-[#171717]"
+                className="kcg-action-token inline-flex h-12 items-center justify-center rounded-full border border-[#d8dfdc] bg-white px-6 text-sm font-semibold text-[#171717]"
               >
                 전화 문의 {siteConfig.contact.phone}
               </a>
@@ -70,21 +69,14 @@ export function PurchaseGuide({ showExtendedRows = false }: { showExtendedRows?:
 
           <div className="grid gap-5">
             <div className="overflow-hidden border border-[#202426] bg-[#111416] text-white">
-              <div className="relative min-h-[13rem]">
-                <Image
-                  src="/campaign/kcg-old-gold-process-20260506.webp"
-                  alt="고금과 주얼리 매입 절차 이미지"
-                  fill
-                  className="object-cover opacity-88"
-                  sizes="(min-width: 1024px) 56vw, 100vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/78 via-black/28 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-5">
-                  <p className="kcg-fine-label text-[#ffcc00]">OLD GOLD FLOW</p>
-                  <p className="mt-2 text-lg font-bold tracking-[-0.022em]">
-                    방문 전 절차를 알고 오시면 상담이 빨라집니다.
-                  </p>
-                </div>
+              <div className="min-h-[13rem] bg-[#202426] p-5">
+                <p className="kcg-fine-label text-[#ffcc00]">OLD GOLD FLOW</p>
+                <p className="mt-4 max-w-md text-xl font-black leading-tight tracking-[-0.022em]">
+                  품목, 중량, 고시 기준, 현장 확인 순서로 안내합니다.
+                </p>
+                <p className="mt-4 max-w-md text-sm leading-6 text-white/64">
+                  실제 매입 금액은 사진이 아니라 실물 확인과 회사 고시 시세 기준으로 최종 안내합니다.
+                </p>
               </div>
               <div className="grid gap-px bg-white/10 sm:grid-cols-5">
                 {buyingFlow.map(([number, title, body]) => (

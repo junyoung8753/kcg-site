@@ -8,16 +8,17 @@ import { PriceTable } from "@/components/prices/price-table";
 import { getRepository } from "@/lib/data";
 import { getMarketDashboardData } from "@/lib/market-data";
 import { getPriceAnnouncementDisplay } from "@/lib/price-announcement";
+import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "오늘의 시세",
   description:
-    "한국센터금거래소의 오늘 고시 시세, 실시간 참고 시세, 국내 환산 참고 시세, 시장 뉴스를 확인합니다.",
+    "한국센터금거래소의 오늘 고시 시세, 국제 현재가 참고 정보, 시장 뉴스를 확인합니다.",
 };
 
 const priceUseCards = [
-  ["회사 고시 시세", "KCG 기준", "살 때·팔 때 기준과 고시 시각이 우선입니다."],
-  ["자동 참고 시세", "보조 데이터", "국제 현재가와 환산값은 시장 흐름 확인용입니다."],
+  ["회사 고시 시세", "KCG 기준", "내가 살 때·내가 팔 때 기준과 고시 시각이 우선입니다."],
+  ["자동 참고 시세", "흐름 확인", "국제 현재가와 환율은 시장 방향 확인용이며 거래가는 아닙니다."],
   ["현장 확인", "최종 안내", "중량·수량·실물 상태에 따라 실제 금액이 달라질 수 있습니다."],
 ] as const;
 
@@ -43,6 +44,11 @@ export default async function PricesPage() {
         announcedLabel={announcementDisplay.valueLabel}
         announcedDateLabel={announcementDisplay.dateLabel}
         announcedHeading={announcementDisplay.detailLabel}
+        announcementStatusLabel={announcementDisplay.statusLabel}
+        announcementNoticeBadgeLabel={announcementDisplay.noticeBadgeLabel}
+        announcementNoticeTitle={announcementDisplay.noticeTitle}
+        announcementNoticeBody={announcementDisplay.noticeBody}
+        announcementIsStale={announcementDisplay.isStale}
       />
 
       <section className="border-y border-[#dfe7e5] bg-[#fbfdfc]">
@@ -64,6 +70,41 @@ export default async function PricesPage() {
             <p className="mt-2 text-base font-bold tracking-[-0.018em] text-[#15191b]">
               {announcementDisplay.valueLabel}
             </p>
+            <p className="mt-2 text-xs font-semibold leading-5 text-[#8a6b00]">
+              {announcementDisplay.noticeBody}
+            </p>
+          </div>
+        </div>
+        <div
+          data-testid="closed-day-price-policy"
+          className="section-shell pb-7 pt-0"
+        >
+          <div
+            className={[
+              "grid gap-4 border px-5 py-5 md:grid-cols-[1fr_auto] md:items-center",
+              announcementDisplay.requiresTradeConfirmation
+                ? "border-[#d9ad00]/45 bg-[#fff8dc] text-[#5f4300]"
+                : "border-[#dfe6e4] bg-white text-[#5f6868]",
+            ].join(" ")}
+          >
+            <div>
+              <p className="kcg-fine-label text-[#9a8a00]">
+                휴무일·영업시간 외 적용 기준
+              </p>
+              <h2 className="mt-2 text-lg font-extrabold tracking-[-0.022em] text-[#15191b]">
+                화면 금액은 거래 확정가가 아닙니다.
+              </h2>
+              <p className="mt-2 text-sm font-semibold leading-7">
+                주말·공휴일·회사 휴무일·영업시간 외에는 새 기준 고시가 확정되지 않을 수 있습니다.
+                이때 시세표는 최근 회사 고시 기준을 보여주며, 실제 적용가는 영업일 전화 또는 현장 확인 후 안내합니다.
+              </p>
+            </div>
+            <a
+              href={`tel:${siteConfig.contact.phone}`}
+              className="kcg-action-token inline-flex h-12 items-center justify-center rounded-full bg-[#15191b] px-5 text-sm font-extrabold text-white transition hover:bg-[#2a2d2f]"
+            >
+              본사 전화 확인 {siteConfig.contact.phone}
+            </a>
           </div>
         </div>
       </section>

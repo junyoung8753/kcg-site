@@ -13,7 +13,8 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
   const hasOneUnit = units.length === 1;
   const announcedTimes = Array.from(new Set(prices.map((price) => price.announcedAt))).filter(Boolean);
   const hasOneAnnouncedAt = announcedTimes.length === 1;
-  const postedPriceLabel = hasOneUnit ? `고시가 / ${units[0]} 기준` : "고시가 / 품목별 기준";
+  const postedPriceLabel = hasOneUnit ? "고시가" : "고시가 / 품목별 기준";
+  const getMobilePostedPriceLabel = (unit: string) => (hasOneUnit ? "고시가" : `고시가 / ${unit} 기준`);
 
   return (
     <div className="thin-panel overflow-hidden rounded-[2rem]">
@@ -31,7 +32,7 @@ export function PriceTable({ prices, compact = false }: PriceTableProps) {
               </div>
               <div className="shrink-0 text-right">
                 <p className="text-[11px] font-semibold tracking-[0.08em] text-[var(--color-muted)]">
-                  고시가 / {price.unit} 기준
+                  {getMobilePostedPriceLabel(price.unit)}
                 </p>
                 <p className="kcg-price-primary mt-1 text-lg font-semibold text-[var(--color-ink)]">
                   {formatWon(price.value)}

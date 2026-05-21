@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 
 export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col pb-[calc(6.25rem+env(safe-area-inset-bottom))] lg:pb-0">
+    <div className="flex min-h-screen flex-col pb-[calc(5.5rem+env(safe-area-inset-bottom))] lg:pb-0">
       <SiteHeader />
       <main className="flex-1">{children}</main>
       <SiteFooter />

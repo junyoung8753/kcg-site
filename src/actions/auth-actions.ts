@@ -9,15 +9,27 @@ import {
 } from "@/lib/auth/session";
 import { ensureString } from "@/lib/utils";
 
+function sanitizeAdminNextPath(value: string) {
+  if (!value || value === "/admin") return "/admin";
+  if (!value.startsWith("/admin/")) return "/admin";
+  if (value.startsWith("//") || /^https?:\/\//i.test(value)) return "/admin";
+  return value;
+}
+
 export async function loginAction(formData: FormData) {
   const password = ensureString(formData.get("password"));
-  const nextPath = ensureString(formData.get("next"), "/admin");
+  const nextPath = sanitizeAdminNextPath(ensureString(formData.get("next"), "/admin"));
 
   if (!compareAdminPassword(password)) {
     redirect(`/admin/login?error=invalid&next=${encodeURIComponent(nextPath)}`);
   }
 
-  const token = await createAdminSessionToken();
+  let token = "";
+  try {
+    token = await createAdminSessionToken();
+  } catch {
+    redirect(`/admin/login?error=session&next=${encodeURIComponent(nextPath)}`);
+  }
   const cookieStore = await cookies();
 
   cookieStore.set(ADMIN_SESSION_COOKIE, token, {

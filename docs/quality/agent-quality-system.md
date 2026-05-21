@@ -20,6 +20,8 @@ The missed campaign slider and mobile CTA defects were not caused by a build pro
 - Product image checks can prove that assets load while still missing the higher launch-quality question: whether the catalog looks real, varied, and credible enough for a physical gold exchange.
 - Source audit pass and rendered UX pass can be confused. A source audit without `SITE_AUDIT_URL` is useful, but it does not prove live route text, redirects, fixed UI, or first viewport behavior.
 - Change traceability was treated as a separate documentation task instead of part of completion. That left version, commit/push/deploy state, rollback wording, and management-facing change rationale to be discovered only after junyoung asked.
+- Image-asset cleanup can become over-broad if "AI/generated" is treated as an automatic rejection rule. KCG-approved product renders and composites are official assets when their SKU weight, purity, logo, engraving, and usage match the product.
+- Admin pages can look complete while still failing real operations if saving state, pending/dirty navigation protection, image approval boundaries, and performance are not tested as operator workflows.
 
 ## Root Cause
 
@@ -32,6 +34,10 @@ For KCG specifically, the deepest failure was scope narrowing. A site task was t
 ## Controls
 
 - `npm run audit:site` checks source files, campaign assets, CTA labels, business wording, single-site discipline, and optional rendered-route content.
+- `npm run audit:site` validates `src/data/imageAssetManifest.json`, required manifest fields, source type/status enums, generated `candidates`/`approved` path rules, active-page manifest approval, and the `docs/audit/goldbar-sku-image-lock-snapshot.md` path/hash lock for source goldbar SKU images.
+- KCG goldbar SKU source images are locked by original public asset path/hash. Build output, optimized output, cache, and generated output hashes are not part of this lock.
+- Generated `candidates` assets are preview/report only. They must not be marked `approved` or connected to operational pages until a human approval moves the asset into the approved flow.
+- Screenshot review for visual/image work must flag repeated scene types, dark/black backgrounds, AI text/certificate distortion, and service/store-guide/company pages that drift into goldbar-lineup image repetition.
 - `npm run audit:rendered` starts or uses a rendered site and runs the same audit with `SITE_AUDIT_URL`, failing unless the audit completes with `0 skipped` checks.
 - `npm run qa:site` is the preferred full local quality gate after meaningful KCG work: lint, typecheck, source audit, build, rendered audit, Playwright, screenshots, and npm audit.
 - `npm run test:site` opens the built site in Chromium and verifies mobile/desktop conversion UI, campaign image loading, service wording, route content, horizontal overflow, and visible element protrusion beyond the mobile viewport.
@@ -46,6 +52,12 @@ For KCG specifically, the deepest failure was scope narrowing. A site task was t
 - `docs/quality/operations-product-audit-checklist.md` separates Technical QA, Product / Operations QA, and Business / Conversion QA. It also records Main Price Disclosure Priority, Existing API Integration Audit, Image / Visual Asset Audit, placeholder policy, and a finding template for real gold-exchange workflows.
 - `docs/setup/CHANGELOG.md` records version, date, commit, deploy status, verification, rollback hint, and remaining user-only work for meaningful KCG changes.
 - `docs/setup/CURRENT_HANDOFF.md` must name the current KCG version, latest change, local check URL, and reflection status so local/commit/push/deploy states are not blurred.
+- Admin console changes must preserve a daily-operator mental model: price input, automatic price settings, 18K/14K coefficients, exposure checkboxes, product image state, media approval, announcements, and launch blockers stay visible as distinct responsibilities rather than being hidden inside one long form.
+- Admin price screens must keep operator copy terse by default. Automatic-price mode should read as a clear ON/OFF state and action, while reference-data details, safety thresholds, and formula caveats belong in collapsed detail areas unless the operator is editing that exact setting.
+- Admin media screens must not expose internal image manifest taxonomy on the default operator view. Fields such as `asset_id`, `A1/A2/A3`, `approval_status`, `allowed_usage`, `sku_match`, checksum, storage path, and raw public URL belong in guarded server logic, audit output, or a collapsed advanced panel; the basic UI should start from "where is this image used, what is shown now, what can I upload/preview/apply next?"
+- Admin save UX is a quality gate. Mutations must show pending state immediately, block duplicate clicks, surface success/failure near the form and top status area when practical, and protect against pending/dirty browser unload or internal navigation.
+- Admin product/media mutations must not accept arbitrary raw image URLs. Existing approved goldbar SKU images stay locked by source asset path/hash, candidate assets cannot be operationally connected, and uploaded media must pass server-side auth, MIME, size, approval-status, and usage-slot checks before public use.
+- Admin performance must be tested by structure as well as feel: product and announcement pages should render a selected editor instead of every row's edit form, and thumbnail/media lists should avoid loading full originals unless needed.
 - GitHub Actions `Site Quality` runs the same local quality gates on `main` pushes and pull requests without deploying to production.
 - `npm run lint`, `npm run typecheck`, `npm run build`, and `npm audit --audit-level=moderate` remain mandatory after code changes.
 - Preview deployments are intentionally open for ordinary browser review while noindex/robots search-blocking remains active. If deployment protection is re-enabled, test protected previews with `vercel curl`.

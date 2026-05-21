@@ -39,7 +39,7 @@ export function ConsultationPlanner({ className }: ConsultationPlannerProps) {
         </p>
         <a
           href={`tel:${siteConfig.contact.phone}`}
-          className="inline-flex h-11 items-center justify-center rounded-full bg-[#ffcc00] px-5 text-sm font-semibold text-[#171717] transition hover:bg-[#f2bf00]"
+          className="kcg-action-token inline-flex h-11 items-center justify-center rounded-full bg-[#ffcc00] px-5 text-sm font-semibold text-[#171717] transition hover:bg-[#f2bf00]"
         >
           전화 문의 {siteConfig.contact.phone}
         </a>

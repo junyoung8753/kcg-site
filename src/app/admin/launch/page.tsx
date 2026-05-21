@@ -27,8 +27,18 @@ const publicLaunchTasks = [
   "Production 배포 승인",
   "Stable alias 변경 승인",
   "kcgold.co.kr Cafe24 DNS 전환 승인",
+  "최종 상품 가격·공임·운영자료 확인",
+  "대표 이미지·실사진 final-use 승인",
+  "최종 관리자 비밀번호 rotation",
   "KCG_PUBLIC_SEARCH_APPROVED=1 명시 승인 env 설정",
   "robots/noindex 해제와 검색 색인 승인",
+];
+
+const userOnlyLaunchTasks = [
+  "최종 상품 가격·공임·운영자료 확인",
+  "대표 이미지·실사진 final-use 승인",
+  "최종 관리자 비밀번호 rotation",
+  "Vercel/Supabase 소유권 이전 필요 여부 확인",
 ];
 
 export default function AdminLaunchPage() {
@@ -131,6 +141,23 @@ export default function AdminLaunchPage() {
             공개 승인 env 미설정 중 하나라도 남아 있으면 검색 노출은 열리지 않습니다.
           </p>
         </div>
+      </section>
+
+      <section className="admin-panel p-6" data-testid="admin-user-only-launch-blockers">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#a53b32]">
+          User-only Launch Blockers
+        </p>
+        <h3 className="mt-3 font-display text-xl text-[var(--admin-ink)]">junyoung/KCG 직접 확정 항목</h3>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--admin-muted)]">
+          이 항목은 Codex가 임의로 승인할 수 없습니다. 검색 공개 전에는 확인 필요 상태로 남겨 둡니다.
+        </p>
+        <ul className="mt-5 grid gap-3 text-sm leading-7 text-[var(--admin-ink)] sm:grid-cols-2">
+          {userOnlyLaunchTasks.map((task) => (
+            <li key={task} className="rounded-[1rem] border border-[var(--admin-line)] bg-[#fbf7e8] px-4 py-3">
+              {task}
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-3">

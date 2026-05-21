@@ -89,6 +89,13 @@ export default async function AdminPage() {
       tone: "neutral" as const,
     },
     {
+      href: "/admin/media",
+      title: "이미지 교체",
+      body: "업로드 이미지와 운영 위치 연결 상태를 한 화면에서 확인합니다.",
+      cta: "미디어 관리",
+      tone: "neutral" as const,
+    },
+    {
       href: "/admin/announcements",
       title: "공지 최신 상태",
       body: "영업 안내, 시세 운영, 상품 안내 중 고객에게 필요한 공지만 게시합니다.",

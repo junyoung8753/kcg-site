@@ -54,7 +54,7 @@ The chosen direction is `Graphite Desk + Seoul Retail + Human Consultation`: cha
 
 New source and review storage:
 
-- Source originals: `C:\Users\junyo\Documents\File-Hub\30_Media\Images\AI generated\KCG\2026-05-06-visual-guidance-refresh`
+- Source originals: `C:\Users\junyo\Documents\File-Hub\80_보관\사진_영상\Images\AI generated\KCG\2026-05-06-visual-guidance-refresh`
 - Repo review folder: `public/image-options/2026-05-06/generated`
 - Review contact sheet: `public/image-options/2026-05-06/generated/contact-sheet.jpg`
 - Machine-readable manifest: `public/image-options/2026-05-06/generated/manifest.json`
@@ -82,7 +82,7 @@ Operational note: real KCG product/store/staff photos should still replace gener
 Use this folder when junyoung wants to choose a different visual direction:
 
 - Existing-current copies: `public/image-options/2026-05-03/existing-current`
-- New source PNGs: preserved outside the repo under `C:\Users\junyo\Documents\File-Hub\30_Media\Images\AI generated\KCG\2026-05-03-image-refresh`
+- New source PNGs: preserved outside the repo under `C:\Users\junyo\Documents\File-Hub\80_보관\사진_영상\Images\AI generated\KCG\2026-05-03-image-refresh`
 - New optimized WebPs: `public/image-options/2026-05-03/new/webp`
 - Existing contact sheet: `public/image-options/2026-05-03/existing-current-contact-sheet.jpg`
 - New contact sheet: `public/image-options/2026-05-03/new-candidates-contact-sheet.jpg`
@@ -104,7 +104,7 @@ Junyoung correctly pointed out that the first refresh still overused a narrow vi
 | G | 상담 테이블 | 장갑/저울/봉투 없이 차분한 상담 맥락을 주는 방향. |
 | H | 실버 중심 대비 | 골드 과다 이미지를 끊는 차가운 실버 중심 방향. |
 
-Use `contact-sheet.jpg` in that folder for quick comparison. Source PNGs are preserved outside the repo in `C:\Users\junyo\Documents\File-Hub\30_Media\Images\AI generated\KCG\2026-05-03-diverse-banner-directions`; the repo should keep optimized WebPs and review sheets, not every large source PNG.
+Use `contact-sheet.jpg` in that folder for quick comparison. Source PNGs are preserved outside the repo in `C:\Users\junyo\Documents\File-Hub\80_보관\사진_영상\Images\AI generated\KCG\2026-05-03-diverse-banner-directions`; the repo should keep optimized WebPs and review sheets, not every large source PNG.
 
 ## Guardrails
 

@@ -257,7 +257,7 @@ function answerWithRules(message: string, mode: InquiryAssistantMode): InquiryAs
       {
         answer:
           faqAnswer("자동 참고시세") ||
-          "고객이 구매할 때는 `살 때`, 매입 상담을 받을 때는 `팔 때` 기준을 먼저 확인합니다. 회사 고시 시세가 우선이며 자동 참고 시세는 시장 흐름 확인용입니다.",
+          "고객이 구매할 때는 `내가 살 때`, 매입 상담을 받을 때는 `내가 팔 때` 기준을 먼저 확인합니다. 회사 고시 시세가 우선이며 자동 참고 시세는 시장 흐름 확인용입니다.",
         intent: "price_guide",
         confidence: 0.88,
         handoffRequired: false,

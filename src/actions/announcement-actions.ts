@@ -2,11 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireAdminActionSession } from "@/lib/auth/admin-action";
 import { getRepository } from "@/lib/data";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 import { ensureString, slugify, toBoolean } from "@/lib/utils";
 
 export async function upsertAnnouncementAction(formData: FormData) {
+  await requireAdminActionSession("/admin/announcements");
+
   if (!isSupabaseConfigured()) {
     redirect("/admin/announcements?status=demo");
   }
@@ -43,11 +46,16 @@ export async function upsertAnnouncementAction(formData: FormData) {
 }
 
 export async function deleteAnnouncementAction(formData: FormData) {
+  await requireAdminActionSession("/admin/announcements");
+
   if (!isSupabaseConfigured()) {
     redirect("/admin/announcements?status=demo");
   }
 
   const id = ensureString(formData.get("id"));
+  if (!toBoolean(formData.get("confirmDelete"))) {
+    redirect("/admin/announcements?status=confirm-delete");
+  }
 
   try {
     const repository = getRepository();

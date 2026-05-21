@@ -11,7 +11,7 @@ These are not applied to the public UI by default. They are selection candidates
 - `manifest.json`: source path and role metadata.
 
 Source PNG originals are intentionally kept outside the repo in:
-`C:\Users\junyo\Documents\File-Hub\30_Media\Images\AI generated\KCG\2026-05-03-diverse-banner-directions`
+`C:\Users\junyo\Documents\File-Hub\80_보관\사진_영상\Images\AI generated\KCG\2026-05-03-diverse-banner-directions`
 
 ## Directions
 

@@ -1,6 +1,6 @@
 {
   "name": "korea-center-gold-exchange-site",
-  "version": "0.2.30",
+  "version": "0.2.76",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -16,12 +16,14 @@
     "test:site": "playwright test",
     "screenshot:site": "node scripts/capture-site-screenshots.mjs",
     "screenshot:admin": "node scripts/capture-admin-screenshots.mjs",
+    "images:candidates": "node scripts/generate-image-candidates.mjs",
+    "qa:quick": "node scripts/run-site-qa.mjs --quick",
     "qa:site": "node scripts/run-site-qa.mjs",
     "release:trace": "node scripts/report-release-trace.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
-    "next": "16.2.4",
+    "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
@@ -35,7 +37,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.4",
+    "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

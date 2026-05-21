@@ -11,6 +11,7 @@ import type {
   UpdatePriceInput,
 } from "@/types/price";
 import type { ProductUpsertInput } from "@/types/product";
+import type { SiteAssetInput, SiteAssetUsageInput } from "@/types/media";
 import { getDefaultPriceAutoSettings } from "@/lib/price-auto";
 import type { SiteRepository } from "./repository";
 
@@ -155,6 +156,28 @@ export class MockRepository implements SiteRepository {
   }
 
   async upsertProduct(input: ProductUpsertInput) {
+    void input;
+    return demoResult;
+  }
+
+  async getSiteAssets() {
+    return [];
+  }
+
+  async getSiteAssetUsages() {
+    return [];
+  }
+
+  async createSiteAsset(input: SiteAssetInput) {
+    return {
+      id: `mock-${input.assetId}`,
+      ...input,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+  }
+
+  async upsertSiteAssetUsage(input: SiteAssetUsageInput) {
     void input;
     return demoResult;
   }

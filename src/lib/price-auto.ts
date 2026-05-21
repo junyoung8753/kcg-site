@@ -1,4 +1,5 @@
 import { getMarketDashboardData } from "@/lib/market-data";
+import { DEFAULT_PRICE_ROUNDING_UNIT, roundPriceToUnit } from "@/lib/price-formulas";
 import type { MarketDashboardData, MarketMetal } from "@/types/market";
 import type {
   PriceAutoSettings,
@@ -10,8 +11,6 @@ import type {
   UpdatePriceInput,
 } from "@/types/price";
 
-const DEFAULT_ROUNDING_UNIT = 100;
-
 export function getDefaultPriceAutoSettings(
   overrides?: Partial<PriceAutoSettings>,
 ): PriceAutoSettings {
@@ -22,11 +21,11 @@ export function getDefaultPriceAutoSettings(
     intervalHours: 1,
     checkIntervalMinutes: 60,
     mode: "manual_review",
-    roundingUnit: DEFAULT_ROUNDING_UNIT,
+    roundingUnit: DEFAULT_PRICE_ROUNDING_UNIT,
     goldSellPremiumRate: 0.135,
     goldBuyDiscountRate: 0.05,
-    gold18kBuyRate: 0.735,
-    gold14kBuyRate: 0.57,
+    gold18kBuyRate: 0.75,
+    gold14kBuyRate: 0.585,
     platinumSellPremiumRate: 0.1,
     platinumBuyDiscountRate: 0.1,
     silverSellPremiumRate: 0.08,
@@ -45,11 +44,6 @@ export function getDefaultPriceAutoSettings(
   };
 }
 
-function roundToUnit(value: number, unit: number) {
-  const safeUnit = unit > 0 ? unit : DEFAULT_ROUNDING_UNIT;
-  return Math.round(value / safeUnit) * safeUnit;
-}
-
 function getDomesticDon(data: MarketDashboardData, metal: MarketMetal) {
   return data.domesticPrices.find((item) => item.metal === metal)?.krwPerDon;
 }
@@ -60,7 +54,7 @@ function buildItem(
   note: string,
   settings: PriceAutoSettings,
 ): PriceAutoSuggestionItem {
-  const proposedValue = roundToUnit(rawValue, settings.roundingUnit);
+  const proposedValue = roundPriceToUnit(rawValue, settings.roundingUnit);
   const difference = proposedValue - price.value;
   const changePercent = price.value > 0 ? difference / price.value : 0;
 

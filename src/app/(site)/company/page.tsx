@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { defaultCompanyHeroImages, getOperationalSlotImages } from "@/lib/site-assets";
 import { companyStory, siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -8,20 +9,27 @@ export const metadata: Metadata = {
     "주식회사 한국센터금거래소의 법인 정보, 본사·매장 구분, 패밀리 사이트를 확인할 수 있습니다.",
 };
 
-export default function CompanyPage() {
+export default async function CompanyPage() {
   const { headOffice, store } = siteConfig.locations;
+  const isAtomicValue = (value: string) => value.includes("02-") || value.includes("@");
+  const companyHeroImages = await getOperationalSlotImages("company_hero", defaultCompanyHeroImages);
+  const heroImage = companyHeroImages[0] ?? defaultCompanyHeroImages[0];
 
   return (
     <>
       <section className="bg-[#f7faf8]">
-        <div className="section-shell grid gap-6 py-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
-          <div className="relative min-h-[13rem] overflow-hidden border border-[#dde5e2] bg-[#151518] sm:min-h-[17rem] lg:min-h-[18rem]">
+        <div className="section-shell grid gap-4 py-4 sm:gap-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
+          <div
+            data-testid="route-hero-media"
+            className="relative h-[12rem] min-h-[12rem] overflow-hidden border border-[#dde5e2] bg-[#151518] sm:h-[17rem] sm:min-h-[17rem] lg:h-[18rem] lg:min-h-[18rem]"
+          >
             <Image
-              src="/campaign/kcg-home-human-consultation-20260506.webp"
-              alt="한국센터금거래소 회사소개 상담 장면 이미지"
+              src={heroImage.src}
+              alt={heroImage.alt}
               fill
               priority
-              className="object-cover"
+              className={heroImage.fit === "contain" ? "object-contain p-4 sm:p-5" : "object-cover"}
+              style={{ objectPosition: heroImage.objectPosition }}
               sizes="(min-width: 1024px) 42vw, 100vw"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/82 via-black/24 to-transparent p-5">
@@ -57,7 +65,13 @@ export default function CompanyPage() {
                 ].map(([label, value]) => (
                   <div key={label} className="bg-white px-5 py-4">
                     <p className="kcg-fine-label text-[#8b9292]">{label}</p>
-                    <p className="mt-2 break-keep text-sm font-semibold leading-6 text-[#15191b]">{value}</p>
+                    <p
+                      className={`mt-2 text-sm font-semibold leading-6 text-[#15191b] ${
+                        isAtomicValue(value) ? "kcg-number-token" : "break-keep"
+                      }`}
+                    >
+                      {value}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -132,7 +146,9 @@ export default function CompanyPage() {
                 <p className="kcg-fine-label text-[#ffcc00]">{location.label}</p>
                 <h3 className="mt-3 text-xl font-semibold tracking-[-0.022em]">{location.title}</h3>
                 <p className="mt-4 text-sm leading-7 text-white/72">{location.address}</p>
-                <p className="mt-3 text-sm font-semibold text-white">{location.label} 전화 {location.phone}</p>
+                <p className="mt-3 text-sm font-semibold text-white">
+                  {location.label} 전화 <span className="kcg-number-token inline-block">{location.phone}</span>
+                </p>
               </article>
             ))}
           </div>

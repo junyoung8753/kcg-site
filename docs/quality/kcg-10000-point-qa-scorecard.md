@@ -1,6 +1,6 @@
 # KCG 10000-Point QA Scorecard
 
-Last updated: 2026-05-05 KST.
+Last updated: 2026-05-11 KST.
 
 This scorecard is for KCG public site and admin-console QA. It converts product fit, usability, accessibility, performance, compliance, and operating-readiness checks into a 10000-point scale so quality conversations are less subjective.
 
@@ -53,3 +53,22 @@ Subtract blocker penalties even when screens look good:
 - Temporary admin password not rotated: up to -200
 - Actual product photos/prices/margins not confirmed: up to -350
 - Paid scheduler/API decision unresolved when automatic operation is required: up to -150
+
+## DeepQA Launch-Candidate Addendum - 2026-05-11
+
+For noindex-protected launch-candidate QA, score both the Codex-achievable review state and the public-search-launch state.
+
+Codex-achievable score excludes user-only approvals that Codex cannot safely perform, but it must still show those blockers on `/admin/launch` and in final reporting. Public-search-launch score subtracts the blocker penalties above until junyoung/KCG explicitly clears them.
+
+Extra P0 gates added after the 2026-05-11 deepQA:
+
+| Gate | Required Evidence |
+| --- | --- |
+| Mutating admin action authorization | Every price/product/announcement Server Action calls `requireAdminActionSession()` before repository writes. |
+| Automatic price OFF kill switch | `runPriceAutoRefresh()` does not enable automatic posting when `isEnabled=false`; stale manual registration creates warnings only. |
+| Product list price caveat | Product cards show a short final-price caveat near exact-looking reference amounts. |
+| User-only launch blockers | `/admin/launch` shows final product price/fee confirmation, image final-use approval, final admin secret rotation, and ownership-transfer decision before public search launch. |
+| Rendered noindex evidence | Live/rendered audit checks public route robots meta tags in addition to `/robots.txt` and sitemap state. |
+| Mobile location/admin login first task | `/about` shows map action in the mobile first viewport, and `/admin/login` keeps the login form as the first unauthenticated task. |
+
+Latest deepQA score reference is recorded in `docs/setup/QA_DEEPQA_2026-05-11.md`.

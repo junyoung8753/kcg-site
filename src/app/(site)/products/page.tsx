@@ -3,55 +3,60 @@ import Image from "next/image";
 import { Suspense } from "react";
 import { ProductCatalog } from "@/components/products/product-catalog";
 import { getRepository } from "@/lib/data";
+import { getPriceAnnouncementDisplay } from "@/lib/price-announcement";
+import { getPublicCatalogProducts } from "@/lib/product-presenter";
+import { defaultProductsHeroImages, getOperationalSlotImages } from "@/lib/site-assets";
 
 export const metadata: Metadata = {
   title: "상품/매입",
   description:
-    "한국센터금거래소의 골드바, 순금 제품, 실버바, 고금·주얼리 매입, B2B 대량 상담 카테고리입니다.",
+    "한국센터금거래소의 1·2·3·5·10돈 골드바, 고금 주얼리 매입, B2B 대량 상담 카테고리입니다.",
 };
 
 const decisionPaths = [
-  ["살 때", "골드바·실버바·순금제품", "중량, 수량, 수급 가능 여부를 확인합니다."],
-  ["팔 때", "고금·주얼리 매입", "내가 팔 때 기준과 실물 확인 항목을 먼저 봅니다."],
+  ["내가 살 때", "돈 단위 골드바", "1·2·3·5·10돈 수급 가능 여부를 확인합니다."],
+  ["내가 팔 때", "고금 주얼리 매입", "내가 팔 때 기준과 실물 확인 항목을 먼저 봅니다."],
   ["대량", "B2B·기업", "품목 목록, 예상 수량, 희망 일정을 정리합니다."],
 ] as const;
 
 export default async function ProductsPage() {
   const repository = getRepository();
-  const [products, prices] = await Promise.all([
+  const [products, prices, productHeroImages] = await Promise.all([
     repository.getProducts(),
     repository.getPrices({ visibleOnly: true }),
+    getOperationalSlotImages("products_hero", defaultProductsHeroImages),
   ]);
+  const priceAnnouncement = getPriceAnnouncementDisplay(prices[0]?.announcedAt);
+  const heroImage = productHeroImages[0] ?? defaultProductsHeroImages[0];
+  const publicProducts = getPublicCatalogProducts(products);
 
   return (
     <>
       <section id="top" className="bg-[#f7faf8]">
-        <div className="section-shell grid gap-3 py-3 sm:gap-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
-          <div className="relative min-h-[8.8rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:min-h-[17rem] lg:min-h-[18rem]">
+        <div className="section-shell grid gap-4 py-4 sm:gap-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
+          <div
+            data-testid="route-hero-media"
+            className="relative h-[12rem] min-h-[12rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:h-[17rem] sm:min-h-[17rem] lg:h-[18rem] lg:min-h-[18rem]"
+          >
             <Image
-              src="/products/kcg-generated-goldbar-lineup-20260508.webp"
-              alt="한국센터금거래소 골드바 상담용 대표 이미지"
+              src={heroImage.src}
+              alt={heroImage.alt}
               fill
               priority
-              className="object-cover"
+              className={heroImage.fit === "contain" ? "object-contain p-4 sm:p-5" : "object-cover"}
+              style={{ objectPosition: heroImage.objectPosition }}
               sizes="(min-width: 1024px) 48vw, 100vw"
             />
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/62 via-black/18 to-transparent px-4 py-3 text-white sm:px-6 sm:py-5">
-              <p className="kcg-eyebrow text-[#ffd95a]">PRODUCTS & BUYING</p>
-              <h1 className="mt-1 text-[1.72rem] font-semibold leading-tight tracking-[-0.02em] sm:kcg-page-title sm:mt-2 sm:max-w-2xl">
-                상품/매입
-              </h1>
-            </div>
           </div>
 
           <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-3 sm:py-6 lg:py-7">
             <div>
               <p className="kcg-eyebrow text-[#9a8a00]">KCG CATEGORY</p>
-              <h2 className="mt-2 max-w-3xl text-[1.45rem] font-semibold leading-tight tracking-[-0.02em] text-[#15191b] sm:kcg-section-title sm:mt-3">
-                탭에서 품목을 고르고 기준가를 확인합니다.
-              </h2>
+              <h1 className="mt-2 max-w-3xl break-keep text-[1.72rem] font-semibold leading-tight tracking-[-0.02em] text-[#15191b] sm:kcg-page-title sm:mt-3">
+                상품/매입
+              </h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[#687171] sm:kcg-body-copy sm:mt-4">
-                골드바, 실버바, 순금제품, 고금 매입 항목을 바로 볼 수 있습니다.
+                1·2·3·5·10돈 골드바와 고금 주얼리 매입 기준을 바로 확인합니다.
               </p>
               <div className="mt-3 grid grid-cols-3 gap-px overflow-hidden border border-[#dfe6e3] bg-[#dfe6e3] sm:mt-5">
                 {decisionPaths.map(([label, title, body]) => (
@@ -78,7 +83,7 @@ export default async function ProductsPage() {
           </section>
         }
       >
-        <ProductCatalog products={products} prices={prices} />
+        <ProductCatalog products={publicProducts} prices={prices} priceAnnouncement={priceAnnouncement} />
       </Suspense>
     </>
   );

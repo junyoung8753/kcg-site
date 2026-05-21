@@ -29,6 +29,7 @@ export interface Product {
   shortDescription: string;
   description: string;
   imageUrl: string | null;
+  imageAssetId?: string | null;
   specs: string[];
   status: ProductStatus;
   displayOrder: number;
@@ -54,6 +55,7 @@ export interface ProductUpsertInput {
   shortDescription: string;
   description: string;
   imageUrl: string | null;
+  imageAssetId?: string | null;
   specs: string[];
   status: ProductStatus;
   displayOrder: number;

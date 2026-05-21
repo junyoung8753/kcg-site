@@ -1,4 +1,5 @@
 import { getRepository } from "@/lib/data";
+import { getPriceAnnouncementDisplay } from "@/lib/price-announcement";
 import { AdminPricesWorkspace } from "./price-mode-workspace";
 
 interface AdminPricesPageProps {
@@ -7,6 +8,7 @@ interface AdminPricesPageProps {
 
 function getStatusMessage(status?: string | string[]) {
   if (status === "saved") return "시세가 저장되었습니다.";
+  if (status === "saved-derived") return "시세가 저장되었습니다. 18K/14K는 순금 팔 때 기준 산식으로 자동 계산했습니다.";
   if (status === "demo") return "Supabase 미연결 상태에서는 저장이 비활성화됩니다.";
   if (status === "error") return "저장 중 오류가 발생했습니다.";
   if (status === "auto-settings-saved") return "자동시세 설정이 저장되었습니다.";
@@ -47,6 +49,7 @@ export default async function AdminPricesPage({
   const message = getStatusMessage(params.status);
   const warnings = getWarnings(params.warning);
   const hasMetalsKey = Boolean(process.env.METALS_DEV_API_KEY);
+  const publicPriceStatus = getPriceAnnouncementDisplay(prices[0]?.announcedAt);
 
   return (
     <div className="space-y-5">
@@ -57,7 +60,7 @@ export default async function AdminPricesPage({
           </p>
           <h2 className="mt-2 font-display text-3xl">오늘 시세 관리</h2>
           <p className="mt-2 text-sm leading-7 text-[var(--admin-muted)]">
-            자동시세 ON이면 산식과 안전 기준을 통과한 계산값이 공개 시세에 반영됩니다.
+            자동시세 전환, 직접 입력, 18K/14K 계산 기준을 한 화면에서 확인합니다.
           </p>
         </div>
         <a
@@ -91,6 +94,7 @@ export default async function AdminPricesPage({
         prices={prices}
         settings={settings}
         suggestion={suggestion}
+        publicPriceStatus={publicPriceStatus}
         history={history}
         freshness={freshness}
         hasMetalsKey={hasMetalsKey}

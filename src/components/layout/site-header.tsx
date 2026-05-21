@@ -52,13 +52,13 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden shrink-0 items-center gap-3 xl:flex">
-          <div className="w-[8.5rem] text-right text-sm text-[#66706f]">
-            <p className="text-lg font-bold text-[#15191b]">{siteConfig.contact.phone}</p>
+          <div className="w-[8.75rem] text-right text-sm text-[#66706f]">
+            <p className="kcg-number-token text-lg font-bold text-[#15191b]">{siteConfig.contact.phone}</p>
             <p className="truncate">본사 전화</p>
           </div>
           <Link
             href="/about"
-            className="inline-flex h-11 items-center rounded-full bg-[#ffcc00] px-5 text-sm font-semibold text-[#171717] transition hover:bg-[#f2bf00]"
+            className="kcg-action-token inline-flex h-11 items-center justify-center rounded-full bg-[#ffcc00] px-5 text-sm font-semibold text-[#171717] transition hover:bg-[#f2bf00]"
           >
             매장안내
           </Link>
@@ -89,7 +89,7 @@ export function SiteHeader() {
                   sizes="200px"
                 />
               </div>
-              <p className="mt-2 text-sm font-semibold text-[#15191b]">{siteConfig.contact.phone}</p>
+              <p className="kcg-number-token mt-2 text-sm font-semibold text-[#15191b]">{siteConfig.contact.phone}</p>
               <p className="mt-1 text-xs leading-5 text-[#687171]">본사 문의 · 상품/매입 상담</p>
             </div>
             <div className="grid gap-1 p-3">
@@ -98,7 +98,7 @@ export function SiteHeader() {
                   key={item.href}
                   href={item.href}
                   prefetch={false}
-                  className="block rounded-xl px-4 py-3 text-sm font-semibold text-[#15191b] transition hover:bg-[#fff7d2]"
+                  className="kcg-action-token block rounded-xl px-4 py-3 text-sm font-semibold text-[#15191b] transition hover:bg-[#fff7d2]"
                 >
                   {item.label}
                 </Link>

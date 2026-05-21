@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { TradingViewDisclosure } from "@/components/market/trading-view-disclosure";
 import { TradingViewMarketWidget } from "@/components/market/trading-view-widget";
-import { formatDateTimeKorean, formatWon } from "@/lib/format";
+import { formatDateTimeKorean } from "@/lib/format";
 import type {
-  DomesticMarketPrice,
   MarketDashboardData,
   MarketHeadlineItem,
   MarketSpot,
@@ -100,47 +99,42 @@ function SpotTable({ data }: { data: MarketDashboardData }) {
   );
 }
 
-function ConversionTable({
+function ReferenceGuidePanel({
   data,
-  goldDomestic,
-  silverDomestic,
-  platinumDomestic,
   goldSpot,
 }: {
   data: MarketDashboardData;
-  goldDomestic?: DomesticMarketPrice;
-  silverDomestic?: DomesticMarketPrice;
-  platinumDomestic?: DomesticMarketPrice;
   goldSpot?: MarketSpot;
 }) {
   const rows = [
-    ["순금", goldDomestic],
-    ["은", silverDomestic],
-    ["백금", platinumDomestic],
+    ["표시 범위", "국제 현재가·환율", "USD/T.oz 현재가와 USD/KRW 기준환율 흐름만 참고합니다."],
+    ["가격 기준", "KCG 회사 고시 시세", "내가 살 때·내가 팔 때 금액은 상단 고시 시세표와 상담 안내가 우선입니다."],
+    ["확정 절차", "전화·방문 상담", "중량·수량·실물 상태 확인 후 최종 금액을 안내합니다."],
   ] as const;
 
   return (
     <div className="overflow-hidden border border-[#dfe6e4] bg-white">
       <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] bg-[#f7fbfa] px-5 py-3 text-[0.84rem] font-bold tracking-[0.1em] text-[#697171]">
-        <p>국내 환산</p>
-        <p className="text-right">3.75g</p>
+        <p>참고 데이터 기준</p>
+        <p className="text-right">고시 시세 우선</p>
       </div>
-      {rows.map(([label, domestic]) => (
-        <div
-          key={label}
-          className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] items-center border-t border-[#e4ebe9] px-5 py-4 text-base sm:text-[1.05rem]"
-        >
-          <div>
-            <p className="font-bold tracking-[-0.022em] text-[#15191b]">{label}</p>
-            <p className="mt-1 text-[0.86rem] text-[#7d8585]">{domestic ? `1g ${formatWon(domestic.krwPerGram)}` : "준비 중"}</p>
-          </div>
-          <p className="text-right text-xl font-bold tabular-nums text-[#15191b]">
-            {domestic ? formatWon(domestic.krwPerDon) : "-"}
-          </p>
+      <div className="px-5 py-5">
+        <p className="text-sm font-medium leading-6 tracking-[-0.018em] text-[#596261]">
+          국제 현재가는 시장 흐름을 보기 위한 참고 정보입니다. 원화 거래 금액은 KCG 고시 시세표를
+          기준으로 확인합니다.
+        </p>
+        <div className="mt-5 grid gap-3">
+          {rows.map(([label, title, body]) => (
+            <div key={label} className="border border-[#e4ebe9] bg-[#fbfdfc] px-4 py-3">
+              <p className="kcg-fine-label text-[#9a8a00]">{label}</p>
+              <p className="mt-2 text-sm font-bold leading-6 tracking-[-0.018em] text-[#15191b]">{title}</p>
+              <p className="mt-1 text-xs leading-5 text-[#687171]">{body}</p>
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
       <div className="border-t border-[#e4ebe9] bg-[#fffbe8] px-5 py-4">
-        <p className="text-xs font-semibold tracking-[0.16em] text-[#9a8a00]">매매기준가</p>
+        <p className="text-xs font-semibold tracking-[0.16em] text-[#9a8a00]">시장 기준</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <p className="text-sm text-[#6f6a54]">
             국제 금 <span className="font-bold text-[#15191b]">{formatUsd(goldSpot?.price ?? 0)}</span> USD/T.oz
@@ -213,9 +207,6 @@ export function MarketDashboard({
   data: MarketDashboardData;
   variant?: MarketDashboardVariant;
 }) {
-  const goldDomestic = data.domesticPrices.find((item) => item.metal === "gold");
-  const silverDomestic = data.domesticPrices.find((item) => item.metal === "silver");
-  const platinumDomestic = data.domesticPrices.find((item) => item.metal === "platinum");
   const goldSpot = data.spots.find((item) => item.metal === "gold");
   const domesticHeadlines = data.externalHeadlines.filter((item) => item.category === "domestic");
   const globalHeadlines = data.externalHeadlines.filter((item) => item.category === "global");
@@ -235,13 +226,7 @@ export function MarketDashboard({
 
       <div className="grid items-start gap-6 xl:grid-cols-[1fr_0.82fr]">
         <SpotTable data={data} />
-        <ConversionTable
-          data={data}
-          goldDomestic={goldDomestic}
-          silverDomestic={silverDomestic}
-          platinumDomestic={platinumDomestic}
-          goldSpot={goldSpot}
-        />
+        <ReferenceGuidePanel data={data} goldSpot={goldSpot} />
       </div>
 
       {isDetailed ? (

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState, useTransition } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { usePathname } from "next/navigation";
 import type { InquiryAction, InquiryAssistantResponse } from "@/lib/inquiry-assistant";
 
@@ -14,7 +14,7 @@ type ChatMessage = {
 const quickPrompts = [
   {
     label: "시세표",
-    message: "시세표에서 살 때와 팔 때는 어떻게 보면 되나요?",
+    message: "시세표에서 내가 살 때와 내가 팔 때는 어떻게 보면 되나요?",
   },
   {
     label: "고금매입",
@@ -43,8 +43,11 @@ const initialMessage: ChatMessage = {
   actions: defaultActions,
 };
 
+const inquiryAssistantHash = "#inquiry-assistant";
+
 export function InquiryAssistantWidget() {
   const pathname = usePathname();
+  const rootRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([initialMessage]);
@@ -57,8 +60,32 @@ export function InquiryAssistantWidget() {
       setIsOpen(true);
     }
 
+    function openFromDelegatedClick(event: MouseEvent) {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target?.closest("[data-kcg-open-inquiry-assistant='true']")) return;
+      setIsOpen(true);
+    }
+
+    function openFromHash() {
+      if (window.location.hash === inquiryAssistantHash) {
+        setIsOpen(true);
+      }
+    }
+
+    const readyTimer = window.setTimeout(() => {
+      rootRef.current?.setAttribute("data-kcg-inquiry-ready", "true");
+      openFromHash();
+    }, 0);
+
     window.addEventListener("kcg:open-inquiry-assistant", openFromMobileBar);
-    return () => window.removeEventListener("kcg:open-inquiry-assistant", openFromMobileBar);
+    document.addEventListener("click", openFromDelegatedClick);
+    window.addEventListener("hashchange", openFromHash);
+    return () => {
+      window.clearTimeout(readyTimer);
+      window.removeEventListener("kcg:open-inquiry-assistant", openFromMobileBar);
+      document.removeEventListener("click", openFromDelegatedClick);
+      window.removeEventListener("hashchange", openFromHash);
+    };
   }, []);
 
   function ask(message: string) {
@@ -107,7 +134,10 @@ export function InquiryAssistantWidget() {
 
   return (
     <div
+      ref={rootRef}
+      id="inquiry-assistant"
       data-testid="inquiry-assistant-widget"
+      data-kcg-inquiry-ready="false"
       className="fixed bottom-[calc(6.9rem+env(safe-area-inset-bottom))] right-3 z-50 flex max-w-[calc(100vw-1.5rem)] flex-col items-end gap-3 lg:bottom-6 lg:right-6"
     >
       {isOpen ? (
@@ -152,7 +182,7 @@ export function InquiryAssistantWidget() {
                         href={action.href}
                         target={action.type === "external" ? "_blank" : undefined}
                         rel={action.type === "external" ? "noreferrer" : undefined}
-                        className="border border-[#d7e0dd] bg-white px-3 py-1.5 text-xs font-bold text-[#15191b] transition hover:bg-[#fff8d8]"
+                        className="kcg-action-token border border-[#d7e0dd] bg-white px-3 py-1.5 text-xs font-bold text-[#15191b] transition hover:bg-[#fff8d8]"
                       >
                         {action.label}
                       </a>
@@ -180,7 +210,7 @@ export function InquiryAssistantWidget() {
                   key={item.label}
                   type="button"
                   onClick={() => ask(item.message)}
-                  className="border border-[#d7e0dd] px-3 py-1.5 text-xs font-bold text-[#15191b] transition hover:bg-[#fff8d8]"
+                  className="kcg-action-token border border-[#d7e0dd] px-3 py-1.5 text-xs font-bold text-[#15191b] transition hover:bg-[#fff8d8]"
                 >
                   {item.label}
                 </button>
@@ -201,7 +231,7 @@ export function InquiryAssistantWidget() {
               <button
                 type="submit"
                 disabled={isPending || input.trim().length === 0}
-                className="bg-[#15191b] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#30383a] disabled:cursor-not-allowed disabled:bg-[#b9c3c0]"
+                className="kcg-action-token bg-[#15191b] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#30383a] disabled:cursor-not-allowed disabled:bg-[#b9c3c0]"
               >
                 질문
               </button>
@@ -218,7 +248,7 @@ export function InquiryAssistantWidget() {
         aria-expanded={isOpen}
         aria-controls="inquiry-assistant-input"
         onClick={() => setIsOpen((value) => !value)}
-        className="hidden border border-[#cbb25b] bg-[#15191b] px-4 py-3 text-sm font-bold text-white shadow-[0_16px_38px_rgba(18,24,24,0.22)] transition hover:bg-[#2a3032] lg:inline-flex"
+        className="kcg-action-token hidden border border-[#cbb25b] bg-[#15191b] px-4 py-3 text-sm font-bold text-white shadow-[0_16px_38px_rgba(18,24,24,0.22)] transition hover:bg-[#2a3032] lg:inline-flex"
       >
         상담 도우미
       </button>

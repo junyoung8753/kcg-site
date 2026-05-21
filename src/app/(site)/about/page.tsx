@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { defaultStoreGuideHeroImages, getOperationalSlotImages } from "@/lib/site-assets";
 import { getOptionalContactLinks, siteConfig, visitChecklist } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -22,26 +23,39 @@ const visitPrepCards = [
   ["법인·대리", "법인 보유분, 상속 정리, 대리 방문은 전화로 필요 서류를 먼저 확인해 주세요."],
 ] as const;
 
-export default function AboutPage() {
+export default async function AboutPage() {
   const { headOffice, store } = siteConfig.locations;
   const optionalContactLinks = getOptionalContactLinks();
+  const storeGuideHeroImages = await getOperationalSlotImages("store_guide_hero", defaultStoreGuideHeroImages);
+  const heroImage = storeGuideHeroImages[0] ?? defaultStoreGuideHeroImages[0];
 
   return (
     <>
       <section className="bg-[#f7faf8]">
-        <div className="section-shell grid gap-6 py-6 sm:py-8 lg:grid-cols-[0.44fr_0.56fr] lg:items-stretch">
-          <div className="relative min-h-[13rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:min-h-[17rem] lg:min-h-[18rem]">
+        <div className="section-shell grid gap-4 py-4 sm:gap-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
+          <div
+            data-testid="route-hero-media"
+            className="relative h-[12rem] min-h-[12rem] overflow-hidden border border-[#dde5e2] bg-[#f7faf8] sm:h-[17rem] sm:min-h-[17rem] lg:h-[18rem] lg:min-h-[18rem]"
+          >
             <Image
-              src="/campaign/kcg-home-seoul-retail-20260506.webp"
-              alt="종로 귀금속 매장 방문 분위기 이미지"
+              src={heroImage.src}
+              alt={heroImage.alt}
               fill
               priority
-              className="object-cover"
+              className={heroImage.fit === "contain" ? "object-contain p-4 sm:p-5" : "object-cover"}
+              style={{ objectPosition: heroImage.objectPosition }}
               sizes="(min-width: 1024px) 44vw, 100vw"
             />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(18,22,23,0.48))]" />
+            <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-7">
+              <p className="kcg-fine-label text-[#ffcc00]">VISIT CHECK</p>
+              <p className="mt-3 max-w-sm text-xl font-black leading-tight tracking-normal">
+                위치, 전화, 준비 항목을 먼저 확인합니다.
+              </p>
+            </div>
           </div>
 
-          <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-6 lg:py-7">
+          <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-4 sm:py-6 lg:py-7">
             <p className="kcg-eyebrow text-[#9a8a00]">STORE GUIDE</p>
             <h1 className="kcg-page-title mt-3 text-[#15191b]">
               본사·매장 위치와 거래 전 준비 항목
@@ -49,9 +63,33 @@ export default function AboutPage() {
             <p className="kcg-body-copy mt-4 max-w-2xl text-[#687171]">
               위치, 전화, 준비 항목만 먼저 확인합니다.
             </p>
-            <div className="mt-6 grid gap-px overflow-hidden border border-[#dfe6e3] bg-[#dfe6e3] sm:grid-cols-3">
+            <div className="mt-4 flex flex-wrap gap-2">
+              <a
+                href={headOffice.naverMapUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="kcg-action-token inline-flex h-10 items-center justify-center rounded-full bg-[#ffcc00] px-4 text-sm font-bold text-[#171717]"
+              >
+                네이버 지도
+              </a>
+              <a
+                href={headOffice.kakaoMapUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="kcg-action-token inline-flex h-10 items-center justify-center rounded-full border border-[#d7e0dd] bg-white px-4 text-sm font-semibold text-[#171717]"
+              >
+                카카오맵
+              </a>
+              <a
+                href={`tel:${headOffice.phone}`}
+                className="kcg-action-token inline-flex h-10 items-center justify-center rounded-full border border-[#d7e0dd] bg-white px-4 text-sm font-semibold text-[#171717]"
+              >
+                본사 전화
+              </a>
+            </div>
+            <div className="mt-4 grid gap-px overflow-hidden border border-[#dfe6e3] bg-[#dfe6e3] sm:mt-6 sm:grid-cols-3">
               {quickChecks.map(([label, body]) => (
-                <div key={label} className="bg-white px-4 py-4">
+                <div key={label} className="bg-white px-3 py-3 sm:px-4 sm:py-4">
                   <p className="kcg-fine-label text-[#9a8a00]">{label}</p>
                   <p className="mt-2 text-sm leading-6 text-[#687171]">{body}</p>
                 </div>
@@ -61,7 +99,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section-shell py-10 sm:py-12">
+      <section className="section-shell py-5 sm:py-12">
         <div className="grid gap-8 lg:grid-cols-[0.36fr_0.64fr]">
           <div>
             <p className="kcg-eyebrow text-[#9a8a00]">LOCATION</p>
@@ -75,13 +113,13 @@ export default function AboutPage() {
                 <p className="kcg-fine-label text-[#9a8a00]">{location.label}</p>
                 <h3 className="mt-3 text-xl font-semibold tracking-[-0.022em] text-[#15191b]">{location.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-[#687171]">{location.address}</p>
-                <p className="mt-2 text-sm font-semibold text-[#15191b]">{location.phone}</p>
+                <p className="kcg-number-token mt-2 text-sm font-semibold text-[#15191b]">{location.phone}</p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   <a
                     href={location.naverMapUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-full border border-[#d7e0dd] bg-white px-4 py-2.5 text-sm font-semibold text-[#171717]"
+                    className="kcg-action-token rounded-full border border-[#d7e0dd] bg-white px-4 py-2.5 text-sm font-semibold text-[#171717]"
                   >
                     네이버 지도
                   </a>
@@ -89,7 +127,7 @@ export default function AboutPage() {
                     href={location.kakaoMapUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-full border border-[#d7e0dd] bg-white px-4 py-2.5 text-sm font-semibold text-[#171717]"
+                    className="kcg-action-token rounded-full border border-[#d7e0dd] bg-white px-4 py-2.5 text-sm font-semibold text-[#171717]"
                   >
                     카카오맵
                   </a>
@@ -136,7 +174,7 @@ export default function AboutPage() {
           <div>
             <p className="kcg-eyebrow text-[#9a8a00]">CONTACT</p>
             <h2 className="kcg-section-title mt-2 text-[#15191b]">
-              본사 전화 {siteConfig.contact.phone}
+              본사 전화 <span className="kcg-number-token inline-block">{siteConfig.contact.phone}</span>
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#687171]">
               품목, 예상 중량, 수량을 먼저 확인합니다.
@@ -145,13 +183,13 @@ export default function AboutPage() {
           <div className="flex flex-wrap gap-3 lg:justify-end">
             <a
               href={`tel:${siteConfig.contact.phone}`}
-              className="inline-flex h-11 items-center justify-center rounded-full bg-[#ffcc00] px-5 text-sm font-bold text-[#171717]"
+              className="kcg-action-token inline-flex h-11 items-center justify-center rounded-full bg-[#ffcc00] px-5 text-sm font-bold text-[#171717]"
             >
               전화
             </a>
             <Link
               href="/company"
-              className="inline-flex h-11 items-center justify-center rounded-full border border-[#d8dfdc] bg-white px-5 text-sm font-semibold text-[#171717]"
+              className="kcg-action-token inline-flex h-11 items-center justify-center rounded-full border border-[#d8dfdc] bg-white px-5 text-sm font-semibold text-[#171717]"
             >
               회사 정보
             </Link>
@@ -161,7 +199,7 @@ export default function AboutPage() {
                 href={item.href}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-11 items-center justify-center rounded-full border border-[#d8dfdc] bg-white px-5 text-sm font-semibold text-[#171717]"
+                className="kcg-action-token inline-flex h-11 items-center justify-center rounded-full border border-[#d8dfdc] bg-white px-5 text-sm font-semibold text-[#171717]"
               >
                 {item.label}
               </a>

@@ -8,6 +8,1330 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.76 - Post-v0.2.75 operational risk ledger
+
+- Date: `2026-05-21 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; final deployment `dpl_EhwBtXeXKedmAJCcP2UeBfgDkEe2` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not include production write smoke, DB schema/data change, secret/env change, noindex/search release, DNS/project transfer, payment, checkout/cart, or live trading.
+- 사람이 읽는 요약: `v0.2.75`에서 이미 배포된 관리자/공개 상품 기준 일치 작업을 더 건드리는 대신, 남은 리스크를 문서와 source audit으로 분리했다. 공개 상품 기준은 `getPublicCatalogProducts()`와 public image presenter로 고정하고, raw/legacy Supabase 상품 행은 삭제하지 않고 `hidden/stale data`로 문서화했다. `KCG-TODO-124` production media DB schema 적용과 production write smoke는 별도 승인 Gate로 남겼다.
+- Summary: Adds a post-release operational risk ledger and executable documentation guardrails for admin/public catalog parity, hidden legacy rows, media DB owner-SQL planning, opt-in upload smoke policy, and read-only live QA baselines.
+- Changed:
+  - Added `docs/setup/POST_V0_2_75_OPERATIONAL_RISK_LEDGER.md` to freeze the v0.2.75 release surface and separate dirty worktree interpretation from later Gates.
+  - Updated product operations guidance so `/admin/products` owns product-specific photos and `/admin/media` owns banners/page-level images.
+  - Documented hidden/stale raw DB product rows as excluded by presenter/default admin views, not deleted by default.
+  - Documented the `KCG-TODO-124` owner SQL plan and minimum verification queries for `site_assets`, `site_asset_usages`, `media_change_history`, `products.image_asset_id`, and the `10485760` byte media limit.
+  - Documented the production write smoke rule: default QA stays read-only; mutation smoke needs explicit approval and must include upload, readback, restore, cleanup, and cleanup readback.
+  - Updated source audit guardrails so this risk policy cannot silently disappear from the repo docs.
+  - Bumped package version to `0.2.76`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 새로 바뀌는 것: 없음. 이 작업은 운영 리스크 정리와 문서/audit guardrail이다.
+  - 실제 사이트 화면은 안 바뀌는 것: 공개 가격값, 가격 산식 의미, Supabase 가격 행/이력 행, 검색/noindex 차단, robots, DNS, 결제/장바구니, 실시간 거래, 인증/비밀값, production DB schema/data.
+- Verification:
+  - Local checks passed: `npm run audit:site` (`2674 checks, 1 skipped` source-only), `npm run lint`, `npm run typecheck`, `npm run release:trace`, `npm audit --audit-level=moderate` (`0 vulnerabilities`), `npm run build`, `npm run test:site` (`36 passed`), `npm run screenshot:admin`, and `npm run qa:site` (`2746 checks, 0 skipped`; Playwright `34 passed, 2 skipped`; screenshots refreshed).
+  - Deployed with `npx vercel deploy --prod --yes`; `npx vercel inspect https://kcgold.co.kr/` reports deployment `dpl_EhwBtXeXKedmAJCcP2UeBfgDkEe2` `Ready` and aliased to the review domains.
+  - Final live read-only checks passed on `https://kcgold.co.kr`: `npm run check:release-state` reports `mode=supabase`, `deployment=production`, and `indexing=disabled-forced-noindex`; live `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` passed (`2746 checks, 0 skipped`); live `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` passed (`34 passed, 2 skipped`).
+  - Production write smoke was intentionally not run.
+- Rollback Hint: `v0.2.76 운영 리스크 ledger 전으로 되돌려줘`
+- Remaining User-only / Later:
+  - `KCG-TODO-124` remains blocked until Supabase owner/dashboard SQL or owner-authenticated CLI access is available.
+  - Production write smoke remains opt-in and requires explicit approval before mutating live review storage/metadata.
+
+## v0.2.75 - Admin/public product catalog parity
+
+- Date: `2026-05-21 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; final deployment `dpl_2zfEDN9mH3URepTmsWcNBM93fJqN` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env value changes, DNS changes, payment, checkout/cart, live trading, KRX production data, or public price-data changes.
+- 사람이 읽는 요약: `/products` 고객 화면은 공개 canonical catalog 기준으로 1·2·3·5·10돈 골드바, `고금 주얼리 매입`, `대량 골드바 상담`만 보여주는데 `/admin/products`와 `/admin/media`의 상품 요약은 raw DB/mock product rows를 그대로 섞어 보여서 관리자 화면과 사이트가 다르게 보였다. 관리자 기본 상품 목록과 미디어 상품 요약도 공개 catalog/image presenter를 기준으로 맞춰, 운영자가 보는 상품/이미지 상태가 고객 화면과 같은 기준이 되게 했다.
+- Summary: Aligns admin product and media product surfaces with the public canonical catalog so hidden legacy/raw rows no longer appear as the default operator view, while preserving the one-click image replacement workflow.
+- Changed:
+  - Added canonical public product lookup by slug so one-click product image upload can create/update the public canonical product row when a matching raw DB row is missing.
+  - Changed `/admin/products` to build its default list from `getPublicCatalogProducts(products)` instead of raw product rows, preserving an existing source row id by slug when present.
+  - Changed admin product image preview/status to use the same effective public image presenter as `/products`, so default/consultation/uploaded image labels match the customer-facing result.
+  - Changed `/admin/media` product summary to use the public catalog and public image presenter rather than raw catalog rows.
+  - Updated Playwright/source guardrails so admin products must show the same seven public rows and must not show hidden legacy rows by default.
+  - Bumped package version to `0.2.75`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: 관리자 `/admin/products`의 기본 목록과 `/admin/media`의 상품 요약이 고객 화면과 같은 7개 공개 상품/매입 기준으로 보인다. `KCG 골드바 1g`, `순금 카드 1g`, `14K 주얼리 매입`, `순금 기념메달` 같은 숨긴 raw/legacy 행은 기본 관리 목록에 나오지 않는다.
+  - 실제 사이트 화면은 안 바뀌는 것: 공개 가격값, 가격 산식 의미, Supabase 가격 행/이력 행, 검색/noindex 차단, robots, DNS, 결제/장바구니, 실시간 거래, 인증/비밀값.
+- Verification:
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2640 checks, 1 skipped` before rendered URL), `npm run build`, `npm run test:site` (`36 passed`), `npm audit --audit-level=moderate` (`0 vulnerabilities`), `npm run screenshot:admin`, `npm run screenshot:site`, and `npm run qa:site` (`2712 checks, 0 skipped`; Playwright `34 passed, 2 skipped`; screenshots refreshed).
+  - Admin screenshot evidence passed: `output/screenshots/admin-products-desktop.png` and `output/screenshots/admin-products-mobile.png` show the public 7-row product set, same public image labels, and the one-click `이 사진으로 바로 교체` workflow; hidden raw/legacy rows are absent.
+  - Deployed with `npx vercel deploy --prod --yes`; `npx vercel inspect https://kcgold.co.kr/` reports deployment `dpl_2zfEDN9mH3URepTmsWcNBM93fJqN` `Ready` and aliased to the review domains.
+  - Final live review checks passed on `https://kcgold.co.kr`: `npm run check:release-state` keeps `mode=supabase`, `deployment=production`, and `indexing=disabled-forced-noindex`; live `/api/health` returns `200`; live `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` passed (`2712 checks, 0 skipped`); live `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` passed (`34 passed, 2 skipped`); live `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site` passed after verifying the initially slow 10돈 optimized image and retrying the capture.
+- Rollback Hint: `v0.2.75 관리자 상품/공개 상품 일치 전으로 되돌려줘`
+- Remaining User-only / Later:
+  - Production owner SQL task from `KCG-TODO-124` remains separate for applying canonical media DB tables when owner access is available.
+
+## v0.2.74 - One-click media image replacement
+
+- Date: `2026-05-21 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; final deployment `dpl_5tG5iU1j4juJTAjpeWhC649wsQXX` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env value changes, DNS changes, payment, checkout/cart, live trading, KRX production data, or public product/price-data changes.
+- 사람이 읽는 요약: 다른 커머스/사이트 빌더의 일반적인 이미지 관리 방식처럼, `/admin/media`도 `위치 선택 -> 파일 선택 -> 이 이미지로 바로 반영` 흐름으로 줄였다. 홈 배너, 상품/매입 상단 이미지, 서비스 이미지, 매장안내 이미지, 회사소개 이미지는 파일을 올리면 해당 운영 위치에 바로 연결된다. 상품별 이미지는 `/admin/products`의 기존 `이 사진으로 바로 교체` 흐름으로 이동한다. 기존 수동 자산 연결과 내부 분류 정보는 `고급 연결 열기` / `고급 정보 보기` 안에 남겼다.
+- Summary: Extends the one-click image replacement pattern from product photos to media slots, auto-connecting approved uploaded assets to the selected operational slot while preserving advanced asset management for fallback/admin use.
+- Changed:
+  - Updated `/admin/media` copy and layout so the main task is choosing a location and uploading one file.
+  - Added `상품/매입 상단 이미지` as a first-class media target for the `/products` route hero image.
+  - Hid image name, alt-text, manual asset connection, and internal classification from the default media-upload workflow.
+  - Added signed upload metadata for `connectToSlot`, `usageKey`, and `sortOrder`, then auto-connects the created asset to home/products/services/store/company media slots after upload metadata saves.
+  - Kept product-specific photos routed to `/admin/products` so product card/detail images remain tied to the selected product instead of a generic media slot.
+  - Preserved the home carousel fallback fill so uploading one new home banner does not collapse the campaign slider below the three-slide baseline.
+  - Updated Playwright/source guardrails and the 8MB-class admin media upload smoke test, including a source guard that blocks the temporary internal smoke route from remaining in the final tree.
+  - Bumped package version to `0.2.74`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: 관리자 `/admin/media` 기본 화면이 자산 pool 관리보다 위치별 빠른 교체를 우선한다. 운영자는 홈 배너, 상품/매입 상단, 서비스, 매장안내, 회사소개 이미지를 파일 하나와 버튼 하나로 반영할 수 있다.
+  - 실제 사이트 화면은 안 바뀌는 것: 공개 가격값, 가격 산식 의미, Supabase 가격 행/이력 행, 기존 공개 상품 구성, 검색/noindex 차단, robots, DNS, 결제/장바구니, 실시간 거래, 인증/비밀값.
+- Verification:
+  - Full local QA passed after the one-click media work: `npm run qa:site` (`2711 checks, 0 skipped`; Playwright `34 passed, 2 skipped`; screenshots refreshed). The two skipped tests are opt-in production mutation smokes by default.
+  - Targeted Playwright passed: `npx playwright test tests/admin-upload.spec.ts` (`2 passed`) and `npx playwright test tests/site-fidelity.spec.ts -g "admin media works"` (`1 passed`).
+  - Admin screenshot evidence passed: `npm run screenshot:admin`; `output/screenshots/admin-media-mobile.png` shows `이 이미지로 바로 반영`, hidden image-name/alt fields, `고급 연결 열기`, and the new `상품/매입 상단 이미지` card.
+  - Real production media-slot upload smoke passed with Junyoung's `KakaoTalk_20260509_082243428_03.png` (`8,363,068` bytes): a temporary guarded internal route created a production Supabase signed upload URL, the local file uploaded with HTTP `2xx`, the server verified the uploaded image could become the active `services_hero` slot image, and cleanup removed the smoke asset/usage (`activeBeforeCleanup: true`, `cleanupPassed: true`). The temporary smoke route was then deleted from source before final QA/deploy.
+  - Final live review checks passed after deploy: `npx vercel inspect https://kcgold.co.kr/` reports `dpl_5tG5iU1j4juJTAjpeWhC649wsQXX` `Ready`; `npm run check:release-state` keeps `mode=supabase`, `deployment=production`, and `indexing=disabled-forced-noindex`; live `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` passed (`2712 checks, 0 skipped`); live `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` passed (`34 passed, 2 skipped`); live screenshots refreshed; the removed temporary smoke route returns `404`.
+- Rollback Hint: `v0.2.74 미디어 이미지 바로 교체 전으로 되돌려줘`
+- Remaining User-only / Later:
+  - None for the media-slot upload proof. Production owner SQL task from `KCG-TODO-124` remains separate for applying canonical media DB tables when owner access is available.
+
+## v0.2.73 - One-click admin product image replacement
+
+- Date: `2026-05-21 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_FyHuQzvqW4YribBKmywzQmBC9Lyj` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This is a noindex-protected review deployment; it does not approve search/noindex release, secret/env value changes, DNS changes, payment, checkout/cart, live trading, KRX production data, or public product/price-data changes.
+- 사람이 읽는 요약: `/admin/products`에서 상품 이미지를 바꾸기 위해 업로드 자산 등록, 이미지 slug, 서브카테고리, 업로드 이미지 선택을 따로 만질 필요가 없도록 기본 흐름을 `상품 선택 -> 파일 선택 -> 이 사진으로 바로 교체`로 줄였다. 내부 자산 연결/상품 정보 편집은 `고급 설정 열기` 안에 남겨 두어 필요한 경우만 쓴다.
+- Summary: Simplifies product-image replacement into a one-step operator flow, auto-applies the uploaded image to the selected product, and preserves existing canonical public image roles unless a trusted uploaded replacement is actually different.
+- Changed:
+  - Updated `/admin/products` to show a primary `상품 사진 바로 교체` workflow with hidden auto metadata for product image uploads.
+  - Kept uploaded asset selection, default image selection, slug/subcategory/product fields, and full product editing in a collapsed advanced area.
+  - Extended signed upload metadata with `applyToProduct` and `productKey`, then auto-updates the selected product image after upload metadata is saved.
+  - Added `image-saved` / `product-image-error` result handling and admin status messages.
+  - Updated the public presenter so trusted Supabase uploaded images can override the selected product image, while existing approved canonical goldbar/lineup/category image roles stay unchanged.
+  - Updated Playwright/source guardrails for the one-click UX and 8MB-class file smoke.
+  - Bumped package version to `0.2.73`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: 관리자 `/admin/products` 기본 화면에서 상품 사진 교체가 파일 선택과 한 버튼으로 끝나는 흐름으로 보인다. 고급 필드와 기존 수동 연결 기능은 접혀 있다.
+  - 실제 사이트 화면은 안 바뀌는 것: 공개 가격값, 가격 산식 의미, Supabase 가격 행/이력 행, 기존 승인 골드바 이미지 기본값, noindex/search 차단, robots, DNS, 결제/장바구니, 실시간 거래, 인증/비밀값.
+- Verification:
+  - Local checks passed before final QA: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2632 checks, 1 skipped` before rendered URL), `npm run build`, `npm run test:site` (`35 passed`), and `npm audit --audit-level=moderate` (`0 vulnerabilities`).
+  - Real-file safe smoke passed with Junyoung's `KakaoTalk_20260509_082243428_03.png` (`8,363,068` bytes): Supabase env cleared, `npx playwright test tests/admin-upload.spec.ts --workers=1` (`1 passed`). This proves the simplified admin form accepts the 8MB-class operator file and reaches the direct signed-upload workflow without reintroducing the old body-limit path.
+  - Targeted admin regression passed: `npx playwright test tests/site-fidelity.spec.ts --grep "admin products uses|admin save guard" --workers=1` (`2 passed`).
+  - Final local QA passed: `npm run qa:site` (`2704 checks, 0 skipped`; Playwright `34 passed, 1 skipped`; screenshots refreshed), `npm run screenshot:admin`, `npm audit --audit-level=moderate` (`0 vulnerabilities`), and `git diff --check` (line-ending warnings only).
+  - Deployed with `npx vercel deploy --prod --yes`; `npx vercel inspect https://kcgold.co.kr/` reports deployment `dpl_FyHuQzvqW4YribBKmywzQmBC9Lyj` `Ready` and aliased to the review domains.
+  - Live release checks passed: `npm run check:release-state` reports `mode=supabase`, `deployment=production`, and `indexing=disabled-forced-noindex`; live `/api/health` returns `200`; `/robots.txt` still returns `Disallow: /`; `/sitemap.xml` remains empty.
+  - Live route QA passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2704 checks, 0 skipped`) and `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`34 passed, 1 skipped`; external production mutation test intentionally skipped unless run separately).
+  - Live UI upload smoke passed with Junyoung's `KakaoTalk_20260509_082243428_03.png` (`8,363,068` bytes): `/admin/products?product=investment-gold-bar-consulting` accepted the file (`8.0MB` shown), `이 사진으로 바로 교체` redirected to `status=image-saved`, and the success message confirmed the selected image was applied to the product. The smoke then restored the 1돈 product to `/products/kcg-approved-goldbar-1don-20260517.jpg`; public `/products` and the 1돈 detail page do not expose the raw KakaoTalk filename.
+- Rollback Hint: `v0.2.73 one-click product image replacement 전으로 되돌려줘`
+- Remaining User-only / Later:
+  - Production owner SQL task from `KCG-TODO-124` remains separate: apply canonical media DB tables later when owner SQL access is available. Do not paste DB passwords or service keys into chat.
+  - The live UI smoke restored the product image but could not remove the uploaded smoke asset through the canonical DB cleanup path because local Codex still lacks owner/service-role readback access. The asset is not connected to the public product after restore, but production media table cleanup remains tied to `KCG-TODO-124`.
+
+## v0.2.72 - Production admin image upload proof and storage metadata fallback
+
+- Date: `2026-05-20 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_7fSmW7etfbFakhwU97ozcuCGe5sL` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. The temporary internal upload-smoke routes are absent on live (`404`). This remains a noindex-protected review change and does not approve search/noindex release, price changes, payment/trading behavior, DNS changes, secret/env value changes, or company account transfer.
+- 사람이 읽는 요약: 실제 live 검증에서 8.36MB PNG는 Supabase Storage signed URL 업로드까지 성공했지만, production DB에 `site_assets` 테이블이 없어 메타데이터 저장이 실패하는 것이 확인됐다. Supabase DB owner 권한/MCP 권한은 현재 없어서 테이블을 직접 적용할 수 없었으므로, 운영 업로드가 다시 막히지 않도록 `site-assets-meta` 비공개 Storage bucket의 JSON 메타데이터 fallback을 추가했다. DB 테이블이 나중에 적용되면 기존 DB 경로를 그대로 우선 사용한다.
+- Summary: Adds a production-safe Storage metadata fallback for admin image assets when the `site_assets` tables are missing, and proves an 8,363,068-byte PNG can upload, save metadata, read back, and clean up on the live review deployment.
+- Changed:
+  - Updated `src/lib/data/supabase-repository.ts` so `getSiteAssets`, `getSiteAssetUsages`, `createSiteAsset`, and `upsertSiteAssetUsage` use normal DB tables when present, but fall back to a private Supabase Storage metadata bucket when `site_assets`/`site_asset_usages` are missing from production schema.
+  - Updated product persistence to retry without `image_asset_id` if the production `products` table lacks that column or relation, while still saving the trusted uploaded `image_url`.
+  - Used a temporary protected internal smoke route for proof, then removed it from source before the final deploy.
+  - Bumped package version to `0.2.72`.
+- Verification:
+  - Root cause reproduced live: an 8,363,068-byte PNG uploaded to Supabase Storage signed URL, then metadata insert failed with `PGRST205` because `public.site_assets` was missing from production schema; the smoke object was cleaned up.
+  - Supabase MCP/CLI schema paths were checked and blocked by account permissions: MCP returned `You do not have permission to perform this action`, CLI `projects list` showed no accessible projects for the active account, and Vercel env has no `SUPABASE_DB_PASSWORD`.
+  - Live production smoke passed after fallback: `KakaoTalk_20260509_082243428_03.png` (`8,363,068` bytes, `image/png`) uploaded with direct signed upload HTTP `200`; metadata saved/read back through fallback with `metadataInsertedAndReadBack: true`; cleanup removed fallback metadata (`fallbackAssetsRemaining: 0`) and Storage object (`Object not found`, `404` after cleanup).
+  - Final local QA passed after removing the temporary smoke route from source: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2626 checks, 1 skipped` before rendered URL), `npm run build`, `npm run test:site` (`35 passed`), `npm run screenshot:admin`, `npm audit --audit-level=moderate` (`0 vulnerabilities`), `git diff --check` (line-ending warnings only), and `npm run qa:site` (`2698 checks, 0 skipped`; Playwright `34 passed, 1 skipped`; screenshot refresh completed).
+  - Final live deploy verification passed: `npx vercel inspect https://kcgold.co.kr/` reports `dpl_7fSmW7etfbFakhwU97ozcuCGe5sL` `READY`, `npm run check:release-state` reports `mode=supabase`, `deployment=production`, and `indexing=disabled-forced-noindex`; `https://kcgold.co.kr/api/internal/upload-smoke-session` and `upload-smoke-cleanup` return `404`; `https://kcgold.co.kr/robots.txt` still returns `Disallow: /`.
+  - Final live route QA passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2698 checks, 0 skipped`) and `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`34 passed, 1 skipped`; external production upload mutation intentionally skipped by the regression suite).
+- Rollback Hint: `v0.2.72 production upload fallback 전으로 되돌려줘`
+- Remaining User-only / Later:
+  - When Supabase owner/dashboard SQL access is available, apply the checked-in `site_assets`/`site_asset_usages`/`media_change_history` schema so production can use the canonical DB metadata path instead of the Storage fallback. Do not paste DB passwords or service keys into chat.
+
+## v0.2.71 - Direct signed admin image upload path
+
+- Date: `2026-05-20 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_DXKMJYk6JjJgSaJ7QDR7hPU7bx4t` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. The temporary internal upload-smoke routes are absent on live (`404`). This remains a noindex-protected review change and does not approve search/noindex release, price changes, payment/trading behavior, DNS changes, or secret/env value changes.
+- 사람이 읽는 요약: 7-8MB 이미지를 Vercel Server Action/API 본문으로 직접 보내는 방식은 운영에서 payload 제한에 걸릴 수 있어, 관리자 브라우저가 Supabase Storage signed upload URL로 직접 올리고 서버는 작은 메타데이터 저장만 맡는 구조로 바꿉니다. `site_assets` DB 제약과 Storage bucket 정책도 source 기준 `10MB`로 맞췄습니다.
+- Summary: Replaces server-body image upload with signed direct browser uploads to Supabase Storage, keeps selected-file/operator status feedback, and updates the checked-in media schema from 5MB to 10MB.
+- Changed:
+  - Replaced product/media admin upload forms with `createSiteAssetSignedUploadAction` -> browser `PUT` to Supabase signed upload URL -> `finalizeSiteAssetSignedUploadAction`.
+  - Added `src/lib/site-asset-upload-client.ts` for browser checksum creation, direct signed upload, status redirects, and failed-upload cleanup.
+  - Updated `supabase/schema.sql` so `site_assets_size_bytes_check` and `storage.buckets.file_size_limit` use `10485760`.
+  - Updated source and Playwright guardrails to require the signed direct-upload path instead of the old large-file Server Action body path.
+  - Bumped package version to `0.2.71`.
+- Verification:
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2626 checks, 1 skipped` before rendered URL), `npm run build`, `npm run test:site` (`35 passed`), `npm audit --audit-level=moderate` (`0 vulnerabilities`), `git diff --check` (line-ending warnings only), and `npm run screenshot:admin`.
+  - Real-file safe smoke passed with Junyoung's 8,363,068-byte PNG and Supabase env cleared: `KCG_UPLOAD_SMOKE_FILE=C:\Users\junyo\Documents\File-Hub\00_새파일\받은파일\KakaoTalk_20260509_082243428_03.png npx playwright test tests/admin-upload.spec.ts --workers=1` (`1 passed`). This proves the admin UI no longer sends the 8MB file body through a Server Action.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_DXKMJYk6JjJgSaJ7QDR7hPU7bx4t`, then the stable/custom aliases were pointed to it. `npx vercel inspect https://kcgold.co.kr/` shows `READY` for that deployment.
+  - Live read-only checks passed: `npm run check:release-state`, `https://kcgold.co.kr/api/health` and `https://www.kcgold.co.kr/api/health` return `200`, and `https://kcgold.co.kr/api/internal/upload-smoke-session` / `upload-smoke-cleanup` return `404`.
+  - Live route QA passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2698 checks, 0 skipped`) and `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`34 passed, 1 skipped`; external production upload mutation intentionally skipped).
+  - Opt-in real Supabase write smoke remains blocked in this Codex process because Vercel env pull did not expose non-empty upload/admin secret values locally, and `npx supabase db query --linked "select current_database();"` returns Supabase access-control `403` requiring `SUPABASE_DB_PASSWORD`.
+- Rollback Hint: `v0.2.71 direct signed admin image upload 전으로 되돌려줘`
+- Remaining User-only / Gate:
+  - Apply or confirm the production Supabase DB constraint update to `site_assets_size_bytes_check <= 10485760`. CLI attempt failed with Supabase access-control 403 and requires `SUPABASE_DB_PASSWORD` or dashboard SQL access.
+  - After the DB gate, run the opt-in real upload smoke against the deployed admin page with Junyoung's 8.36MB PNG and cleanup.
+
+## v0.2.70 - Admin 10MB image upload and file-selection verification
+
+- Date: `2026-05-20 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_ANM4zdJVa82HC8AdsEkcmQ23X3eq` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: 관리자 상품 이미지와 배너/운영 이미지 업로드가 7-8MB급 실제 PNG에서 막히던 문제를 다시 잡습니다. 앱 자체 업로드 정책은 `JPEG/PNG/WebP, 10MB 이하`로 올리고, Next Server Action 본문 제한은 multipart 여유를 둔 `12mb`로 맞춥니다. `/admin/products`와 `/admin/media`는 파일을 고르면 선택한 파일명과 용량을 바로 보여주고, 10MB 초과 파일은 업로드 전부터 눈에 띄게 알려줍니다.
+- Summary: Raises the admin image upload policy to 10MB, gives Server Actions a 12MB parser limit, adds selected-file feedback in product/media admin workflows, and upgrades the admin upload smoke to exercise an 8MB-class real operator file.
+- Changed:
+  - Added `src/lib/site-upload-policy.ts` as the shared upload policy source for allowed image MIME types, `10MB` max size, `12mb` Server Action body limit, and readable file-size formatting.
+  - Updated `next.config.ts` so `experimental.serverActions.bodySizeLimit` uses the shared `12mb` limit.
+  - Updated `src/actions/media-actions.ts` and Supabase `site-assets` bucket setup so server-side validation and bucket `fileSizeLimit` use `10 * 1024 * 1024`.
+  - Updated `/admin/products` and `/admin/media` status/copy from 5MB to 10MB.
+  - Updated `src/app/admin/products/admin-products-workspace.tsx` and `src/app/admin/media/admin-media-workspace.tsx` so file selection shows `선택됨: 파일명 · 용량` or a visible 10MB overflow warning before submit.
+  - Updated `tests/admin-upload.spec.ts` to use an 8MB-class file by default, accept Junyoung's real `KCG_UPLOAD_SMOKE_FILE`, verify selected-file UI, preserve the 1돈 product return path, and keep real Supabase upload smoke opt-in with cleanup.
+  - Updated source/Playwright guardrails in `scripts/audit-site-fidelity.mjs` and `tests/site-fidelity.spec.ts`.
+  - Bumped package version to `0.2.70`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: 관리자 `/admin/products`와 `/admin/media` 업로드 UI에서 10MB 제한과 선택 파일명/용량이 보이고, 7-8MB급 정상 이미지가 Server Action 본문 제한에 막히지 않는다.
+  - 실제 사이트 화면은 안 바뀌는 것: public product catalog, actual price values, price formula meaning, Supabase price rows/history rows, approved public product images, noindex/search blocking, robots, DNS, payment/trading behavior, secret/env values.
+- Verification:
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2610 checks, 1 skipped` before rendered URL), `npm run build`, `npm run test:site` (`35 tests: 34 passed, 1 skipped`), `npm audit --audit-level=moderate` (`0 vulnerabilities`), and final `npm run qa:site` (rendered audit `2682 checks, 0 skipped`; Playwright `34 passed, 1 skipped`; screenshot refresh completed).
+  - Real-file safe smoke passed with Junyoung's 8,363,068-byte PNG: `KCG_UPLOAD_SMOKE_FILE=C:\Users\junyo\Documents\File-Hub\00_새파일\받은파일\KakaoTalk_20260509_082243428_03.png` and Supabase env cleared, `npx playwright test tests/admin-upload.spec.ts --workers=1` (`1 passed`). This proves the 8MB-class file passes the Next Server Action parser and reaches the local server action path instead of failing with `Body exceeded 6mb limit`.
+  - Opt-in real Supabase smoke was attempted with `KCG_ALLOW_REAL_UPLOAD_SMOKE=1`, but this local Codex process did not have Supabase upload env values available, so the test stopped before any Storage/DB mutation. Live/admin Storage write verification remains a user-only or credentialed-session follow-up unless an existing non-secret admin session is available.
+  - Admin screenshot evidence passed: `npm run screenshot:admin`; `output/screenshots/admin-products-desktop.png` shows `JPEG · PNG · WebP · 10MB` and selected-file feedback, and `output/screenshots/admin-media-desktop.png` shows `최대 10MB` and selected-file feedback.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_ANM4zdJVa82HC8AdsEkcmQ23X3eq`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr/` shows `READY` for `dpl_ANM4zdJVa82HC8AdsEkcmQ23X3eq`; `npm run check:release-state` reports `/api/health` as `mode=supabase`, `deployment=production`, and `indexing=disabled-forced-noindex`.
+  - Live route QA passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2682 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`35 tests: 34 passed, 1 skipped`; external upload mutation intentionally skipped), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.70 관리자 10MB 이미지 업로드 전으로 되돌려줘`
+- Remaining User-only:
+  - A true live Supabase upload through the deployed admin UI still needs a valid admin/credentialed session or env-backed test context. Do not paste secrets into chat; use browser login/OAuth/session-safe tooling if needed.
+
+## v0.2.69 - Price detail unit repetition cleanup
+
+- Date: `2026-05-20 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_3yVX4YKnhc9EDgTqcNBkAbdRqDz7` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: `/prices` 상세 시세표에서 `고시가 / 3.75g 기준`이 반복되어 보이던 회귀를 정리합니다. `3.75g 기준`은 상단 KCG 시세표 패널에 한 번만 보이게 하고, 상세 시세표의 가격 라벨은 모바일/데스크톱 모두 `고시가`로 줄입니다. 공개 `/products`의 1·2·3·5·10돈 골드바, `고금 주얼리 매입`, B2B 상담 정리와 `내가 살 때` / `내가 팔 때`, `0.00%` 숨김은 유지합니다.
+- Summary: Removes repeated `3.75g 기준` labels from the posted-price detail table while keeping the single basis label in the public price lineup and preserving the v0.2.68 product catalog simplification.
+- Changed:
+  - Updated `src/components/prices/price-table.tsx` so the detailed price table shows `고시가` when all visible price rows share the same unit, instead of repeating `고시가 / 3.75g 기준`.
+  - Updated `tests/site-fidelity.spec.ts` so the mobile `/prices` regression checks the visible page has exactly one `3.75g 기준` and the detailed table does not repeat it.
+  - Updated `scripts/audit-site-fidelity.mjs` to require the new single-visible-basis guard instead of the old repeated-row label expectation.
+  - Bumped package version to `0.2.69`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: `/prices` 상세 시세표에서 반복 단위 라벨이 사라지고, 단위 기준은 상단 시세표 패널 한 곳에서만 읽힌다.
+  - 실제 사이트 화면은 안 바뀌는 것: actual price values, price formula meaning, Supabase price rows/history rows, public product catalog, approved product images, consumer-perspective price wording, noindex/search blocking, robots, DNS, payment/trading behavior, secret/env values.
+- Verification:
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2592 checks, 1 skipped` source-only before rendered URL), `npm run build`, targeted Playwright for mobile prices/products/catalog coverage (`3 passed`), `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), final `npm run qa:site` (rendered audit `2664 checks, 0 skipped`; Playwright `35 tests: 34 passed, 1 skipped`; screenshot refresh completed), and `git diff --check` with only existing Windows LF/CRLF warnings.
+  - Screenshot inspection passed for `output/screenshots/prices-mobile-viewport.png` and `output/screenshots/products-mobile.png`: `/prices` shows one visible `3.75g 기준`, the detailed posted-price section does not repeat it, `/products` still shows 1/2/3/5/10돈 goldbars, one `고금 주얼리 매입`, and B2B consultation.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_3yVX4YKnhc9EDgTqcNBkAbdRqDz7`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr/` shows `READY` for `dpl_3yVX4YKnhc9EDgTqcNBkAbdRqDz7`; `npm run check:release-state` reports `/api/health` as `mode=supabase`, `deployment=production`, and `indexing=disabled-forced-noindex`; live `/prices` has `내가 살 때`, `내가 팔 때`, no `0.00%`, visible `3.75g 기준` count `1`, and no repeated basis text in the detailed section; live `/products` contains the seven intended public items and none of the hidden old product names.
+  - Live route QA passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2664 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`35 tests: 34 passed, 1 skipped`; external upload mutation intentionally skipped), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.69 시세표 단위 반복 정리 전으로 되돌려줘`
+- Remaining User-only:
+  - None for this mobile price-label cleanup. Final public search launch, noindex release, payment/trading, secrets, price value changes, and final product policy decisions remain separately blocked.
+
+## v0.2.68 - Don-unit goldbar catalog and buying simplification
+
+- Date: `2026-05-20 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_2kcQqQLDrCs2pc8Jv98eEC235aYV` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: Junyoung의 교정대로 공개 `/products` 카탈로그를 `KCG 골드바 1돈`, `2돈`, `3돈`, `5돈`, `10돈` 중심으로 정리하고, 공개 매입 상품은 `고금 주얼리 매입` 하나로 단순화했습니다. 고객-facing 골드바 이름과 중량 칩은 돈 단위를 우선해 `돈`과 `g`가 중복되어 보이지 않게 했고, `순금 돌반지`, `순금 기념 메달`, `18K 주얼리 매입`, `14K 주얼리 매입`, `백금·은 제품 매입` 같은 세분화/미확정 항목은 공개 카탈로그에서 숨겼습니다.
+- Summary: Rebuilds the public products catalog around 1/2/3/5/10-don goldbar consultation products, consolidates buying into one old-gold jewelry buying surface, and preserves the v0.2.66 consumer-perspective price wording and v0.2.67 approved image mapping.
+- Changed:
+  - Updated `src/lib/product-presenter.ts` so public `/products` uses a canonical presenter layer for the five don-unit goldbars, `고금 주얼리 매입`, and B2B bulk consultation while filtering stale legacy Supabase product rows from customer-facing pages.
+  - Updated public product tabs to `전체`, `골드바`, `고금 주얼리 매입`, and `B2B·기업`; `silver_bar`, `pure_gold`, old gram-based goldbar rows, split buying rows, and pure-gold gift/medal/ring rows remain hidden from public catalog/detail routes unless separately approved later.
+  - Updated `/products`, product detail, `/services`, site config, mock products, Supabase seed, and product-card guide copy so public goldbar titles/chips/details use don units without repeating grams.
+  - Updated `src/app/(site)/products/page.tsx` so the server passes only the public canonical catalog to the client component; stale Supabase rows are no longer serialized into the public `/products` HTML payload.
+  - Added/kept approved product-card/detail usage for 1돈/2돈/3돈/5돈/10돈 images in `src/data/imageAssetManifest.json`.
+  - Updated Playwright and source-audit guardrails so the public catalog expects five goldbar cards, one consolidated buying card, one B2B card, no old hidden product names, no stale product rows in `/products` HTML payload, and consumer wording `내가 살 때` / `내가 팔 때`.
+  - Bumped package version to `0.2.68`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: `/products` 공개 상품 목록과 골드바 상세에서 1돈·2돈·3돈·5돈·10돈 골드바와 `고금 주얼리 매입`이 중심으로 보이고, 고객-facing 골드바 단위는 돈 단위로 읽힌다.
+  - 실제 사이트 화면은 안 바뀌는 것: actual price values, price formula meaning, Supabase price rows/history rows, consumer-perspective price wording, noindex/search blocking, robots, DNS, payment/trading behavior, secret/env values.
+- Verification:
+  - Local checks passed: `npm run audit:site` (`2591 checks, 1 skipped` source-only during iteration), targeted Playwright for public product catalog/payload/detail coverage (`3 passed`), `npm run typecheck`, final `npm run qa:site` (rendered audit `2663 checks, 0 skipped`; Playwright `35 tests: 34 passed, 1 skipped`; screenshot refresh completed), `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), and `git diff --check` with only existing Windows LF/CRLF warnings.
+  - Screenshot inspection passed for `output/screenshots/products-mobile.png`, `output/screenshots/products-desktop.png`, `output/screenshots/product-detail-mobile-viewport.png`, and `output/screenshots/prices-mobile-viewport.png`: `/products` shows 7 cards, 1/2/3/5/10돈 goldbars, one `고금 주얼리 매입`, one B2B card, no old public product names, balanced mobile guide imagery, consumer price wording, one table-level `3.75g 기준`, and no visible `0.00%`.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_2kcQqQLDrCs2pc8Jv98eEC235aYV`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr/` shows `READY` for `dpl_2kcQqQLDrCs2pc8Jv98eEC235aYV`; `npm run check:release-state` reports `/api/health` as `mode=supabase`, `deployment=production`, and `indexing=disabled-forced-noindex`; live raw `/products` HTML contains the seven public catalog rows and does not contain `KCG 골드바 1g`, `KCG 골드바 10g`, `KCG 골드바 100g`, `KCG 골드바 3.75g`, `KCG 골드바 37.5g`, `순금 돌반지`, `순금 기념 메달`, `순금 카드`, `18K 주얼리 매입`, `14K 주얼리 매입`, or `백금·은 제품 매입`; live `/prices` contains `내가 살 때`, `내가 팔 때`, `3.75g 기준`, and no `0.00%`.
+  - Live route QA passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2663 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`35 tests: 34 passed, 1 skipped`; external upload mutation intentionally skipped), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.68 돈 단위 골드바 카탈로그 정리 전으로 되돌려줘`
+- Remaining User-only:
+  - None for this public catalog simplification. Final public search launch, noindex release, payment/trading, secrets, price value changes, and final product policy decisions remain separately blocked.
+
+## v0.2.67 - Approved goldbar product image restoration
+
+- Date: `2026-05-20 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_Eo8GViwkDRwiwfAgCns1Vj36dNFP` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: system-ops 방에서 배포만 남겨둔 KCG 골드바 상품 이미지 복구 작업을 현재 KCG 사이트 작업트리에 맞춰 확인했습니다. `v0.2.66`의 소비자 기준 `내가 살 때` / `내가 팔 때` 시세표 문구와 충돌하지 않게, 3.75g/1돈과 37.5g/10돈 골드바 상품 카드·상세 이미지가 승인된 2026-05-17 실물 기준 이미지로 보이도록 유지합니다.
+- Summary: Carries forward the verified system-ops goldbar image restoration into the current KCG site release by keeping 3.75g and 37.5g goldbar product surfaces on approved 2026-05-17 product-shot assets while preserving the v0.2.66 consumer-perspective price wording.
+- Changed:
+  - Confirmed `src/lib/product-presenter.ts` maps `investment-gold-bar-consulting` to `/products/kcg-approved-goldbar-1don-20260517.jpg`.
+  - Confirmed `src/lib/product-presenter.ts` maps `kcg-gold-bar-37-5g` to `/products/kcg-approved-goldbar-10don-20260517.jpg`.
+  - Confirmed `src/data/imageAssetManifest.json` allows those approved 1돈/10돈 assets for `product_card` and `product_detail` usage.
+  - Kept `tests/site-fidelity.spec.ts` expectations on the approved 1돈/10돈 image paths and `verified_product` role.
+  - Bumped package version to `0.2.67`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: `/products`와 골드바 상세에서 3.75g/1돈, 37.5g/10돈 상품 이미지가 승인된 KCG 골드바 1돈/10돈 실물 기준 이미지로 보인다.
+  - 실제 사이트 화면은 안 바뀌는 것: actual price values, price formula meaning, Supabase price rows/history rows, consumer-perspective price wording, noindex/search blocking, robots, DNS, payment/trading behavior, secret/env values.
+- Verification:
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2582 checks, 1 skipped`), `npm run build`, `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), targeted Playwright for product image and public price-lineup coverage (`4 passed`), `npm run test:site` (`34 passed`), `npm run screenshot:site`, and final `npm run qa:site` (rendered audit `2654 checks, 0 skipped`; Playwright `33 passed, 1 skipped`).
+  - Screenshot inspection passed for `output/screenshots/products-mobile-viewport.png`, `output/screenshots/products-mobile.png`, and `output/screenshots/prices-mobile-viewport.png`: mobile products renders the 1/2/3/5/10돈 guide and approved product-card images; mobile prices keeps `내가 살 때` / `내가 팔 때`, one `3.75g 기준`, and no visible `0.00%`.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_Eo8GViwkDRwiwfAgCns1Vj36dNFP`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr` shows `READY` for `dpl_Eo8GViwkDRwiwfAgCns1Vj36dNFP`; `npm run check:release-state` reports `/api/health` as `mode=supabase`, `deployment=production`, and `indexing=disabled-forced-noindex`; live DOM checks showed the approved 1돈/10돈 product images, no representative-image label, `내가 살 때` and `내가 팔 때`, one `3.75g 기준`, and no `0.00%`.
+  - Live route QA passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2654 checks, 0 skipped`) and `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`34 tests: 33 passed, 1 skipped`; external upload mutation intentionally skipped).
+- Rollback Hint: `v0.2.67 승인 골드바 상품 이미지 복구 전으로 되돌려줘`
+- Remaining User-only:
+  - None for this image mapping deployment. Final public search launch, noindex release, payment/trading, secrets, price value changes, and final product policy decisions remain separately blocked.
+
+## v0.2.66 - Consumer-perspective public price wording restoration
+
+- Date: `2026-05-20 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_8X4w1BA9V7LYo9FYv7VgrKbVffvz` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: 공개 시세표의 `살 때`/`팔 때`는 사이트 방문자, 즉 소비자 기준이라는 Junyoung의 교정을 반영해 `/`와 `/prices` 시세표 열 제목과 고객-facing 안내 문구를 `내가 살 때` / `내가 팔 때`로 복구했습니다. `v0.2.64`에서 `0.00% - 0` fallback 회귀를 고치면서 공개 시세표의 소비자 관점 `내가`까지 제거한 판단은 과교정이었습니다. 가격값, 가격 산식, Supabase 가격 행은 바꾸지 않았습니다.
+- Summary: Restores visitor-perspective `내가 살 때` and `내가 팔 때` wording across the public price lineup and related customer-facing guide copy while preserving zero-delta hiding and one table-level `3.75g 기준` label.
+- Changed:
+  - Updated `src/components/market/price-lineup.tsx` so public price-lineup headers render `내가 살 때 (VAT포함)` and `내가 팔 때 (현장 기준)` / `내가 팔 때 (현장기준)`.
+  - Updated public customer guide copy in `/prices`, `/products`, market reference guidance, service FAQ, and the inquiry assistant so buy/sell wording explicitly uses the consumer perspective where it explains the price table.
+  - Updated `src/lib/price-presenter.ts` so shared trade-guide labels return `내가 살 때 (VAT 포함)` and `내가 팔 때`.
+  - Updated Playwright and source audit guards so the public price lineup must contain `내가 살 때` and `내가 팔 때`, while still forbidding `0.00%` and row-level repeated `3.75g 기준`.
+  - Bumped package version to `0.2.66`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: `/`와 `/prices` 공개 시세표가 소비자 기준 `내가 살 때` / `내가 팔 때` 열 제목으로 보이고, 관련 고객 안내 문구도 같은 관점을 따른다.
+  - 실제 사이트 화면은 안 바뀌는 것: actual price values, price formula meaning, Supabase price rows/history rows, public product images, noindex/search blocking, robots, DNS, payment/trading behavior, secret/env values.
+- Verification:
+  - Local checks passed: `npm run audit:site` (`2582 checks, 1 skipped`), targeted Playwright for the mobile home/prices/products price-lineup coverage (`3 passed`), `npm run lint`, `npm run typecheck`, `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), `npm run build`, `npm run test:site` (`34 passed`), `npm run screenshot:site`, and final `npm run qa:site` (rendered audit `2654 checks, 0 skipped`; Playwright `33 passed, 1 skipped`).
+  - Screenshot inspection passed for `output/screenshots/home-mobile-viewport.png`, `output/screenshots/home-desktop-viewport.png`, and `output/screenshots/prices-mobile-viewport.png`: visible `내가 살 때` / `내가 팔 때`, one table-level `3.75g 기준`, and no visible `0.00%`.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_8X4w1BA9V7LYo9FYv7VgrKbVffvz`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr` shows `READY` for `dpl_8X4w1BA9V7LYo9FYv7VgrKbVffvz`; `npm run check:release-state` reports `/api/health` as `mode=supabase`, `deployment=production`, and `indexing=disabled-forced-noindex`; live `/` and `/prices` DOM checks showed `내가 살 때` and `내가 팔 때`, one `3.75g 기준`, no row-level repeated basis, and no `0.00%`.
+  - Live route QA passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2654 checks, 0 skipped`) and `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`34 tests: 33 passed, 1 skipped`; external upload mutation intentionally skipped).
+- Rollback Hint: `v0.2.66 공개 시세표 내가 살 때 복구 전으로 되돌려줘`
+- Remaining User-only:
+  - None for this wording/display fix. Final public search launch, noindex release, payment/trading, secrets, and price value changes remain separately blocked.
+
+## v0.2.65 - Public price unit repetition cleanup
+
+- Date: `2026-05-20 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_BVmNUod9SLTBXTZnfyCMf1oYtFvn` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: 공개 시세표의 각 행 아래에 `24K · 3.75g 기준`, `18K · 3.75g 기준`처럼 `3.75g 기준`이 반복되던 문구를 정리했습니다. 기준 단위는 시세표 상단에서 한 번만 보이고, 행별 보조 문구는 순도/품목만 남습니다. 가격값, 가격 산식, Supabase 가격 행은 바꾸지 않았습니다.
+- Summary: Moves the public price lineup basis text to one table-level label and removes repeated `3.75g 기준` row subtitles while preserving posted prices and formulas.
+- Changed:
+  - Updated `src/lib/price-presenter.ts` so shared price-lineup row subtitles no longer include `· 3.75g 기준`.
+  - Updated `src/components/market/price-lineup.tsx` so the public price lineup displays `3.75g 기준` once near the table title.
+  - Updated Playwright and source audit guards so public `/` and `/prices` cannot regress to row-by-row unit repetition.
+  - Bumped package version to `0.2.65`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: `/`와 `/prices` 공개 시세표에서 `3.75g 기준`은 시세표 상단에 한 번만 보이고, `24K · 3.75g 기준` 같은 행별 반복 문구는 보이지 않는다.
+  - 실제 사이트 화면은 안 바뀌는 것: actual price values, price formula meaning, Supabase price rows/history rows, public product images, noindex/search blocking, robots, DNS, payment/trading behavior, secret/env values.
+- Verification:
+  - Source guard passed: `src/lib/price-presenter.ts` no longer contains `· 3.75g 기준`, and `src/components/market/price-lineup.tsx` contains one table-level `lineupBasisLabel`.
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2586 checks, 1 skipped` source-only), `npm run build`, `npm run test:site` (`34 passed`), `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), and `npm run screenshot:site`.
+  - Final local QA passed: `npm run qa:site` (rendered audit `2658 checks, 0 skipped`; Playwright `34 tests: 33 passed, 1 skipped`; screenshot refresh completed).
+  - Manual screenshot inspection passed for `output/screenshots/home-mobile-viewport.png`, `output/screenshots/home-desktop-viewport.png`, and `output/screenshots/prices-mobile-viewport.png`: the public price lineup shows `3.75g 기준` once near the title, and rows show `24K`, `18K`, `14K`, `백금`, `은` without repeating the basis text.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_BVmNUod9SLTBXTZnfyCMf1oYtFvn`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr` shows `READY` for `dpl_BVmNUod9SLTBXTZnfyCMf1oYtFvn`; live `/` and `/prices` HTML do not contain row-level `24K · 3.75g 기준`, `18K · 3.75g 기준`, `14K · 3.75g 기준`, `백금 · 3.75g 기준`, `은 · 3.75g 기준`, `0.00%`, `내가 살 때`, or `내가 팔 때`; `/api/health` remains `indexing: "disabled-forced-noindex"`; `/robots.txt` still returns `Disallow: /`; `npm run check:release-state` passed.
+  - Live route QA passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2658 checks, 0 skipped`) and `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`34 tests: 33 passed, 1 skipped`; external upload mutation intentionally skipped).
+  - Browser MCP snapshot for `https://kcgold.co.kr/prices` confirmed visible `한국센터금거래소 시세표`, one table-level `3.75g 기준`, row subtitles `24K`, `18K`, `14K`, `백금`, `은`, and no row-level `· 3.75g 기준`.
+- Rollback Hint: `v0.2.65 공개 시세표 3.75g 반복 문구 정리 전으로 되돌려줘`
+- Remaining User-only:
+  - None for this display/copy fix. Final public search launch, noindex release, payment/trading, secrets, and price value changes remain separately blocked.
+
+## v0.2.64 - Public price wording correction
+
+- Date: `2026-05-20 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_71FrVhg3MRmYDByA8GaRrgwZyjMc` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: `0.00% - 0`을 숨긴 뒤 공개 시세표 가격 아래에 `내가 살 때`/`내가 팔 때` 같은 고객 1인칭 보조문구가 보일 수 있던 회귀를 고쳤습니다. 공개 시세표 열 제목은 `살 때 (VAT포함)` / `팔 때 (현장 기준)`으로 정리하고, 실제 변동이 없는 가격 셀에는 대체 보조문구를 내지 않습니다. 가격값, 가격 산식, Supabase 가격 행은 바꾸지 않았습니다.
+- Summary: Removes first-person buy/sell wording from the public price lineup and prevents unchanged price cells from falling back to redundant trade-guide labels.
+- Changed:
+  - Updated `src/components/market/price-lineup.tsx` so the public price lineup uses neutral `살 때`/`팔 때` headers and renders no meta line when a price has no visible change.
+  - Updated `src/lib/price-presenter.ts`, `/prices` context copy, and public product consultation copy to remove customer-facing `내가 살 때`/`내가 팔 때` wording outside admin-only operation screens.
+  - Updated Playwright and source audit guards so the public price lineup cannot regress to `0.00%`, `내가 살 때`, or `내가 팔 때`.
+  - Bumped package version to `0.2.64`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: `/`와 `/prices` 공개 시세표의 열 제목이 `살 때`/`팔 때`로 보이고, unchanged 가격 셀 아래에 `내가 팔 때` 같은 fallback 문구가 보이지 않는다.
+  - 실제 사이트 화면은 안 바뀌는 것: actual price values, price formula meaning, Supabase price rows/history rows, public product images, noindex/search blocking, robots, DNS, payment/trading behavior, secret/env values.
+- Verification:
+  - Source guard passed: public `src` excluding `/admin` has no `내가 살 때` or `내가 팔 때` strings.
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2583 checks, 1 skipped` source-only), `npm run build`, `npm run test:site` (`34 passed`), `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), and `npm run screenshot:site`.
+  - Final local QA passed: `npm run qa:site` (rendered audit `2655 checks, 0 skipped`; Playwright `34 tests: 33 passed, 1 skipped`; screenshot refresh completed).
+  - Manual screenshot inspection passed for `output/screenshots/prices-mobile-viewport.png`: the public price table shows `살 때 (VAT포함)` / `팔 때 (현장기준)` and no first-person `내가` wording in the visible price lineup.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_71FrVhg3MRmYDByA8GaRrgwZyjMc`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr` shows `READY` for `dpl_71FrVhg3MRmYDByA8GaRrgwZyjMc`; live `/` and `/prices` HTML do not contain `0.00%`, `내가 살 때`, or `내가 팔 때`; `/api/health` reports `mode: "supabase"` and `indexing: "disabled-forced-noindex"`; `/robots.txt` still returns `Disallow: /`; `npm run check:release-state` passed.
+  - Live route QA passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2655 checks, 0 skipped`) and `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`34 tests: 33 passed, 1 skipped`; external upload mutation intentionally skipped).
+  - Browser MCP snapshot for `https://kcgold.co.kr/prices` confirmed `BROWSER_NO_0.00%`, `BROWSER_NO_내가 살 때`, `BROWSER_NO_내가 팔 때`, with visible `살 때 (VAT포함)` and `팔 때 (현장기준)`.
+- Rollback Hint: `v0.2.64 공개 시세표 내가 살 때 문구 수정 전으로 되돌려줘`
+- Remaining User-only:
+  - None for this display/copy fix. Final public search launch, noindex release, payment/trading, secrets, and price value changes remain separately blocked.
+
+## v0.2.63 - Public zero-change price display fix
+
+- Date: `2026-05-19 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_uSR4bfRmPa24gN2bSxN4mky9F4Nk` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: 공개 시세표에서 실제 변동이 없는 기준 이력이 `0.00% — 0` 또는 `0.00% - 0`처럼 등락으로 보이던 문제를 고쳤습니다. 가격값이나 가격 산식은 바꾸지 않았고, 0원 변동 이력은 공개 시세표에서 등락 줄 대신 품목 기준 안내 문구로 보이게 했습니다.
+- Summary: Hides zero-value price-history deltas from the public price lineup while preserving actual posted price values and formulas.
+- Changed:
+  - Updated `src/components/market/price-lineup.tsx` so `previousValue === newValue` returns no change line instead of rendering `0.00%` and `0`.
+  - Added Playwright coverage for public price-lineup surfaces so `/`, `/prices`, and the source guard do not regress to rendering zero-change deltas.
+  - Updated `npm run audit:site` source guard to require the zero-delta guard in the price lineup renderer.
+  - Bumped package version to `0.2.63`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: `/`와 `/prices`의 공개 시세표에서 값이 동일한 기준 이력이 `0.00% — 0`처럼 표시되지 않는다.
+  - 실제 사이트 화면은 안 바뀌는 것: actual price values, price formula meaning, Supabase price rows/history rows, public product images, noindex/search blocking, robots, DNS, payment/trading behavior, secret/env values.
+- Verification:
+  - Root-cause evidence before fix: live public HTML for `https://kcgold.co.kr/` and `https://kcgold.co.kr/prices` contained `0.00%` zero-delta rows.
+  - Price-preservation evidence: `git diff -- src/mock/prices.ts` returned no price-file changes, and the fix only changes public rendering of zero-delta history.
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2575 checks, 1 skipped`), `npm run build`, `npm run test:site` (`34 tests: 33 passed, 1 skipped` in the full QA path), `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), `npm run screenshot:site`, and final `npm run qa:site` (rendered audit `2647 checks, 0 skipped`; Playwright `34 tests: 33 passed, 1 skipped`; screenshot refresh completed).
+  - Manual screenshot inspection passed for `output/screenshots/prices-mobile-viewport.png`: the public price table no longer shows `0.00%` zero-change rows.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_uSR4bfRmPa24gN2bSxN4mky9F4Nk`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr` shows `READY` for `dpl_uSR4bfRmPa24gN2bSxN4mky9F4Nk`; `/api/health` reports `mode: "supabase"`, `adminAuth: "env-password"`, and `indexing: "disabled-forced-noindex"`; `/robots.txt` still returns `Disallow: /`; live HTML checks for `/` and `/prices` both returned `NO_ZERO_PERCENT`.
+  - Live route QA passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2647 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`34 tests: 33 passed, 1 skipped`; external upload mutation intentionally skipped), and `npm run check:release-state`.
+- Rollback Hint: `v0.2.63 공개 시세표 0원 등락 표시 수정 전으로 되돌려줘`
+- Remaining User-only:
+  - None for this display-only fix. Final public search launch, noindex release, payment/trading, secrets, and price value changes remain separately blocked.
+
+## v0.2.62 - Admin product upload selection fix
+
+- Date: `2026-05-19 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_CGguBSbkuBJ9xBkkmMfaJ9o4AtaS` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: `/admin/products`에서 1돈 상품 사진을 올린 뒤 업로드 이미지 선택 드롭다운에 방금 올린 자산이 보이지 않거나, 로그인 뒤 상품 선택 query가 사라져 첫 상품 컨텍스트로 돌아갈 수 있던 문제를 고쳤습니다. 업로드 성공 redirect에 새 자산 id를 싣고, 같은 상품의 업로드 자산이면 2번 드롭다운에서 자동 선택되게 했으며, 로그인 redirect가 `/admin/products?product=...` 같은 query string을 보존하게 했습니다.
+- Summary: Preserves product-specific admin upload context and preselects the newly uploaded product image asset after upload.
+- Changed:
+  - Updated `middleware.ts` so admin login redirects preserve safe admin query strings such as `/admin/products?product=investment-gold-bar-consulting`.
+  - Updated `uploadSiteAssetAction` to append `uploadedAssetId` after a successful product-image upload.
+  - Updated `/admin/products` to verify the uploaded asset is present, pass it into the workspace, and preselect it only for the related product SKU.
+  - Added operator copy that tells the admin the newly uploaded image is selected and still requires `상품 사진 저장` for customer-facing reflection.
+  - Updated `tests/admin-upload.spec.ts` to use the actual 1돈 product slug and a JPEG upload path; `KCG_UPLOAD_SMOKE_FILE` can point to a real local operator image for smoke testing without committing the source file.
+  - Fixed the admin screenshot helper so `/admin` waits for the exact admin pathname after login and local screenshots use the same admin password env as the started server.
+  - Bumped package version to `0.2.62`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: `/admin/products`에서 상품 이미지 업로드 후 방금 올린 이미지가 해당 상품의 업로드 이미지 선택값으로 보이고, 로그인 후에도 선택 상품 query가 유지된다.
+  - 실제 사이트 화면은 안 바뀌는 것: public customer pages, product data values until the admin explicitly saves, active public product images, actual price values, price formula meaning, search/noindex state, robots, DNS, payment/trading behavior, secret/env values.
+- Verification:
+  - Local real-file smoke passed with Junyoung's provided image path: `KCG_UPLOAD_SMOKE_FILE=C:\Users\junyo\Pictures\kcg-goldbar 1don.jpeg npx playwright test tests/admin-upload.spec.ts --workers=1` (`1 passed`). In this local no-Supabase run the safe expected result is `status=demo`, proving the 1.38MB JPEG reaches the Server Action and the 1돈 product context is preserved.
+  - `npm run lint` passed.
+  - `npm run typecheck` passed.
+  - `npm run audit:site` passed (`2574 checks, 1 skipped` source-only after screenshot-helper guardrails).
+  - `npm run build` passed locally and in Vercel.
+  - `npm run test:site` passed locally (`33 passed`), including the admin upload smoke with Junyoung's local JPEG when `KCG_UPLOAD_SMOKE_FILE` was set.
+  - `npm audit --audit-level=moderate` passed (`found 0 vulnerabilities`).
+  - `npm run qa:site` passed locally: rendered audit `2643 checks, 0 skipped`; browser tests `32 passed, 1 skipped` because the no-env full QA run intentionally skips external upload mutation; screenshot refresh completed.
+  - `npm run screenshot:admin` passed after fixing the `/admin` exact-path wait and admin password env alignment. `output/screenshots/admin-products-desktop.png` and `output/screenshots/admin-products-mobile.png` were inspected: the upload step, upload-image select, and final `상품 사진 저장` step render without obvious layout breakage.
+  - `git diff --check` exited 0 with LF-to-CRLF warnings only.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_CGguBSbkuBJ9xBkkmMfaJ9o4AtaS`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr` shows `READY`; `/api/health` reports `mode: "supabase"`, `adminAuth: "env-password"`, and `indexing: "disabled-forced-noindex"`; `/robots.txt` still returns `Disallow: /`; `/admin/products?product=investment-gold-bar-consulting` redirects to `/admin/login?next=%2Fadmin%2Fproducts%3Fproduct%3Dinvestment-gold-bar-consulting`, preserving the 1돈 product query.
+  - Live route QA passed: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2646 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`32 passed, 1 skipped`; external upload mutation intentionally skipped), and `npm run check:release-state`.
+- Rollback Hint: `v0.2.62 관리자 1돈 업로드 선택 수정 전으로 되돌려줘`
+- Remaining User-only:
+  - True production Storage write and final product image save still require an admin session in the live browser or a safe local credential path outside chat. Do not paste secrets into chat.
+
+## v0.2.61 - Admin upload body limit fix
+
+- Date: `2026-05-19 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_PzegqmwAjrQQUUGSADsjMxWZKosn` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: `/admin/products`에서 1MB를 넘는 정상 상품 이미지가 Next Server Action 기본 body limit에 걸려 업로드 action까지 도달하지 못하던 문제를 고쳤습니다. 사이트의 자체 업로드 정책은 `JPEG/PNG/WebP, 5MB 이하`이므로 Server Action body limit을 `6mb`로 맞췄고, 1.2MB 파일을 실제 admin 상품 업로드 form에 넣어 서버 action까지 도달하는 회귀 테스트를 추가했습니다.
+- Summary: Raises the Next Server Action request body limit to match the KCG admin image upload policy and adds a Playwright regression covering operator-sized product image uploads.
+- Changed:
+  - Added `experimental.serverActions.bodySizeLimit = "6mb"` to `next.config.ts`.
+  - Added `tests/admin-upload.spec.ts`, which logs into local admin, attaches a valid 1.2MB PNG to `/admin/products`, submits the upload form, and verifies the request reaches the server action.
+  - Added opt-in real-upload smoke support to the admin upload test: `KCG_ALLOW_REAL_UPLOAD_SMOKE=1` expects `status=uploaded` and removes the smoke asset from Supabase when readable service-role env is available.
+  - Updated `eslint.config.mjs` and `.vercelignore` so project-local Vercel/browser/cache state created by local CLI auth is excluded from lint and deployment uploads.
+  - Bumped package version to `0.2.61`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: 없음. 관리자 상품 이미지 업로드 요청 처리 한도가 바뀐다.
+  - 실제 사이트 화면은 안 바뀌는 것: public customer pages, product data values, active product images, actual price values, price formula meaning, search/noindex state, robots, DNS, payment/trading behavior, secret/env values.
+- Verification:
+  - RED reproduced before fix: `npx playwright test tests/admin-upload.spec.ts --workers=1` failed with `Body exceeded 1 MB limit`.
+  - GREEN after fix: `npm run build` passed, then `npx playwright test tests/admin-upload.spec.ts --workers=1` passed with a 1.2MB product-image upload form reaching the server action and returning the expected local `status=demo` path when Supabase env is absent.
+  - Full local QA passed: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site` (`33 passed`), `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), and final `npm run qa:site` (rendered audit `2641 checks, 0 skipped`, Playwright `33 passed`, screenshot refresh).
+  - Diff check passed: `git diff --check` exited 0 with LF-to-CRLF warnings only.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_PzegqmwAjrQQUUGSADsjMxWZKosn`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr` shows `READY`, `Invoke-RestMethod https://kcgold.co.kr/api/health` reports `mode: "supabase"`, `adminAuth: "env-password"`, and `indexing: "disabled-forced-noindex"`, and `https://kcgold.co.kr/robots.txt` still returns `Disallow: /`.
+  - Production Storage write smoke was not completed in this Codex run because Vercel env values were not readable after `vercel env pull` in this local session, and Codex did not ask for or expose admin passwords/service-role keys. The deployed app is Supabase-backed, and the framework-level 1MB blocker is verified fixed by the real form regression.
+- Rollback Hint: `v0.2.61 관리자 상품 이미지 업로드 1MB 제한 수정 전으로 되돌려줘`
+- Remaining User-only:
+  - If an operator wants a true live Storage-write smoke from the admin screen, complete admin login in the browser or provide a safe local credential path outside chat. Do not paste secrets into chat. If production returns `storage-setup-error`, `media-schema-error`, or `metadata-error`, check Vercel env and Supabase schema/storage state without exposing secrets.
+
+## v0.2.60 - Admin product image workflow clarity
+
+- Date: `2026-05-18 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_4bdTgjsegWDLU8CVaqdVTf4JgT4N` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: `/admin/products`에서 이미지 교체가 어디서 시작하고 어디서 저장되는지 헷갈리지 않도록 오른쪽 편집 패널을 `현재 대표 이미지 확인 -> 1. 새 이미지 올리기 -> 2. 대표 이미지 선택/저장 -> 3. 상품 정보 고급 수정` 순서의 작업대로 바꿨습니다. 업로드나 저장 뒤에는 `?product=상품slug`를 유지해 작업하던 상품 화면으로 돌아오게 했고, 상품 정보 전체 수정 영역은 접어서 이미지 교체만 하는 날의 시각 부담을 줄였습니다.
+- Summary: Reworks `/admin/products` into a step-by-step product image replacement workflow with product-aware redirects and a collapsed advanced product editor.
+- Changed:
+  - Added product-aware admin return paths for `upsertProductAction` and `uploadSiteAssetAction`, preserving `/admin/products?product=...` after upload/save/status redirects.
+  - Rebuilt the `/admin/products` editor around an image workflow section with current preview, upload step, image selection step, and a collapsed product metadata editor.
+  - Changed row actions from generic `이미지 교체` to `대표 이미지 바꾸기`, and the final save CTA to `대표 이미지 저장`.
+  - Updated status copy so upload completion tells the operator to select the uploaded image and save the representative image.
+  - Updated Playwright/source audit guardrails for the new workflow labels, status copy, and product-aware deep link state.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: `/admin/products` 관리자 상품 이미지 교체 UX, 업로드/저장 후 같은 상품 복귀, admin source/audit tests.
+  - 실제 사이트 화면은 안 바뀌는 것: public customer pages, product data values, active product images, actual price values, price formula meaning, search/noindex state, robots, DNS, payment/trading behavior, secret/env values.
+- Verification:
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2567 checks, 1 skipped` source-only before final QA), `npm run build`, `npm run test:site` (`32 passed`), `npm run screenshot:admin`, `npm run screenshot:site`, `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), and final `npm run qa:site` (rendered audit `2639 checks, 0 skipped`, Playwright `32 passed`, screenshot refresh).
+  - Manual screenshot inspection passed for `output/screenshots/admin-products-desktop.png` and `output/screenshots/admin-products-mobile.png`: `/admin/products` now shows the current representative image, `1. 새 이미지 올리기`, `2. 대표 이미지 선택`, `대표 이미지 저장`, and collapsed advanced product fields; mobile row actions scroll to the editor workbench.
+  - Diff check passed: `git diff --check` exited 0 with LF-to-CRLF warnings only.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_4bdTgjsegWDLU8CVaqdVTf4JgT4N`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr/`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2639 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`32 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.60 관리자 상품 이미지 교체 흐름 개선 전으로 되돌려줘`
+- Remaining User-only:
+  - None for this UI workflow. Actual image quality/source decisions remain a separate operator decision when choosing which uploaded product photo to apply.
+
+## v0.2.59 - Admin upload and price-entry convenience fix
+
+- Date: `2026-05-18 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_GPwoLcbd2CDiXVDj3sFiqsTvrKtu` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: `/admin/media`와 `/admin/products`의 이미지 업로드를 승인 대기 흐름이 아니라 바로 사용 가능한 운영자 업로드 흐름으로 바꾸고, 업로드 전에 `site-assets` Storage bucket을 서버에서 확인·생성·보정하게 했습니다. 저장 완료 후에도 이탈 경고가 남는 문제는 route/searchParam 변경 시 save guard를 재마운트해서 초기화하도록 고쳤습니다. `/admin/prices` 직접 입력표는 가격 셀, 비고, 최근 이력, 상단 상태 패널을 줄여 한눈에 들어오게 했습니다.
+- Summary: Fixes admin media upload setup, removes unnecessary image approval friction, resets stale save-guard state after server-action redirects, and compacts the manual price-entry surface.
+- Changed:
+  - Added server-side `site-assets` bucket ensure/update before media upload and clearer `storage-setup-error` / `media-schema-error` statuses.
+  - New uploads default to operator-usable images; human approval confirmation and locked-SKU replacement blocking were removed from admin product/media flows while raw/candidate/external image validation remains.
+  - `/admin/products` image replacement wording and upload flow now use `기본 이미지` / `업로드 이미지` and `상품 이미지 업로드`.
+  - Admin save guard now resets after route/search-param changes, preventing stale pending leave prompts after a completed save.
+  - `/admin/prices` direct input table is denser; price cells, note input, helper blocks, and recent history are compacted/collapsed.
+  - Updated Playwright/source audit guardrails for the new operator-first admin flow.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: `/admin/media`, `/admin/products`, `/admin/prices`, admin dashboard card copy.
+  - 실제 사이트 화면은 안 바뀌는 것: public customer pages, actual price values, price formula meaning, search/noindex state, robots, DNS, payment/trading behavior, secret/env values.
+- Verification:
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2558 checks, 1 skipped` source-only), `npm run build`, `npm run test:site` (`32 passed`), `npm run screenshot:admin`, `npm run screenshot:site`, `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), and final `npm run qa:site` (rendered audit `2630 checks, 0 skipped`, Playwright `32 passed`, screenshot refresh).
+  - Manual screenshot inspection passed for `output/screenshots/admin-prices-manual-desktop.png`, `output/screenshots/admin-media-desktop.png`, and `output/screenshots/admin-products-desktop.png`.
+  - Diff check passed: `git diff --check` exited 0 with LF-to-CRLF warnings only.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_GPwoLcbd2CDiXVDj3sFiqsTvrKtu`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr/`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2630 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`32 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.59 관리자 업로드와 시세 입력 편의성 수정 전으로 되돌려줘`
+- Remaining User-only:
+  - The live Supabase DB schema for `site_assets`, `site_asset_usages`, and media history tables must exist for metadata/slot persistence. Code now creates/updates the Storage bucket, but app runtime does not create missing DB tables.
+
+## v0.2.58 - Admin price desk copy and purity workflow cleanup
+
+- Date: `2026-05-18 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_fog7ssShPuLsP7MK8tqbHnBLezTF` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: `/admin/prices`의 자동시세 ON/OFF 설명을 줄이고, 직접 입력 화면에서 `18K/14K 자동 계산`과 `24K 팔 때 기준 환산 계수`를 같은 작업 블록으로 묶었습니다. 운영자는 순금 팔 때 값을 입력해 18K/14K 팔 때를 자동으로 채우고, 바로 옆에서 18K/14K 계수를 저장하며, 필요한 경우 자동시세 세부 설정에서 참고 데이터와 안전 기준만 접어서 확인합니다.
+- Summary: Simplifies the admin price desk copy and consolidates the manual 24K-based 18K/14K helper with its coefficient controls while preserving separate auto-price settings and all price safety boundaries.
+- Changed:
+  - Replaced the verbose automatic-price mode explanation with a compact ON/OFF state, next-action toggle, and short status chips.
+  - Moved the 18K/14K coefficient editor into the same visual block as the manual `18K/14K 자동 계산` helper.
+  - Kept automatic-price settings separate behind `자동시세 세부 설정`, with shorter reference-data and stale-warning wording.
+  - Updated Playwright/source audit/screenshot capture so the simplified labels and consolidated helper stay guarded.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: `/admin/prices` 관리자 UI 문구, 자동시세 토글 영역, 직접 입력 화면의 18K/14K 계산/계수 블록.
+  - 실제 사이트 화면은 안 바뀌는 것: public customer pages, actual price values, price formula meaning, search/noindex state, robots, DNS, payment/trading behavior, active locked goldbar SKU image paths/hashes, candidate approval state, secret/env values.
+- Verification:
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2561 checks, 1 skipped` source-only), `npm run build`, `npm run test:site` (`32 passed`), `npm run screenshot:admin`, `npm run screenshot:site`, `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), and final `npm run qa:site` (rendered audit `2633 checks, 0 skipped`, Playwright `32 passed`, screenshot refresh).
+  - Manual screenshot inspection passed for `output/screenshots/admin-prices-manual-desktop.png`: the automatic-price switch is a compact ON/OFF bar, the main verbose explanation is gone, and the manual 18K/14K auto-fill toggle sits next to the `24K 팔 때 기준` coefficient editor.
+  - Diff check passed: `git diff --name-only` reviewed the working scope and `git diff --check` exited 0 with Git line-ending warnings only.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_fog7ssShPuLsP7MK8tqbHnBLezTF`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr/`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2633 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`32 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.58 관리자 시세 화면 간소화 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm the company-approved 18K/14K coefficient values before using the helper for final public prices.
+
+## v0.2.57 - Operator-friendly media replacement center
+
+- Date: `2026-05-17 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_7NT4DrHJGqB52KMYRxoN4kDiDv5Y` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, price formula meaning changes, payment, checkout/cart, live trading, candidate auto-approval, locked goldbar SKU image path/hash changes, or public launch state.
+- 사람이 읽는 요약: `/admin/media`를 내부 manifest 등록 form이 아니라 운영자가 바로 이해하는 `이미지 교체 센터`로 바꿨습니다. 첫 화면은 홈 배너, 상품 이미지, 서비스 이미지, 매장안내 이미지, 회사소개 이미지, 공지 썸네일 작업 카드와 현재 preview/status/CTA를 보여주고, `asset_id`, `A1/A2/A3`, `approval_status`, `allowed_usage`, `sku_match`, checksum, storage path 같은 내부 값은 기본 화면에서 숨겨 `고급 정보 보기`에만 둡니다. 파일 업로드는 위치를 먼저 고르고 이름/alt/메모만 입력하면 내부 metadata를 자동 추론하며, 승인 전 이미지는 공개 운영 슬롯에 연결할 수 없습니다. `/admin/products`에서도 각 상품의 thumbnail, 이미지 상태, `이미지 교체` 버튼, 검수 대기 업로드 flow를 추가했습니다.
+- Summary: Replaces the admin media manager's manifest-first UI with an operator-first image replacement center while preserving approval, candidate, locked-SKU, raw-URL, and save-state guardrails.
+- Changed:
+  - Rebuilt `/admin/media` around six operator task cards: home banner image, product image, service image, store-guide image, company image, and notice thumbnail.
+  - Added preview-first upload flow with desktop/mobile crop previews, simple image name/alt/notes inputs, target-based hidden metadata presets, pending upload state, and aria-live feedback.
+  - Moved internal manifest taxonomy and storage details out of the default UI into `고급 정보 보기`.
+  - Added approved-only slot actions for hero/banner/product usage, disabled unapproved operational use, and kept candidate images as review-only.
+  - Added home banner management copy for current slides, ordering/use state, approved image pool replacement, and the minimum 3-slide guard.
+  - Updated `/admin/products` with thumbnails, operator-readable image status, `이미지 교체` actions, product-specific 검수 대기 image upload, approved image selection, placeholder retention, and locked approved goldbar image messaging.
+  - Added upload presets in `src/actions/media-actions.ts` so operator target choices infer `image_source_type`, `allowed_usage`, page/section usage, aspect ratio, crop rule, and SKU match without exposing those fields by default.
+  - Updated Playwright/source audit/admin screenshots to fail if `/admin/media` falls back to a raw manifest form or exposes internal taxonomy on the basic screen.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: `/admin/media` 기본 화면, media upload/apply UX, `/admin/products` 이미지 상태/교체 UI.
+  - 실제 사이트 화면은 안 바뀌는 것: public customer pages, actual price values, price formula meaning, search/noindex state, robots, DNS, payment/trading behavior, active locked goldbar SKU image paths/hashes, candidate approval state, secret/env values.
+- Verification:
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2559 checks, 1 skipped` source-only), `npm run build`, `npm run test:site` (`32 passed`), `npm run screenshot:admin`, `npm run screenshot:site`, `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), and final `npm run qa:site` (rendered audit `2631 checks, 0 skipped`, Playwright `32 passed`, screenshot refresh).
+  - Manual screenshot inspection passed for `output/screenshots/admin-media-desktop.png`, `output/screenshots/admin-media-mobile.png`, `output/screenshots/admin-products-desktop.png`, and `output/screenshots/admin-products-mobile.png`: `/admin/media` opens as an image replacement center with preview cards and Korean file-pick controls; `/admin/products` shows thumbnails, image status, and product-specific image replacement/upload controls; internal taxonomy stays behind `고급 정보 보기`.
+  - Diff check passed: `git diff --name-only` reviewed the working scope and `git diff --check` exited 0 with Git line-ending warnings only.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_7NT4DrHJGqB52KMYRxoN4kDiDv5Y`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr/`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2631 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`32 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.57 관리자 이미지 교체센터 전으로 되돌려줘`
+- Remaining User-only:
+  - Human approval is still required before any uploaded candidate/review image can become approved or active.
+  - The Supabase schema/storage additions from the admin media system still must be applied or verified by an operator before real live media upload/slot persistence is used; this pass does not run live upload/replace/apply mutations.
+
+## v0.2.56 - Admin operations console and media manager rebuild
+
+- Date: `2026-05-17 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_BGAPZiH7n9sv4tj9i1Fn99os9r5u` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env value changes, price value changes, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: `/admin`을 CRUD 나열 화면이 아니라 운영자가 매일 시세·상품·미디어·공지·오픈 상태를 빠르게 확인하는 운영 콘솔로 재정리했습니다. 가격 화면은 직접 입력, 자동시세, 18K/14K 계수, 노출 체크를 분리해 유지하고, 상품/공지 관리는 긴 전체 form 나열 대신 목록+선택 편집 패널로 바꿨습니다. `/admin/media`는 업로드와 운영 연결을 분리하고, 사람이 승인한 approved 자산만 운영 슬롯에 연결할 수 있게 했습니다.
+- Summary: Rebuilds the admin surface as a daily operations console with save-state feedback, media approval boundaries, product/announcement drawer-style editing, auth/session guard hardening, and audit/test coverage.
+- Changed:
+  - Added a shared admin save guard with pending/dirty navigation protection, visible pending button states, and aria-live save status.
+  - Reorganized `/admin/prices` around direct input, automatic price operation, manual 18K/14K coefficient handling, exposure checkboxes, and collapsed reference/status sections.
+  - Rebuilt `/admin/products` as a compact list plus single selected editor, removed raw image URL entry, and kept locked approved goldbar SKU images protected.
+  - Added `/admin/media` with Supabase Storage upload metadata, approval status management, approved-only usage connection, MIME/size limits, and media history hooks.
+  - Rebuilt `/admin/announcements` as list-first management with a single editor panel and explicit delete confirmation.
+  - Added fail-closed admin session secret behavior for preview/production and sanitized admin login `next` redirects.
+  - Added Supabase schema support for `site_assets`, `site_asset_usages`, product/media change history, product image asset links, and atomic price update RPC.
+  - Public hero routes can read approved `site_asset_usages` slots through the manifest/approval boundary, while falling back to the existing approved images when no approved slot exists.
+  - Updated source audit, Playwright checks, and admin screenshot capture for the new operations console and media manager.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: admin console IA, `/admin/prices`, `/admin/products`, `/admin/media`, `/admin/announcements`, admin save feedback and guards.
+  - 실제 사이트 화면은 안 바뀌는 것: public price values, public search/noindex state, robots, DNS, payment/trading behavior, active product goldbar SKU image paths, generated candidate approval state.
+- Verification:
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site` (`32 passed`), `npm run screenshot:admin`, `npm run screenshot:site`, `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), and final `npm run qa:site` (source/rendered audit `2609 checks, 0 skipped`, Playwright `32 passed`, screenshot refresh).
+  - Manual screenshot inspection passed for `output/screenshots/admin-prices-manual-desktop.png`, `output/screenshots/admin-prices-auto-mobile.png`, `output/screenshots/admin-products-desktop.png`, `output/screenshots/admin-products-mobile.png`, `output/screenshots/admin-media-desktop.png`, `output/screenshots/admin-media-mobile.png`, and `output/screenshots/admin-announcements-desktop.png`: the admin surfaces are list/action-first, save states are visible, product/media image controls do not expose raw URL entry, and mobile layouts stay readable.
+  - Diff check passed: `git diff --name-only` reviewed the working scope and `git diff --check` exited 0 with Git line-ending warnings only.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_BGAPZiH7n9sv4tj9i1Fn99os9r5u`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live read-only checks passed: `npx vercel inspect https://kcgold.co.kr/`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2609 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`32 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.56 관리자 운영 콘솔 개편 전으로 되돌려줘`
+- Remaining User-only:
+  - New uploaded media can only be promoted to active use after a human approval decision.
+  - The new Supabase schema/storage additions for `site_assets`, `site_asset_usages`, and the `site-assets` bucket must be applied or verified by an operator before live media upload/slot persistence is used; this deploy did not run live DB/storage mutations.
+  - Keep `ADMIN_SESSION_SECRET` configured in preview/production. The code now fails closed if it is missing, but this pass did not read or change secret values.
+
+## v0.2.55 - Image frame consistency hardening
+
+- Date: `2026-05-17 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_8MZuv1nz8oWwvd5TzDusbaoQc7z3` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, DNS changes, secret/env changes, auth changes, price data changes, payment, checkout/cart, live trading, candidate approval, or public launch state.
+- 사람이 읽는 요약: 상품/매입 카드와 상품 상세의 이미지 없는 항목이 다른 카드보다 위로 밀려 보이지 않도록, 실제 이미지와 `이미지 준비중` placeholder가 같은 media frame을 쓰게 정리했습니다. `/products`, `/services`, `/about`, `/company` 상단 이미지 frame도 같은 높이 체계로 맞추고, Playwright와 source audit이 다시 `min-height` 전용 placeholder로 후퇴하지 못하게 막습니다. Canva는 이번 문제가 이미지 제작이 아니라 layout/harness 문제라 사용하지 않았고, 후보 이미지는 운영 페이지에 연결하지 않았습니다.
+- Summary: Normalizes product and core-route image frame sizing, simplifies pending-image placeholders, and adds regression guards for frame consistency.
+- Changed:
+  - Product cards now use one `aspect-[1/1.02]` media stage whether an approved image exists or not.
+  - `image_pending` card/detail placeholders now keep the reserved image frame and show only a compact `이미지 준비중` state instead of duplicating product copy inside the media slot.
+  - `/products`, `/services`, `/about`, and `/company` hero media frames now share the same route-hero test id and height/min-height scale.
+  - Added Playwright checks for product media-stage height consistency and route hero media-frame consistency.
+  - Added source-audit checks for the product media-stage test id, route hero media-frame test id, and the fixed aspect-ratio guard.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: 상품/매입 카드 placeholder 위치와 4개 route 상단 image frame 크기 정렬.
+  - 실제 사이트 화면은 안 바뀌는 것: active 이미지 파일, 후보/approved 상태, existing approved goldbar SKU images, home carousel active slides, company posted prices, 은 시세표, 운영 DB 저장값, noindex/search state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims.
+- Verification:
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2518 checks, 0 skipped` after full QA route rendering), `npm run build`, `npm run test:site` (`31 passed`), `npm run screenshot:site`, `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), and final `npm run qa:site` (`2518 checks, 0 skipped`, Playwright `31 passed`, screenshot refresh).
+  - Manual screenshot inspection passed for `output/screenshots/products-desktop.png`, `output/screenshots/products-mobile.png`, `output/screenshots/services-mobile-viewport.png`, `output/screenshots/about-mobile.png`, and `output/screenshots/company-mobile.png`: product placeholders reserve the same image stage as approved images, product text remains in the body area, and core route hero frames keep the same height family.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_8MZuv1nz8oWwvd5TzDusbaoQc7z3`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live checks passed: `npx vercel inspect https://kcgold.co.kr/`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2518 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`31 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.55 이미지 프레임 정렬 전으로 되돌려줘`
+- Remaining User-only:
+  - Human approval is still required before any `public/assets/generated/candidates/` image moves to `approved` or becomes eligible for operational pages.
+
+## v0.2.54 - Candidate image preview batch
+
+- Date: `2026-05-17 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: not deployed in this pass. This work creates candidate-only files and preview/report artifacts; it does not connect any candidate to operational pages, move assets to `approved`, change search/noindex, DNS, secrets, auth, price data, payment, checkout/cart, live trading, or public launch state.
+- 사람이 읽는 요약: `v0.2.53` 이미지 자산 시스템 위에서 홈 hero 확장, 서비스, 매장안내, 회사소개의 어두운 기존 이미지 대체 후보를 만들었습니다. 후보는 `public/assets/generated/candidates/` 아래에만 있고, `src/data/imageAssetManifest.json`에는 `approval_status: candidate`, `allowed_usage: candidate_preview`로만 등록됩니다. 사람이 승인하기 전에는 `approved`로 승격하거나 운영 페이지에 연결하지 않습니다.
+- Summary: Adds a candidate-only image generation batch and QA preview report for hero, service, store-guide, and company replacement directions.
+- Changed:
+  - Added 20 candidate images under `public/assets/generated/candidates/hero`, `service`, `store-guide`, and `company`.
+  - Added `scripts/generate-image-candidates.mjs` and `npm run images:candidates` to regenerate the candidate-only illustration set, register existing generated photo candidates, update checksums, and rebuild the preview report/contact sheet.
+  - Updated `src/data/imageAssetManifest.json` with candidate-only entries; all new entries stay outside operational usages.
+  - Added `docs/brand/image-candidate-preview-2026-05-17.md` and `docs/audit/image-candidate-contact-sheet-2026-05-17.webp`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀌는 것: 없음. 후보 이미지는 active UI에 연결하지 않았다.
+  - 실제 사이트 화면은 안 바뀌는 것: existing approved goldbar SKU images, home carousel active slides, service/about/company active images, product placeholders, company posted prices, 은 시세표, 운영 DB 저장값, noindex/search state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims.
+- Verification:
+  - Passed: `npm run images:candidates` generated 15 illustration candidates and registered 5 photo-style candidates without promoting any file to `approved`.
+  - Passed: `npm run audit:site` validated `src/data/imageAssetManifest.json` with 41 entries and the 11 locked goldbar source-image rows. The first audit after generation failed only because changelog/status docs still referenced `v0.2.53`; it passed after the version/status ledger was updated.
+  - Passed: `npm run lint`, `npm run typecheck`, `npm run build`, `npm run test:site` (`29 passed`), `npm run screenshot:site`, and `npm audit --audit-level=moderate` (`found 0 vulnerabilities`). One early `npm run test:site` attempt was started before `.next` existed during a parallel build/test run and was rerun successfully after build completion.
+  - Passed: final `npm run qa:site` with source/rendered audit `2505 checks, 0 skipped`, Playwright `29 passed`, screenshot refresh, and npm audit pass.
+  - Manual preview inspection: `docs/audit/image-candidate-contact-sheet-2026-05-17.webp` shows 20 candidates with bright backgrounds, no black-background blocks, no connected operational page usage, and a mix of illustration concepts plus 5 brighter photo-style candidates generated with the built-in image tool.
+- Rollback Hint: `v0.2.54 후보 이미지 프리뷰 배치 전으로 되돌려줘`
+- Remaining User-only:
+  - Human approval is required before any candidate moves from `candidates` to `approved` or becomes eligible for operational pages.
+  - If a candidate has map/document/tablet texture that looks like readable fake text at full size, mark it `needs_review` before approval.
+
+## v0.2.53 - Image asset governance system
+
+- Date: `2026-05-17 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_MZJsLmeWn11jQB3VgnLd7BoMjdmj` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: Junyoung의 교정대로 “AI 이미지 제거”가 아니라 “승인된 공식 상품 자산과 미승인 생성 이미지를 구분”하는 런칭 전 이미지 자산 시스템을 만들었습니다. 기존 골드바 SKU 상품/매입 이미지는 path/hash snapshot으로 잠그고, 승인 manifest와 human-readable manifest, QA checklist, quarantine 기록, generated candidates/approved 폴더 구조, audit schema guardrail을 추가했습니다. 홈 메인 배너는 승인 골드바 라인업, 상담 장면, 매장 방문 장면 3장 자동 슬라이드로 복구했고, 서비스/매장안내/회사소개 이미지는 섹션 목적에 맞는 기존 이미지로 되돌렸습니다. 승인 자산이 없는 개별 상품은 `이미지 준비중` placeholder로 표시합니다.
+- Summary: Adds a pre-launch image asset governance system with manifest validation, goldbar SKU source-image locks, candidate/approved separation, quarantine records, restored approved route imagery, and placeholders for unapproved individual products.
+- Changed:
+  - Added `docs/brand/IMAGE_ASSET_MANIFEST.md`, `src/data/imageAssetManifest.json`, `docs/brand/IMAGE_QA_CHECKLIST.md`, `docs/audit/goldbar-sku-image-lock-snapshot.md`, and `docs/audit/quarantined-assets.md`.
+  - Added generated-asset folder boundaries under `public/assets/generated/candidates/*` and `public/assets/generated/approved/*` with `.gitkeep` placeholders only.
+  - Added manifest/schema validation and goldbar source-image path/hash lock checks to `npm run audit:site`.
+  - Added `src/lib/image-asset-manifest.ts` and connected the public product image presenter to approved manifest usage rules.
+  - Changed no-approved-image individual products to `이미지 준비중` instead of stretching a fake/ambiguous product-like image.
+  - Restored the home campaign banner as a 3-slide automatic carousel using approved goldbar lineup, consultation, and store-guide imagery.
+  - Restored service, store-guide/about, and company imagery to section-appropriate existing assets and blocked the company page from using the goldbar lineup as its hero image.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: home campaign carousel images/slide count, `/services` hero image, `/about` hero image, `/company` hero image, and `/products`/product-detail placeholders for individual products without approved assets.
+  - 실제 사이트 화면은 안 바뀌는 것: existing goldbar SKU image paths/hashes, company posted price values, 은 시세표, 운영 DB 저장값, noindex/search state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims.
+- Verification:
+  - Red audit confirmed the new guardrail before docs/manifest existed: `npm run audit:site` failed on missing image manifest, QA checklist, goldbar lock snapshot, quarantine record, and JSON manifest.
+  - Source audit passed after implementation: `npm run audit:site` (`2433 checks, 1 skipped` source-only), including manifest schema validation and 11 locked goldbar source-image rows.
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2433 checks, 1 skipped` source-only), `npm run build`, `npm run test:site` (`29 passed`), `npm run screenshot:site`, `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), and final `npm run qa:site` (rendered audit `2505 checks, 0 skipped`, Playwright `29 passed`, screenshot refresh).
+  - Live deploy passed after the Supabase image-URL priority fix: `npx vercel deploy --prod --yes` produced `dpl_MZJsLmeWn11jQB3VgnLd7BoMjdmj`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live checks passed: `npx vercel inspect https://kcgold.co.kr/`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2505 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`29 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+  - Manual screenshot inspection passed for `home-desktop-viewport.png`, `home-mobile-viewport.png`, `products-mobile.png`, `services-mobile.png`, `about-mobile.png`, and `company-mobile.png`: the home banner has three approved slides, service/about/company are no longer goldbar-lineup repeats, and product placeholders render as `이미지 준비중`.
+  - Screenshot QA note: existing service/company consultation images are darker than the new bright-background quality bar, so they are accepted as restored existing assets for this pass but tracked as priority candidate slots for the next image-generation/approval round.
+- Rollback Hint: `v0.2.53 이미지 자산 시스템 구축 전으로 되돌려줘`
+- Remaining User-only:
+  - New generated candidate images are not bulk-created or promoted in this pass. Human approval is required before any candidate moves to `approved` and becomes eligible for operational pages.
+  - Final professional product/store/staff photography, final product-stock/certificate policy, and real product-image approval remain KCG approval tasks before public search launch.
+
+## v0.2.52 - Goldbar product-card weight alignment
+
+- Date: `2026-05-17 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_GrebhjK4Q48aHSGVX1HPrbWhy6JP` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: `/products`에서 1g/10g/100g 골드바 카드가 돈 단위 라인업 이미지를 빌려 써서 줄 높이와 카드 크기가 어긋나고, 해당 그램수 상품처럼 보이지 않던 문제를 바로잡았습니다. 1g, 3.75g, 10g, 37.5g, 100g 골드바는 각각 KCG real-photo product 컷을 쓰고 같은 정사각 제품 이미지 체계로 정렬합니다. 대량 골드바 상담은 여전히 라인업 상담 이미지로 남기고, 가격·수급·재고·보증은 계속 전화/현장 확인 기준입니다.
+- Summary: Aligns goldbar product cards and detail pages to product-specific KCG real-photo assets so the catalog no longer shows a mismatched money-unit lineup for gram-based products.
+- Changed:
+  - `src/lib/product-presenter.ts` now maps `kcg-gold-bar-1g`, `investment-gold-bar-consulting`, `kcg-gold-bar-10g`, `kcg-gold-bar-37-5g`, and `kcg-gold-bar-100g` to their product-specific `kcg-real-photo-goldbar-product-*` images as `verified_product`.
+  - `/products` cards now use one stable image aspect for product and representative images, and card bodies align the price panel/CTA consistently across each row.
+  - Product detail goldbar images use the same verified-product role and a restrained product-photo padding treatment.
+  - Playwright checks now fail if 1g/10g/100g detail pages fall back to the lineup image, and source audit checks the updated product-image policy.
+  - Admin image provenance wording now says customer-facing goldbar images must match the product weight and role, not just a broad source-ready bucket.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/products` 골드바 카드 이미지, 골드바 상세 대표 이미지, 상품 카드 이미지 높이/가격 패널 정렬, admin product image provenance wording.
+  - 실제 사이트 화면은 안 바뀌는 것: company posted price values, 은 시세표, 운영 DB 저장값, noindex/search state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims.
+- Verification:
+  - Initial source audit passed after implementation: `npm run audit:site` (`2409 checks, 1 skipped` source-only).
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2409 checks, 1 skipped` source-only), `npm run build`, `npm run test:site` (`28 passed`), `npm run screenshot:site`, `npm audit --audit-level=moderate` (`found 0 vulnerabilities`), and final `npm run qa:site` (rendered audit `2481 checks, 0 skipped`, Playwright `28 passed`, screenshot refresh).
+  - Manual/local screenshot inspection passed for `output/screenshots/products-desktop.png`, `output/screenshots/products-mobile.png`, and `output/screenshots/product-detail-mobile.png`: the first five public goldbar cards use product-specific assets, card rows keep aligned image/price/CTA rhythm, and the detail page uses the matching verified product image.
+  - Live deploy passed: `npx vercel deploy --prod --yes` produced `dpl_GrebhjK4Q48aHSGVX1HPrbWhy6JP`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`.
+  - Live checks passed: `npx vercel inspect https://kcgold.co.kr/`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2481 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`28 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+  - Live DOM evidence: the first five `/products` cards render `KCG 골드바 1g`, `KCG 골드바 3.75g`, `KCG 골드바 10g`, `KCG 골드바 37.5g`, and `KCG 골드바 100g` as `verified_product` with `/products/kcg-real-photo-goldbar-product-1g-20260514.jpg`, `/products/kcg-real-photo-goldbar-product-3-75g-20260514.jpg`, `/products/kcg-real-photo-goldbar-product-10g-20260514.jpg`, `/products/kcg-real-photo-goldbar-product-37-5g-20260514.jpg`, and `/products/kcg-real-photo-goldbar-product-100g-20260514.jpg`.
+- Rollback Hint: `v0.2.52 골드바 상품카드 중량 이미지 정렬 전으로 되돌려줘`
+- Remaining User-only:
+  - Final professional KCG product photography and final stock/certificate/package policy still need KCG approval before public search launch. This change only fixes active review-site imagery and layout alignment.
+
+## v0.2.51 - Closed-day price confirmation hardening
+
+- Date: `2026-05-17 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_GF2pRg9QL8WDNqz8b8xn5Ebqh8bL` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: 주말·공휴일·회사 휴무일·영업시간 외에는 화면 금액이 거래 확정가로 오해되지 않도록 `/`, `/prices`, `/products`, 상품 상세의 고시/참고가 상태를 `거래 전 확인` 중심으로 강화하고, `/prices`와 `/products`에는 닫히는 팝업이 아닌 고정 안내 패널을 추가했습니다. `/admin/prices`에는 고객 화면 고지 상태와 운영 응대 원칙을 보여주는 패널을 추가해 관리자가 휴무일/영업시간 외 문의를 가격 확정처럼 답하지 않게 했습니다.
+- Summary: Strengthens customer-facing closed-day/outside-hours price disclaimers and adds an admin public-price status preview without changing company posted price values or automatic pricing data.
+- Changed:
+  - `src/lib/price-announcement.ts` now returns explicit `noticeBadgeLabel`, `operatorActionLabel`, and `requiresTradeConfirmation` fields, and distinguishes weekend/closed-day from weekday outside-hours display.
+  - Home and `/prices` price lineup notices use `거래 전 확인` as the visible warning badge when confirmation is required.
+  - `/prices` adds a persistent `휴무일·영업시간 외 적용 기준` panel stating that screen amounts are not final transaction prices.
+  - `/products` and product detail pages now state that product reference prices are not final transaction prices and require phone/store confirmation on closed days or outside business hours.
+  - `/admin/prices` adds a `고객 화면 고지` panel showing the public status, notice body, and operator response rule.
+  - Source audit and Playwright site tests now guard the customer/admin closed-day price warning surfaces.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/`, `/prices`, `/products`, 상품 상세, `/admin/prices`의 휴무일/영업시간 외 가격 고지와 운영자 확인 패널.
+  - 실제 사이트 화면은 안 바뀌는 것: company posted price values, 은 시세표, 운영 DB 저장값, noindex/search state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims.
+- Verification:
+  - Local checks passed during implementation: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2408 checks, 1 skipped` source-only), `npm run build`, `npm run test:site` (`28 passed`), and `npm audit --audit-level=moderate` (`found 0 vulnerabilities`).
+  - Screenshot/visual QA passed locally: `npm run screenshot:site`, `npm run screenshot:admin`, and final `npm run qa:site` (rendered audit `2480 checks, 0 skipped`, Playwright `28 passed`, screenshot refresh).
+  - Manual screenshot inspection passed for `home-mobile-viewport.png`, `prices-mobile-viewport.png`, `products-mobile-viewport.png`, `products-mobile.png`, `products-desktop.png`, `product-detail-mobile-viewport.png`, `product-detail-desktop-viewport.png`, `admin-prices-auto-desktop.png`, `admin-prices-auto-mobile.png`, and `admin-prices-manual-desktop.png`: public price surfaces show `거래 전 확인`/fixed confirmation guidance, product reference prices do not read as transaction-final prices, and admin price screens show the matching customer-facing notice/operator response rule.
+  - Pre-deploy source check passed after docs update: `npm run audit:site` (`2408 checks, 1 skipped`) and `git diff --check` with line-ending warnings only.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_GF2pRg9QL8WDNqz8b8xn5Ebqh8bL` ready and aliased to the review domains.
+  - Live checks passed on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr/`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2480 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`28 passed`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`, and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:admin`.
+  - Live manual screenshots checked: `home-mobile-viewport.png`, `prices-mobile-viewport.png`, `products-mobile.png`, `product-detail-mobile-viewport.png`, `admin-prices-manual-live.png`, `admin-prices-auto-live.png`, and `admin-prices-auto-mobile-live.png`.
+- Rollback Hint: `v0.2.51 휴무일 고시 확정 방지 보강 전으로 되돌려줘`
+- Remaining User-only:
+  - 공휴일·임시휴무를 자동으로 정확히 구분하려면 KCG 내부 휴무일 운영 기준 또는 관리자 휴무일 입력 정책 확정이 필요합니다. 이번 변경은 별도 외부 API 없이 화면 금액이 거래 확정가로 오해되지 않게 하는 기본 안전장치입니다.
+  - 검색 공개 전에는 최종 관리자 비밀번호/세션 secret 회전 상태를 다시 확인해야 합니다. 이번 작업은 관리자 화면 UX와 고지 흐름을 검증했지만 secret/env 값을 바꾸지 않았습니다.
+
+## v0.2.50 - Role-based product image recovery
+
+- Date: `2026-05-17 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_9puJd92HJgu8mjQxefnZCDFtSWBW` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: Junyoung의 교정대로 “가짜 상품처럼 보일 이미지를 빼라”는 요구를 “이미지를 전부 빼라”로 처리하지 않도록 정책을 바로잡았습니다. 정확한 source-ready 실물컷이 있는 골드바는 `실물 기준`, 정확한 개별 상품 증명이 어려운 1g/10g/100g 및 대량 골드바는 `라인업 상담`, 순금 선물·주얼리 매입·B2B 상담은 `카테고리 상담` 이미지로 나눠 `/products`를 다시 채웠습니다. silverbar/gold-silver/AI exact mock/손바닥 강조/원본 KakaoTalk 파일명은 계속 active UI에서 막습니다.
+- Summary: Restores useful representative category imagery while keeping fake exact-product goldbar/silverbar/mock assets blocked by role-based image rules, source audit, and Playwright checks.
+- Changed:
+  - Added product image roles in `src/lib/product-presenter.ts`: `verified_product`, `representative_lineup`, `representative_category`, and `fallback_brand`.
+  - `/products`, product detail pages, and home category tiles now use `getPublicProductImage()` so approved category consultation images can appear without pretending to be exact product-proof photos.
+  - 3.75g and 37.5g goldbar rows keep exact source-ready KCG goldbar crops. 1g, 10g, 100g, and bulk goldbar rows use the approved KCG lineup image as a representative consultation visual.
+  - Pure-gold, jewelry-buying, and B2B/custom-order rows use approved category consultation images instead of large empty placeholders.
+  - Product-card image treatment was adjusted so representative lineup images show the full KCG lineup and do not crop into the wrong visible weight.
+  - Admin product image provenance and source/Playwright guardrails now distinguish approved representative category images from forbidden fake exact-product mock assets.
+  - Recorded the work as `KCG-TODO-102`.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/products` 상품 카드/상세의 이미지 채움 정책, home category tile images, admin product image provenance labels, and image-policy guardrails.
+  - 실제 사이트 화면은 안 바뀌는 것: company posted price values, 은 시세표, 운영 DB 저장값, search/noindex state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims.
+- Verification:
+  - Local checks passed during implementation: `npm run audit:site` (`2391 checks, 1 skipped` source-only), `npm run lint`, `npm run typecheck`, `npm run build`, `npm run test:site` (`28 passed`), and `npm run screenshot:site`.
+  - Final local QA passed after the verified-product crop adjustment: `npm run qa:site` (rendered audit `2463 checks, 0 skipped`, Playwright `28 passed`, screenshot refresh) and `npm audit --audit-level=moderate` (`found 0 vulnerabilities`).
+  - Manual screenshot inspection passed for local and live `products-desktop.png`, `products-mobile.png`, `home-desktop-viewport.png`, and `home-mobile-viewport.png`: product cards are no longer blank, 3.75g/37.5g exact crops show the full bar more safely, exact product proof is not implied where exact source-ready imagery is missing, and forbidden silverbar/gold-silver/mock campaign images are not active.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_9puJd92HJgu8mjQxefnZCDFtSWBW` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr/`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2463 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`28 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.50 상품 이미지 역할 기반 복구 전으로 되돌려줘`
+- Remaining User-only:
+  - Final professional KCG product photography is still the strongest long-term fix. Until KCG supplies approved professional product photos, exact product-proof use should stay limited to source-ready KCG derivatives whose visible gram/text matches the product.
+
+## v0.2.49 - QA speed and closed-day price guard
+
+- Date: `2026-05-17 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_2RmhuEbWmXGTf1eqRHVB4eNvVZAp` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: Junyoung이 지적한 “너무 느린 검수”를 QA 품질을 낮추지 않고 개선했습니다. 빠른 반복용 `npm run qa:quick`을 유지하고, 풀 QA는 lint/typecheck/source audit과 build/npm audit를 병렬화하며 한 번 띄운 서버를 rendered audit, Playwright, screenshot에서 재사용합니다. QA 실패 시 `next start`가 고아 프로세스로 남아 다음 검증을 느리게 만드는 구조도 막았습니다. 주말·휴무일에는 당일 고시가 있더라도 거래 전 전화 확인 경고가 유지되도록 바꿨고, 사진 없는 상품 카드는 큰 가짜 사진 무대처럼 보이지 않게 더 낮은 상담 확인 패널로 정리했습니다.
+- Summary: Improves QA loop speed and failure cleanup while adding closed-day price-risk messaging and a smaller non-photo product placeholder treatment.
+- Changed:
+  - `scripts/run-site-qa.mjs` now throws step failures instead of exiting inside helper functions, so the shared `next start` server is stopped in `finally` even when rendered audit, Playwright, or screenshot capture fails.
+  - `npm run qa:site` now runs full-only build and npm audit in parallel after the parallel preflight stage, then reuses one local server for rendered audit, Playwright, and screenshots.
+  - `KCG_QA_PORT` is validated as a numeric TCP port before it is interpolated into the Windows start command.
+  - `src/lib/price-announcement.ts` keeps `주말·휴무일 거래 전 전화 확인` messaging on Korean weekends even if the displayed announcement timestamp is the same KST day.
+  - `/products` cards without trusted approved imagery now use a shorter placeholder area instead of a large fake-product-image stage.
+  - Source audit now guards the closed-day branch and QA runner cleanup/speed behavior.
+  - Recorded the work as `KCG-TODO-101`.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: home/prices price notice wording on weekends/closed days, and public `/products` no-photo card height.
+  - 실제 사이트 화면은 안 바뀌는 것: company posted price values, active KCG goldbar approved images, 은 시세표, 운영 DB 저장값, search/noindex state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims.
+- Verification:
+  - Initial optimized full QA before the final P1 fixes passed: `npm run qa:quick` (`7.6s`) and `npm run qa:site` (`113.5s`, rendered audit `2441 checks, 0 skipped`, Playwright `28 passed`, screenshot refresh).
+  - Final local verification passed: `npm run audit:site` (`2384 checks, 1 skipped` source-only), `npm run qa:quick` (`~7s`), `npm run qa:site` (`110.5s`, rendered audit `2456 checks, 0 skipped`, Playwright `28 passed`, screenshot refresh, npm audit `0 vulnerabilities`), and `git diff --check` (line-ending warnings only).
+  - Manual screenshot inspection passed for `home-mobile-viewport.png`, `prices-mobile-viewport.png`, `products-desktop.png`, and `products-mobile-viewport.png`: weekend/closed-day notice is visible without a close button, mobile bottom CTA does not cover key content, and `/products` no-photo rows render as compact consultation placeholders rather than fake product images.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_2RmhuEbWmXGTf1eqRHVB4eNvVZAp` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr/`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2456 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`28 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+  - Live screenshot inspection passed for `home-mobile-viewport.png`, `prices-mobile-viewport.png`, `products-mobile-viewport.png`, and `products-desktop.png`.
+- Rollback Hint: `v0.2.49 QA 속도와 휴무일 고시 안내 전으로 되돌려줘`
+- Remaining User-only:
+  - Exact holiday calendar and non-weekend company closure rules still need KCG policy input if the notice should distinguish public holidays, 임시휴무, and staff-entered emergency notices beyond Saturday/Sunday.
+
+## v0.2.48 - Source-ready goldbar image QA gate
+
+- Date: `2026-05-17 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_7yMmLhhm1cTAKFkAJ35BECxn7nGx` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: Junyoung이 준 source-ready KCG 골드바 라인업 이미지를 기준으로 홈 첫 배너, `/products` 상단, `/products` 1돈·2돈·3돈·5돈·10돈 guide를 다시 맞췄습니다. AI로 새 각인·문양·중량을 상상해 만들지 않았고, 기존 `20260514` 돈 단위 guide 중 2돈/3돈처럼 실제 중량과 visual이 맞지 않던 active 사용처는 새 crop으로 교체했습니다. 정확한 source-ready 이미지가 없는 1g/10g/100g 및 비골드바 상품은 가짜 상품컷을 쓰지 않고 trust placeholder로 후퇴했습니다.
+- Summary: Moves active goldbar hero/guide imagery to source-ready KCG derivatives, removes untrusted exact-ish product-card images from public fallback, and hardens tests/audit/admin provenance so distorted AI mockups, silverbar/gold-silver assets, hand emphasis, raw source filenames, and mismatched money-unit/product images cannot return quietly.
+- Changed:
+  - Added approved source-ready derivatives: `public/campaign/kcg-approved-goldbar-lineup-reflection-20260517.jpg`, `public/products/kcg-approved-goldbar-lineup-no-reflection-20260517.jpg`, and five isolated guide crops `kcg-approved-goldbar-1don/2don/3don/5don/10don-20260517.jpg`.
+  - Updated the home first campaign slide to the approved reflection lineup image and `/products` hero to the approved no-reflection lineup image.
+  - Updated the `/products` 1돈·2돈·3돈·5돈·10돈 guide so each card image shows the matching visible gram mark from the source-ready lineup.
+  - Restricted public product-card/detail images to trusted source-ready mappings: 3.75g uses the 1돈 crop, 37.5g uses the 10돈 crop, bulk goldbar uses the approved no-reflection lineup, and untrusted 1g/10g/100g/non-goldbar rows render a neutral trust placeholder instead of fake product photography.
+  - Updated public fallback/default/bulk-gold image paths, mock data, Supabase seed defaults, admin product image provenance, Playwright tests, and source audit guardrails.
+  - Replaced several service/about/price supporting image panels with DOM-only process panels where the available imagery was not strong enough to represent KCG product proof.
+  - Recorded the work as `KCG-TODO-100`.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: home first campaign slide, `/products` hero, `/products` 1/2/3/5/10돈 guide images, public product-card/detail placeholder policy, services/about/price support panels, admin product image provenance labels for approved/source-ready goldbar images.
+  - 실제 사이트 화면은 안 바뀌는 것: company posted price values, 은 시세표, 운영 DB 저장값, search/noindex state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims.
+- Verification:
+  - Passed local checks: `npm run audit:site` (`2361 checks, 1 skipped` without `SITE_AUDIT_URL`; `2433 checks, 0 skipped` inside `npm run qa:site`), `npm run lint`, `npm run typecheck`, `npm run build`, `npm run test:site` (`28 passed`), `npm run screenshot:site`, `npm run qa:site` (`KCG site QA passed`), `npm audit --audit-level=moderate` (`0 vulnerabilities`), and `git diff --check` (line-ending warnings only).
+  - Manual screenshot inspection passed for `home-desktop-viewport.png`, `home-mobile-viewport.png`, `products-desktop.png`, `products-mobile-viewport.png`, and `prices-mobile-viewport.png`: the home first banner and `/products` hero/guide show KCG source-ready goldbar imagery without silverbar/gold-silver/AI mock/hand-emphasis assets and without mismatched guide weights; `/prices` remains company-price first without the removed Gold API domestic conversion table.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_7yMmLhhm1cTAKFkAJ35BECxn7nGx` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr/`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2433 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`28 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+  - Additional live product-detail screenshots were inspected for `/products/investment-gold-bar-consulting` and `/products/kcg-gold-bar-37-5g`; both render verified source-ready KCG goldbar images instead of the old generic representative-image treatment.
+  - Post-review workflow speed pass: `npm run qa:site` now runs lint, typecheck, and source audit in parallel before the build/browser stages, and `npm run qa:quick` is available for fast iteration. The final launch gate still uses full `npm run qa:site` plus rendered/browser/screenshot checks.
+- Rollback Hint: `v0.2.48 source-ready 골드바 이미지 QA 전으로 되돌려줘`
+- Remaining User-only:
+  - Professionally photographed final KCG product photos remain better than any source-ready derivative. Until those exist, 1g/10g/100g and non-goldbar rows should stay placeholder-first rather than using fake exact engravings, fake stock, or certificate proof.
+
+## v0.2.47 - Goldbar real lineup banner restore
+
+- Date: `2026-05-16 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_9Z4VDsa57U9mnAKW235VkcHTZZ3z` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: `v0.2.46`에서 제거 범위가 넓었던 골드바 전용 실물 라인업 배너를 바로잡았습니다. 싸구려 목업·실버바·금은 혼합 배너는 계속 금지하지만, KCG 골드바 1돈·2돈·3돈·5돈·10돈이 보이는 실물형 완성 배너는 홈 첫 슬라이드로 복구하고, `/products` 상단은 회색 배경 실물 골드바 라인업 사진으로 바꿨습니다.
+- Summary: Restores the approved KCG goldbar-only real lineup campaign visual while keeping silverbar, gold-silver, hand-held, AI/generated mock, and mixed-metal campaign assets out of active UI.
+- Changed:
+  - Restored `public/campaign/kcg-real-goldbar-promo-banner-20260513.webp` from retired reference storage and made it the first home price-lineup campaign slide.
+  - Updated `/products` hero to use `public/products/kcg-real-photo-goldbar-lineup-20260514.jpg` as a clean visual-only goldbar lineup image.
+  - Removed the text overlay from the `/products` hero image so the goldbars are not covered; the `상품/매입` title and description now live in the right text column.
+  - Adjusted Playwright/source-audit guardrails so KCG goldbar-only real lineup imagery is allowed, while gold-silver, silverbar, hand-held, AI/generated mock, and stale opening-poster imagery remain blocked from the main banner.
+  - Hardened TradingView widget QA so the public site passes only when either the official iframe renders or the explicit `TradingView에서 보기` fallback renders under external-widget/network failure.
+  - Recorded the work as `KCG-TODO-099`.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: home main first campaign slide and `/products` hero image/title treatment.
+  - 실제 사이트 화면은 안 바뀌는 것: company posted price values, product card/detail mappings, 은 시세표, 운영 DB 저장값, search/noindex state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_9Z4VDsa57U9mnAKW235VkcHTZZ3z`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제, final product prices/공임/운영자료 확정.
+- Verification:
+  - Passed local checks: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2343 checks, 1 skipped` before full rendered audit; `2415 checks, 0 skipped` inside `npm run qa:site`), `npm run build`, `npm run test:site` (`28 passed`), `npm run screenshot:site`, `npm audit --audit-level=moderate` (`0 vulnerabilities`), `git diff --check` (line-ending warnings only), and full `npm run qa:site` (`2415 checks, 0 skipped`, Playwright `28 passed`, screenshot refresh, `0 vulnerabilities`).
+  - Manual screenshot inspection passed for `home-desktop-viewport.png`, `home-mobile-viewport.png`, `products-desktop.png`, and `products-mobile-viewport.png`: the home first campaign slide shows the KCG goldbar 1/2/3/5/10돈 lineup banner again, `/products` hero shows the real-photo goldbar lineup without text covering the bars, and no silverbar/gold-silver/mock campaign banner appears.
+  - Deployed with `vercel deploy --prod --yes`; Vercel reported deployment `dpl_9Z4VDsa57U9mnAKW235VkcHTZZ3z` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `vercel inspect kcg-confirm-preview-bxpe9k1m5-junyoung8753-2361s-projects.vercel.app`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2415 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`28 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.47 골드바 실물 라인업 배너 복구 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm final evergreen product-photo/banner direction later if KCG wants a newly photographed campaign hero instead of this restored real-derived lineup banner.
+
+## v0.2.46 - Main banner mock image removal
+
+- Date: `2026-05-14 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_7Xw9ZCHxVw7T1Z4SJgvPDDL1enb6` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: Junyoung이 거절한 메인 배너의 가짜 목업처럼 보이는 골드바/실버바 계열 홍보 이미지를 즉시 제거했습니다. 홈 가격 라인업 배너, `/products` hero/promo, social image, admin 상품 이미지 추천 목록이 더 이상 `kcg-real-photo-goldbar-products-banner-20260514.jpg`, `kcg-real-photo-goldbar-price-banner-20260514.jpg`, `kcg-real-photo-goldbar-opening-banner-20260514.jpg`를 사용하지 않습니다.
+- Summary: Removes the rejected goldbar/silverbar mock-like campaign banners from active main-banner/product/social/admin surfaces and adds regression guardrails so those rejected banner paths cannot return to the home campaign carousel.
+- Changed:
+  - Removed the three rejected `20260514` campaign banner images from the served `public/campaign` tree and moved them under `docs/brand/retired-public-assets/2026-05-14/public/campaign/` for rollback/reference only.
+  - Replaced the home price-lineup campaign slides with existing store, old-gold consultation, jewelry tray, and pure-gold consultation visuals: `kcg-home-seoul-retail-20260506.webp`, `kcg-old-gold-process-20260506.webp`, `kcg-jewelry-buying-tray-20260430.webp`, and `kcg-product-pure-gold-gifts-20260506.webp`.
+  - Replaced `/products` hero/promo and the site social image with non-mock consultation/store imagery.
+  - Removed the rejected campaign banner paths from admin product image recommendations.
+  - Added Playwright and source-audit checks that fail if the rejected campaign banner paths reappear in the home main banner or active UI.
+  - Recorded the work as `KCG-TODO-098`.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: home main campaign banner imagery, `/products` hero/promo image, social share image, admin product image recommendation options.
+  - 실제 사이트 화면은 안 바뀌는 것: company posted price values, goldbar product card/detail images, 은 시세표, 운영 DB 저장값, search/noindex state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제, final product prices/공임/운영자료 확정.
+- Verification:
+  - Passed local checks: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2340 checks, 1 skipped` without `SITE_AUDIT_URL`; `2412 checks, 0 skipped` inside `npm run qa:site`), `npm run build`, `npm run test:site` (`28 passed`), `npm run screenshot:site`, `npm audit --audit-level=moderate` (`0 vulnerabilities`), and full `npm run qa:site` (`2412 checks, 0 skipped`, Playwright `28 passed`, screenshot refresh, `0 vulnerabilities`).
+  - Manual screenshot inspection passed for `home-desktop-viewport.png`, `home-mobile-viewport.png`, `products-desktop.png`, and `products-mobile-viewport.png`: the home main campaign no longer shows the rejected goldbar/silverbar mock campaign banners, `/products` hero/promo no longer uses the rejected campaign banner, and the public catalog remains consultation-first.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_7Xw9ZCHxVw7T1Z4SJgvPDDL1enb6` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2412 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`28 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.46 메인 배너 목업 이미지 제거 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm the final approved evergreen home banner direction later if a new KCG-owned real campaign image is preferred over the current store/consultation fallback set.
+
+## v0.2.45 - Product image cleanup and admin purity-rate controls
+
+- Date: `2026-05-14 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_6XtMGcSV1bSgNiXxCFvWXxx6oZPC` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: `/products` 고객 화면에서 실버바 상품·가이드·상세 노출을 별도 승인 전까지 숨기고, 금/은 혼합 배너와 가짜 목업처럼 보이던 골드바·실버바 이미지 경로를 active UI, fallback, mock/seed, admin 추천 목록, audit allowlist에서 제거했습니다. 골드바는 KCG 실물 골드바 사진 기반의 새 `20260514` 실사풍 파생 이미지로 상품 카드와 배너를 다시 맞췄고, 관리자 `/admin/prices`에는 24K 기준 18K/14K 매입 계수를 한 화면에서 수정·저장·미리보기할 수 있는 별도 패널을 추가했습니다.
+- Summary: Hides public silverbar product surfaces, replaces active product/banner references with KCG real-photo goldbar derivatives, adds source/audit guardrails against mock/silverbar assets, and exposes editable 18K/14K purity-rate controls without overwriting production DB values.
+- Changed:
+  - Added KCG real-photo goldbar derivative assets: `kcg-real-photo-goldbar-products-banner-20260514.jpg`, `kcg-real-photo-goldbar-price-banner-20260514.jpg`, `kcg-real-photo-goldbar-opening-banner-20260514.jpg`, `kcg-real-photo-goldbar-lineup-20260514.jpg`, five money-unit guide images, and product-card/detail images `kcg-real-photo-goldbar-product-1g-20260514.jpg`, `kcg-real-photo-goldbar-product-3-75g-20260514.jpg`, `kcg-real-photo-goldbar-product-10g-20260514.jpg`, `kcg-real-photo-goldbar-product-37-5g-20260514.jpg`, and `kcg-real-photo-goldbar-product-100g-20260514.jpg`.
+  - Filtered `silver_bar` out of the public catalog tabs/products and product detail routes while leaving admin data and 은 시세표 untouched.
+  - Updated home/social/product banner references, public product defaults, mock data, Supabase seed defaults, and admin product image provenance so forbidden mock/silverbar/gold-silver assets are no longer recommended or active.
+  - Changed default admin auto-price coefficients to 18K `0.75` and 14K `0.585`, and added an independent `/admin/prices` 계수 panel with live preview and separate save.
+  - Updated Playwright/source-audit guardrails so `/products`, product detail, admin image lists, and source defaults fail if forbidden mock/silverbar image paths are reintroduced.
+  - Recorded the work as `KCG-TODO-097`.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/products` hero/promo, goldbar product cards/detail images, goldbar 1/2/3/5/10돈 guide images, home price-lineup campaign visuals, social image, and `/admin/prices` 계수 설정 패널.
+  - 실제 사이트 화면은 안 바뀌는 것: 은 시세표, actual company posted price values, existing 운영 DB 저장값, search/noindex state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제, final product prices/공임/운영자료 확정.
+- Verification:
+  - Passed local checks: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site` (`28 passed`), `npm run screenshot:site`, `npm run screenshot:admin`, `npm audit --audit-level=moderate` (`0 vulnerabilities`), and full `npm run qa:site` (`2383 checks, 0 skipped`, `28 passed`, screenshot refresh, `0 vulnerabilities`).
+  - Manual screenshot inspection passed for `home-desktop-viewport.png`, `home-mobile-viewport.png`, `products-desktop.png`, `products-mobile-viewport.png`, `prices-mobile.png`, `admin-prices-manual-desktop.png`, `admin-prices-auto-desktop.png`, and `admin-products-desktop.png`: no public silverbar tab/card/guide/detail surfaced, forbidden mock/gold-silver/silverbar assets were absent, the new KCG real-photo goldbar derivatives rendered coherently on desktop/mobile, the Gold API domestic conversion table stayed removed, and the admin 18K/14K 계수 panel was visible with defaults `0.75` and `0.585`.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_6XtMGcSV1bSgNiXxCFvWXxx6oZPC` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2383 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`28 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.45 상품 이미지 정리와 관리자 계수 UI 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm if and when silverbar public product rows should be reintroduced with approved real photos. This pass intentionally hides customer-facing silverbar products/details until separate approval.
+
+## v0.2.44 - Public UI wrap and token stability polish
+
+- Date: `2026-05-14 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_AaWXm8Kjfb6LP8D7L7VS2rmrvNCG` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: 사이트를 실제 모바일/데스크톱 화면으로 다시 보면서 전화번호, 짧은 CTA, 상품 가이드 문구, 상담 도우미 버튼처럼 깨지면 신뢰감이 떨어지는 작은 텍스트들을 한 줄 토큰으로 안정화했습니다. `/products` 상단 문구와 1/2/3/5/10돈 안내 문구도 더 짧고 덜 어색하게 다듬었고, Playwright 회귀 테스트에 전화번호/CTA 토큰 줄바꿈 및 가로 overflow 검사를 추가했습니다.
+- Summary: Uses the installed KCG/frontend skills and rendered Playwright checks to stabilize public UI line wrapping for phone numbers, compact CTA labels, product-guide notes, and consultation buttons without changing prices, search posture, checkout behavior, or data-source boundaries.
+- Changed:
+  - Added shared public CSS utilities `kcg-number-token` and `kcg-action-token` for atomic number/action tokens.
+  - Hardened header, mobile contact bar, footer, home CTA, price lineup CTA, product list/detail CTA, service CTA, about/company contact rows, trade panels, and the inquiry assistant so phone numbers and short action labels do not split awkwardly.
+  - Shortened the `/products` title and money-unit guide notes so desktop and mobile cards read cleaner without looking like a generic mall or changing consultation-first behavior.
+  - Added a Playwright public-route regression that checks phone/action token line breaks and horizontal overflow across mobile and desktop widths.
+  - Updated `scripts/audit-site-fidelity.mjs` for the new `/products` title and traceability.
+  - Recorded the work as `KCG-TODO-096`.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: public header/footer/CTA/contact labels, `/products` heading, `/products` money-unit guide note wording, product/detail/service/about/company/trade/inquiry CTA wrapping behavior.
+  - 실제 사이트 화면은 안 바뀌는 것: company posted price values, product price formulas/공임, search/noindex state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims, product image assets.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_AaWXm8Kjfb6LP8D7L7VS2rmrvNCG`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제, final product prices/공임/운영자료 확정.
+- Verification:
+  - Passed local checks: `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site` (`28 passed`), `npm run screenshot:site`, `npm audit --audit-level=moderate` (`0 vulnerabilities`), and full `npm run qa:site` (`2449 checks, 0 skipped`, `28 passed`, `0 vulnerabilities`).
+  - Manual Playwright screenshot inspection on `http://localhost:3100` checked `/`, `/prices`, `/products`, `/services`, `/about`, `/company`, and `/announcements` at mobile/desktop widths; the pass found no horizontal overflow after the token changes and confirmed `/products` mobile/desktop heading/card wording is cleaner.
+  - Manual screenshot inspection passed for `home-mobile-viewport.png`, `products-mobile-viewport.png`, `products-desktop.png`, and `about-mobile.png`: mobile header phone CTA, mobile bottom CTA, product tabs/sort labels, product card CTA buttons, and footer contact phone numbers stay readable without awkward phone/action token splits.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_AaWXm8Kjfb6LP8D7L7VS2rmrvNCG` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2449 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`28 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.44 공개 UI 줄바꿈 안정화 전으로 되돌려줘`
+- Remaining User-only:
+  - None for this UI stability pass. Public search launch, final admin secret rotation, final product/pricing policy, and ownership transfer remain separate user-only/shared blockers.
+
+## v0.2.43 - Silverbar guide and campaign banner correction
+
+- Date: `2026-05-13 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_DyqikJGwWdfhAQBajodSoXNyy2fS` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: `/products`의 실버바 영역에도 1돈·2돈·3돈·5돈·10돈 상담 단위 이미지 가이드를 추가하고, 기존 실버바 100g·500g·1kg 상품 카드/상세 이미지를 금색 목업이나 반복 placeholder가 아니라 같은 무드의 KCG 실버바 front/back 상품컷으로 맞췄습니다. 홈 배너도 `한국센터금거래소 오픈 했습니다!` 포스터를 옆에 붙여놓은 느낌이 나지 않도록, 금·은 바 라인업이 한 화면 안에서 완성된 홍보 배너처럼 보이는 새 WebP 3종으로 교체했습니다.
+- Summary: Adds a silverbar 1/2/3/5/10돈 consultation-unit guide, applies silverbar-specific product images to the existing 100g/500g/1kg silverbar rows, and replaces the pasted-looking opening/banner carousel visuals with complete KCG 금·은 campaign compositions.
+- Changed:
+  - Added `public/campaign/kcg-gold-silver-premium-banner-20260513.webp`, `public/campaign/kcg-price-desk-gold-silver-banner-20260513.webp`, `public/campaign/kcg-opening-premium-banner-20260513.webp`, and `public/campaign/kcg-products-gold-silver-consult-banner-20260513.webp`.
+  - Added `public/products/kcg-silverbar-don-lineup-studio-v2-20260513.webp`, `public/products/kcg-silverbar-1don-studio-20260513.webp`, `public/products/kcg-silverbar-2don-studio-20260513.webp`, `public/products/kcg-silverbar-3don-studio-20260513.webp`, `public/products/kcg-silverbar-5don-studio-20260513.webp`, and `public/products/kcg-silverbar-10don-studio-20260513.webp`.
+  - Added `public/products/kcg-silverbar-frontback-100g-20260513.webp`, `public/products/kcg-silverbar-frontback-500g-20260513.webp`, and `public/products/kcg-silverbar-frontback-1kg-20260513.webp` for the existing public silverbar product rows.
+  - Updated the home carousel, social image, `/products` hero, product promo banner, product defaults, mock data, Supabase seed paths, and admin image provenance list.
+  - Updated Playwright/source-audit guardrails so the current home carousel cannot fall back to the old pasted-looking opening campaign image and `/products` must keep silverbar-specific guide/product assets.
+  - Added `docs/brand/kcg-silverbar-banner-assets-2026-05-13.md` and recorded the work as `KCG-TODO-095`.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: home carousel first/second/third campaign images, social preview image, `/products` hero/promo visual, `/products` silverbar 1/2/3/5/10돈 guide, and silverbar 100g/500g/1kg product-card/detail fallback imagery.
+  - 실제 사이트 화면은 안 바뀌는 것: company posted price values, product price formulas/공임, search/noindex state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_DyqikJGwWdfhAQBajodSoXNyy2fS`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제, final product prices/공임/운영자료 확정.
+- Verification:
+  - Passed local checks: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2359 checks, 1 skipped` before live URL after the wording guard update), `npm run build`, `npm run test:site` (`27 passed`), `npm audit --audit-level=moderate` (`0 vulnerabilities`), `npm run screenshot:site`, and full `npm run qa:site` (`2431 checks, 0 skipped`, `27 passed`, `0 vulnerabilities`).
+  - Manual screenshot inspection passed for `home-desktop-viewport.png`, `home-mobile-viewport.png`, `products-desktop.png`, and `products-mobile.png`: the home/banner visuals read as complete KCG 금·은 campaign images, `/products` shows matching goldbar and silverbar 1/2/3/5/10돈 guide imagery, and the existing silverbar 100g/500g/1kg cards use silver-specific front/back product images.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_DyqikJGwWdfhAQBajodSoXNyy2fS` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2431 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`27 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.43 실버바 가이드와 홈 배너 교정 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm whether KCG wants actual sellable silverbar rows for 1돈·2돈·3돈·5돈·10돈. This pass treats those weights as consultation-unit guide visuals only, while the existing public silverbar product rows remain 100g, 500g, and 1kg.
+
+## v0.2.42 - KCG goldbar product-shot correction
+
+- Date: `2026-05-13 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_FV6GmcWZsqtq1WE61guWEuPLwut6` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: `/products`의 고객 화면에서 `상담용 대표 이미지` 배지와 `사이트용으로 최적화한 파생 이미지` 안내 문구를 제거하고, 1g·3.75g·10g·37.5g·100g 골드바 상품 카드/상세 이미지를 모두 KCG 실물 골드바 앞면/뒷면 느낌의 흰 배경 상품컷으로 다시 맞췄습니다. 하단 상품 카드가 예전 AI 목업이나 아무 대표 이미지처럼 보이지 않도록, 각 상품명 중량과 같은 새 front/back WebP를 사용합니다.
+- Summary: Replaces active goldbar product-card/detail imagery with consistent KCG real-derived front/back product-shot assets and removes public representative-image/derivative-image labels from `/products` customer surfaces.
+- Changed:
+  - Added `public/products/kcg-real-goldbar-frontback-1g-20260513.webp`, `public/products/kcg-real-goldbar-frontback-3-75g-20260513.webp`, `public/products/kcg-real-goldbar-frontback-10g-20260513.webp`, `public/products/kcg-real-goldbar-frontback-37-5g-20260513.webp`, and `public/products/kcg-real-goldbar-frontback-100g-20260513.webp`.
+  - Updated product image defaults, mock data, Supabase seed data, and admin provenance so the five active goldbar rows use the matching front/back product shots.
+  - Removed customer-facing `상담용 대표 이미지` badges and the long derivative-image notice from the `/products` guide, product cards, and product-detail hero while keeping price, stock, supply, and final 상담 boundaries in structured product/price copy.
+  - Kept old AI exact-weight assets as inactive/reference or remappable placeholder paths only; they are no longer active public product-card/detail rows.
+  - Updated Playwright and source audit guardrails so `/products` and product detail cannot reintroduce the removed representative labels, derivative notice, or old AI product image paths.
+  - `KCG-TODO-094` records this goldbar product-shot correction.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/products` goldbar 상품 카드, `/products/[slug]` goldbar 상품 상세 hero image, and the customer-facing removal of representative-image/derivative-image labels.
+  - 실제 사이트 화면은 안 바뀌는 것: company posted price values, product price formulas/공임, search/noindex state, admin secrets, DNS, payment/trading behavior, actual stock/certificate/legal claims.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_FV6GmcWZsqtq1WE61guWEuPLwut6`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제, final product prices/공임/운영자료 확정.
+- Verification:
+  - Passed local checks: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2187 checks, 1 skipped` before live URL), `npm run build`, `npm run test:site` (`27 passed`), `npm audit --audit-level=moderate` (`0 vulnerabilities`), `npm run screenshot:site`, and full `npm run qa:site` (`2259 checks, 0 skipped`, `27 passed`, `0 vulnerabilities`).
+  - Manual screenshot inspection passed for `/products` desktop/mobile and `/products/investment-gold-bar-consulting` desktop/mobile: the active goldbar product cards and detail hero use the matching front/back product-shot assets, and the public `상담용 대표 이미지` / `사이트용으로 최적화한 파생 이미지` wording is not visible.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_FV6GmcWZsqtq1WE61guWEuPLwut6` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2259 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`27 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.42 골드바 front/back 상품컷 교정 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm whether these front/back product-shot derivatives can remain the final customer-facing goldbar product images for search launch, or whether KCG will later supply final packshot photography, packaging, and certificate images.
+
+## v0.2.41 - Gold API reference conversion cleanup
+
+- Date: `2026-05-13 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_HqMeWAJmg5RZsvadJMxq1Qd6Jv8o` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, or final product price/product data.
+- 사람이 읽는 요약: `/prices`의 `국제 현재가(출처: Gold API · 참고용)` 영역에서 고객이 KCG 고시 시세보다 저렴한 거래가로 오해할 수 있던 `국내 환산` 3.75g 원화 표를 제거했습니다. 대신 국제 현재가와 환율은 시장 흐름 참고용이고 실제 원화 거래 금액은 KCG 회사 고시 시세표와 상담 기준이라는 안내 패널로 바꿨습니다.
+- Summary: Removes the public domestic 3.75g KRW conversion table from the market-reference dashboard and replaces it with a source/boundary panel that keeps Gold API data as context only.
+- Changed:
+  - Replaced the public `MarketDashboard` domestic conversion table with a `참고 데이터 기준` panel that emphasizes `고시 시세 우선`.
+  - Kept international spot prices and USD/KRW attribution visible, but removed customer-facing per-gram and 3.75g KRW reference amounts from that panel.
+  - Updated `/prices` metadata and the `시세 이용 기준` card copy so automatic market data is described as flow/context, not a transaction price.
+  - Changed the homepage price-summary USD/KRW caption from `국내 환산 기준` to `시장 참고 환율`.
+  - Updated market brief fallback copy, Playwright checks, and source audit guardrails so the public dashboard cannot reintroduce `국내 환산`, `매매기준가`, or `3.75g` inside the Gold API reference panel.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/prices` and home market-reference surfaces no longer show a domestic 3.75g KRW conversion table; the right-side market panel now explains that KCG posted prices are the transaction basis.
+  - 실제 사이트 화면은 안 바뀌는 것: company posted price values, admin automatic-price calculation internals, product prices/공임, search/noindex state, admin secrets, DNS, payment/trading behavior, external price provider policy.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_HqMeWAJmg5RZsvadJMxq1Qd6Jv8o`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제, final product prices/공임/운영자료 확정, KRX production data/API key.
+- Verification:
+  - Passed local checks: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2099 checks, 1 skipped` before live URL), `npm run build`, `npm run test:site` (`27 passed`), `npm audit --audit-level=moderate` (`0 vulnerabilities`), and full `npm run qa:site` (`2171 checks, 0 skipped`, `27 passed`).
+  - Manual screenshot inspection passed for `/prices` mobile and desktop market-reference captures: the public Gold API panel no longer shows `국내 환산`, `3.75g` KRW totals, or `매매기준가`, and now shows `참고 데이터 기준` / `고시 시세 우선`.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_HqMeWAJmg5RZsvadJMxq1Qd6Jv8o` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2171 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`27 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.41 Gold API 국내 환산 표 제거 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm the final public wording for market-reference disclaimers before search/public launch.
+
+## v0.2.40 - Admin 24K purity helper and price-save performance
+
+- Date: `2026-05-13 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_AhAzHxEvqeM7qJTcvvCC8nYSM4Lm` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This is a noindex-protected review deployment; it does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, or final product price/product data.
+- 사람이 읽는 요약: `/admin/prices` 직접 입력 표에서 24K `내가 팔 때` 값만 넣으면 기존 자동시세 설정의 18K/14K 산식으로 18K와 14K `내가 팔 때` 값을 즉시 채우고, 저장 시 서버에서도 같은 산식을 다시 적용하게 했습니다. 느린 버튼 반응의 주요 원인이던 Supabase price history baseline과 시세 저장의 항목별 순차 요청도 batch/parallel 처리로 줄였습니다.
+- Summary: Adds a compact 24K-based manual purity helper for 18K/14K buy prices and optimizes admin price baseline/update writes to reduce Supabase round trips after button clicks.
+- Changed:
+  - Added shared `src/lib/price-formulas.ts` for price rounding and 24K buy-based 18K/14K calculations.
+  - Updated `/admin/prices` manual editor with a small `24K 기준 계산` panel, visible formula settings, an ON/OFF checkbox, and read-only derived 18K/14K inputs while auto derivation is enabled.
+  - Updated `updatePricesAction` so `goldPurityAuto` submissions fetch current auto settings, derive 18K/14K server-side, and redirect with `saved-derived`.
+  - Optimized `SupabaseRepository.ensurePriceHistoryBaseline` to query existing price-history categories once and upsert daily snapshots in a batch.
+  - Optimized `SupabaseRepository.updatePrices` to run price row updates in parallel and insert history/snapshots in batch for changed rows.
+  - Added Playwright/source audit checks so the manual purity helper, server derivation, and batched repository path stay guarded.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/admin/prices` 직접 입력 화면의 24K 기준 18K/14K 자동계산 helper와 저장 성공 메시지.
+  - 실제 사이트 화면은 안 바뀌는 것: public company posted price values unless an admin actually saves new prices, product prices/공임, search/noindex state, admin secrets, DNS, payment/trading behavior, external price provider policy.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_AhAzHxEvqeM7qJTcvvCC8nYSM4Lm`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제, final product prices/공임/운영자료 확정, KRX production data/API key.
+- Verification:
+  - Passed local `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm audit --audit-level=moderate`, `npm run screenshot:admin`, and full `npm run qa:site`.
+  - Local/source/rendered route audit passed `2167 checks, 0 skipped`; Playwright passed `27 passed`; `npm audit --audit-level=moderate` found `0 vulnerabilities`.
+  - Manually inspected refreshed admin screenshots: `admin-prices-manual-desktop.png` shows the compact 24K helper and read-only derived 18K/14K inputs, and `admin-prices-auto-mobile.png` keeps the existing mobile automatic-price settings readable.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_AhAzHxEvqeM7qJTcvvCC8nYSM4Lm` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2167 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`27 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.40 관리자 24K 자동계산/시세 저장 최적화 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm the 18K/14K formula rates in `/admin/prices` settings are the current company policy before using the helper for final public prices.
+
+## v0.2.39 - KCG studio goldbar product/banner images
+
+- Date: `2026-05-13 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_BGYM4jePJZG4rXa3qHXZeDUv8xQE` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This is a noindex-protected review deployment; it does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: `/products`의 1돈·2돈·3돈·5돈·10돈 이미지가 서로 다른 목업처럼 보이지 않도록, KCG 실물 5종 라인업 원본 `IMG_4282.PNG`와 `IMG_4283.PNG`에서 같은 조명·배경·크롭의 스튜디오형 WebP 상품컷을 만들고 각 돈 단위와 3.75g/37.5g 상품에 맞게 적용했습니다. 홈/상품 홍보 배너도 단순 사진 붙이기가 아니라 KCG 로고, 돈 단위 라인업, 따뜻한 제품 무대를 가진 홍보 배너로 다시 만들었습니다.
+- Summary: Restages the 1/2/3/5/10돈 product-guide images and KCG goldbar promo banner from clean real KCG five-bar lineup sources so the product catalog reads like one consistent gold-exchange product shoot instead of mixed mockups.
+- Changed:
+  - Added `public/campaign/kcg-real-goldbar-promo-banner-20260513.webp`.
+  - Added `public/products/kcg-real-goldbar-don-lineup-studio-v2-20260513.webp`, `public/products/kcg-real-goldbar-1don-studio-20260513.webp`, `public/products/kcg-real-goldbar-2don-studio-20260513.webp`, `public/products/kcg-real-goldbar-3don-studio-20260513.webp`, `public/products/kcg-real-goldbar-5don-studio-20260513.webp`, and `public/products/kcg-real-goldbar-10don-studio-20260513.webp`.
+  - Updated `/products` hero, the 1/2/3/5/10돈 guide, 3.75g/1돈 and 37.5g/10돈 product-card/detail mapping, home/social/product promo references, mock data, Supabase seed paths, admin image provenance, Playwright checks, and source audit checks.
+  - Updated image provenance docs so the 2026-05-13 studio set is the current KCG money-unit asset set and the older 2026-05-11 derivatives remain rollback/reference.
+  - `KCG-TODO-091` records this studio goldbar product/banner image correction.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: 홈 첫 홍보 배너, `/products` hero, `/products` 1/2/3/5/10돈 guide images, 3.75g/1돈 product-card/detail image, 37.5g/10돈 product-card/detail image, social preview image, and product promo image surfaces.
+  - 실제 사이트 화면은 안 바뀌는 것: company posted price values, product prices/공임, search/noindex state, admin secrets, DNS, payment/trading behavior, actual stock/certificate claims.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_BGYM4jePJZG4rXa3qHXZeDUv8xQE`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제, final product prices/공임/운영자료 확정.
+- Verification:
+  - Passed local `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm audit --audit-level=moderate`, and full `npm run qa:site`.
+  - Local/source/rendered route audit passed `2151 checks, 0 skipped`; Playwright passed `27 passed`; `npm audit --audit-level=moderate` found `0 vulnerabilities`.
+  - Manually inspected refreshed local/live screenshots: `home-mobile-viewport.png`, `home-desktop-viewport.png`, `products-mobile-viewport.png`, `products-mobile.png`, and `products-desktop.png`. The home banner, `/products` hero, 1/2/3/5/10돈 guide, and 3.75g/37.5g product cards read as one clean KCG studio goldbar set; the guide thumbnails were tightened so they do not read as tiny pasted mockups.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_BGYM4jePJZG4rXa3qHXZeDUv8xQE` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr`, `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2151 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`27 passed` after one transient post-deploy loading retry), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.39 KCG 골드바 스튜디오형 상품/배너 이미지 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm final product proof policy, package rules, stock/certificate wording, and final product prices/공임 before search/public launch.
+
+## v0.2.38 - Product catalog merch polish
+
+- Date: `2026-05-12 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_6R3JVecS6XKe7rJZ437nwBMNdige` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This is a noindex-protected review deployment; it does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: `/products` 상품 목록과 상품 상세가 단순 표/카드처럼 보이지 않도록, 골드바 상품 이미지를 더 크게 보여주는 쇼케이스 무대, 중량·순도·상담 상태 칩, 더 강한 참고가 표시, 전화 상담 CTA를 넣어 쇼핑몰 상품 화면에 가까운 검토 흐름으로 다듬었습니다.
+- Summary: Reworks the public product catalog and product detail surfaces into a more merchandise-led product showcase while preserving KCG's consultation-first boundary and blocking checkout/cart/payment behavior.
+- Changed:
+  - Updated `/products` product cards with larger packshot image staging, representative-image/status badges, product spec chips, stronger current-posted-price reference hierarchy, and `전화 상담` plus detail CTAs.
+  - Updated `/products/[slug]` detail hero with packshot-oriented image treatment, product info chips, stronger price panel, and `전화 상담` CTA wording.
+  - Added Playwright checks that product cards expose the new consultation CTA and `999.9 FINE GOLD` product tag while still blocking checkout/cart/payment wording.
+  - `KCG-TODO-090` records this product catalog merch polish pass.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/products` product-card layout and `/products/[slug]` detail hero/price/CTA presentation.
+  - 실제 사이트 화면은 안 바뀌는 것: product image source mapping, company posted price values, product prices/공임, search/noindex state, admin secrets, DNS, payment/trading behavior, actual stock/certificate claims.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_6R3JVecS6XKe7rJZ437nwBMNdige`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed local `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm audit --audit-level=moderate`, and full `npm run qa:site`.
+  - Local/source/rendered route audit passed `2053 checks, 0 skipped`; Playwright passed `27 passed`; `npm audit --audit-level=moderate` found `0 vulnerabilities`.
+  - Manually inspected refreshed local/live `/products` screenshots: `products-mobile-viewport.png`, `products-mobile.png`, and `products-desktop.png`; cards read as product showcase cards with larger goldbar imagery, spec chips, stronger reference price panels, and `전화 상담` CTAs.
+  - Manually captured and inspected `/products/kcg-gold-bar-1g` detail screenshots: `product-detail-1g-mobile-v0238.png`, `product-detail-1g-desktop-v0238.png`, `products-live-detail-1g-mobile-v0238.png`, and `products-live-detail-1g-desktop-v0238.png`; detail pages show `PRODUCT INFO`, weight/purity chips, stronger price panel, and no cart/checkout.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_6R3JVecS6XKe7rJZ437nwBMNdige` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2053 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`27 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.38 상품 쇼케이스형 카탈로그 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm final product photos, package rules, stock/certificate wording, and final product prices/공임 before search/public launch.
+
+## v0.2.37 - Goldbar weight-matched product images
+
+- Date: `2026-05-12 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_8QFhXDWnWdn5W4Dp6fHhyoUG8vZL` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This is a noindex-protected review deployment; it does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: `/products` 상품 카드에서 1g/10g/100g 골드바가 라인업·홍보 배너 같은 다른 중량 이미지를 빌려 쓰지 않도록, 상품명과 같은 중량이 보이는 KCG 스타일 상담용 대표 이미지를 새로 만들고 각 상품에 고정했습니다.
+- Summary: Adds exact-weight generated representative images for the 1g, 10g, and 100g goldbar product rows, keeps exact real-derived 1돈/10돈 images for 3.75g/37.5g, and hardens tests/audit/docs so product-card/detail images match the listed product weight.
+- Changed:
+  - Added `public/products/kcg-ai-goldbar-1g-representative-20260512.webp`, `public/products/kcg-ai-goldbar-10g-representative-20260512.webp`, and `public/products/kcg-ai-goldbar-100g-representative-20260512.webp`.
+  - Updated `kcg-gold-bar-1g`, `kcg-gold-bar-10g`, and `kcg-gold-bar-100g` default/mock/seed image paths to those exact-weight representative assets.
+  - Kept `investment-gold-bar-consulting` on `public/products/kcg-real-goldbar-1don-20260511.webp` and `kcg-gold-bar-37-5g` on `public/products/kcg-real-goldbar-10don-20260511.webp`.
+  - Updated admin image provenance, Playwright checks, source audit checks, and image provenance docs.
+  - Updated `next` and `eslint-config-next` from `16.2.4` to `16.2.6` after the required `npm audit --audit-level=moderate` gate reported the patched version as the vulnerability fix.
+  - `KCG-TODO-089` records this product-card weight-matching correction.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/products` 및 product detail의 1g/10g/100g 골드바 대표 이미지.
+  - 실제 사이트 화면은 안 바뀌는 것: 회사 고시 시세 값, product prices/공임, search/noindex state, admin secrets, DNS, payment/trading behavior, actual stock/certificate claims.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_8QFhXDWnWdn5W4Dp6fHhyoUG8vZL`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed local `npm run lint`, `npm run typecheck`, `npm run audit:site`, `npm run build`, `npm run test:site`, `npm run screenshot:site`, `npm audit --audit-level=moderate`, and full `npm run qa:site`.
+  - Local/source/rendered route audit passed `2041 checks, 0 skipped`; Playwright passed `27 passed`; `npm audit --audit-level=moderate` found `0 vulnerabilities`.
+  - Manually inspected refreshed local/live `/products` screenshots: `products-desktop.png`, `products-mobile-viewport.png`, and `products-mobile.png`; the 1g, 3.75g/1돈, 10g, 37.5g/10돈, and 100g goldbar cards show matching weight imagery.
+  - Deployed with `npx vercel deploy --prod --yes`; Vercel reported deployment `dpl_8QFhXDWnWdn5W4Dp6fHhyoUG8vZL` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`2041 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`27 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.37 골드바 중량별 상품 이미지 매핑 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm final real product photos for 1g, 10g, and 100g later if KCG wants real-photo proof instead of generated representative images.
+  - Confirm final product prices/공임/운영자료 before search/public launch.
+
+## v0.2.36 - No-hand core visual correction
+
+- Date: `2026-05-11 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_5mHHbEGbqDpzPH5CQ8prjSzQ3YmV` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This is a noindex-protected review deployment; it does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: 손바닥 위 골드바 컷은 KCG 사이트의 홈/회사/상품 대표 이미지 톤에 맞지 않아 현재 핵심 화면에서 제거하고, KCG 로고·골드바 라인업이 보이는 가격 데스크 이미지와 손 없는 상품 트레이 이미지로 교체했습니다.
+- Summary: Removes the hand-held/palm goldbar photo from active home, company, and 1g product representative surfaces, replaces it with product-first KCG visuals, and adds source/test guardrails so the palm image does not re-enter core UI by accident.
+- Changed:
+  - Replaced the second home carousel visual with `public/campaign/kcg-real-goldbar-price-desk-20260511.webp`.
+  - Replaced `/company` hero with `public/campaign/kcg-real-goldbar-price-desk-20260511.webp`.
+  - Replaced the `kcg-gold-bar-1g` default/mock/seed image with `public/products/kcg-ai-goldbar-tray-20260511.webp`.
+  - Reclassified `public/campaign/kcg-real-goldbar-hand-consultation-20260511-v2.webp` as inactive/reference for current core UI instead of an active representative image.
+  - Updated Playwright/source audit expectations and image provenance docs.
+  - `KCG-TODO-088` records this no-hand core visual correction.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: 홈 두 번째 carousel 이미지, `/company` hero 이미지, 1g 골드바 product representative image.
+  - 실제 사이트 화면은 안 바뀌는 것: 회사 고시 시세 값, product prices/공임, search/noindex state, admin secrets, DNS, payment/trading behavior, actual stock/certificate claims.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_5mHHbEGbqDpzPH5CQ8prjSzQ3YmV`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed local `npm run qa:site`, including lint, typecheck, source audit, build, rendered audit, Playwright, public screenshot refresh, and npm audit.
+  - Local/source/rendered route audit passed `1988 checks, 0 skipped`; Playwright passed `27 passed`; `npm audit --audit-level=moderate` found `0 vulnerabilities`.
+  - Manually inspected refreshed local and live screenshots: `home-mobile-viewport.png`, `home-desktop-viewport.png`, `products-desktop.png`, and `company-mobile.png`; active home/company/product representative surfaces no longer show the hand-held/palm goldbar photo.
+  - Deployed with `npx vercel deploy --prod --yes`; `npx vercel inspect https://kcgold.co.kr` reported deployment `dpl_5mHHbEGbqDpzPH5CQ8prjSzQ3YmV` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`1988 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`27 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.36 손바닥 골드바 핵심 이미지 제거 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm final exact 1g, 10g, and 100g product photos if KCG wants exact-weight images rather than representative product-first visuals.
+  - Confirm final product prices/공임/운영자료 before search/public launch.
+
+## v0.2.35 - Real KCG goldbar product/banner rework
+
+- Date: `2026-05-11 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_6NsFM2LU2oPigXP25zD9VXxdPuik` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This is a noindex-protected review deployment; it does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: junyoung이 제공한 사진이 실제 KCG 실물 골드바라는 점을 반영해, 이전 AI 대표 골드바 이미지를 현재 적용 기준에서 내리고 실물 KCG 골드바 파생 이미지로 홈 배너, 손에 든 상담 컷, `/products` hero, 1/2/3/5/10돈 가이드 이미지를 다시 구성했습니다.
+- Summary: Replaces the current AI goldbar product-guide surfaces with optimized real KCG physical-goldbar derivatives, adds per-money-unit images for the 1/2/3/5/10돈 guide, and keeps raw KakaoTalk/source filenames out of public paths.
+- Changed:
+  - Added `public/campaign/kcg-real-goldbar-promo-banner-20260511-v2.webp` and `public/campaign/kcg-real-goldbar-hand-consultation-20260511-v2.webp`.
+  - Added `public/products/kcg-real-goldbar-don-lineup-20260511-v2.webp`, `public/products/kcg-real-goldbar-1don-20260511.webp`, `public/products/kcg-real-goldbar-2don-20260511.webp`, `public/products/kcg-real-goldbar-3don-20260511.webp`, `public/products/kcg-real-goldbar-5don-20260511.webp`, and `public/products/kcg-real-goldbar-10don-20260511.webp`.
+  - Updated home campaign slides, social metadata, `/company`, `/products` hero, product default image mapping, mock product data, Supabase seed paths, and admin product-image provenance.
+  - Updated the `/products` 1/2/3/5/10돈 guide so each money unit has its own KCG real-goldbar derivative image and HTML-rendered grams/caveat.
+  - Added `docs/brand/kcg-real-goldbar-product-assets-2026-05-11.md` and refreshed image intake/replacement provenance.
+  - `KCG-TODO-087` records this real KCG goldbar product/banner rework.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: 홈 첫 배너/두 번째 상담 이미지, `/products` hero, `/products` 돈 단위 가이드, 골드바 product-card/detail representative images, `/company` hero image, social preview image.
+  - 실제 사이트 화면은 안 바뀌는 것: 회사 고시 시세 값, actual stock/certificate claims, final product prices/공임, search/noindex state, admin secrets, DNS, payment/trading behavior.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_6NsFM2LU2oPigXP25zD9VXxdPuik`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed local `npm run qa:site`, including lint, typecheck, source audit, build, rendered audit, Playwright, public screenshot refresh, and npm audit.
+  - Local/source/rendered route audit passed `1958 checks, 0 skipped`; Playwright passed `27 passed`; `npm audit --audit-level=moderate` found `0 vulnerabilities`.
+  - Manually inspected `home-mobile-viewport.png`, `home-desktop-viewport.png`, `products-mobile-viewport.png`, and `products-desktop.png`; the real KCG goldbar banner/product-guide images render on desktop and mobile, and the mobile bottom `상담` CTA contrast is white/readable.
+  - Deployed with `npx vercel --prod --yes`; `npx vercel inspect https://kcgold.co.kr` reported deployment `dpl_6NsFM2LU2oPigXP25zD9VXxdPuik` ready and aliased to the review domains.
+  - Passed live checks on `https://kcgold.co.kr`: `npm run check:release-state`, `npm run check:external -- --strict-domain`, `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`1958 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`27 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+  - During live QA, immediate post-load clicks exposed a hydration timing gap for the TradingView disclosure and mobile inquiry CTA, plus a global anchor color cascade issue on the mobile `상담` link. Fixed with hydration-ready guards, a hash fallback, and an explicit readable link color, then reran local and live QA.
+- Rollback Hint: `v0.2.35 실제 KCG 골드바 상품/배너 재작업 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm whether the 1g, 10g, and 100g rows should get exact matching product photos later; matching exact public photos were not supplied in this pass.
+  - Confirm final product prices/공임/운영자료 before search/public launch.
+
+## v0.2.34 - Goldbar product image guide
+
+- Date: `2026-05-11 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_2rbjgeFCxN3VxnjU8SQQ3RFfixMC` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This is a noindex-protected review deployment; it does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: 사람 눈으로 `/products` 이미지를 다시 보니 기존 실물 파생 골드바 이미지가 상품별 실제 중량과 다른 박힌 글자를 포함할 수 있어, 골드바 상품 카드는 텍스트 없는 AI 대표 이미지로 바꾸고 1/2/3/5/10돈 상담 가이드를 추가했습니다.
+- Summary: Adds text-free AI-generated KCG-style goldbar representative images, moves product-card goldbar imagery away from baked weight text, and adds a DOM-labeled 1/2/3/5/10돈 consultation guide.
+- Changed:
+  - Added `public/products/kcg-ai-goldbar-don-lineup-20260511.webp`, `public/products/kcg-ai-goldbar-hand-consultation-20260511.webp`, `public/products/kcg-ai-goldbar-tray-20260511.webp`, and `public/products/kcg-ai-goldbar-large-inquiry-20260511.webp`.
+  - Preserved generated originals outside the repo under `C:\Users\junyo\Documents\File-Hub\80_보관\사진_영상\Images\AI generated\KCG\2026-05-11-goldbar-product-guide`.
+  - Changed `/products` hero to the text-free 돈 단위 lineup image.
+  - Added a `/products` goldbar guide for `1돈=3.75g`, `2돈=7.5g`, `3돈=11.25g`, `5돈=18.75g`, and `10돈=37.5g`.
+  - Changed goldbar product-card/default image mappings so `1g`, `3.75g`, `10g`, `37.5g`, and `100g` no longer rely on real-derived images with baked weight text.
+  - Reduced repeated `/products` card caveat wording from `상담 참고가입니다...` to `참고가입니다...` after live Supabase data made the consultation/phone repetition guard fail.
+  - Updated mock product seed paths, public presenter fallback/remapping, admin product image provenance, Playwright checks, source audit checks, and image provenance docs.
+  - Added `docs/brand/kcg-ai-goldbar-product-assets-2026-05-11.md`.
+  - `KCG-TODO-086` records this human-eye product-image guide pass.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/products` hero image, `/products` goldbar 돈 단위 guide, goldbar product-card/detail representative images.
+  - 실제 사이트 화면은 안 바뀌는 것: 회사 고시 시세 값, actual stock/certificate claims, final product prices/공임, search/noindex state, admin secrets, DNS, payment/trading behavior.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_2rbjgeFCxN3VxnjU8SQQ3RFfixMC`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed local `npm run qa:site`: lint, typecheck, source audit, build, rendered audit, Playwright, public screenshot refresh, and `npm audit --audit-level=moderate`. Rendered/source route audit passed `1846 checks, 0 skipped`, Playwright passed `27 passed`, and npm audit found `0 vulnerabilities`.
+  - Manually inspected refreshed screenshots: `home-mobile-viewport.png`, `home-desktop-viewport.png`, `products-mobile-viewport.png`, `products-mobile.png`, and `products-desktop.png`.
+  - Deployed with `npx vercel deploy --prod --yes`; `npx vercel inspect kcg-confirm-preview-p68q94pas-junyoung8753-2361s-projects.vercel.app` reports deployment `dpl_2rbjgeFCxN3VxnjU8SQQ3RFfixMC` ready and aliased.
+  - Passed live `npm run check:release-state`, live `npm run check:external -- --strict-domain`, live `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` with `1846 checks, 0 skipped`, live `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` with `27 passed`, and live `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Rollback Hint: `v0.2.34 골드바 상품 이미지 가이드 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm final product image use if KCG wants any generated image to be treated as more than `상담용 대표 이미지`.
+  - Confirm final product prices/공임/운영자료 before search/public launch.
+
+## v0.2.33 - DeepQA launch hardening
+
+- Date: `2026-05-11 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_6gnD1Cv7DHuL4AqcGEfgQ8DAt7ya` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This is a noindex-protected review deployment; it does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: 전문가 deepQA에서 나온 P0/P1을 반영해 관리자 mutation 권한 검증, 자동시세 OFF kill switch, 상품 목록 참고가 caveat, 공개 검색 전 user-only blocker 노출, `/about` 모바일 지도 CTA, `/admin/login` 첫 화면 집중도를 개선했습니다. 10,000점 deepQA 점수표도 최신 기준으로 기록했습니다.
+- Summary: Adds admin action authorization, makes automatic-price OFF a real kill switch, labels product-card reference prices more safely, exposes user-only launch blockers, verifies rendered noindex meta in audit, improves mobile location/admin-login first tasks, and records the deepQA scorecard.
+- Changed:
+  - Added `src/lib/auth/admin-action.ts` and required it from mutating price, product, and announcement Server Actions.
+  - Changed `src/lib/price-auto-runner.ts` so stale manual price state no longer turns automatic posting back on when automatic pricing is OFF.
+  - Updated `/admin/prices` wording so stale registration is a warning, not an automatic re-enable path.
+  - Updated `/products` sort labels and product cards so exact-looking reference prices are labeled as consultation reference values.
+  - Updated `/admin/launch` and `src/lib/launch-readiness.ts` to show final product price/fee confirmation, image final-use approval, final admin secret rotation, and ownership-transfer decision as user-only launch blockers.
+  - Updated `middleware.ts` and `/admin` layout so `/admin/login` renders without the admin shell before authentication.
+  - Updated `/about` mobile first viewport with map/phone actions.
+  - Updated home/social image alt wording to keep KCG-derived gold-bar images representative, not final product proof.
+  - Added rendered robots-meta checks to `npm run audit:site` when `SITE_AUDIT_URL` is set.
+  - Added `docs/setup/QA_DEEPQA_2026-05-11.md` and refreshed `docs/quality/kcg-10000-point-qa-scorecard.md`.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: `/products` 참고가 문구/정렬 라벨, `/about` 모바일 지도/전화 CTA, `/admin/login` 비로그인 화면, `/admin/launch` user-only blocker, `/admin/prices` 자동시세 OFF 문구, 이미지 alt/social 문구.
+  - 실제 사이트 화면은 안 바뀌는 것: 회사 고시 시세 값, actual stock/certificate claims, final product prices/공임, search/noindex state, admin secrets, DNS, payment/trading behavior, KRX production data.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_6gnD1Cv7DHuL4AqcGEfgQ8DAt7ya`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed final local launch-candidate gate: `npm run qa:site`, including lint, typecheck, source audit, build, rendered audit, Playwright, public screenshots, and npm audit.
+  - `npm run qa:site` passed with rendered audit `1792 checks, 0 skipped`, Playwright `27 passed`, screenshot refresh, and npm audit `0 vulnerabilities`.
+  - Passed admin evidence refresh: `npm run screenshot:admin`; it now also captures `admin-login-mobile.png` and fails if the admin shell appears before login.
+  - Manually inspected refreshed screenshots: `home-mobile-viewport.png`, `prices-mobile-viewport.png`, `products-mobile-viewport.png`, `about-mobile.png`, `admin-login-mobile.png`, `admin-launch-mobile.png`, and `admin-prices-auto-mobile.png`.
+  - Deploy verification passed: `npx vercel whoami` returned `junyoung8753-2361`, `npx vercel inspect kcg-confirm-preview-dmk572qeu-junyoung8753-2361s-projects.vercel.app` reported deployment `dpl_6gnD1Cv7DHuL4AqcGEfgQ8DAt7ya` ready and aliased, `npm run check:release-state` passed with `indexing=disabled-forced-noindex`, and `npm run check:external -- --strict-domain` passed.
+  - Live checks passed on `https://kcgold.co.kr`: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`1792 checks, 0 skipped`), `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`27 passed`), and `SITE_AUDIT_URL=https://kcgold.co.kr npm run screenshot:site`.
+- Score:
+  - Noindex-protected launch-candidate score after fixes: `9648 / 10000`.
+  - Public search launch score today with user-only blockers still pending: `8848 / 10000`.
+- Rollback Hint: `v0.2.33 deepQA hardening 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm final product prices/공임/운영자료 and image final-use classification.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
+## v0.2.32 - Real KCG gold-bar image application
+
+- Date: `2026-05-11 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_GJRgjkZp7zfUhhstw7oq8uzHn5Tr` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app`. This is a noindex-protected review deployment; it does not approve search/noindex release, secret/env changes, DNS changes, payment, checkout/cart, live trading, KRX production data, final stock/certificate claims, or final product price/product data.
+- 사람이 읽는 요약: 타 금거래소 6곳의 이미지 사용 방식을 확인한 뒤, KCG 실제 로고/골드바 원본과 새 한국 상담 손동작 이미지를 바탕으로 홈 배너, social image, `/products` hero/promo, 골드바 상품 이미지, 회사소개 상담 이미지를 KCG에 맞게 교체했습니다. 원본 KakaoTalk 파일은 public에 그대로 넣지 않고 최적화 WebP 파생본만 사용했습니다.
+- Summary: Replaces the generated gold-bar-first public surfaces with real KCG-derived WebP assets, adds a no-face consultation-hands image for human context, records the competitor benchmark/provenance, and keeps all images representative rather than price, stock, certificate, or final inventory proof.
+- Changed:
+  - Added `public/campaign/kcg-real-goldbar-price-desk-20260511.webp`, `public/campaign/kcg-korean-consultation-hands-20260511.webp`, and `public/campaign/kcg-real-opening-campaign-20260511.webp`.
+  - Added `public/products/kcg-real-goldbar-lineup-20260511.webp`, `public/products/kcg-real-goldbar-detail-20260511.webp`, and `public/products/kcg-real-goldbar-single-20260511.webp`.
+  - `/` home carousel now starts with the real KCG-derived gold-bar/logo banner, uses the new Korean consultation-hands slide, and includes a KCG opening campaign derivative from `KakaoTalk_20260508_164514053.jpg`.
+  - `src/app/layout.tsx` social/structured-data image, `/products` hero, product promo banner, gold-bar product rows, mock data, and Supabase seed image URLs now use the real KCG-derived derivatives.
+  - `/company` now uses the new no-face consultation-hands image instead of the previous generated 상담 scene.
+  - `/admin/products` classifies the new public image paths as `KCG 파생` with `원본 File-Hub 보관·중량 확인 필요`, while legacy generated/placeholder paths remain traceable for rollback and existing data remapping.
+  - `docs/brand/kcg-real-image-assets-2026-05-11.md` records the six-site benchmark, source files, public derivatives, applied surfaces, and image-use boundaries.
+  - `KCG-TODO-084` records this real KCG-derived image application pass.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: source 기준 홈 첫 배너/상담 slide/opening slide, `/products` hero/promo, 골드바 상품 카드/상세 대표 이미지, `/company` 상담 이미지.
+  - 실제 사이트 화면은 안 바뀌는 것: 회사 고시 시세 값, actual stock/certificate claims, final product prices/공임, search/noindex state, admin secrets, DNS, payment/trading behavior.
+  - 배포된 것: 기존 noindex-protected review domains에 `dpl_GJRgjkZp7zfUhhstw7oq8uzHn5Tr`로 배포됐다.
+  - 아직 배포 안 된 것: existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Local QA passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`1695 checks, 1 skipped` source-only after the final 10g card mapping), `npm run build`, `npm run test:site` (`25 passed`), `npm audit --audit-level=moderate` (`0 vulnerabilities`), and `npm run qa:site`.
+  - `npm run qa:site` passed with rendered audit `1755 checks, 0 skipped`, Playwright `25 passed`, screenshot refresh, and npm audit `0 vulnerabilities`.
+  - Refreshed local screenshots were manually inspected: `home-mobile-viewport.png`, `home-desktop-viewport.png`, `products-mobile-viewport.png`, `products-desktop.png`, and `company-mobile.png`. The 10g product card mapping was adjusted from the campaign banner to the lineup derivative after screenshot review.
+  - Deploy verification passed: `npx vercel whoami` returned `junyoung8753-2361`, `npx vercel project inspect kcg-confirm-preview` found project `prj_lqsFijkBcN7BAadaGygNlWy416W0`, `npx vercel inspect https://kcgold.co.kr/` reported deployment `dpl_GJRgjkZp7zfUhhstw7oq8uzHn5Tr` ready and aliased, `npm run check:release-state` passed with search exposure guarded, and `npm run check:external -- --strict-domain` passed.
+  - Live checks passed on `https://kcgold.co.kr`: `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` (`1755 checks, 0 skipped`) and `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` (`25 passed`).
+- Rollback Hint: `v0.2.32 실제 KCG 이미지 파생 적용 전으로 되돌려줘`
+- Remaining User-only:
+  - Confirm whether the new real KCG-derived images are acceptable as representative-only launch imagery for public search launch.
+  - Confirm exact product/photo/weight/stock/certificate usage before treating any image as final real product proof.
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Confirm final product prices/공임/운영자료 before public search launch.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
+## v0.2.31 - Current KCG image intake path QA
+
+- Date: `2026-05-11 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: not deployed in this pass because this is a local source/docs/QA guardrail update only. No public UI, public image asset, product data, price data, search/noindex state, secret/env value, DNS, Supabase schema, checkout/cart, live trading, payment, KRX production data call, raw KCG photo copy, real product-photo approval, or real price/product data change is included.
+- 사람이 읽는 요약: Junyoung이 지정한 현재 KCG 이미지 폴더 `C:\Users\junyo\Documents\File-Hub\80_보관\사진_영상\Images\KCG 이미지`를 실제 기준으로 다시 확인하고, 이전에 문서/스크립트에 남아 있던 사라진 `50_미디어_설치파일` 경로를 현재 경로로 맞췄습니다. 새 KakaoTalk 원본 그룹은 public에 복사하지 않고 승인 전 후보로만 분류했습니다.
+- Summary: Refreshes the KCG image intake and replacement-map guardrails around the current File-Hub image path, records the new 2026-05-08 phone-photo groups, and expands `npm run audit:site` so raw KakaoTalk originals stay out of served public product paths.
+- Changed:
+  - `docs/brand/kcg-image-intake-2026-05-08.md` now treats `C:\Users\junyo\Documents\File-Hub\80_보관\사진_영상\Images\KCG 이미지` as the current local source folder and records that the old `50_미디어_설치파일` path was not present on this PC.
+  - The image intake doc records `KakaoTalk_20260508_150411746*.jpg`, `KakaoTalk_20260508_150416296*.jpg`, and `KakaoTalk_20260508_164514053.jpg` as approval-required candidate groups, not public product proof.
+  - `docs/brand/product-image-replacement-map-2026-05-08.md` maps those current candidate groups to front-lineup, reverse/detail, and campaign-card uses while keeping final crop, public use, and real-photo classification blocked.
+  - `scripts/audit-site-fidelity.mjs` now requires the current `80_보관\사진_영상` intake path and explicitly blocks representative raw KakaoTalk originals from `public/products`.
+  - `KCG-TODO-083` records this image-intake path refresh as the Codex-doable QA guardrail improvement.
+- 실제 사이트 반영 여부:
+  - 실제 사이트 화면이 바뀌는 것: 없음.
+  - 실제 사이트 화면은 안 바뀌는 것: public 고객 화면, admin 화면, generated WebP assets, product images, actual real-photo approvals, product prices, search/noindex state, deployment aliases.
+  - 배포된 것: 없음. `v0.2.30` remains the latest live review deployment on the existing noindex-protected review domains.
+  - 아직 배포 안 된 것: this local docs/QA guardrail refresh, plus existing Vercel/Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제.
+- Verification:
+  - Passed final source guardrail check after the image-intake path and version trace update: `npm run audit:site` (`1618 checks, 1 skipped`).
+  - Passed final full local launch-candidate gate: `npm run qa:site` with rendered audit `1678 checks, 0 skipped`, Playwright `25 passed`, refreshed public screenshots, and npm audit `0 vulnerabilities`.
+  - Passed admin evidence refresh: `npm run screenshot:admin`.
+  - Manually inspected refreshed screenshots for `home-mobile-viewport.png`, `home-desktop-viewport.png`, `prices-mobile-viewport.png`, `products-mobile-viewport.png`, `services-mobile-viewport.png`, `admin-prices-manual-desktop.png`, `admin-products-mobile.png`, and `admin-launch-mobile.png`.
+- Rollback Hint: `v0.2.31 이미지 intake 경로 QA 전으로 되돌려줘`
+- Remaining User-only:
+  - Approve any actual real-photo file, crop, category placement, and final-use classification before real product-photo replacement.
+  - Decide whether generated gold-bar assets remain acceptable as representative-only launch imagery or whether real KCG product photos must replace them before public search launch.
+  - Do not set `KCG_PUBLIC_SEARCH_APPROVED=1` until junyoung explicitly approves public search launch.
+  - Rotate final production admin secrets before search/public launch; do not paste values into chat or docs.
+  - Confirm final product prices/공임/운영자료 before public search launch.
+  - Complete Vercel/Supabase transfer approval or decide on required payment/eligibility path if the existing project must move now.
+  - Complete KRX/Koscom approval scope before any production KRX data use.
+
 ## v0.2.30 - Admin price input lineup parity
 
 - Date: `2026-05-09 KST`
@@ -156,7 +1480,7 @@ Versioning rule before public launch: `0.x.x`.
 - Date: `2026-05-08 KST`
 - Commit: local working tree only until this pass is intentionally committed and pushed.
 - Deploy Status: local source/documentation/QA guardrail update only. Production deploy remains blocked because the company Vercel account `kcgoldx-7259` still reports no projects under `npx vercel project ls --scope kcgoldx`; no search/noindex release, secret/env value change, DNS change, Supabase schema change, checkout/cart, live trading, payment, KRX data call, or real product/photo data change is included.
-- 사람이 읽는 요약: Junyoung이 제공한 `C:\Users\junyo\Documents\File-Hub\30_Media\Images\KCG 이미지` 폴더의 KCG 로고/골드바 후보를 승인 전 intake 문서로 분류하고, raw KakaoTalk 파일이 `public/brand` 또는 `public/products`로 바로 들어오지 못하도록 source audit guardrail을 추가했습니다.
+- 사람이 읽는 요약: Junyoung이 제공한 `C:\Users\junyo\Documents\File-Hub\80_보관\사진_영상\Images\KCG 이미지` 폴더의 KCG 로고/골드바 후보를 승인 전 intake 문서로 분류하고, raw KakaoTalk 파일이 `public/brand` 또는 `public/products`로 바로 들어오지 못하도록 source audit guardrail을 추가했습니다.
 - Summary: Adds `docs/brand/kcg-image-intake-2026-05-08.md` and a source audit guardrail so KCG logo/gold-bar files are tracked as candidates before any public replacement, without copying them into the repo or treating them as approved final product proof.
 - Changed:
   - Added `docs/brand/kcg-image-intake-2026-05-08.md` with metadata and visual review notes for KCG logo, lockup, clean gold-bar cutouts, web-size gold-bar lineups, and phone product photos.

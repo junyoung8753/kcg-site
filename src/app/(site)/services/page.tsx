@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { defaultServicesHeroImages, getOperationalSlotImages } from "@/lib/site-assets";
 import { serviceFaqs, siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -10,15 +11,15 @@ export const metadata: Metadata = {
 };
 
 const flowSteps = [
-  ["01", "취급 품목", "골드바·실버바·순금제품·고금·주얼리"],
+  ["01", "취급 품목", "돈 단위 골드바·고금 주얼리"],
   ["02", "당일 기준", "회사 고시 시세와 중량·수량 확인"],
   ["03", "실물 확인", "순도·상태·보증서 확인 후 금액 확정"],
 ] as const;
 
 const serviceRows = [
-  ["매입 가능 품목", "순금, 18K·14K, 백금, 은, 예물·주얼리, 고금"],
-  ["판매·수급 품목", "골드바, 실버바, 순금제품, 기념품"],
-  ["대량·법인", "법인 보유분, 기업 기념품, 상속·정리 목적 물량"],
+  ["매입 가능 품목", "고금, 예물·주얼리, 18K·14K, 백금, 은 제품"],
+  ["판매·수급 품목", "1돈·2돈·3돈·5돈·10돈 골드바"],
+  ["대량·법인", "골드바 대량 수량, 법인 보유분, 상속·정리 목적 물량"],
   ["거래 전 준비", "신분증, 보증서·영수증, 예상 중량, 수량, 제품 상태"],
 ] as const;
 
@@ -30,20 +31,34 @@ const buyingProcessSteps = [
   ["05", "고객 결정", "안내 조건을 확인한 뒤 진행 여부를 결정합니다."],
 ] as const;
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const serviceHeroImages = await getOperationalSlotImages("services_hero", defaultServicesHeroImages);
+  const heroImage = serviceHeroImages[0] ?? defaultServicesHeroImages[0];
+
   return (
     <>
       <section className="bg-[#f7faf8]">
         <div className="section-shell grid gap-4 py-4 sm:gap-6 sm:py-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-stretch">
-          <div className="relative min-h-[10rem] overflow-hidden border border-[#dde5e2] bg-[#eef4f2] sm:min-h-[17rem] lg:min-h-[18rem]">
+          <div
+            data-testid="route-hero-media"
+            className="relative h-[12rem] min-h-[12rem] overflow-hidden border border-[#dde5e2] bg-[#f7faf8] sm:h-[17rem] sm:min-h-[17rem] lg:h-[18rem] lg:min-h-[18rem]"
+          >
             <Image
-              src="/campaign/kcg-old-gold-process-20260506.webp"
-              alt="고금과 주얼리 매입 절차 상담 데스크"
+              src={heroImage.src}
+              alt={heroImage.alt}
               fill
-              className="object-cover"
-              sizes="(min-width: 1024px) 42vw, 100vw"
               priority
+              className={heroImage.fit === "contain" ? "object-contain p-4 sm:p-5" : "object-cover"}
+              style={{ objectPosition: heroImage.objectPosition }}
+              sizes="(min-width: 1024px) 42vw, 100vw"
             />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(18,22,23,0.54))]" />
+            <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-7">
+              <p className="kcg-fine-label text-[#ffcc00]">KCG SERVICE</p>
+              <p className="mt-3 max-w-sm text-xl font-black leading-tight tracking-normal">
+                고시 기준과 실물 확인 절차만 명확하게 안내합니다.
+              </p>
+            </div>
           </div>
 
           <div className="flex flex-col justify-center border-y border-[#dbe4e0] py-4 lg:py-7">
@@ -142,13 +157,13 @@ export default function ServicesPage() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/products"
-              className="inline-flex h-11 items-center justify-center rounded-full bg-[#ffcc00] px-5 text-sm font-bold text-[#171717]"
+              className="kcg-action-token inline-flex h-11 items-center justify-center rounded-full bg-[#ffcc00] px-5 text-sm font-bold text-[#171717]"
             >
               상품/매입 보기
             </Link>
             <a
               href={`tel:${siteConfig.contact.phone}`}
-              className="inline-flex h-11 items-center justify-center rounded-full border border-[#d8dfdc] bg-white px-5 text-sm font-semibold text-[#171717]"
+              className="kcg-action-token inline-flex h-11 items-center justify-center rounded-full border border-[#d8dfdc] bg-white px-5 text-sm font-semibold text-[#171717]"
             >
               {siteConfig.contact.phone}
             </a>

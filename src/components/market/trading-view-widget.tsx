@@ -111,7 +111,12 @@ export function TradingViewMarketWidget() {
         </a>
       </div>
       <div className="relative h-[26rem] min-h-[26rem] overflow-hidden border border-[#e4ebe9] bg-[#fbfdfc]">
-        <div ref={containerRef} data-testid="tradingview-market-widget" className="tradingview-widget-container h-full w-full">
+        <div
+          ref={containerRef}
+          data-testid="tradingview-market-widget"
+          data-kcg-widget-state={widgetState}
+          className="tradingview-widget-container h-full w-full"
+        >
           <div className="flex h-full items-center justify-center px-5 text-center text-sm leading-6 text-[#687171]">
             TradingView 공식 위젯을 불러오는 중입니다.
           </div>

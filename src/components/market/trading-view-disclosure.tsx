@@ -1,13 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TradingViewMarketWidget } from "@/components/market/trading-view-widget";
 
 export function TradingViewDisclosure() {
+  const detailsRef = useRef<HTMLDetailsElement>(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      const details = detailsRef.current;
+      if (!details) return;
+      details.setAttribute("data-kcg-disclosure-ready", "true");
+      if (details.open) {
+        setIsOpen(true);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
+  }, []);
 
   return (
     <details
+      ref={detailsRef}
+      data-testid="tradingview-disclosure"
+      data-kcg-disclosure-ready="false"
       className="mt-8 border border-[#dfe6e4] bg-white"
       onToggle={(event) => setIsOpen(event.currentTarget.open)}
     >

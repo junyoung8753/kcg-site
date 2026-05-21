@@ -1,14 +1,12 @@
-import Image from "next/image";
-
 const guideRows = [
   ["고금·주얼리", "내가 팔 때", "신분증, 보증서·영수증, 제품 상태"],
-  ["골드바·실버바", "살 때/팔 때", "브랜드, 중량, 수량, 포장 상태"],
+  ["골드바·실버바", "내가 살 때/내가 팔 때", "브랜드, 중량, 수량, 포장 상태"],
   ["백금·은", "품목별 고시가", "순도 표기, 예상 중량, 오염·파손 상태"],
   ["법인·대량", "당일 고시+수량", "품목 목록, 예상 수량, 거래 목적"],
 ] as const;
 
 const priceReadingSteps = [
-  ["01", "살 때·팔 때 분리", "고객 기준에서 구매는 살 때, 매입 상담은 팔 때 열을 먼저 봅니다."],
+  ["01", "내가 살 때·내가 팔 때 분리", "고객 기준에서 구매는 내가 살 때, 매입 상담은 내가 팔 때 열을 먼저 봅니다."],
   ["02", "품목 확인", "순금, 18K, 14K, 백금, 은은 같은 기준으로 보지 않습니다."],
   ["03", "고시 시각 확인", "가격은 당일 회사 고시 시각 기준이며 이후 조정될 수 있습니다."],
   ["04", "현장 확정", "실제 금액은 순도, 중량, 부속, 제품 상태 확인 후 안내합니다."],
@@ -37,15 +35,16 @@ export function PriceContextGuide() {
 
         <div className="grid gap-6">
           <div className="grid overflow-hidden border border-[#dfe6e4] bg-[#111416] text-white lg:grid-cols-[0.45fr_0.55fr]">
-            <div className="relative min-h-[14rem] bg-[#202426]">
-              <Image
-                src="/campaign/kcg-price-guide-visual-20260506.webp"
-                alt="시세표를 확인하는 고객 시점 이미지"
-                fill
-                className="object-cover opacity-88"
-                sizes="(min-width: 1024px) 360px, 100vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/56 via-black/10 to-transparent" />
+            <div className="flex min-h-[14rem] flex-col justify-between bg-[#202426] p-5">
+              <div>
+                <p className="kcg-fine-label text-[#ffcc00]">PRICE READING</p>
+                <p className="mt-4 max-w-xs text-xl font-black leading-tight tracking-normal">
+                  회사 고시 시세를 먼저 보고 참고 시세는 흐름만 확인합니다.
+                </p>
+              </div>
+              <p className="text-sm leading-6 text-white/62">
+                자동 참고 데이터는 회사 가격을 덮어쓰지 않습니다.
+              </p>
             </div>
             <div className="grid gap-px bg-white/12 sm:grid-cols-2">
               {priceReadingSteps.map(([number, title, body]) => (

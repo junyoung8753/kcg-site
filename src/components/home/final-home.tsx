@@ -7,7 +7,8 @@ import { getRepository } from "@/lib/data";
 import { getBusinessInfoLine } from "@/lib/legal-info";
 import { getMarketDashboardData } from "@/lib/market-data";
 import { getPriceAnnouncementDisplay } from "@/lib/price-announcement";
-import { getProductImageSrc, getProductStatusLabel, productCatalogTabs } from "@/lib/product-presenter";
+import { getPublicProductImage, getProductStatusLabel, publicProductCatalogTabs } from "@/lib/product-presenter";
+import { defaultHomeHeroImages, getOperationalSlotImages } from "@/lib/site-assets";
 import {
   homeHighlights,
   siteConfig,
@@ -16,7 +17,7 @@ import {
 
 const quickLinks = [
   { href: "/prices", label: "시세조회", caption: "회사 고시 시세와 국제 참고 시세" },
-  { href: "/products", label: "상품/매입", caption: "골드바·실버바·고금 매입 안내" },
+  { href: "/products", label: "상품/매입", caption: "골드바·고금 매입 안내" },
   { href: "/services", label: "서비스", caption: "매입 가능 품목과 상담 범위" },
   { href: "/about", label: "매장안내", caption: "본사와 매장 위치" },
   { href: "/company", label: "회사소개", caption: "법인 정보와 패밀리 사이트" },
@@ -25,12 +26,13 @@ const quickLinks = [
 
 export async function FinalHome() {
   const repository = getRepository();
-  const [prices, history, announcements, products, marketData] = await Promise.all([
+  const [prices, history, announcements, products, marketData, homeHeroImages] = await Promise.all([
     repository.getPrices({ visibleOnly: true }),
     repository.getPriceHistory(10),
     repository.getAnnouncements({ limit: 4 }),
     repository.getProducts(),
     getMarketDashboardData(),
+    getOperationalSlotImages("home_hero", defaultHomeHeroImages),
   ]);
 
   const announcedAt = prices[0]?.announcedAt;
@@ -45,7 +47,17 @@ export async function FinalHome() {
         announcedLabel={announcementDisplay.valueLabel}
         announcedDateLabel={announcementDisplay.dateLabel}
         announcedHeading={announcementDisplay.detailLabel}
+        announcementStatusLabel={announcementDisplay.statusLabel}
+        announcementNoticeBadgeLabel={announcementDisplay.noticeBadgeLabel}
+        announcementNoticeTitle={announcementDisplay.noticeTitle}
+        announcementNoticeBody={announcementDisplay.noticeBody}
+        announcementIsStale={announcementDisplay.isStale}
         krwRate={marketData.krwRate}
+        campaignSlides={homeHeroImages.map((image) => ({
+          image: image.src,
+          alt: image.alt,
+          objectPosition: image.objectPosition,
+        }))}
       />
 
       <MarketDashboard data={marketData} />
@@ -117,6 +129,9 @@ export async function FinalHome() {
               <p className="font-semibold text-[#15191b]">
                 {announcementDisplay.homeLabel}: {announcementDisplay.valueLabel}
               </p>
+              {announcementDisplay.isStale ? (
+                <p className="mt-2 font-semibold text-[#8a6b00]">{announcementDisplay.noticeBody}</p>
+              ) : null}
               <p className="mt-2">{siteConfig.company.transactionNotice}</p>
               <p className="mt-3 text-xs leading-6 text-[#8b9292]">
                 {businessInfoLine} · {siteConfig.contact.businessHours}
@@ -167,8 +182,10 @@ export async function FinalHome() {
             </Link>
           </div>
           <div className="grid gap-px overflow-hidden border border-[#dfe5e3] bg-[#dfe5e3] md:grid-cols-2 xl:grid-cols-5">
-            {productCatalogTabs.filter((tab) => tab.category).map((category, index) => {
+            {publicProductCatalogTabs.filter((tab) => tab.category).map((category, index) => {
               const matched = products.find((product) => product.category === category.category);
+              const productImage = matched ? getPublicProductImage(matched) : null;
+              const imageSrc = productImage?.src ?? null;
               return (
                 <Link
                   key={category.slug}
@@ -177,14 +194,27 @@ export async function FinalHome() {
                   className="group bg-white transition hover:bg-[#fff7d2]"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-[#eef4f2]">
-                    <Image
-                      src={matched ? getProductImageSrc(matched) : "/products/kcg-generated-goldbar-lineup-20260508.webp"}
-                      alt={`${category.label} 이미지`}
-                      fill
-                      className="object-cover transition duration-500 group-hover:scale-[1.03]"
-                      sizes="(min-width: 1280px) 20vw, (min-width: 768px) 50vw, 100vw"
-                      loading={index < 2 ? "eager" : "lazy"}
-                    />
+                    {imageSrc ? (
+                      <Image
+                        src={imageSrc}
+                        alt={productImage?.alt ?? `${category.label} 이미지`}
+                        fill
+                        className={`transition duration-500 group-hover:scale-[1.03] ${
+                          category.category === "gold_bar" ? "object-contain p-4" : "object-cover"
+                        }`}
+                        data-image-role={productImage?.role}
+                        sizes="(min-width: 1280px) 20vw, (min-width: 768px) 50vw, 100vw"
+                        loading={index < 2 ? "eager" : "lazy"}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col justify-end bg-[#fbfdfc] p-5">
+                        <p className="kcg-fine-label text-[#9a8a00]">KCG CATEGORY</p>
+                        <p className="mt-3 text-xl font-black tracking-[-0.02em] text-[#15191b]">{category.label}</p>
+                        <p className="mt-2 text-sm leading-6 text-[#687171]">
+                          사진 대신 품목 기준과 상담 범위를 먼저 확인합니다.
+                        </p>
+                      </div>
+                    )}
                   </div>
                   <div className="p-5">
                     <p className="text-xs font-semibold text-[#9a8a00]">0{index + 1}</p>
@@ -224,13 +254,13 @@ export async function FinalHome() {
           <div className="grid gap-3 sm:grid-cols-2">
             <a
               href={`tel:${siteConfig.contact.phone}`}
-              className="inline-flex justify-center rounded-full bg-[#ffcc00] px-7 py-4 text-sm font-semibold text-[#171717] shadow-[0_14px_32px_rgba(255,204,0,0.25)]"
+              className="kcg-action-token inline-flex justify-center rounded-full bg-[#ffcc00] px-7 py-4 text-sm font-semibold text-[#171717] shadow-[0_14px_32px_rgba(255,204,0,0.25)]"
             >
               전화 문의 {siteConfig.contact.phone}
             </a>
             <Link
               href="/about"
-              className="inline-flex justify-center rounded-full border border-[#d8dfdc] bg-white px-7 py-4 text-sm font-semibold text-[#171717]"
+              className="kcg-action-token inline-flex justify-center rounded-full border border-[#d8dfdc] bg-white px-7 py-4 text-sm font-semibold text-[#171717]"
             >
               오시는 길 보기
             </Link>

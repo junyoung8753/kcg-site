@@ -1,6 +1,6 @@
 # Missing Chat Recovery
 
-Last checked: 2026-04-29 KST.
+Last checked: 2026-05-11 KST.
 
 Use this file when the Codex project chat/thread for KCG disappears from the app UI. The missing chat is useful context, but it is not the source of truth. Continue from this repository, the handoff docs, GitHub, and Vercel.
 
@@ -58,7 +58,7 @@ The C: repo has the newer current handoff and is the working target. Treat E: as
 
 ## No-Secret Backup
 
-- Local no-secret working-tree zip: `C:\Users\junyo\Documents\File-Hub\90_Backups\kcg-site\kcg-site-workingtree-20260428-210137.zip`
+- Local no-secret working-tree zip: `C:\Users\junyo\Documents\File-Hub\80_보관함/백업/Backups\kcg-site\kcg-site-workingtree-20260428-210137.zip`
 - This zip excludes `.git`, `.env*`, `.vercel`, `.next`, `node_modules`, `output`, and Supabase CLI temp metadata.
 
 ## Safe Recovery Rules
@@ -68,9 +68,10 @@ The C: repo has the newer current handoff and is the working target. Treat E: as
 - If a chat is missing, recover continuity from this repo and handoff docs instead of relying on old chat UI state.
 - Before switching computers or relying on Codex Cloud, commit and push intentional work or create a no-secret backup.
 
-## 2026-04-29 Verification
+## 2026-05-11 Verification
 
 - `scripts/check-continuation.ps1` found Git, Node.js, npm, GitHub CLI, Vercel CLI, and Codex CLI.
 - Current local branch: `codex/kcg-launch-readiness-catalog-20260427`.
-- `npm run check:external` passed stable `/api/health`, `robots.txt`, and empty pre-launch `sitemap.xml` checks.
-- `npm run check:external` still warns that `kcgold.co.kr` and `www.kcgold.co.kr` DNS are not connected. Cafe24 must point both A records to `76.76.21.21` before public launch steps.
+- `npm run check:release-state` passed on `https://kcgold.co.kr` with search exposure guarded.
+- `npm run check:external -- --strict-domain` passed stable `/api/health`, `robots.txt`, empty pre-launch `sitemap.xml`, and DNS checks for `kcgold.co.kr` and `www.kcgold.co.kr`.
+- The current production review deployment is `dpl_6gnD1Cv7DHuL4AqcGEfgQ8DAt7ya`, aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, and `https://kcg-confirm-preview.vercel.app`. This is still a noindex-protected review deployment, not public search launch approval.

@@ -2,16 +2,19 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireAdminActionSession } from "@/lib/auth/admin-action";
 import { getRepository } from "@/lib/data";
 import { dateTimeLocalKoreaToIso } from "@/lib/format";
 import {
   buildPriceUpdatesFromSuggestion,
 } from "@/lib/price-auto";
 import { runPriceAutoRefresh } from "@/lib/price-auto-runner";
+import { calculateGoldPurityBuyPrices } from "@/lib/price-formulas";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 import { ensureNumber, ensureString, toBoolean } from "@/lib/utils";
 import type {
   PriceAutoMode,
+  PriceAutoSettings,
   PriceAutoSource,
   PriceCategory,
   PriceRecord,
@@ -102,35 +105,110 @@ function buildPriceWarnings(currentPrices: PriceRecord[], payload: UpdatePriceIn
   return warnings;
 }
 
+function applyManualGoldPurityDerivation(
+  currentPrices: PriceRecord[],
+  payload: UpdatePriceInput[],
+  settings: PriceAutoSettings,
+) {
+  const currentById = new Map(currentPrices.map((price) => [price.id, price] as const));
+  const updateByCategory = new Map<PriceCategory, UpdatePriceInput>();
+
+  payload.forEach((item) => {
+    const current = currentById.get(item.id);
+    if (current) updateByCategory.set(current.category, item);
+  });
+
+  const base24kBuy = updateByCategory.get("gold_24k_buy");
+  const gold18kBuy = updateByCategory.get("gold_18k_buy");
+  const gold14kBuy = updateByCategory.get("gold_14k_buy");
+
+  if (!base24kBuy || !gold18kBuy || !gold14kBuy || base24kBuy.value <= 0) {
+    return { payload, applied: false };
+  }
+
+  const derived = calculateGoldPurityBuyPrices(base24kBuy.value, settings);
+  gold18kBuy.value = derived.gold_18k_buy;
+  gold18kBuy.metadata = {
+    ...(gold18kBuy.metadata ?? {}),
+    manualDerivation: {
+      sourceCategory: "gold_24k_buy",
+      sourceValue: base24kBuy.value,
+      rate: settings.gold18kBuyRate,
+      roundingUnit: settings.roundingUnit,
+    },
+  };
+  gold14kBuy.value = derived.gold_14k_buy;
+  gold14kBuy.metadata = {
+    ...(gold14kBuy.metadata ?? {}),
+    manualDerivation: {
+      sourceCategory: "gold_24k_buy",
+      sourceValue: base24kBuy.value,
+      rate: settings.gold14kBuyRate,
+      roundingUnit: settings.roundingUnit,
+    },
+  };
+
+  return { payload, applied: true };
+}
+
+function ensurePositiveIntegerPrice(value: FormDataEntryValue | null) {
+  const parsed = ensureNumber(value, Number.NaN);
+  if (!Number.isFinite(parsed) || !Number.isInteger(parsed) || parsed <= 0) {
+    throw new Error("invalid-price");
+  }
+  return parsed;
+}
+
+function ensureValidAnnouncedAt(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    throw new Error("invalid-announced-at");
+  }
+  const diffHours = Math.abs(Date.now() - date.getTime()) / 1000 / 60 / 60;
+  if (diffHours > 72) {
+    throw new Error("invalid-announced-at");
+  }
+  return value;
+}
+
 export async function updatePricesAction(formData: FormData) {
+  await requireAdminActionSession("/admin/prices");
+
   if (!isSupabaseConfigured()) {
     redirect("/admin/prices?status=demo");
   }
 
   const ids = formData.getAll("priceIds").map(String);
-  const announcedAt = dateTimeLocalKoreaToIso(ensureString(formData.get("announcedAt")));
   const changedBy = ensureString(formData.get("changedBy"), "관리자");
-
-  const payload = ids.map((id) => ({
-    id,
-    value: ensureNumber(formData.get(`value:${id}`)),
-    note: ensureString(formData.get(`note:${id}`)).trim() || null,
-    isVisible: toBoolean(formData.get(`visible:${id}`)),
-    announcedAt,
-    changedBy,
-    changeOrigin: "manual" as const,
-    source: "admin",
-  }));
+  const useGoldPurityDerivation = toBoolean(formData.get("goldPurityAuto"));
 
   let redirectPath = "/admin/prices?status=error";
 
   try {
+    const announcedAt = ensureValidAnnouncedAt(dateTimeLocalKoreaToIso(ensureString(formData.get("announcedAt"))));
+    const payload = ids.map((id) => ({
+      id,
+      value: ensurePositiveIntegerPrice(formData.get(`value:${id}`)),
+      note: ensureString(formData.get(`note:${id}`)).trim() || null,
+      isVisible: toBoolean(formData.get(`visible:${id}`)),
+      announcedAt,
+      changedBy,
+      changeOrigin: "manual" as const,
+      source: "admin",
+    }));
     const repository = getRepository();
-    const currentPrices = await repository.getPrices();
-    const warnings = buildPriceWarnings(currentPrices, payload);
-    await repository.updatePrices(payload);
+    const [currentPrices, settings] = await Promise.all([
+      repository.getPrices(),
+      useGoldPurityDerivation ? repository.getPriceAutoSettings() : Promise.resolve(null),
+    ]);
+    const derivation = settings
+      ? applyManualGoldPurityDerivation(currentPrices, payload, settings)
+      : { payload, applied: false };
+    const finalPayload = derivation.payload;
+    const warnings = buildPriceWarnings(currentPrices, finalPayload);
+    await repository.updatePrices(finalPayload);
 
-    const search = new URLSearchParams({ status: "saved" });
+    const search = new URLSearchParams({ status: derivation.applied ? "saved-derived" : "saved" });
     warnings.forEach((warning) => {
       search.append("warning", warning.message);
     });
@@ -141,8 +219,12 @@ export async function updatePricesAction(formData: FormData) {
     revalidatePath("/products/[slug]", "page");
     revalidatePath("/admin/prices");
     redirectPath = `/admin/prices?${search.toString()}`;
-  } catch {
+  } catch (error) {
+    if (error instanceof Error && (error.message === "invalid-price" || error.message === "invalid-announced-at")) {
+      redirectPath = "/admin/prices?status=error&warning=%EC%9E%85%EB%A0%A5%EA%B0%92%EC%9D%84%20%ED%99%95%EC%9D%B8%ED%95%B4%20%EC%A3%BC%EC%84%B8%EC%9A%94";
+    } else {
     redirectPath = "/admin/prices?status=error";
+    }
   }
 
   redirect(redirectPath);
@@ -211,6 +293,8 @@ function mapAutoRefreshStatus(status: string) {
 }
 
 export async function updatePriceAutoSettingsAction(formData: FormData) {
+  await requireAdminActionSession("/admin/prices");
+
   if (!isSupabaseConfigured()) {
     redirect("/admin/prices?status=demo");
   }
@@ -235,8 +319,8 @@ export async function updatePriceAutoSettingsAction(formData: FormData) {
       formData.get("goldBuyDiscountRate"),
       0.05,
     ),
-    gold18kBuyRate: ensureNumber(formData.get("gold18kBuyRate"), 0.735),
-    gold14kBuyRate: ensureNumber(formData.get("gold14kBuyRate"), 0.57),
+    gold18kBuyRate: ensureNumber(formData.get("gold18kBuyRate"), 0.75),
+    gold14kBuyRate: ensureNumber(formData.get("gold14kBuyRate"), 0.585),
     platinumSellPremiumRate: ensureRateFromPercentOrDecimal(
       formData.get("platinumSellPremiumRatePct"),
       formData.get("platinumSellPremiumRate"),
@@ -281,6 +365,8 @@ export async function updatePriceAutoSettingsAction(formData: FormData) {
 }
 
 export async function generatePriceAutoSuggestionAction() {
+  await requireAdminActionSession("/admin/prices");
+
   const repository = getRepository();
   let redirectPath = "/admin/prices?status=auto-error";
 
@@ -304,6 +390,8 @@ export async function generatePriceAutoSuggestionAction() {
 }
 
 export async function applyPriceAutoSuggestionAction(formData: FormData) {
+  await requireAdminActionSession("/admin/prices");
+
   if (!isSupabaseConfigured()) {
     redirect("/admin/prices?status=demo");
   }
@@ -343,6 +431,8 @@ export async function applyPriceAutoSuggestionAction(formData: FormData) {
 }
 
 export async function rejectPriceAutoSuggestionAction(formData: FormData) {
+  await requireAdminActionSession("/admin/prices");
+
   const suggestionId = ensureString(formData.get("suggestionId"));
   const repository = getRepository();
   let redirectPath = "/admin/prices?status=auto-error";

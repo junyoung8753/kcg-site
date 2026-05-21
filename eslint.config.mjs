@@ -18,6 +18,15 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "output/**",
+    ".appdata/**",
+    ".localappdata/**",
+    ".npm-cache/**",
+    ".playwright-cli/**",
+    ".vercel/**",
+    ".vercel-cli/**",
+    ".vercel-xdg/**",
+    "LocalLow/**",
   ]),
 ]);
 

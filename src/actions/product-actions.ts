@@ -2,7 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireAdminActionSession } from "@/lib/auth/admin-action";
 import { getRepository } from "@/lib/data";
+import {
+  isApprovedOperationalProductImagePath,
+  isGeneratedCandidateAssetPath,
+  isTrustedSiteAssetUrl,
+} from "@/lib/image-asset-manifest";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 import { ensureNumber, ensureString, slugify, toBoolean } from "@/lib/utils";
 import type { ProductCategory, ProductPriceBasis, ProductStatus } from "@/types/product";
@@ -53,12 +59,33 @@ function optionalNumber(value: FormDataEntryValue | null) {
   const raw = ensureString(value).replace(/,/g, "").trim();
   if (!raw) return null;
   const parsed = Number(raw);
-  return Number.isFinite(parsed) ? parsed : null;
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+}
+
+function validateProductImagePath(value: string | null) {
+  if (!value) return null;
+  if (isGeneratedCandidateAssetPath(value)) return null;
+  if (value.startsWith("/") && isApprovedOperationalProductImagePath(value)) return value;
+  if (isTrustedSiteAssetUrl(value)) return value;
+  return null;
+}
+
+function getSafeProductsReturnPath(value: string) {
+  if (value === "/admin/products" || value.startsWith("/admin/products?")) return value;
+  return "/admin/products";
+}
+
+function withStatus(path: string, status: string) {
+  const separator = path.includes("?") ? "&" : "?";
+  return `${path}${separator}status=${status}`;
 }
 
 export async function upsertProductAction(formData: FormData) {
+  await requireAdminActionSession("/admin/products");
+  const returnPath = getSafeProductsReturnPath(ensureString(formData.get("returnTo"), "/admin/products"));
+
   if (!isSupabaseConfigured()) {
-    redirect("/admin/products?status=demo");
+    redirect(withStatus(returnPath, "demo"));
   }
 
   const name = ensureString(formData.get("name")).trim();
@@ -68,20 +95,45 @@ export async function upsertProductAction(formData: FormData) {
   const priceLabel = ensureString(formData.get("priceLabel"), "전화 문의").trim();
 
   if (!name || !shortDescription || !description || !priceLabel) {
-    redirect("/admin/products?status=invalid");
+    redirect(withStatus(returnPath, "invalid"));
   }
 
   try {
     const repository = getRepository();
+    const productId = ensureString(formData.get("id")).trim();
+    const siteAssetId = ensureString(formData.get("imageAssetId")).trim();
+    const clearImage = toBoolean(formData.get("clearImageToPlaceholder"));
+    const requestedImageUrl = clearImage ? null : ensureString(formData.get("imageUrl")).trim() || null;
+    let imageUrl = validateProductImagePath(requestedImageUrl);
+    let imageAssetId: string | null = null;
+
+    if (siteAssetId && !clearImage) {
+      const asset = (await repository.getSiteAssets()).find((item) => item.id === siteAssetId);
+      if (
+        !asset ||
+        asset.approvalStatus !== "approved" ||
+        !asset.allowedUsage.some((usage) => usage === "product_card" || usage === "product_detail" || usage === "category_card")
+      ) {
+        throw new Error("invalid-image");
+      }
+      imageUrl = asset.publicUrl;
+      imageAssetId = asset.id;
+    }
+
+    if (requestedImageUrl && !imageUrl) {
+      throw new Error("invalid-image");
+    }
+
     await repository.upsertProduct({
-      id: ensureString(formData.get("id")).trim() || undefined,
+      id: productId || undefined,
       category: asProductCategory(ensureString(formData.get("category"))),
       subcategory: ensureString(formData.get("subcategory")).trim() || null,
       name,
       slug: slugify(slugInput || name),
       shortDescription,
       description,
-      imageUrl: ensureString(formData.get("imageUrl")).trim() || null,
+      imageUrl,
+      imageAssetId,
       specs: parseSpecs(formData.get("specs")),
       status: asProductStatus(ensureString(formData.get("status"))),
       displayOrder: ensureNumber(formData.get("displayOrder"), 100),
@@ -95,13 +147,16 @@ export async function upsertProductAction(formData: FormData) {
       priceNote: ensureString(formData.get("priceNote")).trim() || null,
       publicNote: ensureString(formData.get("publicNote")).trim() || null,
     });
-  } catch {
-    redirect("/admin/products?status=error");
+  } catch (error) {
+    if (error instanceof Error && error.message === "invalid-image") {
+      redirect(withStatus(returnPath, error.message));
+    }
+    redirect(withStatus(returnPath, "error"));
   }
 
   revalidatePath("/");
   revalidatePath("/services");
   revalidatePath("/products");
   revalidatePath("/admin/products");
-  redirect("/admin/products?status=saved");
+  redirect(withStatus(returnPath, "saved"));
 }

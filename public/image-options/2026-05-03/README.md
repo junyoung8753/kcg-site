@@ -11,7 +11,7 @@ This folder is for comparing the previous public image set with the new image se
 - `new-candidates-manifest.json`: source-to-output mapping.
 
 Source PNG originals are intentionally kept outside the repo in:
-`C:\Users\junyo\Documents\File-Hub\30_Media\Images\AI generated\KCG\2026-05-03-image-refresh`
+`C:\Users\junyo\Documents\File-Hub\80_보관\사진_영상\Images\AI generated\KCG\2026-05-03-image-refresh`
 
 ## Currently Applied
 

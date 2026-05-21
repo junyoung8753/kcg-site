@@ -1,44 +1,48 @@
 "use client";
 
 import Link from "next/link";
+import type { MouseEvent } from "react";
 import { siteConfig } from "@/lib/site-config";
 
 export function MobileContactBar() {
-  function openInquiryAssistant() {
+  function openInquiryAssistant(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
     window.dispatchEvent(new CustomEvent("kcg:open-inquiry-assistant"));
   }
 
   return (
     <div
       data-testid="mobile-contact-bar"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-[#d8e1df] bg-white/96 px-4 pb-[calc(0.85rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-14px_34px_rgba(18,24,24,0.12)] backdrop-blur lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-[#d8e1df] bg-white/96 px-3 pb-[calc(0.55rem+env(safe-area-inset-bottom))] pt-2 shadow-[0_-10px_26px_rgba(18,24,24,0.12)] backdrop-blur lg:hidden"
     >
-      <div className="mx-auto grid max-w-md grid-cols-4 gap-2">
+      <div className="mx-auto grid max-w-md grid-cols-4 gap-1.5">
         <a
           href={`tel:${siteConfig.contact.phone}`}
-          className="inline-flex h-11 items-center justify-center rounded-full bg-[#ffcc00] px-3 text-sm font-bold text-[#171717] shadow-[0_10px_24px_rgba(255,204,0,0.22)]"
+          className="kcg-action-token inline-flex h-10 items-center justify-center rounded-full bg-[#ffcc00] px-3 text-sm font-bold text-[#171717] shadow-[0_10px_24px_rgba(255,204,0,0.22)]"
         >
           전화
         </a>
         <Link
           href="/prices"
-          className="inline-flex h-11 items-center justify-center rounded-full border border-[#d7e0dd] bg-white px-3 text-sm font-semibold text-[#15191b]"
+          className="kcg-action-token inline-flex h-10 items-center justify-center rounded-full border border-[#d7e0dd] bg-white px-3 text-sm font-semibold text-[#15191b]"
         >
           시세
         </Link>
         <Link
           href="/about"
-          className="inline-flex h-11 items-center justify-center rounded-full border border-[#d7e0dd] bg-white px-3 text-sm font-semibold text-[#15191b]"
+          className="kcg-action-token inline-flex h-10 items-center justify-center rounded-full border border-[#d7e0dd] bg-white px-3 text-sm font-semibold text-[#15191b]"
         >
           위치
         </Link>
-        <button
-          type="button"
+        <a
+          href="#inquiry-assistant"
+          data-kcg-open-inquiry-assistant="true"
           onClick={openInquiryAssistant}
-          className="inline-flex h-11 items-center justify-center rounded-full bg-[#15191b] px-3 text-sm font-bold text-white"
+          className="kcg-action-token inline-flex h-10 items-center justify-center rounded-full bg-[#15191b] px-3 text-sm font-bold text-white"
+          style={{ color: "#ffffff" }}
         >
           상담
-        </button>
+        </a>
       </div>
     </div>
   );

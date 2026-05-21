@@ -9,6 +9,8 @@ import { getOptionalContactLinks, siteConfig, siteNavigation } from "@/lib/site-
 
 export function SiteFooter() {
   const optionalContactLinks = getOptionalContactLinks();
+  const headOfficePhone = siteConfig.locations.headOffice.phone;
+  const storePhone = siteConfig.locations.store.phone;
 
   return (
     <footer className="border-t border-[#dfe7e5] bg-white">
@@ -90,9 +92,18 @@ export function SiteFooter() {
               <p>상호: {siteConfig.company.legalBusinessName || siteConfig.brandName}</p>
               <p>대표이사: {siteConfig.company.representative}</p>
               <p>{getBusinessRegistrationDisplay()}</p>
-              <p>본사: {siteConfig.locations.headOffice.address} / {siteConfig.locations.headOffice.phone}</p>
-              <p>매장: {siteConfig.locations.store.address} / {siteConfig.locations.store.phone}</p>
-              <p>이메일: {siteConfig.contact.email} · {siteConfig.contact.businessHours}</p>
+              <p>본사 주소: {siteConfig.locations.headOffice.address}</p>
+              <p>
+                본사 전화: <span className="kcg-number-token">{headOfficePhone}</span>
+              </p>
+              <p>매장 주소: {siteConfig.locations.store.address}</p>
+              <p>
+                매장 전화: <span className="kcg-number-token">{storePhone}</span>
+              </p>
+              <p>
+                이메일: <span className="kcg-number-token">{siteConfig.contact.email}</span> ·{" "}
+                {siteConfig.contact.businessHours}
+              </p>
               <p>사업장 주소: {siteConfig.company.registeredAddress}</p>
             </>
           ) : (

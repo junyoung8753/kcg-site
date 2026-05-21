@@ -6,13 +6,12 @@ import {
 import type { PriceAutoSettings, PriceAutoSuggestionInput, PriceFreshness } from "@/types/price";
 
 const STALE_MANUAL_GUARD_DESCRIPTION =
-  "24시간 이상 수동 시세 등록이 없으면 다음 자동 점검에서 자동시세를 ON으로 전환합니다.";
+  "수동 시세 등록이 오래 없어도 자동시세 OFF는 유지됩니다. 관리자가 직접 켜기 전에는 공개 시세를 자동 게시하지 않았습니다.";
 
 type PriceAutoRunStatus =
   | "auto-fill-disabled"
   | "not-due"
   | "outside-business-hours"
-  | "auto-enabled-stale-manual"
   | "schema-not-ready"
   | "draft-created"
   | "small-change"
@@ -28,7 +27,6 @@ export interface PriceAutoRunResult {
   applied?: number;
   warnings: string[];
   nextCheckAt: string | null;
-  autoEnabledByStaleGuard?: boolean;
 }
 
 function addMinutes(date: Date, minutes: number) {
@@ -94,7 +92,7 @@ function isManualRegistrationStale(
 
 function staleGuardWarning(settings: PriceAutoSettings) {
   if (settings.staleAfterHours === 24) return STALE_MANUAL_GUARD_DESCRIPTION;
-  return `${settings.staleAfterHours}시간 이상 수동 시세 등록이 없어 자동시세를 ON으로 전환했습니다.`;
+  return `${settings.staleAfterHours}시간 이상 수동 시세 등록이 없어도 자동시세 OFF는 유지됩니다. 관리자가 직접 확인해 주세요.`;
 }
 
 function maxAbsoluteDifference(input: PriceAutoSuggestionInput) {
@@ -133,34 +131,21 @@ export async function runPriceAutoRefresh(
     repository.getPriceAutoSettings(),
     repository.getPriceFreshness(),
   ]);
-  let settings = initialSettings;
-  let autoEnabledByStaleGuard = false;
+  const settings = initialSettings;
   const runWarnings: string[] = [];
 
   if (!settings.isEnabled) {
     if (isManualRegistrationStale(freshness, settings, now)) {
-      const enabledSettings = {
-        ...settings,
-        isEnabled: true,
-        mode: "auto_publish" as const,
-        updatedBy: "시스템: 24시간 수동 미등록 자동 전환",
-      };
-      await repository.updatePriceAutoSettings(enabledSettings);
-      settings = {
-        ...enabledSettings,
-        updatedAt: nowIso,
-      };
-      autoEnabledByStaleGuard = true;
       runWarnings.push(staleGuardWarning(settings));
-    } else {
-      return {
-        ok: true,
-        status: "auto-fill-disabled",
-        message: "자동시세가 꺼져 있어 공개 시세를 바꾸지 않았습니다.",
-        warnings: [],
-        nextCheckAt: null,
-      };
     }
+
+    return {
+      ok: true,
+      status: "auto-fill-disabled",
+      message: "자동시세가 꺼져 있어 공개 시세를 바꾸지 않았습니다.",
+      warnings: runWarnings,
+      nextCheckAt: null,
+    };
   }
 
   if (settings.businessHoursOnly && !isKoreaBusinessTime(now)) {
@@ -171,18 +156,16 @@ export async function runPriceAutoRefresh(
       message: "영업시간 밖이라 자동 반영하지 않았습니다.",
       warnings: [...runWarnings, "영업시간만 반영 설정이 켜져 있습니다."],
       nextCheckAt: getNextAutoCheckAt({ ...settings, lastCheckedAt: nowIso }, now),
-      autoEnabledByStaleGuard,
     };
   }
 
-  if (!options.force && !autoEnabledByStaleGuard && !isDue(settings, now)) {
+  if (!options.force && !isDue(settings, now)) {
     return {
       ok: true,
       status: "not-due",
       message: "아직 다음 확인 시각이 되지 않았습니다.",
       warnings: runWarnings,
       nextCheckAt: getNextAutoCheckAt(settings, now),
-      autoEnabledByStaleGuard,
     };
   }
 
@@ -224,7 +207,6 @@ export async function runPriceAutoRefresh(
       suggestionId: suggestion.id,
       warnings: suggestion.warnings,
       nextCheckAt: getNextAutoCheckAt({ ...settings, lastCheckedAt: nowIso }, now),
-      autoEnabledByStaleGuard,
     };
   }
 
@@ -244,7 +226,6 @@ export async function runPriceAutoRefresh(
       suggestionId: suggestion.id,
       warnings: suggestion.warnings,
       nextCheckAt: getNextAutoCheckAt({ ...settings, lastCheckedAt: nowIso }, now),
-      autoEnabledByStaleGuard,
     };
   }
 
@@ -272,6 +253,5 @@ export async function runPriceAutoRefresh(
     applied: updates.length,
     warnings: suggestion.warnings,
     nextCheckAt: getNextAutoCheckAt({ ...settings, lastCheckedAt: nowIso }, now),
-    autoEnabledByStaleGuard,
   };
 }

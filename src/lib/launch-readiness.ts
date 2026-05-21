@@ -116,6 +116,15 @@ export function getLaunchReadiness() {
             ? `현재 배포 단계(${deployment})에서 남은 공개 차단 조건을 해결하기 전까지 robots/noindex 흐름을 유지합니다.`
           : "검색 공개 승인 전까지 KCG_PUBLIC_SEARCH_APPROVED를 설정하지 않고 preview/noindex 흐름을 유지합니다.",
     },
+    {
+      key: "user-only-launch-blockers",
+      title: "사용자 확정 항목",
+      level: "warning",
+      summary:
+        "최종 상품 가격·공임·운영자료 확인, 대표 이미지·실사진 final-use 승인, 최종 관리자 비밀번호 rotation은 공개 검색 전 junyoung/KCG가 직접 확정해야 합니다.",
+      action:
+        "검색 공개 전까지 상품 가격·공임, 대표 이미지·실사진 사용 범위, 최종 관리자 비밀번호 rotation, 소유권 이전 필요 여부를 체크리스트로 확인합니다.",
+    },
   ];
 
   const blockers = items.filter((item) => item.level === "blocker");

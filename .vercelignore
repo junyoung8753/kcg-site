@@ -1,5 +1,12 @@
 .env*
 .vercel
+.vercel-cli
+.vercel-xdg
+.appdata
+.localappdata
+.npm-cache
+.playwright-cli
+LocalLow
 node_modules
 .next
 output

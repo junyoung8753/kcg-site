@@ -2,11 +2,19 @@ const encoder = new TextEncoder();
 
 export const ADMIN_SESSION_COOKIE = "kcga_admin_session";
 
+function requiresExplicitAdminSessionSecret() {
+  return process.env.VERCEL_ENV === "preview" || process.env.VERCEL_ENV === "production";
+}
+
 export function getAdminSessionSecretMode() {
-  return process.env.ADMIN_SESSION_SECRET ? "env" : "local-fallback";
+  if (process.env.ADMIN_SESSION_SECRET) return "env";
+  return requiresExplicitAdminSessionSecret() ? "missing-required" : "local-fallback";
 }
 
 function getSessionSecret() {
+  if (requiresExplicitAdminSessionSecret() && !process.env.ADMIN_SESSION_SECRET) {
+    throw new Error("ADMIN_SESSION_SECRET is required for preview and production admin sessions.");
+  }
   return process.env.ADMIN_SESSION_SECRET || "local-admin-session-secret";
 }
 
@@ -67,6 +75,10 @@ async function sign(data: string) {
 }
 
 export async function createAdminSessionToken() {
+  if (getAdminSessionSecretMode() === "missing-required") {
+    throw new Error("ADMIN_SESSION_SECRET is required before creating admin sessions.");
+  }
+
   const header = base64UrlEncode(JSON.stringify({ alg: "HS256", typ: "JWT" }));
   const payload = base64UrlEncode(
     JSON.stringify({
@@ -81,6 +93,10 @@ export async function createAdminSessionToken() {
 }
 
 export async function verifyAdminSession(token: string) {
+  if (getAdminSessionSecretMode() === "missing-required") {
+    return false;
+  }
+
   const [header, payload, signature] = token.split(".");
 
   if (!header || !payload || !signature) {
