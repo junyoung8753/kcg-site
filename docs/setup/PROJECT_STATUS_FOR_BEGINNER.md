@@ -19,8 +19,9 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## Current Snapshot
 
-- 현재 공식 작업 버전: `v0.2.77`
-- 최신 변경 제목: `Font preload and image priority performance pass`
+- 현재 공식 작업 버전: `v0.2.78`
+- 최신 변경 제목: `System font first-visit performance pass`
+- 이전 변경 제목: `Font preload and image priority performance pass`
 - 이전 변경 제목: `Post-v0.2.75 operational risk ledger`
 - 이전 변경 제목: `Admin/public product catalog parity`
 - 이전 변경 제목: `One-click media image replacement`
@@ -55,14 +56,15 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 - 그 이전 변경 제목: `Public UI wrap and token stability polish`
 - 그 이전 변경 제목: `Silverbar guide and campaign banner correction`
 - 현재 작업 브랜치: `codex/kcg-launch-readiness-catalog-20260427`
-- 이번 작업 버전: `v0.2.77`
-- 직전 버전: `v0.2.76`
+- 이번 작업 버전: `v0.2.78`
+- 직전 버전: `v0.2.77`
 - 작업 전 HEAD: `0d4d391` 이후 v0.2.29 live 보정 커밋 기준
 - 백업 브랜치: `backup/pre-v0.2.4-operations-product-audit` (`v0.2.4`와 `v0.2.5` 문서 보강 전으로 크게 돌아가는 책갈피)
 
 ## 실제 사이트 반영 여부
 
-- 이번 `v0.2.77`에서 실제 운영 페이지 화면이 새로 바뀌는 것: 의도한 디자인 변경은 없다. 모바일 첫 방문에서 큰 한글 font preload가 먼저 잡히는 부담을 줄이고, Next.js 16 기준에 맞춰 이미지 `priority` 사용을 `preload`/`loading="eager"`로 정리했다. 업로드 테스트는 8MB급 파일 기준으로 로컬에서 다시 통과했고, TradingView disclosure 준비 신호도 더 안정화했다. 공개 `/prices`, 실제 가격값, 가격 산식 의미, Supabase 가격 행, 검색 노출 상태, DNS, 인증/비밀값, production DB schema/data는 바꾸지 않았다.
+- 이번 `v0.2.78`에서 실제 운영 페이지 화면이 새로 바뀌는 것: 글꼴 렌더링이 각 기기의 OS 기본 한글 UI 글꼴 기준으로 바뀔 수 있다. 의도는 디자인 방향 변경이 아니라 홈 첫 방문에서 확인된 Pretendard variable WOFF2 약 2.06MB 다운로드를 없애는 것이다. 공개 `/prices`, 실제 가격값, 가격 산식 의미, 상품/매입 구성, 업로드 저장 로직, Supabase 가격 행, 검색 노출 상태, DNS, 인증/비밀값, production DB schema/data는 바꾸지 않았다.
+- 이전 snapshot text: 이번 `v0.2.77`에서 실제 운영 페이지 화면이 새로 바뀌는 것: 의도한 디자인 변경은 없다. 모바일 첫 방문에서 큰 한글 font preload가 먼저 잡히는 부담을 줄이고, Next.js 16 기준에 맞춰 이미지 `priority` 사용을 `preload`/`loading="eager"`로 정리했다. 업로드 테스트는 8MB급 파일 기준으로 로컬에서 다시 통과했고, TradingView disclosure 준비 신호도 더 안정화했다. 공개 `/prices`, 실제 가격값, 가격 산식 의미, Supabase 가격 행, 검색 노출 상태, DNS, 인증/비밀값, production DB schema/data는 바꾸지 않았다.
 - 이전 snapshot text: 이번 `v0.2.76`에서 실제 운영 페이지 화면이 새로 바뀌는 것: 없음. `v0.2.75`에서 이미 배포된 화면을 더 수정하지 않고, 운영 리스크를 문서와 source audit으로 고정했다. `/admin/products`는 상품별 사진, `/admin/media`는 배너/페이지 이미지 담당이라는 기준, raw/legacy Supabase 상품 행은 삭제하지 않고 `hidden/stale data`로 제외한다는 기준, `KCG-TODO-124` owner SQL과 production write smoke는 별도 승인 Gate라는 기준을 기록했다. 공개 `/prices`, 실제 가격값, 가격 산식 의미, Supabase 가격 행, 검색 노출 상태, DNS, 인증/비밀값, production DB schema/data는 바꾸지 않았다.
 - 이전 snapshot text: 이번 `v0.2.75`에서 실제 운영 페이지 화면이 새로 바뀌는 것: 관리자 `/admin/products` 기본 목록과 `/admin/media` 상품 요약이 고객 화면 `/products`와 같은 7개 상품/매입 기준으로 보인다. 보이는 항목은 `KCG 골드바 1돈`, `KCG 골드바 2돈`, `KCG 골드바 3돈`, `KCG 골드바 5돈`, `KCG 골드바 10돈`, `고금 주얼리 매입`, `대량 골드바 상담`이다. `KCG 골드바 1g`, `순금 카드 1g`, `14K 주얼리 매입`, `순금 기념메달`처럼 고객 화면에서 숨긴 raw/legacy 항목은 기본 관리자 상품 목록에도 나오지 않는다. 공개 `/prices`, 실제 가격값, 가격 산식 의미, Supabase 가격 행, 검색 노출 상태, DNS, 인증/비밀값은 바꾸지 않았다.
 - 이전 snapshot text: 이번 `v0.2.74`에서 실제 운영 페이지 화면이 새로 바뀌는 것: 관리자 `/admin/media`에서 홈 배너, 상품/매입 상단, 서비스, 매장안내, 회사소개 이미지를 바꿀 때 기본 화면은 `위치 선택 -> 파일 선택 -> 이 이미지로 바로 반영` 흐름만 보인다. 이미지 이름, 대체 텍스트, 업로드 자산 재선택, 수동 연결 같은 내부/고급 필드는 `고급 정보 보기`와 `고급 연결 열기` 안에 접혀 있다. 상품별 사진은 `/admin/products`에서 `이 사진으로 바로 교체`를 쓴다. 공개 `/products`와 `/prices`, 실제 가격값, 가격 산식 의미, Supabase 가격 행, 검색 노출 상태, DNS, 인증/비밀값은 바꾸지 않았다.
@@ -117,14 +119,14 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 - 이전 snapshot text: 이번 `v0.2.26`에서 실제 사이트 화면이 새로 바뀌는 것: 없음. Junyoung이 제공한 `KCG 이미지` 폴더는 `docs/brand/kcg-image-intake-2026-05-08.md`에 승인 전 후보로 정리했고, raw KakaoTalk 파일이 served `public` tree 어디에도 바로 들어오지 못하도록 audit guardrail을 추가했다.
 - 이번 배포에 포함되어 live에서도 보이는 이전 source 변경: `v0.2.18` 상담 도우미와 모바일 하단 고정 CTA에는 `상담` 버튼, `v0.2.20` `KCG_PUBLIC_SEARCH_APPROVED=1` 공개 승인 checklist와 `상담 기준 공임` label, `v0.2.21` 공개 승인 게이트 guard, `v0.2.22` `/admin/products`의 `이미지 성격` 구분, `v0.2.23` `/admin/launch` 운영 상태 구분(`소스 QA`, `라이브 리뷰 반영`, `공개 검색 런칭`), `v0.2.24` `/admin/products`의 `이미지 확인 필터`(`실사진 확인`, `교체 대상`, `권한 검증`, `이미지 없음`), `v0.2.25` admin products 모바일 이미지 근거, `v0.2.28` public `상담용 대표 이미지` 안내.
 - 이번 배포와 별개로 아직 source/계획 기준만 남은 것: OpenAI API key, SMS 자동 발송, Kakao 공식 채널 URL, KRX/Koscom 승인·계약 경로는 준비 기준만 추가됐다.
-- 배포된 것: latest live review는 `v0.2.77` 기준이며, `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`에 alias되어 있다. 이 deploy는 검색 런칭이 아니며 noindex/robots 차단은 유지된다.
+- 배포된 것: latest live review는 아직 `v0.2.77` 기준이다. 이번 `v0.2.78`은 검증 후 같은 noindex-protected live review URL에 배포할 예정이다. `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`는 검색 런칭이 아니며 noindex/robots 차단은 유지된다.
 - 아직 배포 안 된 것: 기존 Vercel project transfer, 기존 Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제, KRX API 승인/키/env/실제 provider 연결, 실제 상품 공임/최종 판매정책 확정, 유료 서버/API 결제는 아직 별도 작업. `v0.2.54` 후보 이미지는 candidate/report 용도이며 active UI 연결이나 approved 승격은 하지 않았다.
 - 내가 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` 검토 화면. 검색 노출은 아직 차단.
 - 아직 내부 기준/계획일 뿐인 것: `kcgoldx@gmail.com`으로 진행할 KRX/Koscom 승인 결과, KRX 공개·상업 표시 범위, 최종 전문 상품 촬영/재고·보증서·포장 정책, product image replacement map approval decision, 실제 상품 공임/최종 판매정책/검색 노출 승인, 회사 Vercel/Supabase 기존 프로젝트 이전 실행, 유료 서버/API가 필요할 때 회사 카드 입력, 선택적 Google Workspace/domain-mail 결제
-- 이번 작업에서 건드린 범위: `v0.2.75` 이후 운영 리스크 ledger, `/admin/products`와 `/admin/media` 이미지 담당 기준, hidden/stale raw DB row 정책, `KCG-TODO-124` owner SQL 계획, production write-smoke opt-in 정책, read-only QA 기준, handoff/changelog/status/open-task 정리, `package.json`
+- 이번 작업에서 건드린 범위: `next/font/local` 제거, OS 기본 한글 글꼴 스택 전환, Pretendard font bundle 제거, font 정책 문서/source audit guard, handoff/changelog/status/open-task 정리, `package.json`
 - 절대 건드리지 않은 범위: 실제 가격값/가격 산식 의미 확정, 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, SMS 발송, Kakao credential, OpenAI key/env 입력, Vercel env/secret 값 변경, 실제 KRX API 호출, 실제 KRX key/env 입력
 - 배포 기본값: 2026-05-06 KST 기준 junyoung은 KCG 사이트 변경을 완료·검증하면 live 배포까지 진행하라고 지시했다. 단, 검색 노출/noindex 해제, 결제/장바구니/실시간 거래, secret/env 변경, 되돌리기 어려운 인프라 변경은 여전히 별도 승인 대상이다.
-- 이번 검증 결과: `v0.2.76`는 로컬 `npm run audit:site` (`2674 checks, 1 skipped`), `npm run lint`, `npm run typecheck`, `npm run release:trace`, `npm audit --audit-level=moderate` (`0 vulnerabilities`), `npm run build`, `npm run test:site` (`36 passed`), `npm run screenshot:admin`, `npm run qa:site` (`2746 checks, 0 skipped`; Playwright `34 passed, 2 skipped`)를 통과했다. Live read-only 검증도 통과했다: Vercel inspect ready, release-state forced noindex, live audit `2746 checks, 0 skipped`, live Playwright `34 passed, 2 skipped`. Production write smoke는 의도적으로 실행하지 않았다.
+- 이번 검증 결과: `v0.2.78` 로컬 production 빌드 smoke에서 `/`, `/prices`, `/products` 모두 `fontEncoded=0`, `appWoff2=0`으로 확인됐다. 최종 QA와 live 배포 후 smoke가 끝나면 이 줄을 다시 최종 결과로 갱신한다. Production write smoke는 별도 승인 Gate라 기본 실행하지 않는다.
 
 ## Easy Words
 
@@ -142,8 +144,8 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 | 구분 | 이름 | 쉬운 설명 | 내가 봐야 하는 경우 |
 |---|---|---|---|
-| 현재 작업 버전 | `v0.2.76` | Post-v0.2.75 operational risk ledger | 이번 변경 확인 |
-| 이전 버전 | `v0.2.75` | Admin/public product catalog parity | 비교/이전 상태 확인 |
+| 현재 작업 버전 | `v0.2.78` | System font first-visit performance pass | 이번 변경 확인 |
+| 이전 버전 | `v0.2.77` | Font preload and image priority performance pass | 비교/이전 상태 확인 |
 | 백업 브랜치 | `backup/pre-v0.2.4-operations-product-audit` | `v0.2.4`와 `v0.2.5` 문서 보강 전으로 돌아가는 책갈피 | 크게 되돌릴 때 |
 | 현재 작업 브랜치 | `codex/kcg-launch-readiness-catalog-20260427` | 지금 Codex가 작업 중인 줄기 | 상태 확인 |
 | handoff | `CURRENT_HANDOFF.md` | 다음 작업자에게 넘기는 현재 상태 메모 | 이어서 작업할 때 |

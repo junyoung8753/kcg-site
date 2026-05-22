@@ -1,16 +1,7 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import { canExposeToSearch } from "@/lib/public-launch";
 import { siteConfig } from "@/lib/site-config";
-
-const pretendard = localFont({
-  src: "./fonts/PretendardVariable.woff2",
-  variable: "--font-pretendard",
-  weight: "45 920",
-  display: "swap",
-  preload: false,
-});
 
 const socialImage = {
   url: "/campaign/kcg-approved-goldbar-lineup-reflection-20260517.jpg",
@@ -93,10 +84,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="ko"
-      className={`${pretendard.variable} h-full scroll-smooth antialiased`}
-    >
+    <html lang="ko" className="h-full scroll-smooth antialiased">
       <body className="min-h-full bg-[var(--color-ivory)] text-[var(--color-ink)]">
         <script
           type="application/ld+json"

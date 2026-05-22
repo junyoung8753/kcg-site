@@ -8,6 +8,32 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.78 - System font first-visit performance pass
+
+- Date: `2026-05-22 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: not deployed yet in this working pass. This change is still a noindex-protected review change and does not include production write smoke, DB schema/data change, secret/env change, noindex/search release, DNS/project transfer, payment, checkout/cart, or live trading.
+- 사람이 읽는 요약: live 모바일 성능 smoke에서 홈 첫 방문이 여전히 Pretendard variable WOFF2 약 2.06MB를 내려받는 것을 확인했다. `next/font/local`과 로컬 Pretendard 바이너리를 제거하고, OS 기본 한글 글꼴 스택으로 전환해 첫 방문 font transfer를 없앤다. 공개 가격값, 상품/매입 구성, 업로드 저장 로직, 검색/noindex, DB, 인증/비밀값은 바꾸지 않는다.
+- Summary: Removes the bundled local Pretendard font from the active app and switches public/admin typography to a system Korean font stack after live performance smoke showed the full 2.06MB WOFF2 still downloading on first visit.
+- Changed:
+  - Removed `next/font/local` usage from `src/app/layout.tsx`.
+  - Replaced the CSS font variables with a system Korean UI font stack in `src/app/globals.css`.
+  - Removed the bundled `src/app/fonts/PretendardVariable.woff2` file from the active app.
+  - Updated the font policy doc and source audit guardrails so large bundled Korean fonts are not silently reintroduced.
+  - Bumped package version to `0.2.78`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 바뀔 수 있는 것: 글꼴 렌더링은 각 기기의 기본 한글 UI 글꼴 기준으로 바뀐다. 의도는 시각 방향 변경이 아니라 첫 방문 리소스 부담 제거다.
+  - 실제 사이트 화면은 안 바뀌는 것: 공개 가격값, 가격 산식 의미, 상품/매입 구성, 업로드 저장 로직, Supabase 가격 행/이력 행, 검색/noindex 차단, robots, DNS, 결제/장바구니, 실시간 거래, 인증/비밀값, production DB schema/data.
+- Verification:
+  - Current Next.js docs checked through Context7 for Next.js `v16.2.2`: local fonts are emitted by `next/font/local`; `preload: false` only prevents preload and does not remove later CSS font download. System font stack avoids a bundled local font request.
+  - Pre-change live mobile smoke on `https://kcgold.co.kr`: `/` first visit transferred about `2,484,786` bytes total with about `2,057,988` bytes from font resources; `/prices` and `/products` reused cached font in the same browser context.
+  - Local production-build mobile performance smoke on port `4315` confirmed no app WOFF2/font transfer: `/` `totalEncoded=509537`, `fontEncoded=0`, `appWoff2=0`, LCP about `196ms`; `/prices` `totalEncoded=1191157`, `fontEncoded=0`, `appWoff2=0`, LCP about `180ms`; `/products` `totalEncoded=565844`, `fontEncoded=0`, `appWoff2=0`, LCP about `132ms`.
+  - Final local QA and live verification are pending in this working pass.
+- Rollback Hint: `v0.2.78 시스템 폰트 전환 전으로 되돌려줘`
+- Remaining User-only / Later:
+  - Production write smoke remains opt-in and requires explicit approval before mutating live review storage/metadata.
+  - If KCG later wants a custom brand font again, evaluate a smaller Korean subset/weight plan first instead of restoring the full variable WOFF2.
+
 ## v0.2.77 - Font preload and image priority performance pass
 
 - Date: `2026-05-22 KST`

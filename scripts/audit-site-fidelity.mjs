@@ -872,7 +872,7 @@ expectFile("docs/audit/quarantined-assets.md", { minBytes: 1_000 });
 expectFile("src/data/imageAssetManifest.json", { minBytes: 2_000 });
 validateImageAssetManifest();
 validateGoldbarSkuImageLockSnapshot();
-expectFile("src/app/fonts/PretendardVariable.woff2", { minBytes: 1_500_000 });
+expectMissing("src/app/fonts/PretendardVariable.woff2");
 expectFile("scripts/render-open-tasks-dashboard.mjs", { minBytes: 5_000 });
 expectFile("scripts/check-external-services.mjs", { minBytes: 2_000 });
 expectFile("scripts/run-rendered-site-audit.mjs", { minBytes: 2_000 });
@@ -1756,7 +1756,7 @@ expectNoText("src/components/market/price-lineup.tsx", [
   "activeSlide.body",
 ]);
 expectText("src/app/globals.css", [
-  "--font-pretendard",
+  "system-ui",
   "kcg-hero-copy-in",
   ".kcg-hero-copy",
   ".kcg-hero-heading",
@@ -2116,9 +2116,6 @@ expectNoText("src/lib/launch-readiness.ts", ["Gabia", "Whois DNS"]);
 expectText("src/app/robots.ts", ["canExposeToSearch"]);
 expectText("src/app/sitemap.ts", ["canExposeToSearch"]);
 expectText("src/app/layout.tsx", [
-  "next/font/local",
-  "PretendardVariable.woff2",
-  "preload: false",
   "canExposeToSearch",
   "summary_large_image",
   "kcg-approved-goldbar-lineup-reflection-20260517.jpg",
@@ -2127,7 +2124,13 @@ expectText("src/app/layout.tsx", [
   "JewelryStore",
   "sameAs",
 ]);
-expectNoText("src/app/layout.tsx", ["next/font/google", "IBM_Plex_Sans_KR", "Inter({"]);
+expectNoText("src/app/layout.tsx", [
+  "next/font/google",
+  "next/font/local",
+  "PretendardVariable.woff2",
+  "IBM_Plex_Sans_KR",
+  "Inter({",
+]);
 expectNoText("src/components/layout/site-header.tsx", ["priority"]);
 expectNoText("src/components/market/price-lineup.tsx", ["priority"]);
 expectNoText("src/app/(site)/about/page.tsx", ["priority"]);
@@ -2135,7 +2138,7 @@ expectNoText("src/app/(site)/services/page.tsx", ["priority"]);
 expectNoText("src/app/(site)/company/page.tsx", ["priority"]);
 expectNoText("src/app/(site)/products/page.tsx", ["priority"]);
 expectNoText("src/app/(site)/products/[slug]/page.tsx", ["priority"]);
-expectText("docs/brand/font-license.md", ["Font preloading is disabled"]);
+expectText("docs/brand/font-license.md", ["System font stack", "no bundled Korean font download"]);
 expectText("src/app/api/health/route.ts", [
   "launchReadiness",
   "getSearchExposureStatus",

@@ -1,18 +1,37 @@
-# KCG Font Source
+# KCG Font Policy
 
-KCG uses `Pretendard Variable` as the primary Korean UI font for public and admin screens.
+KCG uses a System font stack for public and admin screens, with no bundled Korean font download.
+
+## Current Production Policy
+
+- Primary stack: `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `Segoe UI`, `Apple SD Gothic Neo`, `Malgun Gothic`, `sans-serif`
+- Runtime font dependency: none
+- Bundled Korean font download: none
+- Main implementation files: `src/app/layout.tsx` and `src/app/globals.css`
+
+This keeps the site independent from Google Fonts, CDN fonts, and a large local
+Korean variable font file. The goal is faster first visits on mobile while
+preserving a familiar Korean interface on macOS, iOS, Windows, and Android.
+
+## Retired Pretendard Bundle
+
+Earlier KCG versions bundled `PretendardVariable.woff2` from the official
+Pretendard repository:
 
 - Source: https://github.com/orioncactus/pretendard
-- File used: `packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2`
-- Version source: `v1.3.9`
+- Previous file source: `packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2`
+- Previous version source: `v1.3.9`
 - License: SIL Open Font License 1.1
-- Local file: `src/app/fonts/PretendardVariable.woff2`
+- Previous local file: `src/app/fonts/PretendardVariable.woff2`
 
-Use `next/font/local` so the site does not depend on runtime Google Fonts or CDN font requests. Keep `Apple SD Gothic Neo`, `Malgun Gothic`, and `sans-serif` as fallbacks.
+That local font was removed from the active app after live performance smoke
+showed the full variable WOFF2 still downloaded at about 2.06MB on first visit
+even when preloading was disabled.
 
-Implementation rule:
+## Guardrails
 
 - Do not reintroduce runtime Google Font imports for the main UI font.
-- Keep the variable font file in the app tree so Next.js can optimize it. Font preloading is disabled in `src/app/layout.tsx` so first-time mobile visits do not fetch the full Korean variable font before critical content.
-- If the font is updated, download from the official Pretendard repository release/tag and keep the license reference here.
-- Do not edit the font binary or rename it in a way that breaks the `src/app/layout.tsx` `localFont` configuration.
+- Do not add a large bundled Korean font unless there is a measured design need
+  and a smaller subset/weight plan.
+- If a custom font returns later, verify the first-visit font transfer budget,
+  mobile screenshots, and `npm run audit:site`.
