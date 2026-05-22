@@ -8,16 +8,7 @@ export function TradingViewDisclosure() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      const details = detailsRef.current;
-      if (!details) return;
-      details.setAttribute("data-kcg-disclosure-ready", "true");
-      if (details.open) {
-        setIsOpen(true);
-      }
-    }, 0);
-
-    return () => window.clearTimeout(timeout);
+    detailsRef.current?.setAttribute("data-kcg-disclosure-ready", "true");
   }, []);
 
   return (

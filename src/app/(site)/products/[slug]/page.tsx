@@ -120,7 +120,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 className={getDetailImageClass(product, productImage.role)}
                 sizes="(min-width: 1024px) 48vw, 100vw"
                 data-image-role={productImage.role}
-                priority
+                preload
               />
             ) : (
               <ProductDetailTrustPlaceholder />

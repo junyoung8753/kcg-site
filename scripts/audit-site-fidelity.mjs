@@ -2118,6 +2118,7 @@ expectText("src/app/sitemap.ts", ["canExposeToSearch"]);
 expectText("src/app/layout.tsx", [
   "next/font/local",
   "PretendardVariable.woff2",
+  "preload: false",
   "canExposeToSearch",
   "summary_large_image",
   "kcg-approved-goldbar-lineup-reflection-20260517.jpg",
@@ -2127,6 +2128,14 @@ expectText("src/app/layout.tsx", [
   "sameAs",
 ]);
 expectNoText("src/app/layout.tsx", ["next/font/google", "IBM_Plex_Sans_KR", "Inter({"]);
+expectNoText("src/components/layout/site-header.tsx", ["priority"]);
+expectNoText("src/components/market/price-lineup.tsx", ["priority"]);
+expectNoText("src/app/(site)/about/page.tsx", ["priority"]);
+expectNoText("src/app/(site)/services/page.tsx", ["priority"]);
+expectNoText("src/app/(site)/company/page.tsx", ["priority"]);
+expectNoText("src/app/(site)/products/page.tsx", ["priority"]);
+expectNoText("src/app/(site)/products/[slug]/page.tsx", ["priority"]);
+expectText("docs/brand/font-license.md", ["Font preloading is disabled"]);
 expectText("src/app/api/health/route.ts", [
   "launchReadiness",
   "getSearchExposureStatus",

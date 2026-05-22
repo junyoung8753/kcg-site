@@ -13,6 +13,6 @@ Use `next/font/local` so the site does not depend on runtime Google Fonts or CDN
 Implementation rule:
 
 - Do not reintroduce runtime Google Font imports for the main UI font.
-- Keep the variable font file in the app tree so Next.js can preload and optimize it.
+- Keep the variable font file in the app tree so Next.js can optimize it. Font preloading is disabled in `src/app/layout.tsx` so first-time mobile visits do not fetch the full Korean variable font before critical content.
 - If the font is updated, download from the official Pretendard repository release/tag and keep the license reference here.
 - Do not edit the font binary or rename it in a way that breaks the `src/app/layout.tsx` `localFont` configuration.

@@ -27,7 +27,7 @@ export default async function CompanyPage() {
               src={heroImage.src}
               alt={heroImage.alt}
               fill
-              priority
+              preload
               className={heroImage.fit === "contain" ? "object-contain p-4 sm:p-5" : "object-cover"}
               style={{ objectPosition: heroImage.objectPosition }}
               sizes="(min-width: 1024px) 42vw, 100vw"

@@ -14,7 +14,7 @@ export function SiteHeader() {
               fill
               className="object-contain"
               sizes="48px"
-              priority
+              loading="eager"
             />
           </span>
           <span className="relative hidden h-[3.35rem] w-[23rem] shrink-0 sm:block">
@@ -24,7 +24,7 @@ export function SiteHeader() {
               fill
               className="object-contain object-left"
               sizes="368px"
-              priority
+              loading="eager"
             />
           </span>
           <span className="min-w-0 sm:hidden">

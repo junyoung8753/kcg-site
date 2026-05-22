@@ -8,10 +8,37 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.77 - Font preload and image priority performance pass
+
+- Date: `2026-05-22 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: not deployed yet in this working pass. This remains a noindex-protected review change and does not include production write smoke, DB schema/data change, secret/env change, noindex/search release, DNS/project transfer, payment, checkout/cart, or live trading.
+- 사람이 읽는 요약: 업로드/기능/속도 점검을 다시 하면서 첫 방문 모바일에서 큰 한글 variable font가 먼저 preload되는 부담을 줄였다. Next.js 16 기준에 맞춰 `next/image`의 legacy `priority` 사용을 정리했고, TradingView disclosure 준비 표시도 더 단순하게 안정화했다. 상품/가격/검색/DB/인증 값은 바꾸지 않았다.
+- Summary: Disables local Pretendard font preloading, replaces legacy Next Image priority usage with current preload/eager semantics, and hardens the TradingView disclosure readiness guard after upload/function/performance QA.
+- Changed:
+  - Set `preload: false` on the local Pretendard font so first-time mobile visits do not emit a large font preload before critical content.
+  - Replaced remaining route hero and campaign `priority` props with current Next.js `preload` where the image is the intended above-the-fold visual, and `loading="eager"` for small logo/lockup images.
+  - Stabilized the TradingView disclosure readiness marker by removing the delayed timer and synchronizing the ready attribute directly after hydration.
+  - Added source audit guardrails to keep the font preload policy and legacy image `priority` cleanup from regressing.
+  - Bumped package version to `0.2.77`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 새로 바뀌는 것: 의도한 시각 디자인 변경은 없음. 브라우저가 초기 리소스를 받는 순서와 TradingView disclosure 준비 신호만 안정화된다.
+  - 실제 사이트 화면은 안 바뀌는 것: 공개 가격값, 가격 산식 의미, Supabase 가격 행/이력 행, 검색/noindex 차단, robots, DNS, 결제/장바구니, 실시간 거래, 인증/비밀값, production DB schema/data.
+- Verification:
+  - Current Next.js docs checked through Context7 for Next.js `v16.2.2`: Image `priority` is deprecated in favor of `preload`, and `next/font/local` can set `preload: false`.
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2683 checks, 1 skipped` source-only), `npm run build`, `npx playwright test tests/admin-upload.spec.ts --workers=1` (`2 passed`), `npm run test:site` (`36 passed`), `npm audit --audit-level=moderate` (`0 vulnerabilities`), `npm run screenshot:admin`, `npm run screenshot:site`, and `npm run qa:site` (`2755 checks, 0 skipped`; Playwright `34 passed, 2 skipped`; screenshots refreshed).
+  - Local production-build mobile performance smoke on port `3052` measured low preload/link transfer after the change: `/` `linkBytes=121415`, LCP image at about `356ms`; `/prices` `linkBytes=72919`, LCP about `212ms`; `/products` `linkBytes=71025`, LCP image about `120ms`. The full Pretendard WOFF2 still downloads later through CSS, so font subsetting remains a future optimization candidate.
+  - Screenshot inspection passed for `home-mobile-viewport.png`, `home-desktop-viewport.png`, `products-mobile-viewport.png`, and `prices-mobile-viewport.png`.
+  - Production write smoke was not run in this pass.
+- Rollback Hint: `v0.2.77 폰트 preload와 이미지 priority 정리 전으로 되돌려줘`
+- Remaining User-only / Later:
+  - Production write smoke remains opt-in and requires explicit approval before mutating live review storage/metadata.
+  - Further speed improvement should evaluate a smaller Korean font subset or system-font fallback because the full Pretendard variable WOFF2 is still about `2.06MB` when fetched through CSS.
+
 ## v0.2.76 - Post-v0.2.75 operational risk ledger
 
 - Date: `2026-05-21 KST`
-- Commit: not committed yet in this working pass.
+- Commit: `1a04a48`
 - Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; final deployment `dpl_EhwBtXeXKedmAJCcP2UeBfgDkEe2` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not include production write smoke, DB schema/data change, secret/env change, noindex/search release, DNS/project transfer, payment, checkout/cart, or live trading.
 - 사람이 읽는 요약: `v0.2.75`에서 이미 배포된 관리자/공개 상품 기준 일치 작업을 더 건드리는 대신, 남은 리스크를 문서와 source audit으로 분리했다. 공개 상품 기준은 `getPublicCatalogProducts()`와 public image presenter로 고정하고, raw/legacy Supabase 상품 행은 삭제하지 않고 `hidden/stale data`로 문서화했다. `KCG-TODO-124` production media DB schema 적용과 production write smoke는 별도 승인 Gate로 남겼다.
 - Summary: Adds a post-release operational risk ledger and executable documentation guardrails for admin/public catalog parity, hidden legacy rows, media DB owner-SQL planning, opt-in upload smoke policy, and read-only live QA baselines.

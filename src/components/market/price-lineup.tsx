@@ -413,7 +413,7 @@ export function PriceLineup({
                       src={slide.image}
                       alt={slide.alt}
                       fill
-                      priority={index === 0}
+                      preload={index === 0}
                       className="object-cover"
                       style={{ objectPosition: slide.objectPosition }}
                       sizes="100vw"
@@ -476,7 +476,7 @@ export function PriceLineup({
                       fill
                       className="object-contain object-left"
                       sizes="(max-width: 640px) 224px, 288px"
-                      priority
+                      loading="eager"
                     />
                   </div>
                   <p className="kcg-eyebrow mt-4 text-[#9b7700]">

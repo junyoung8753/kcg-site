@@ -1,6 +1,6 @@
 # KCG Project Status For Beginner
 
-Last updated: 2026-05-21 KST.
+Last updated: 2026-05-22 KST.
 
 This file is for junyoung when Git, branch, version, handoff, changelog, rollback, and open tasks feel confusing. It explains the current KCG site status in plain language.
 
@@ -19,8 +19,9 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 
 ## Current Snapshot
 
-- 현재 공식 작업 버전: `v0.2.76`
-- 최신 변경 제목: `Post-v0.2.75 operational risk ledger`
+- 현재 공식 작업 버전: `v0.2.77`
+- 최신 변경 제목: `Font preload and image priority performance pass`
+- 이전 변경 제목: `Post-v0.2.75 operational risk ledger`
 - 이전 변경 제목: `Admin/public product catalog parity`
 - 이전 변경 제목: `One-click media image replacement`
 - 이전 변경 제목: `One-click admin product image replacement`
@@ -54,14 +55,15 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 - 그 이전 변경 제목: `Public UI wrap and token stability polish`
 - 그 이전 변경 제목: `Silverbar guide and campaign banner correction`
 - 현재 작업 브랜치: `codex/kcg-launch-readiness-catalog-20260427`
-- 이번 작업 버전: `v0.2.76`
-- 직전 버전: `v0.2.75`
+- 이번 작업 버전: `v0.2.77`
+- 직전 버전: `v0.2.76`
 - 작업 전 HEAD: `0d4d391` 이후 v0.2.29 live 보정 커밋 기준
 - 백업 브랜치: `backup/pre-v0.2.4-operations-product-audit` (`v0.2.4`와 `v0.2.5` 문서 보강 전으로 크게 돌아가는 책갈피)
 
 ## 실제 사이트 반영 여부
 
-- 이번 `v0.2.76`에서 실제 운영 페이지 화면이 새로 바뀌는 것: 없음. `v0.2.75`에서 이미 배포된 화면을 더 수정하지 않고, 운영 리스크를 문서와 source audit으로 고정했다. `/admin/products`는 상품별 사진, `/admin/media`는 배너/페이지 이미지 담당이라는 기준, raw/legacy Supabase 상품 행은 삭제하지 않고 `hidden/stale data`로 제외한다는 기준, `KCG-TODO-124` owner SQL과 production write smoke는 별도 승인 Gate라는 기준을 기록했다. 공개 `/prices`, 실제 가격값, 가격 산식 의미, Supabase 가격 행, 검색 노출 상태, DNS, 인증/비밀값, production DB schema/data는 바꾸지 않았다.
+- 이번 `v0.2.77`에서 실제 운영 페이지 화면이 새로 바뀌는 것: 의도한 디자인 변경은 없다. 모바일 첫 방문에서 큰 한글 font preload가 먼저 잡히는 부담을 줄이고, Next.js 16 기준에 맞춰 이미지 `priority` 사용을 `preload`/`loading="eager"`로 정리했다. 업로드 테스트는 8MB급 파일 기준으로 로컬에서 다시 통과했고, TradingView disclosure 준비 신호도 더 안정화했다. 공개 `/prices`, 실제 가격값, 가격 산식 의미, Supabase 가격 행, 검색 노출 상태, DNS, 인증/비밀값, production DB schema/data는 바꾸지 않았다.
+- 이전 snapshot text: 이번 `v0.2.76`에서 실제 운영 페이지 화면이 새로 바뀌는 것: 없음. `v0.2.75`에서 이미 배포된 화면을 더 수정하지 않고, 운영 리스크를 문서와 source audit으로 고정했다. `/admin/products`는 상품별 사진, `/admin/media`는 배너/페이지 이미지 담당이라는 기준, raw/legacy Supabase 상품 행은 삭제하지 않고 `hidden/stale data`로 제외한다는 기준, `KCG-TODO-124` owner SQL과 production write smoke는 별도 승인 Gate라는 기준을 기록했다. 공개 `/prices`, 실제 가격값, 가격 산식 의미, Supabase 가격 행, 검색 노출 상태, DNS, 인증/비밀값, production DB schema/data는 바꾸지 않았다.
 - 이전 snapshot text: 이번 `v0.2.75`에서 실제 운영 페이지 화면이 새로 바뀌는 것: 관리자 `/admin/products` 기본 목록과 `/admin/media` 상품 요약이 고객 화면 `/products`와 같은 7개 상품/매입 기준으로 보인다. 보이는 항목은 `KCG 골드바 1돈`, `KCG 골드바 2돈`, `KCG 골드바 3돈`, `KCG 골드바 5돈`, `KCG 골드바 10돈`, `고금 주얼리 매입`, `대량 골드바 상담`이다. `KCG 골드바 1g`, `순금 카드 1g`, `14K 주얼리 매입`, `순금 기념메달`처럼 고객 화면에서 숨긴 raw/legacy 항목은 기본 관리자 상품 목록에도 나오지 않는다. 공개 `/prices`, 실제 가격값, 가격 산식 의미, Supabase 가격 행, 검색 노출 상태, DNS, 인증/비밀값은 바꾸지 않았다.
 - 이전 snapshot text: 이번 `v0.2.74`에서 실제 운영 페이지 화면이 새로 바뀌는 것: 관리자 `/admin/media`에서 홈 배너, 상품/매입 상단, 서비스, 매장안내, 회사소개 이미지를 바꿀 때 기본 화면은 `위치 선택 -> 파일 선택 -> 이 이미지로 바로 반영` 흐름만 보인다. 이미지 이름, 대체 텍스트, 업로드 자산 재선택, 수동 연결 같은 내부/고급 필드는 `고급 정보 보기`와 `고급 연결 열기` 안에 접혀 있다. 상품별 사진은 `/admin/products`에서 `이 사진으로 바로 교체`를 쓴다. 공개 `/products`와 `/prices`, 실제 가격값, 가격 산식 의미, Supabase 가격 행, 검색 노출 상태, DNS, 인증/비밀값은 바꾸지 않았다.
 - 이전 snapshot text: 이번 `v0.2.73`에서 실제 운영 페이지 화면이 새로 바뀌는 것: 관리자 `/admin/products`에서 상품 사진을 바꿀 때 기본 화면은 `상품 선택 -> 파일 선택 -> 이 사진으로 바로 교체` 흐름만 보인다. 업로드 자산 선택, 이미지 slug, 서브카테고리, 상품 정보 편집 같은 내부/고급 필드는 `고급 설정 열기` 안에 접혀 있다. 공개 `/products`와 `/prices`, 실제 가격값, 가격 산식 의미, Supabase 가격 행, 검색 노출 상태, DNS, 인증/비밀값은 바꾸지 않았다.
