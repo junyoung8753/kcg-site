@@ -2774,6 +2774,15 @@ expectText("src/app/admin/media/admin-media-workspace.tsx", [
   "connectSiteAssetUsageAction",
   "updateSiteAssetApprovalAction",
 ]);
+expectNoText("src/app/admin/media/admin-media-workspace.tsx", [
+  'value={`${selectedTarget.shortLabel} 이미지`}',
+]);
+expectText("src/actions/media-actions.ts", [
+  "slugifyStorageSegment",
+  'slugifyStorageSegment(input.assetId || "")',
+  "slugifyStorageSegment(targetKind)",
+  "site-asset",
+]);
 expectText("src/lib/site-asset-upload-client.ts", [
   "createSiteAssetSignedUploadAction",
   "finalizeSiteAssetSignedUploadAction",

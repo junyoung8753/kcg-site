@@ -8,6 +8,33 @@ Versioning rule before public launch: `0.x.x`.
 - Minor: visible workflow, page structure, QA system, data model, or admin operation changes.
 - Patch: small copy, style, guardrail, or bug fixes that do not change the site direction.
 
+## v0.2.79 - Live admin image upload UI smoke hardening
+
+- Date: `2026-05-22 KST`
+- Commit: not committed yet in this working pass.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; final deployment `dpl_36mdQBwgaSGhAAECWK2WjB3WvWiz` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not include production DB schema/data change, secret/env change, noindex/search release, DNS/project transfer, payment, checkout/cart, or live trading.
+- 사람이 읽는 요약: Junyoung의 `KakaoTalk_20260509_082243428_03.png` 8,363,068-byte PNG로 실제 live 관리자 UI를 클릭해 보니 `/admin/products` 상품 사진 교체는 public `/products`와 상품 상세 반영, 원복, cleanup까지 통과했지만 `/admin/media?target=service`는 `upload-error`가 났다. 원인은 미디어 빠른 교체의 숨은 내부 asset id가 `서비스 이미지` 같은 한글 값으로 들어가 Supabase signed upload storage path가 불안정해진 것이다. 운영자가 보는 UI는 유지하고, 내부 저장 slug만 ASCII 안전 값으로 만들며, 테스트가 숨은 값을 강제로 바꾸지 않고 실제 기본 UI 흐름을 검증하게 했다.
+- Summary: Hardens one-click admin media uploads by generating ASCII-safe storage asset slugs and making the upload regression test exercise the real default hidden metadata instead of overriding it.
+- Changed:
+  - Added ASCII-only storage slug generation in `src/actions/media-actions.ts` so operator-facing Korean labels do not become Supabase Storage object path segments.
+  - Changed `/admin/media` quick upload hidden `assetId` from the Korean short label to the stable target id such as `service-image`.
+  - Updated `tests/admin-upload.spec.ts` so product/media upload tests assert the real default hidden asset ids and no longer override them before submit.
+  - Added source audit guardrails so the Korean-label hidden asset id cannot silently return.
+  - Bumped package version to `0.2.79`.
+- 실제 사이트 반영 여부:
+  - 실제 운영 페이지 화면이 새로 바뀌는 것: 없음. `/admin/media`와 `/admin/products`의 보이는 흐름은 그대로 `파일 선택 -> 바로 반영`이다.
+  - 실제 사이트 화면은 안 바뀌는 것: 공개 가격값, 가격 산식 의미, 상품/매입 구성, 검색/noindex 차단, robots, DNS, 결제/장바구니, 실시간 거래, 인증/비밀값, production DB schema/data.
+- Verification:
+  - Live production write UI smoke passed on `https://kcgold.co.kr` with Junyoung's `KakaoTalk_20260509_082243428_03.png` (`8,363,068` bytes): `/admin/products?product=investment-gold-bar-consulting` selected the file as `8.0MB`, returned `status=image-saved`, changed the product row to a `site-assets` public URL, reflected on `/products` and `/products/investment-gold-bar-consulting`, then restored and cleaned up with recent assets `0`.
+  - Live production write UI smoke passed for `/admin/media?target=service`: selected the same `8.0MB` file, returned `status=image-applied`, reflected on `/services`, then removed the uploaded asset/usage with recent assets `0`.
+  - Pre-cleanup found four stale same-filename smoke assets left by earlier failed attempts and removed them before the final proof.
+  - Local checks passed before final deploy: `npm run lint`, `npm run audit:site` (`2688 checks, 1 skipped` source-only), `npm run build`, `npm run typecheck`, `npx playwright test tests/admin-upload.spec.ts --workers=1` (`2 passed`), `npm run test:site` (`36 passed`), `npm run screenshot:admin`, and `npm audit --audit-level=moderate` (`0 vulnerabilities`).
+  - Final live read-only checks passed after final deploy: the temporary internal media upload smoke route returns `404`; `npm run check:release-state` reports `mode=supabase`, `deployment=production`, and `indexing=disabled-forced-noindex`; `npx vercel inspect https://kcgold.co.kr/` reports `dpl_36mdQBwgaSGhAAECWK2WjB3WvWiz` `Ready`; live `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` passed (`2760 checks, 0 skipped`); live `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` passed (`34 passed, 2 skipped`).
+- Rollback Hint: `v0.2.79 관리자 미디어 업로드 ASCII 저장 slug 수정 전으로 되돌려줘`
+- Remaining User-only / Later:
+  - `KCG-TODO-124` remains blocked until Supabase owner/dashboard SQL or owner-authenticated CLI access is available.
+  - Search/noindex release, final admin secret rotation, DNS/project transfer, payment, checkout/cart, and live trading remain separate approval Gates.
+
 ## v0.2.78 - System font first-visit performance pass
 
 - Date: `2026-05-22 KST`

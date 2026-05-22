@@ -8,7 +8,7 @@ import type { ImageAllowedUsage, ImageApprovalStatus, ImageSourceType } from "@/
 import { getCanonicalPublicProductBySlug } from "@/lib/product-presenter";
 import { siteImageUploadAllowedMimeTypes, siteImageUploadMaxBytes } from "@/lib/site-upload-policy";
 import { getSupabaseAdminClient, isSupabaseConfigured } from "@/lib/supabase/server";
-import { ensureNumber, ensureString, slugify, toBoolean } from "@/lib/utils";
+import { ensureNumber, ensureString, toBoolean } from "@/lib/utils";
 import type { SiteAssetUsageSlot } from "@/types/media";
 
 const allowedMimeTypes: ReadonlySet<string> = new Set(siteImageUploadAllowedMimeTypes);
@@ -256,6 +256,16 @@ function getSafeFilename(value: string) {
   return value.replace(/\\/g, "/").split("/").pop()?.trim() || "image";
 }
 
+function slugifyStorageSegment(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 function isSafeStoragePath(value: string, mimeType: string) {
   const extension = getExtension(mimeType);
   return new RegExp(`^uploads/\\d{4}/\\d{2}/[a-z0-9가-힣-]+\\.${extension}$`).test(value);
@@ -366,7 +376,11 @@ function getPreparedUploadMetadata(input: SiteAssetSignedUploadInput, prepared?:
     return null;
   }
 
-  const assetSlug = slugify(input.assetId || `${targetKind}-${originalFilename.replace(/\.[^.]+$/, "")}`) || "site-asset";
+  const assetSlug =
+    slugifyStorageSegment(input.assetId || "") ||
+    slugifyStorageSegment(targetKind) ||
+    slugifyStorageSegment(originalFilename.replace(/\.[^.]+$/, "")) ||
+    "site-asset";
   const now = new Date();
   const monthPath = `${now.getUTCFullYear()}/${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
   const assetId = prepared?.assetId || `${assetSlug}-${now.getTime()}`;

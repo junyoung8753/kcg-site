@@ -298,7 +298,7 @@ export function AdminMediaWorkspace({
           {selectedTarget.allowedUsage.map((usage) => (
             <input key={usage} type="hidden" name="allowedUsage" value={usage} />
           ))}
-          <input type="hidden" name="assetId" value={`${selectedTarget.shortLabel} 이미지`} />
+          <input type="hidden" name="assetId" value={selectedTarget.id} />
           <input type="hidden" name="altText" value={getDefaultAltText(selectedTarget)} />
           <input type="hidden" name="notes" value={getDefaultNotes(selectedTarget)} />
           <p className="admin-compact-label">바로 교체</p>

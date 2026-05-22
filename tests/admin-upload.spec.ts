@@ -296,9 +296,7 @@ test("admin media image upload accepts 8MB-class files and applies to the select
     await expect(page).toHaveURL(/\/admin\/media/);
     await expect(page.getByRole("heading", { name: "서비스 이미지 교체" })).toBeVisible();
     await expect(page.getByTestId("admin-media-upload-form")).toBeVisible();
-    await page.locator('input[name="assetId"]').evaluate((input, value) => {
-      if (input instanceof HTMLInputElement) input.value = value as string;
-    }, smokeAssetPrefix);
+    await expect(page.getByTestId("admin-media-upload-form").locator('input[name="assetId"]')).toHaveValue("service-image");
     await page.locator('input[name="assetFile"]').setInputFiles(uploadPath);
     await expect(page.getByTestId("admin-media-selected-file")).toContainText("선택됨:");
     await expect(page.getByTestId("admin-media-selected-file")).toContainText(originalFilename);
@@ -361,11 +359,9 @@ test("admin product image upload accepts 8MB-class files and returns to the 1돈
 
     await expect(page).toHaveURL(/\/admin\/products/);
     await expect(page.getByTestId("admin-product-image-upload-form")).toBeVisible();
-    if (allowRealUploadSmoke) {
-      await page.locator('input[name="assetId"]').evaluate((input, value) => {
-        if (input instanceof HTMLInputElement) input.value = value as string;
-      }, smokeAssetPrefix);
-    }
+    await expect(page.getByTestId("admin-product-image-upload-form").locator('input[name="assetId"]')).toHaveValue(
+      "investment-gold-bar-consulting-image",
+    );
     await page.locator('input[name="assetFile"]').setInputFiles(uploadPath);
     await expect(page.getByTestId("admin-product-selected-file")).toContainText("선택됨:");
     await expect(page.getByTestId("admin-product-selected-file")).toContainText(originalFilename);
