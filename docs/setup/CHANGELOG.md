@@ -11,8 +11,8 @@ Versioning rule before public launch: `0.x.x`.
 ## v0.2.78 - System font first-visit performance pass
 
 - Date: `2026-05-22 KST`
-- Commit: not committed yet in this working pass.
-- Deploy Status: not deployed yet in this working pass. This change is still a noindex-protected review change and does not include production write smoke, DB schema/data change, secret/env change, noindex/search release, DNS/project transfer, payment, checkout/cart, or live trading.
+- Commit: implementation commit `de15798` (`perf: remove bundled KCG Korean font download`) pushed to `origin/codex/kcg-launch-readiness-catalog-20260427`; deployment-verification trace is recorded in the follow-up documentation commit.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview`; deployment `dpl_AgcdE6TH3avT8d8vjK3DrYXAsoo5` is ready and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not include production write smoke, DB schema/data change, secret/env change, noindex/search release, DNS/project transfer, payment, checkout/cart, or live trading.
 - 사람이 읽는 요약: live 모바일 성능 smoke에서 홈 첫 방문이 여전히 Pretendard variable WOFF2 약 2.06MB를 내려받는 것을 확인했다. `next/font/local`과 로컬 Pretendard 바이너리를 제거하고, OS 기본 한글 글꼴 스택으로 전환해 첫 방문 font transfer를 없앤다. 공개 가격값, 상품/매입 구성, 업로드 저장 로직, 검색/noindex, DB, 인증/비밀값은 바꾸지 않는다.
 - Summary: Removes the bundled local Pretendard font from the active app and switches public/admin typography to a system Korean font stack after live performance smoke showed the full 2.06MB WOFF2 still downloading on first visit.
 - Changed:
@@ -28,7 +28,11 @@ Versioning rule before public launch: `0.x.x`.
   - Current Next.js docs checked through Context7 for Next.js `v16.2.2`: local fonts are emitted by `next/font/local`; `preload: false` only prevents preload and does not remove later CSS font download. System font stack avoids a bundled local font request.
   - Pre-change live mobile smoke on `https://kcgold.co.kr`: `/` first visit transferred about `2,484,786` bytes total with about `2,057,988` bytes from font resources; `/prices` and `/products` reused cached font in the same browser context.
   - Local production-build mobile performance smoke on port `4315` confirmed no app WOFF2/font transfer: `/` `totalEncoded=509537`, `fontEncoded=0`, `appWoff2=0`, LCP about `196ms`; `/prices` `totalEncoded=1191157`, `fontEncoded=0`, `appWoff2=0`, LCP about `180ms`; `/products` `totalEncoded=565844`, `fontEncoded=0`, `appWoff2=0`, LCP about `132ms`.
-  - Final local QA and live verification are pending in this working pass.
+  - Local checks passed: `npm run lint`, `npm run typecheck`, `npm run audit:site` (`2683 checks, 1 skipped` source-only), `npm run build`, `npm run test:site` (`36 passed`), `npm run screenshot:site`, `npm run screenshot:admin`, `npm run qa:site` (`2755 checks, 0 skipped`; Playwright `34 passed, 2 skipped`), `npm audit --audit-level=moderate` (`0 vulnerabilities`), `npm run release:trace`, `git diff --check`, `git diff --cached --check`, and staged secret-pattern scan.
+  - Screenshot inspection passed for `home-mobile-viewport.png`, `home-desktop-viewport.png`, `admin-products-mobile.png`, and `admin-media-mobile.png`.
+  - Live read-only checks passed on `https://kcgold.co.kr`: `npx vercel inspect https://kcgold.co.kr/` reported `dpl_AgcdE6TH3avT8d8vjK3DrYXAsoo5` `Ready`; `npm run check:release-state` reported `mode=supabase`, `deployment=production`, and `indexing=disabled-forced-noindex`; live `SITE_AUDIT_URL=https://kcgold.co.kr npm run audit:site` passed (`2755 checks, 0 skipped`); live `SITE_AUDIT_URL=https://kcgold.co.kr npm run test:site` passed (`34 passed, 2 skipped`).
+  - Live mobile performance smoke confirmed no app WOFF2/font transfer after deploy: `/` `totalEncoded=587331`, `fontEncoded=0`, `appWoff2=0`, LCP about `792ms`; `/prices` `totalEncoded=1187506`, `fontEncoded=0`, `appWoff2=0`, LCP about `492ms`; `/products` `totalEncoded=503322`, `fontEncoded=0`, `appWoff2=0`, LCP about `452ms`.
+  - Production write smoke was intentionally not run in this pass.
 - Rollback Hint: `v0.2.78 시스템 폰트 전환 전으로 되돌려줘`
 - Remaining User-only / Later:
   - Production write smoke remains opt-in and requires explicit approval before mutating live review storage/metadata.

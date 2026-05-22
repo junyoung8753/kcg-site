@@ -119,14 +119,14 @@ This file is for junyoung when Git, branch, version, handoff, changelog, rollbac
 - 이전 snapshot text: 이번 `v0.2.26`에서 실제 사이트 화면이 새로 바뀌는 것: 없음. Junyoung이 제공한 `KCG 이미지` 폴더는 `docs/brand/kcg-image-intake-2026-05-08.md`에 승인 전 후보로 정리했고, raw KakaoTalk 파일이 served `public` tree 어디에도 바로 들어오지 못하도록 audit guardrail을 추가했다.
 - 이번 배포에 포함되어 live에서도 보이는 이전 source 변경: `v0.2.18` 상담 도우미와 모바일 하단 고정 CTA에는 `상담` 버튼, `v0.2.20` `KCG_PUBLIC_SEARCH_APPROVED=1` 공개 승인 checklist와 `상담 기준 공임` label, `v0.2.21` 공개 승인 게이트 guard, `v0.2.22` `/admin/products`의 `이미지 성격` 구분, `v0.2.23` `/admin/launch` 운영 상태 구분(`소스 QA`, `라이브 리뷰 반영`, `공개 검색 런칭`), `v0.2.24` `/admin/products`의 `이미지 확인 필터`(`실사진 확인`, `교체 대상`, `권한 검증`, `이미지 없음`), `v0.2.25` admin products 모바일 이미지 근거, `v0.2.28` public `상담용 대표 이미지` 안내.
 - 이번 배포와 별개로 아직 source/계획 기준만 남은 것: OpenAI API key, SMS 자동 발송, Kakao 공식 채널 URL, KRX/Koscom 승인·계약 경로는 준비 기준만 추가됐다.
-- 배포된 것: latest live review는 아직 `v0.2.77` 기준이다. 이번 `v0.2.78`은 검증 후 같은 noindex-protected live review URL에 배포할 예정이다. `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`는 검색 런칭이 아니며 noindex/robots 차단은 유지된다.
+- 배포된 것: latest live review는 `v0.2.78` 기준이다. Vercel deployment `dpl_AgcdE6TH3avT8d8vjK3DrYXAsoo5`가 `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`에 연결되어 있다. 이것은 검색 런칭이 아니며 noindex/robots 차단은 유지된다.
 - 아직 배포 안 된 것: 기존 Vercel project transfer, 기존 Supabase project transfer, final admin secret rotation, 검색 노출/noindex 해제, KRX API 승인/키/env/실제 provider 연결, 실제 상품 공임/최종 판매정책 확정, 유료 서버/API 결제는 아직 별도 작업. `v0.2.54` 후보 이미지는 candidate/report 용도이며 active UI 연결이나 approved 승격은 하지 않았다.
 - 내가 고객에게 보여줘도 되는 것: noindex-protected live `kcgold.co.kr` 검토 화면. 검색 노출은 아직 차단.
 - 아직 내부 기준/계획일 뿐인 것: `kcgoldx@gmail.com`으로 진행할 KRX/Koscom 승인 결과, KRX 공개·상업 표시 범위, 최종 전문 상품 촬영/재고·보증서·포장 정책, product image replacement map approval decision, 실제 상품 공임/최종 판매정책/검색 노출 승인, 회사 Vercel/Supabase 기존 프로젝트 이전 실행, 유료 서버/API가 필요할 때 회사 카드 입력, 선택적 Google Workspace/domain-mail 결제
 - 이번 작업에서 건드린 범위: `next/font/local` 제거, OS 기본 한글 글꼴 스택 전환, Pretendard font bundle 제거, font 정책 문서/source audit guard, handoff/changelog/status/open-task 정리, `package.json`
 - 절대 건드리지 않은 범위: 실제 가격값/가격 산식 의미 확정, 검색 노출/noindex 해제, 결제/장바구니, 실시간 거래, 경쟁사 시세 수집, SMS 발송, Kakao credential, OpenAI key/env 입력, Vercel env/secret 값 변경, 실제 KRX API 호출, 실제 KRX key/env 입력
 - 배포 기본값: 2026-05-06 KST 기준 junyoung은 KCG 사이트 변경을 완료·검증하면 live 배포까지 진행하라고 지시했다. 단, 검색 노출/noindex 해제, 결제/장바구니/실시간 거래, secret/env 변경, 되돌리기 어려운 인프라 변경은 여전히 별도 승인 대상이다.
-- 이번 검증 결과: `v0.2.78` 로컬 production 빌드 smoke에서 `/`, `/prices`, `/products` 모두 `fontEncoded=0`, `appWoff2=0`으로 확인됐다. 최종 QA와 live 배포 후 smoke가 끝나면 이 줄을 다시 최종 결과로 갱신한다. Production write smoke는 별도 승인 Gate라 기본 실행하지 않는다.
+- 이번 검증 결과: `v0.2.78`는 로컬 QA와 live read-only QA를 통과했다. 로컬 production 빌드 smoke와 live post-deploy smoke 모두 `/`, `/prices`, `/products`에서 `fontEncoded=0`, `appWoff2=0`을 확인했다. Live `check:release-state`, audit, Playwright도 통과했고 noindex/robots 차단은 유지된다. Production write smoke는 별도 승인 Gate라 기본 실행하지 않았다.
 
 ## Easy Words
 
