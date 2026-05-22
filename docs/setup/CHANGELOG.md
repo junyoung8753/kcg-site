@@ -12,7 +12,7 @@ Versioning rule before public launch: `0.x.x`.
 
 - Date: `2026-05-22 KST`
 - Commit: not committed yet in this working pass.
-- Deploy Status: not deployed yet in this working pass. This remains a noindex-protected review change and does not include production write smoke, DB schema/data change, secret/env change, noindex/search release, DNS/project transfer, payment, checkout/cart, or live trading.
+- Deploy Status: production review deployed to the existing personal Vercel Hobby project `junyoung8753-2361s-projects/kcg-confirm-preview` and aliased to `https://kcgold.co.kr`, `https://www.kcgold.co.kr`, `https://kcg-confirm-preview.vercel.app`, and `https://kcg-confirm-preview-junyoung8753-2361s-projects.vercel.app`. This remains a noindex-protected review change and does not include production write smoke, DB schema/data change, secret/env change, noindex/search release, DNS/project transfer, payment, checkout/cart, or live trading.
 - 사람이 읽는 요약: 업로드/기능/속도 점검을 다시 하면서 첫 방문 모바일에서 큰 한글 variable font가 먼저 preload되는 부담을 줄였다. Next.js 16 기준에 맞춰 `next/image`의 legacy `priority` 사용을 정리했고, TradingView disclosure 준비 표시도 더 단순하게 안정화했다. 상품/가격/검색/DB/인증 값은 바꾸지 않았다.
 - Summary: Disables local Pretendard font preloading, replaces legacy Next Image priority usage with current preload/eager semantics, and hardens the TradingView disclosure readiness guard after upload/function/performance QA.
 - Changed:
